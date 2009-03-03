@@ -4,7 +4,7 @@ public interface IPlayer
 	/** Spielt das aktuelle Lied von Anfang an.*/
 	void start();
 	/** Spielt das angegebene Lied von Anfang an.*/
-	void start(String FileName) throws PlayerException;
+	void start(Track track) throws PlayerException;
 	/** Stopt den Player und spult zum Anfang des Liedes.*/
 	void stop();
 	/** Startet den player an der aktuellen Position.*/
@@ -28,9 +28,12 @@ public interface IPlayer
 	
 	/** Gibt die Dauer des aktuellen Tracks in Sekunden zurück.*/
 	double getDuration();
+	/** Gibt die Dauer des angegebenen Tracks in Sekunden zurück.
+	 * @throws PlayerException */
+	double getDuration(Track track) throws PlayerException;
 	/** Gibt die Dauer des Tracks in der angegebenen Datei in Sekunden zurück.
 	 * @throws PlayerException */
-	double getDuration(String FileName) throws PlayerException;
+	double getDuration(String filePath) throws PlayerException;
 	/** Gibt den Dateinamen des aktuellen Liedes zurück.*/
 	String getFileName();
 	/** Gibt die aktuelle Position im Track in Sekunden zurück.*/

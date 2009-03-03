@@ -85,15 +85,6 @@ public class Controller
 		return currentTrack;
 	}
 	
-	public boolean playTrack(Track track)
-	{
-		Track oldTrack = currentTrack;
-		currentTrack = track;
-		for(PlayStateListener listener : playStateListener)
-			listener.currentTrackChanged(oldTrack, currentTrack);
-		return false;
-	}
-	
 	public void closePartyDJ()
 	{
 		try
@@ -121,29 +112,39 @@ public class Controller
 	class PlayerListener implements PlayerContact
 	{
 
-		public void PlayCompleted()
+		public void playCompleted()
 		{
 			// TODO Auto-generated method stub
 		}
 
-		public void ProceedError(PlayerException e)
+		public void proceedError(PlayerException e)
 		{
 			// TODO Auto-generated method stub
 		}
 
-		public String RequestNextTrack()
-		{
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public String RequestPreviousTrack()
+		public Track requestNextTrack()
 		{
 			// TODO Auto-generated method stub
 			return null;
 		}
 
-		public void StateChanged(boolean Status)
+		public Track requestPreviousTrack()
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void trackChanged(Track track)
+		{
+			if(currentTrack != track)
+			{
+				Track oldTrack = currentTrack;
+				currentTrack = track;
+				for(PlayStateListener listener : playStateListener)
+					listener.currentTrackChanged(oldTrack, currentTrack);
+			}
+		}
+		public void stateChanged(boolean Status)
 		{
 			// TODO Auto-generated method stub
 		}

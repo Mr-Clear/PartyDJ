@@ -97,7 +97,6 @@ public class LightClientListModel implements EditableListModel, MasterListListen
 
 	public void move(int oldIndex, int newIndex) throws ListException
 	{
-		
 		if(oldIndex < 0 || oldIndex >= getSize() || newIndex < 0 || newIndex > getSize() || oldIndex == newIndex)
 			return;		//Wenn der Index ausserhalb der Liste ist, oder Indizes gleich, nichts machen.
 		

@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 
 import javax.media.*;
 import common.*;
+import common.Track;
 
 
 /**Einfacher Player.
@@ -64,7 +65,7 @@ public class SimplePlayer implements IPlayer
 	
 	public void playNext() throws PlayerException
 	{
-		start(contact.RequestNextTrack());
+		start(contact.requestNextTrack());
 	}
 
 	public void playPrevious() throws PlayerException
@@ -108,12 +109,12 @@ public class SimplePlayer implements IPlayer
 		play();
 	}
 
-	public void start(String fileName) throws PlayerException
+	public void start(Track track) throws PlayerException
 	{
 		if(p != null)
 			p.close();
 			
-		p = getPlayer(fileName);
+		p = getPlayer(track.path);
 	
 		p.addControllerListener(new ControllerListener()
 								{
@@ -124,15 +125,15 @@ public class SimplePlayer implements IPlayer
 											if(contact != null)
 												try
 												{
-													String next = contact.RequestNextTrack();
+													Track next = contact.requestNextTrack();
 													if(next == null)
-														contact.PlayCompleted();
+														contact.playCompleted();
 													else
 														start(next);							
 												}
 												catch (PlayerException ex)
 												{
-													contact.ProceedError(ex);
+													contact.proceedError(ex);
 												}
 											((Player)e.getSource()).stop();
 											((Player)e.getSource()).deallocate();
@@ -140,6 +141,8 @@ public class SimplePlayer implements IPlayer
 									}
 								});
 		p.start();
+		
+		contact.trackChanged(track);
 
 		changeState(true);
 	}
@@ -158,10 +161,21 @@ public class SimplePlayer implements IPlayer
 		else
 			return 0;
 	}
-
-	public double getDuration(String FileName) throws PlayerException
+	
+	public double getDuration(Track track) throws PlayerException
 	{
-		return getPlayer(FileName).getDuration().getSeconds();
+		Player p = getPlayer(track.path);
+		double d = p.getDuration().getSeconds();
+		p.close();
+		return d;
+	}
+	
+	public double getDuration(String filePath) throws PlayerException
+	{
+		Player p = getPlayer(filePath);
+		double d = p.getDuration().getSeconds();
+		p.close();
+		return d;
 	}
 
 	public String getFileName()
@@ -234,7 +248,7 @@ public class SimplePlayer implements IPlayer
 		{
 			status = newStatus;
 			if(contact != null)
-				contact.StateChanged(status);
+				contact.stateChanged(status);
 		}
 	}
 }

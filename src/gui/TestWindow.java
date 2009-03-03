@@ -156,8 +156,8 @@ public class TestWindow extends JFrame
 	{
 		public void actionPerformed(ActionEvent arg0)
 		{
-			int textInt = Integer.parseInt(text.getText());
-			Controller.instance.playTrack(Controller.instance.listProvider.masterList.get(textInt));
+			//int textInt = Integer.parseInt(text.getText());
+			//Controller.instance.playTrack(Controller.instance.listProvider.masterList.get(textInt));
 
 			try
 			{

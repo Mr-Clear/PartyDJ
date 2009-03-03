@@ -11,26 +11,32 @@ public interface PlayerContact
 	 * 
 	 * @return Dateiname des nächsten Liedes.
 	 */
-	String RequestNextTrack();
+	Track requestNextTrack();
 	
 	/**Der Player den previous-Befehl und will das vorherige lied Spielen.
 	 * 
 	 * @return Dateiname des nächsten Liedes.
 	 */
-	String RequestPreviousTrack();
+	Track requestPreviousTrack();
+	
+	/**Der aktuelle Track hat sich geändert
+	 * 
+	 * @param track Der jetzt aktuelle Track.
+	 */
+	void trackChanged(Track track);
 	
 	/**Der Player ändert seinen Status.
 	 * 
 	 * @param Status neuer Status.
 	 */
-	void StateChanged(boolean Status);
+	void stateChanged(boolean Status);
 	
 	/**Der Player hat einen Fehler abgefangen, bei dem Versuch das nächste Lied zu spielen.
 	 * 
 	 * @param e Auslösende Exception.
 	 */
-	void ProceedError(PlayerException e);
+	void proceedError(PlayerException e);
 	
 	/**Der Player ist fertig mit dem abspielen.*/
-	void PlayCompleted();
+	void playCompleted();
 }

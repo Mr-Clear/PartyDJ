@@ -91,7 +91,7 @@ public class PDJList extends JList
 			{
 				try
 				{
-					Controller.instance.player.start(((Track)((PDJList)evt.getSource()).getSelectedValue()).path);
+					Controller.instance.player.start(((Track)((PDJList)evt.getSource()).getSelectedValue()));
 				}
 				catch (PlayerException e)
 				{
