@@ -1,0 +1,29 @@
+Spaltenname [Datentyp] Defaultwert
+__ Primary Key
++ Identity (Automatischer Wert, schlieﬂt Not Null ein)
+| Not Null
+! Index
+
+SETTINGS
+    |_NAME_ [String*32]
+    VALUE [String*256]
+
+FILES
+    +_INDEX_ [Int, Auto]
+    |!PATH [String*1024]
+    |!SEARCHNMAE [String*256]
+    |NAME [String*256]
+    DURATION [Float] 0
+    SIZE [Long] 0
+    PROBLEM [Short] 0 (0 = kein Problem, 1 = Datei nicht gefunden, 2 = Datei kann nicht abgespielt werden, -1 = Sonstige Probleme)
+    INFO [String]
+
+LISTS
+    +_INDEX_ [Int, Auto]
+    |NAME [String*32]
+    DESCRYPTION [String*128]
+    SIZE [Int] 0
+
+LIST_name
+    FILES.INDEX [Int]
+    !POSITION [Int]
