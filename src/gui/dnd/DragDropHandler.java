@@ -124,6 +124,9 @@ public class DragDropHandler extends TransferHandler
 						
 						if(DragEvent.dge.getComponent() == info.getComponent())
 						{
+							if(pdjList.getSelectedValues().length >= pdjList.getModel().getSize())
+								return false;
+							
 							switch (((PDJList)info.getComponent()).getListDropMode())
 							{
 							case NONE:					break;
@@ -151,8 +154,10 @@ public class DragDropHandler extends TransferHandler
 														{
 															for(int i = data.length; i > 0; i--)
 															{
-																((EditableListModel)listModel).add(dropLocation.getIndex(), (Track)data[i-1]);
-																((EditableListModel)listModel).remove(((PDJList)DragEvent.dge.getComponent()).getSelectedIndices()[i-1]);
+																System.out.println("old index	" + ((PDJList)DragEvent.dge.getComponent()).getSelectedIndices()[i-1]);
+																System.out.println("new index	" + dropLocation.getIndex());
+																((EditableListModel)listModel).move(((PDJList)DragEvent.dge.getComponent()).getSelectedIndices()[i-1], dropLocation.getIndex());
+																
 															}	
 														}
 														catch (ListException e)
@@ -177,6 +182,7 @@ public class DragDropHandler extends TransferHandler
 	protected Transferable createTransferable(JComponent c)
 	{
 		PDJList pdjList = (PDJList)c;
+
 		Object[] values = pdjList.getSelectedValues();
 		return new TrackSelection(values);
 	}
