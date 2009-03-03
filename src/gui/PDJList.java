@@ -31,6 +31,7 @@ public class PDJList extends JList
 	private static final long serialVersionUID = -8653111853374564564L;
 	private ListDropMode ldMode;
 	private ListModel listModel;
+	private int count = 0;
 	
 	public PDJList(ListModel listModel)
 	{
@@ -127,17 +128,44 @@ public class PDJList extends JList
 	
 	private class MyMouseMotionListener extends MouseMotionAdapter
 	{
+		private int startIndex;
+		
 		public void mouseDragged(MouseEvent dge)
-		{
-			new DragEvent(dge);
+		{	
+			if(count == 0)
+			{
+				if(dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight() > ((PDJList)dge.getComponent()).getModel().getSize())
+					startIndex = ((PDJList)dge.getComponent()).getModel().getSize() - 1;
+				
+				else
+					startIndex = dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight();
+			}
+				
+			
+			if(SwingUtilities.isLeftMouseButton(dge))
+			{
+				new DragEvent(dge);
+			}
+			
+			if(SwingUtilities.isMiddleMouseButton(dge))
+			{
+				count++;
+				if(dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight() > ((PDJList)dge.getComponent()).getModel().getSize())
+					((PDJList)dge.getComponent()).setSelectionInterval(((PDJList)dge.getComponent()).getModel().getSize() - 1, startIndex);
+				
+				else
+					((PDJList)dge.getComponent()).setSelectionInterval(dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight(), startIndex);
+			}
 		}
 	}
 	
 	private class MyMouseListener extends MouseAdapter
 	{
+		
 		public void mouseClicked(MouseEvent e)
 		{
 			PDJList list = (PDJList)e.getSource();
+			
 			if(SwingUtilities.isRightMouseButton(e))
 			{
 				synchronized(list)
@@ -168,6 +196,13 @@ public class PDJList extends JList
 			}
 		}
 		
+		public void mouseReleased(MouseEvent e)
+		{
+			count = 0;
+		}
+		
+		
+		
 		private class EditListener implements ActionListener
 		{
 			private Track item;
@@ -180,5 +215,6 @@ public class PDJList extends JList
 					new EditTrackWindow(item);			
 			}				
 		}
+		
 	}
 }
