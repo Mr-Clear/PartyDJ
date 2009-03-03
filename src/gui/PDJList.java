@@ -129,16 +129,23 @@ public class PDJList extends JList
 	private class MyMouseMotionListener extends MouseMotionAdapter
 	{
 		private int startIndex;
+		//private int endIndex;
+		private int listSize;
+		private int index;
+		
 		
 		public void mouseDragged(MouseEvent dge)
 		{	
+			listSize = ((PDJList)dge.getComponent()).getModel().getSize();
+			index = dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight();
+			
 			if(count == 0)
 			{
-				if(dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight() > ((PDJList)dge.getComponent()).getModel().getSize())
-					startIndex = ((PDJList)dge.getComponent()).getModel().getSize() - 1;
+				if(index > listSize)
+					startIndex = listSize - 1;
 				
 				else
-					startIndex = dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight();
+					startIndex = index;
 			}
 				
 			
@@ -150,11 +157,15 @@ public class PDJList extends JList
 			if(SwingUtilities.isMiddleMouseButton(dge))
 			{
 				count++;
-				if(dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight() > ((PDJList)dge.getComponent()).getModel().getSize())
-					((PDJList)dge.getComponent()).setSelectionInterval(((PDJList)dge.getComponent()).getModel().getSize() - 1, startIndex);
+				
+				if(index > listSize)
+					((PDJList)dge.getComponent()).setSelectionInterval(listSize - 1, startIndex);
+				
+				else if(index < 0)
+					((PDJList)dge.getComponent()).setSelectionInterval(0, startIndex);
 				
 				else
-					((PDJList)dge.getComponent()).setSelectionInterval(dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight(), startIndex);
+					((PDJList)dge.getComponent()).setSelectionInterval(index, startIndex);
 			}
 		}
 	}
