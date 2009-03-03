@@ -152,15 +152,22 @@ public class DragDropHandler extends TransferHandler
 														
 							case COPY_OR_MOVE:			try
 														{
+															int addIndex = dropLocation.getIndex();
+															PDJList list = ((PDJList)DragEvent.dge.getComponent());
+															EditableListModel model = (EditableListModel)list.getListModel();
+															for(int i = list.getSelectedIndices().length; i > 0; i--)
+															{
+																if(list.getSelectedIndices()[i-1] < addIndex)
+																	addIndex--;
+																model.remove(list.getSelectedIndices()[i-1]);
+															}
+								
 															for(int i = data.length; i > 0; i--)
 															{
-																System.out.println("old index	" + ((PDJList)DragEvent.dge.getComponent()).getSelectedIndices()[i-1]);
-																System.out.println("new index	" + dropLocation.getIndex());
-																((EditableListModel)listModel).move(((PDJList)DragEvent.dge.getComponent()).getSelectedIndices()[i-1], dropLocation.getIndex());
-																
-															}	
+																model.add(addIndex ,(Track)data[i - 1]);
+															}
 														}
-														catch (ListException e)
+														catch (Exception e)
 														{
 															// TODO Auto-generated catch block
 															e.printStackTrace();
@@ -182,8 +189,8 @@ public class DragDropHandler extends TransferHandler
 	protected Transferable createTransferable(JComponent c)
 	{
 		PDJList pdjList = (PDJList)c;
-
 		Object[] values = pdjList.getSelectedValues();
+
 		return new TrackSelection(values);
 	}
 	
