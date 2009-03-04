@@ -221,19 +221,19 @@ public class DragDropHandler extends TransferHandler
 	protected void exportDone(JComponent component, Transferable data, int action) 
 	{
 		//Clipboard export
+		System.out.println("export");
 		StringTransfer transfer = new StringTransfer();
 		StringBuffer buffer = new StringBuffer();
-		StringTokenizer tokenizer = new StringTokenizer(buffer.toString(), "\n");
 		String export = "";
+		
+		for(int i = 0; i < ((PDJList)component).getSelectedValues().length; i++)
+		{
+			buffer.append(((Track)(((PDJList)component).getSelectedValues()[i])).name + "\n");
+		}
+		
+		StringTokenizer tokenizer = new StringTokenizer(buffer.toString(), "\n");
 		int count = tokenizer.countTokens();
 		
-		
-		for(int i = ((PDJList)component).getSelectedValues().length; i > 0; i--)
-		{
-			buffer.append(((Track)(((PDJList)component).getSelectedValues()[i-1])).name + "\n");
-		}
-	
-
 		while(count > 0)
 		{
 			count--;
