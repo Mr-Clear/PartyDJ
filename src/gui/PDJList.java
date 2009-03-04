@@ -3,15 +3,19 @@ package gui;
 import gui.DnD.DragDropHandler;
 import gui.DnD.DragEvent;
 import gui.DnD.ListDropMode;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DropMode;
+import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -57,8 +61,16 @@ public class PDJList extends JList
 		this.setDragEnabled(true);
 		this.addMouseMotionListener(new MyMouseMotionListener());
 		this.addMouseListener(new MyMouseListener());
-		
+	
 		this.getActionMap().put(TransferHandler.getCutAction().getValue(Action.NAME), TransferHandler.getCutAction());
+		this.getActionMap().put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
+		this.getActionMap().put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
+		
+		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl X"),TransferHandler.getCutAction().getValue(Action.NAME));
+		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl C"),TransferHandler.getCopyAction().getValue(Action.NAME));
+		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl V"),TransferHandler.getPasteAction().getValue(Action.NAME));
+
+		
 		this.getInputMap().put(KeyStroke.getKeyStroke("DELETE"), "Delete");
 		this.getActionMap().put("Delete", new AbstractAction("Delete") 
 											{
@@ -233,15 +245,42 @@ public class PDJList extends JList
 		
 	}
 	
-	/*private class SelectionListener implements ListSelectionListener
+	/*public class TransferActionListener implements ActionListener, PropertyChangeListener 
 	{
-
-		public void valueChanged(ListSelectionEvent lse)
+		private JComponent focusOwner = null;
+		
+		public TransferActionListener() 
 		{
-			System.out.println("ListSelectionEvent");
-			focusedTrack = (Track)((PDJList)lse.getSource()).getSelectedValues()[0];
-			
+			KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+			manager.addPropertyChangeListener("permanentFocusOwner", this);
 		}
 		
+		public void propertyChange(PropertyChangeEvent e) 
+		{
+			Object o = e.getNewValue();
+			if (o instanceof JComponent)
+			{
+				focusOwner = (JComponent)o;
+			} 
+			else 
+			{
+				focusOwner = null;
+			}
+		}
+		
+		public void actionPerformed(ActionEvent e) 
+		{
+			if (focusOwner == null)
+				return;
+			String action = (String)e.getActionCommand();
+			Action a = focusOwner.getActionMap().get(action);
+			if (a != null) 
+			{
+				a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
+			}
+		}
+
 	}*/
+
+	
 }

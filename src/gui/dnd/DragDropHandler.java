@@ -5,7 +5,9 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.ListModel;
 import javax.swing.TransferHandler;
 import lists.EditableListModel;
@@ -32,11 +34,6 @@ public class DragDropHandler extends TransferHandler
 	public synchronized boolean importData(TransferHandler.TransferSupport info)
 	{
 		Object[] data = null;
-		
-		if(!info.isDrop())
-		{
-			return false;
-		}
 					
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 		{
@@ -44,7 +41,7 @@ public class DragDropHandler extends TransferHandler
 			return false;
 		}
 		
-		PDJList.DropLocation dropLocation = (PDJList.DropLocation)info.getDropLocation();
+
 		
 		PDJList pdjList = (PDJList)info.getComponent();
 		ListModel listModel = (ListModel)pdjList.getModel();
@@ -65,7 +62,8 @@ public class DragDropHandler extends TransferHandler
 		}
 		
 		if (info.isDrop())
-		{	
+		{			
+			PDJList.DropLocation dropLocation = (PDJList.DropLocation)info.getDropLocation();
 			if(info.getComponent() instanceof PDJList)
 			{
 					{
@@ -181,6 +179,25 @@ public class DragDropHandler extends TransferHandler
 			}
 		}
 		
+		if(!info.isDrop()) 
+        {
+			for(int i = data.length; i > 0; i--)
+			{
+				try
+				{
+					((EditableListModel)listModel).add((Track)data[i-1]);
+				}
+				catch (ListException e)
+				{
+					e.printStackTrace();
+				}
+			}
+	   
+	        return true;
+		}
+            
+        
+		
 		
 		return false;
 			
@@ -198,6 +215,28 @@ public class DragDropHandler extends TransferHandler
 	{
 		 return COPY_OR_MOVE;
 	}
+	
+	protected void exportDone(JComponent c, Transferable data, int action) 
+	{
+        if (action != MOVE) 
+            return;
+        
+        PDJList pdjList = (PDJList)c;
+        EditableListModel model = (EditableListModel)pdjList.getModel();
+        try
+		{
+        	for(int i = pdjList.getSelectedIndices().length; i > 0; i--)
+        	{
+        		model.remove(pdjList.getSelectedIndices()[i-1]);
+        	}
+			
+		}
+		catch (ListException e)
+		{
+			e.printStackTrace();
+		}
+	
+    }
 	
 
 }
