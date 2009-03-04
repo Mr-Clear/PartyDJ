@@ -156,7 +156,7 @@ public class PDJList extends JList
 			{
 				count++;
 
-				if(((PDJList)dge.getComponent()).getSelectedIndex() != -1)
+				if(((PDJList)dge.getComponent()).getSelectedIndex() > -1)
 					((PDJList)dge.getComponent()).ensureIndexIsVisible(((PDJList)dge.getComponent()).getSelectedIndices()[(((PDJList)dge.getComponent()).getSelectedIndices().length -1)]);
 				
 				if(dge.getComponent() instanceof PDJList)
