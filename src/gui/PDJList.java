@@ -70,7 +70,7 @@ public class PDJList extends JList
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl C"),TransferHandler.getCopyAction().getValue(Action.NAME));
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl V"),TransferHandler.getPasteAction().getValue(Action.NAME));
 
-		
+		this.setAutoscrolls(true);
 		this.getInputMap().put(KeyStroke.getKeyStroke("DELETE"), "Delete");
 		this.getActionMap().put("Delete", new AbstractAction("Delete") 
 											{
@@ -243,44 +243,5 @@ public class PDJList extends JList
 			}				
 		}
 		
-	}
-	
-	/*public class TransferActionListener implements ActionListener, PropertyChangeListener 
-	{
-		private JComponent focusOwner = null;
-		
-		public TransferActionListener() 
-		{
-			KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-			manager.addPropertyChangeListener("permanentFocusOwner", this);
-		}
-		
-		public void propertyChange(PropertyChangeEvent e) 
-		{
-			Object o = e.getNewValue();
-			if (o instanceof JComponent)
-			{
-				focusOwner = (JComponent)o;
-			} 
-			else 
-			{
-				focusOwner = null;
-			}
-		}
-		
-		public void actionPerformed(ActionEvent e) 
-		{
-			if (focusOwner == null)
-				return;
-			String action = (String)e.getActionCommand();
-			Action a = focusOwner.getActionMap().get(action);
-			if (a != null) 
-			{
-				a.actionPerformed(new ActionEvent(focusOwner, ActionEvent.ACTION_PERFORMED, null));
-			}
-		}
-
-	}*/
-
-	
+	}	
 }

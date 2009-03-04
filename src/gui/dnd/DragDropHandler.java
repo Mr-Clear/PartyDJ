@@ -181,24 +181,19 @@ public class DragDropHandler extends TransferHandler
 		
 		if(!info.isDrop()) 
         {
-			for(int i = data.length; i > 0; i--)
-			{
-				try
+				for(int i = data.length; i > 0; i--)
 				{
-					((EditableListModel)listModel).add((Track)data[i-1]);
-				}
-				catch (ListException e)
-				{
-					e.printStackTrace();
-				}
-			}
-	   
-	        return true;
-		}
-            
-        
-		
-		
+					try
+					{
+						((EditableListModel)listModel).add((Track)data[i-1]);
+					}
+					catch (ListException e)
+					{
+						e.printStackTrace();
+					}
+				} 
+				return true;
+        }
 		return false;
 			
 	}
@@ -216,26 +211,32 @@ public class DragDropHandler extends TransferHandler
 		 return COPY_OR_MOVE;
 	}
 	
-	protected void exportDone(JComponent c, Transferable data, int action) 
+	protected void exportDone(JComponent component, Transferable data, int action) 
 	{
         if (action != MOVE) 
             return;
         
-        PDJList pdjList = (PDJList)c;
-        EditableListModel model = (EditableListModel)pdjList.getModel();
-        try
-		{
-        	for(int i = pdjList.getSelectedIndices().length; i > 0; i--)
+        if(component instanceof PDJList)
+        {
+        	PDJList pdjList = (PDJList)component;
+        	
+        	if(pdjList.getModel() instanceof EditableListModel)
         	{
-        		model.remove(pdjList.getSelectedIndices()[i-1]);
+        		EditableListModel model = (EditableListModel)pdjList.getModel();
+		        try
+				{
+		        	for(int i = pdjList.getSelectedIndices().length; i > 0; i--)
+		        	{
+		        		model.remove(pdjList.getSelectedIndices()[i-1]);
+		        	}
+					
+				}
+				catch (ListException e)
+				{
+					e.printStackTrace();
+				}
         	}
-			
-		}
-		catch (ListException e)
-		{
-			e.printStackTrace();
-		}
-	
+        	}
     }
 	
 
