@@ -1,10 +1,15 @@
 package gui.DnD;
 
 import gui.PDJList;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.StringTokenizer;
 import javax.swing.JComponent;
 import javax.swing.ListModel;
 import javax.swing.TransferHandler;
@@ -58,6 +63,10 @@ public class DragDropHandler extends TransferHandler
 			System.out.println("importData: I/O exception");
 			e.printStackTrace();
 		}
+		
+		
+	
+		
 		
 		if (info.isDrop())
 		{			
@@ -211,31 +220,97 @@ public class DragDropHandler extends TransferHandler
 	
 	protected void exportDone(JComponent component, Transferable data, int action) 
 	{
-        if (action != MOVE) 
-            return;
-        
-        if(component instanceof PDJList)
-        {
-        	PDJList pdjList = (PDJList)component;
-        	
-        	if(pdjList.getModel() instanceof EditableListModel)
-        	{
-        		EditableListModel model = (EditableListModel)pdjList.getModel();
-		        try
-				{
-		        	for(int i = pdjList.getSelectedIndices().length; i > 0; i--)
-		        	{
-		        		model.remove(pdjList.getSelectedIndices()[i-1]);
-		        	}
-					
-				}
-				catch (ListException e)
-				{
-					e.printStackTrace();
-				}
-        	}
-        	}
-    }
+		//Clipboard export
+		StringTransfer transfer = new StringTransfer();
+		StringBuffer buffer = new StringBuffer();
+		StringTokenizer tokenizer = new StringTokenizer(buffer.toString(), "\n");
+		String export = "";
+		int count = tokenizer.countTokens();
+		
+		
+		for(int i = ((PDJList)component).getSelectedValues().length; i > 0; i--)
+		{
+			buffer.append(((Track)(((PDJList)component).getSelectedValues()[i-1])).name + "\n");
+		}
 	
 
-}
+		while(count > 0)
+		{
+			count--;
+			export += tokenizer.nextToken() + System.getProperty("line.separator");
+		}
+		
+		transfer.setClipboardContents(export);
+
+       
+        if(action == MOVE)
+        {
+        	if(component instanceof PDJList)
+	        {
+	        	PDJList pdjList = (PDJList)component;
+	        	
+	        	if(pdjList.getModel() instanceof EditableListModel)
+	        	{
+	        		EditableListModel model = (EditableListModel)pdjList.getModel();
+			        try
+					{
+			        	for(int i = pdjList.getSelectedIndices().length; i > 0; i--)
+			        	{
+			        		model.remove(pdjList.getSelectedIndices()[i-1]);
+			        	}
+						
+					}
+					catch (ListException e)
+					{
+						e.printStackTrace();
+					}
+	        	}
+	        }
+        }
+        
+        
+        
+    }
+	
+	class StringTransfer implements ClipboardOwner
+	{
+
+		public void lostOwnership(Clipboard clipboard, Transferable contents){}
+		
+		public void setClipboardContents(String string)
+		{
+			StringSelection stringSelection = new StringSelection(string);
+		    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		    clipboard.setContents(stringSelection, this);
+		}
+		
+		public String getClipboardContents() 
+		{
+		    String result = "";
+		    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		    Transferable contents = clipboard.getContents(null);
+		    
+		    if ((contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) 
+		    {
+		      try
+		      {
+		        result = (String)contents.getTransferData(DataFlavor.stringFlavor);
+		      }
+		      
+		      catch (UnsupportedFlavorException ex)
+		      {
+		        ex.printStackTrace();
+		      }
+		      
+		      catch (IOException ex) {
+		        ex.printStackTrace();
+		      }
+		    }
+		    return result;
+		  }
+		}
+		
+	}
+	
+
+
