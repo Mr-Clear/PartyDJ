@@ -31,7 +31,7 @@ public class DerbyDB implements IData
 		}
 		catch(java.lang.ClassNotFoundException e)
 		{
-			throw new OpenDbException(e);
+			throw new OpenDbException("Datenbanksystem Derby nicht gefunden.", e);
 		}
 		
 		try
@@ -133,7 +133,7 @@ public class DerbyDB implements IData
 					throw new OpenDbException(e);
 				}
 			}
-			throw new OpenDbException(e);
+			throw new OpenDbException(e.getNextException().getMessage(), e);
 		}
 	}
 	

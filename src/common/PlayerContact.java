@@ -31,12 +31,13 @@ public interface PlayerContact
 	 */
 	void stateChanged(boolean Status);
 	
-	/**Der Player hat einen Fehler abgefangen, bei dem Versuch das nächste Lied zu spielen.
-	 * 
-	 * @param e Auslösende Exception.
-	 */
-	void proceedError(PlayerException e);
-	
 	/**Der Player ist fertig mit dem abspielen.*/
 	void playCompleted();
+	
+	/**Der Player kann einen Track nicht abspielen.
+	 * 
+	 * @param e Auslösende Exception.
+	 * @param track Betreffender Track.
+	 */
+	void reportProblem(PlayerException e, Track track);
 }

@@ -54,7 +54,7 @@ public class Controller
 			// TODO Debuginfo entfernen!
 			System.err.println("Keine Verbindung zur Datenbank möglich:");
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Keine Verbindung zur Datenbank möglich!\n\nLäuft schon eine Instanz?\nRichtige Derby Verion?", "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Keine Verbindung zur Datenbank möglich!\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
 		
@@ -129,29 +129,27 @@ public class Controller
 			// TODO Auto-generated method stub
 		}
 
-		public void proceedError(PlayerException e)
-		{
-			// TODO Auto-generated method stub
-		}
-
 		public Track requestNextTrack()
 		{
 			Track nextTrack = null;
-			synchronized(playList)
+			if(playList != null)
 			{
-				if(playList != null)
+				synchronized(playList)
 				{
-					if(playList.getSize() > 0);
+					if(playList != null)
 					{
-						nextTrack = playList.getElementAt(0);
-						try
+						if(playList.getSize() > 0);
 						{
-							playList.remove(0);
-						}
-						catch (ListException e)
-						{
-							e.printStackTrace();
-							//TODO
+							nextTrack = playList.getElementAt(0);
+							try
+							{
+								playList.remove(0);
+							}
+							catch (ListException e)
+							{
+								e.printStackTrace();
+								//TODO
+							}
 						}
 					}
 				}
@@ -179,6 +177,11 @@ public class Controller
 		public void stateChanged(boolean Status)
 		{
 			// TODO Auto-generated method stub
+		}
+		
+		public void reportProblem(PlayerException e, Track track)
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Abspielen:\n" + track.name + "\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

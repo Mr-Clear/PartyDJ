@@ -3,16 +3,16 @@ public interface IPlayer
 {
 	/** Spielt das aktuelle Lied von Anfang an.*/
 	void start();
-	/** Spielt das angegebene Lied von Anfang an.*/
-	void start(Track track) throws PlayerException;
+	/** Spielt den angegebenen Track von Anfang an.*/
+	void start(Track track);
 	/** Stopt den Player und spult zum Anfang des Liedes.*/
 	void stop();
 	/** Startet den player an der aktuellen Position.*/
 	void play();
 	/** Spielt den nächsten Track.*/
-	void playNext() throws PlayerException;
+	void playNext();
 	/** Spielt den vorherigen Track.*/
-	void playPrevious() throws PlayerException;
+	void playPrevious();
 	/** Stopt den Player.*/
 	void pause();
 	/** Führt je nach Zustand Stop() oder Play() aus.*/

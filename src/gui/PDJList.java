@@ -23,7 +23,6 @@ import javax.swing.TransferHandler;
 import basics.Controller;
 import lists.EditableListModel;
 import common.ListException;
-import common.PlayerException;
 import common.Track;
 
 public class PDJList extends JList
@@ -91,22 +90,13 @@ public class PDJList extends JList
 											});
 		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Return");
 		this.getActionMap().put("Return", new AbstractAction("Return") 
-		{
-			private static final long serialVersionUID = -2342506838333821595L;
-
-			public void actionPerformed(ActionEvent evt) 
-			{
-				try
-				{
-					Controller.instance.player.start(((Track)((PDJList)evt.getSource()).getSelectedValues()[0]));
-				}
-				catch (PlayerException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
+								{
+									private static final long serialVersionUID = -2342506838333821595L;
+									public void actionPerformed(ActionEvent evt) 
+									{
+										Controller.instance.player.start(((Track)((PDJList)evt.getSource()).getSelectedValues()[0]));
+									}
+								});
 		
 		if(ldMode != ListDropMode.NONE && ldMode != ListDropMode.DELETE)
 			this.setDropMode(DropMode.INSERT);		

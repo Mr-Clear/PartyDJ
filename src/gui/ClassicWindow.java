@@ -5,7 +5,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import common.IPlayer;
 import common.ListException;
-import common.PlayerException;
 import basics.Controller;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -257,15 +256,7 @@ public class ClassicWindow extends JFrame
 					{
 						public void mouseClicked(MouseEvent me) 
 						{
-							try
-							{
-								player.playNext();
-							}
-							catch (PlayerException e)
-							{
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							player.playNext();
 						}
 					});
 		
@@ -273,15 +264,7 @@ public class ClassicWindow extends JFrame
 					{
 						public void mouseClicked(MouseEvent me) 
 						{
-							try
-							{
-								player.playPrevious();
-							}
-							catch (PlayerException e)
-							{
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							player.playPrevious();
 						}
 					});
 		

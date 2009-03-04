@@ -63,14 +63,14 @@ public class SimplePlayer implements IPlayer
 		
 	}
 	
-	public void playNext() throws PlayerException
+	public void playNext()
 	{
 		start(contact.requestNextTrack());
 	}
 
-	public void playPrevious() throws PlayerException
+	public void playPrevious()
 	{
-	
+		start(contact.requestPreviousTrack());
 	}
 
 	public void playPause()
@@ -100,7 +100,7 @@ public class SimplePlayer implements IPlayer
 		
 		volume = Volume;
 		
-		// TODO Auto-generated method stub
+		// TODO
 	}
 
 	public void start()
@@ -109,15 +109,23 @@ public class SimplePlayer implements IPlayer
 		play();
 	}
 
-	public void start(Track track) throws PlayerException
+	public void start(Track track)
 	{
 		if(track == null)
 			return;
 		
 		if(p != null)
 			p.close();
-			
-		p = getPlayer(track.path);
+		
+		try
+		{
+			p = getPlayer(track.path);
+		}
+		catch (PlayerException e)
+		{
+			contact.reportProblem(e, track);
+			return;
+		}
 	
 		p.addControllerListener(new ControllerListener()
 								{
@@ -126,18 +134,13 @@ public class SimplePlayer implements IPlayer
 										if(e instanceof EndOfMediaEvent)
 										{
 											if(contact != null)
-												try
-												{
-													Track next = contact.requestNextTrack();
-													if(next == null)
-														contact.playCompleted();
-													else
-														start(next);							
-												}
-												catch (PlayerException ex)
-												{
-													contact.proceedError(ex);
-												}
+											{
+												Track next = contact.requestNextTrack();
+												if(next == null)
+													contact.playCompleted();
+												else
+													start(next);
+											}
 											((Player)e.getSource()).stop();
 											((Player)e.getSource()).deallocate();
 										}
@@ -229,19 +232,19 @@ public class SimplePlayer implements IPlayer
 		}
 		catch (NoPlayerException e)
 		{
-			throw new PlayerException("NoPlayerException:\n" + e.getMessage());
+			throw new PlayerException("Dateityp nicht unterstützt.", e);
 		}
 		catch (CannotRealizeException e)
 		{
-			throw new PlayerException("CannotRealizeException:\n" + e.getMessage());
+			throw new PlayerException("Kann Datei nicht wiedergeben.", e);
 		}
 		catch (MalformedURLException e)
 		{
-			throw new PlayerException("Ungültiger Dateiname:\n" + e.getMessage());
+			throw new PlayerException("Ungültiger Dateiname.", e);
 		}
 		catch (IOException e)
 		{
-			throw new PlayerException("Fehler beim Lesen von Audio-Datei:\n" + e.getMessage());
+			throw new PlayerException("Fehler beim Lesen der Audio-Datei.", e);
 		}
 	}
 	
