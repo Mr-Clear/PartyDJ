@@ -59,7 +59,7 @@ public class Track
 			case NONE:
 				return 0;
 			case FILE_NOT_FOUND:
-				return 0;
+				return 1;
 			case CANT_PLAY:
 				return 2;
 			case OTHER:
