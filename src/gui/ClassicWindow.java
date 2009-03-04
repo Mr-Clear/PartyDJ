@@ -3,9 +3,13 @@ package gui;
 import gui.DnD.ListDropMode;
 import javax.swing.*;
 import javax.swing.border.Border;
+import common.IPlayer;
 import common.ListException;
+import common.PlayerException;
 import basics.Controller;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import lists.EmptyListModel;
 
 /**
@@ -145,6 +149,7 @@ public class ClassicWindow extends JFrame
 	 */
 	public JPanel Buttons()
 	{
+		final IPlayer player = basics.Controller.instance.player;
 		GridBagConstraints c = new GridBagConstraints();
 
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -161,6 +166,100 @@ public class ClassicWindow extends JFrame
 		JButton skipFWD = customizeButton("Resources/Vor.png");
 		JButton skipBWD = customizeButton("Resources/Zurück.png");
 		JButton fade = customizeButton("Resources/Abblenden.png");
+		
+		play.addMouseListener(new MouseAdapter()
+								{
+									public void mouseClicked(MouseEvent me) 
+									{
+										player.play();
+									}
+								});
+		
+		pause.addMouseListener(new MouseAdapter()
+								{
+									public void mouseClicked(MouseEvent me) 
+									{
+										player.pause();
+									}
+								});
+		
+		stop.addMouseListener(new MouseAdapter()
+								{
+									public void mouseClicked(MouseEvent me) 
+									{
+										player.stop();
+									}
+								});
+		
+		fwd.addMouseListener(new MouseAdapter()
+								{
+									boolean fwd = true;
+									public void mousePressed(MouseEvent me) 
+									{
+										while(fwd == true)
+											player.setPosition(2);
+									}
+									
+									public void mouseReleased(MouseEvent me) 
+									{
+										fwd = false;
+									}
+								});
+		
+		bwd.addMouseListener(new MouseAdapter()
+								{
+									boolean bwd = true;
+									public void mousePressed(MouseEvent me) 
+									{
+										while(bwd == true)
+											player.setPosition(-2);
+									}
+									
+									public void mouseReleased(MouseEvent me) 
+									{
+										bwd = false;
+									}
+								});
+		
+		skipFWD.addMouseListener(new MouseAdapter()
+									{
+										public void mouseClicked(MouseEvent me) 
+										{
+											try
+											{
+												player.playNext();
+											}
+											catch (PlayerException e)
+											{
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+										}
+									});
+		
+		skipBWD.addMouseListener(new MouseAdapter()
+									{
+										public void mouseClicked(MouseEvent me) 
+										{
+											try
+											{
+												player.playPrevious();
+											}
+											catch (PlayerException e)
+											{
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+										}
+									});
+		
+		fade.addMouseListener(new MouseAdapter()
+								{
+									public void mouseClicked(MouseEvent me) 
+									{
+										player.fadeInOut();
+									}
+								});
 		
 		c.insets = new Insets(1, 1, 1, 1);
 		
