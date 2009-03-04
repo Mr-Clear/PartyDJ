@@ -1,10 +1,9 @@
 package lists;
 
-import javax.swing.ListModel;
 import common.ListException;
 import common.Track;
 
-public interface EditableListModel extends ListModel 
+public interface EditableListModel extends TrackListModel 
 {
 	/**Fügt einen Track am Ende der Liste ein.
 	 * 

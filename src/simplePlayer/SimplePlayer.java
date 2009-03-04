@@ -111,6 +111,9 @@ public class SimplePlayer implements IPlayer
 
 	public void start(Track track) throws PlayerException
 	{
+		if(track == null)
+			return;
+		
 		if(p != null)
 			p.close();
 			

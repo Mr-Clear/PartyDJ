@@ -2,7 +2,6 @@ package lists;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import common.*;
@@ -10,7 +9,7 @@ import data.MasterListListener;
 
 import basics.Controller;
 
-public class DbMasterListModel implements ListModel, MasterListListener, PlayStateListener
+public class DbMasterListModel implements TrackListModel, MasterListListener, PlayStateListener
 {
 	private final ArrayList<Track> list;
 	private final HashSet<ListDataListener> dataListener = new HashSet<ListDataListener>();
@@ -29,7 +28,7 @@ public class DbMasterListModel implements ListModel, MasterListListener, PlaySta
 		return list.size();
 	}
 	
-	public Object getElementAt(int index)
+	public Track getElementAt(int index)
 	{
 		return list.get(index);
 	}

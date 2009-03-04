@@ -40,7 +40,7 @@ public class LightClientListModel implements EditableListModel, MasterListListen
 		return list.size();
 	}
 	
-	public Object getElementAt(int index)
+	public Track getElementAt(int index)
 	{
 		return list.get(index);
 	}

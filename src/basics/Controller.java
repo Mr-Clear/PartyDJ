@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 import simplePlayer.SimplePlayer;
 import common.*;
 
+import lists.EditableListModel;
 import lists.ListProvider;
 import data.*;
 import data.derby.DerbyDB;
@@ -19,6 +20,7 @@ public class Controller
 	
 	private final HashSet<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
 	private Track currentTrack;
+	private EditableListModel playList;
 
 	JFrame window;
 	
@@ -85,6 +87,16 @@ public class Controller
 		return currentTrack;
 	}
 	
+	public void setPlayList(EditableListModel list)
+	{
+		playList = list;
+	}
+	
+	public EditableListModel getPlayList()
+	{
+		return playList;
+	}
+	
 	public void closePartyDJ()
 	{
 		try
@@ -124,8 +136,28 @@ public class Controller
 
 		public Track requestNextTrack()
 		{
+			Track nextTrack = null;
+			synchronized(playList)
+			{
+				if(playList != null)
+				{
+					if(playList.getSize() > 0);
+					{
+						nextTrack = playList.getElementAt(0);
+						try
+						{
+							playList.remove(0);
+						}
+						catch (ListException e)
+						{
+							e.printStackTrace();
+							//TODO
+						}
+					}
+				}
+			}
 			// TODO Auto-generated method stub
-			return null;
+			return nextTrack;
 		}
 
 		public Track requestPreviousTrack()
