@@ -41,6 +41,8 @@ public class EditTrackWindow extends JDialog
 	{
 		myTrack = track;
 		setTitle(track.name);
+		duration = track.duration;
+		size = track.size;
 		
 		Insets insets = new Insets(4, 5, 4, 6);
 		
@@ -146,13 +148,14 @@ public class EditTrackWindow extends JDialog
 				try
 				{
 					duration = Controller.instance.player.getDuration(myTrack);
-					txtDuration.setText(common.Functions.formatTime(duration));
 				}
 				catch (PlayerException e)
 				{
 					JOptionPane.showMessageDialog(null, e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 					cmbProblem.setSelectedIndex(Track.Problem.problemToArrayIndex(e.problem));
+					duration = 0;
 				}
+				txtDuration.setText(common.Functions.formatTime(duration));
 			}});
 		
 		//---Größe---
@@ -190,7 +193,14 @@ public class EditTrackWindow extends JDialog
 		btnSize.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0)
 			{
-				size = new File(myTrack.path).length();
+				try
+				{
+					size = new File(myTrack.path).length();
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
 				txtSize.setText(common.Functions.formatSize(size, 4, true));
 			}});
 		
@@ -217,7 +227,7 @@ public class EditTrackWindow extends JDialog
 		add(txtarInfo, c);
 		
 		//---Buttons---
-		JButton btnCancel = new JButton("Abbrechen");
+		JButton btnCancel = new JButton("Schließen");
 		c = new GridBagConstraints();
 		c.insets = insets;
 		c.gridx = 1;
@@ -254,10 +264,10 @@ public class EditTrackWindow extends JDialog
 		public void actionPerformed(ActionEvent arg0)
 		{
 			int changeCount = 0;
-			Track.TrackElement change;
-			if(myTrack.path != txtPath.getText())
+			Track.TrackElement change = Track.TrackElement.NAME;
+			if(!myTrack.path.equals(txtPath.getText()))
 			{
-				if(!new File(myTrack.path).exists())
+				if(!new File(txtPath.getText()).exists())
 				{
 					if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Angegebene Datei existiert nicht.\nTrotzdem ändern?", "PartyDJ", JOptionPane.YES_NO_OPTION))
 						return;
@@ -266,7 +276,7 @@ public class EditTrackWindow extends JDialog
 				myTrack.path = txtPath.getText();
 				change = Track.TrackElement.PATH;
 			}
-			if(myTrack.name != txtName.getText())
+			if(!myTrack.name.equals(txtName.getText()))
 			{
 				changeCount++;
 				myTrack.name = txtName.getText();
@@ -281,8 +291,8 @@ public class EditTrackWindow extends JDialog
 			if(myTrack.duration != duration)
 			{
 				changeCount++;
-				myTrack.name = txtName.getText();
-				change = Track.TrackElement.NAME;
+				myTrack.duration = duration;
+				change = Track.TrackElement.DURATION;
 			}
 			if(myTrack.size != size)
 			{
@@ -290,23 +300,35 @@ public class EditTrackWindow extends JDialog
 				myTrack.size = size;
 				change = Track.TrackElement.SIZE;
 			}
-			if(myTrack.info != txtarInfo.getText())
+			if(!(txtarInfo.getText().equals(myTrack.info) || (txtarInfo.getText().equals("") && myTrack.info == null)))
 			{
 				changeCount++;
 				myTrack.info = txtarInfo.getText();
 				change = Track.TrackElement.INFO;
 			}
-						
+
 			if(changeCount == 1)
 			{
-				myTrack.name = txtName.getText();
 				try
 				{
-					Controller.instance.data.updateTrack(myTrack, Track.TrackElement.NAME);
+					Controller.instance.data.updateTrack(myTrack, change);
 				}
 				catch (ListException e)
 				{
 					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Fehler bei Update:\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			else if(changeCount > 1)
+			{
+				try
+				{
+					Controller.instance.data.updateTrack(myTrack);
+				}
+				catch (ListException e)
+				{
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Fehler bei Update:\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}

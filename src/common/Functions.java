@@ -45,7 +45,11 @@ public class Functions
 		StringBuilder sb = new StringBuilder();
 		
 		String[] prefix = {"Byte", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"};
-		int magnitude = (int)(Math.log10(size) / 3.010299956639812);
+		int magnitude;
+		if(size > 0)
+			magnitude = (int)(Math.log10(size) / 3.010299956639812);
+		else
+			magnitude = 0;
 		
 		double quotient = size / Math.pow(1024, magnitude);
 		int pre = (int) Math.log10(quotient);
@@ -56,7 +60,7 @@ public class Functions
 		sb.append(Math.round(quotient * factor) / factor);
 		sb.append(" " + prefix[magnitude]);
 		
-		if(full)
+		if(full && magnitude > 0)
 			sb.append(" (" + Long.toString(size) + " Byte)");
 		
 		return sb.toString(); 
