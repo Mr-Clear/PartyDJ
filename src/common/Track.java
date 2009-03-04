@@ -42,7 +42,47 @@ public class Track
 		NONE,
 		FILE_NOT_FOUND,
 		CANT_PLAY,
-		OTHER
+		OTHER;
+		
+		public static String[] getStringArray()
+		{
+			return new String[]{"Kein Problem", 
+								"Datei nicht gefunden", 
+								"Datei kann nicht abgespielt werden",
+								"Unbestimmtes Problem"};
+		}
+		
+		public static int problemToArrayIndex(Problem problem)
+		{
+			switch(problem)
+			{
+			case NONE:
+				return 0;
+			case FILE_NOT_FOUND:
+				return 0;
+			case CANT_PLAY:
+				return 2;
+			case OTHER:
+			default:
+				return 3;
+			}
+		}
+		
+		public static Problem arrayIndexToProblem(int index)
+		{
+			switch(index)
+			{
+			case 0:
+				return NONE;
+			case 1:
+				return FILE_NOT_FOUND;
+			case 2:
+				return CANT_PLAY;
+			case 3:
+			default:
+				return OTHER;
+			}
+		}
 	}
 	
 	/**Wählt ein Element aus dem Track aus.
@@ -56,7 +96,7 @@ public class Track
 		DURATION,
 		SIZE,
 		PROBLEM,
-		INFO
+		INFO;
 	}
 }
 

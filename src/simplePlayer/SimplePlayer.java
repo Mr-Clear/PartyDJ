@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import javax.media.*;
 import common.*;
 import common.Track;
+import common.Track.Problem;
 
 
 /**Einfacher Player.
@@ -232,19 +233,19 @@ public class SimplePlayer implements IPlayer
 		}
 		catch (NoPlayerException e)
 		{
-			throw new PlayerException("Dateityp nicht unterstützt.", e);
+			throw new PlayerException(Problem.CANT_PLAY, "Dateityp nicht unterstützt.", e);
 		}
 		catch (CannotRealizeException e)
 		{
-			throw new PlayerException("Kann Datei nicht wiedergeben.", e);
+			throw new PlayerException(Problem.CANT_PLAY, "Kann Datei nicht wiedergeben.", e);
 		}
 		catch (MalformedURLException e)
 		{
-			throw new PlayerException("Ungültiger Dateiname.", e);
+			throw new PlayerException(Problem.FILE_NOT_FOUND, "Ungültiger Dateiname.", e);
 		}
 		catch (IOException e)
 		{
-			throw new PlayerException("Fehler beim Lesen der Audio-Datei.", e);
+			throw new PlayerException(Problem.FILE_NOT_FOUND, "Fehler beim Lesen der Audio-Datei.", e);
 		}
 	}
 	

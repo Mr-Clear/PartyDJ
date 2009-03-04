@@ -30,6 +30,39 @@ public class Functions
         return output;
 	}
 	
+	public static String formatSize(long size)
+	{
+		return formatSize(size, 3, false);
+	}
+	
+	public static String formatSize(long size, int digits)
+	{
+		return formatSize(size, digits, false);
+	}
+
+	public static String formatSize(long size, int digits, boolean full)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		String[] prefix = {"Byte", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"};
+		int magnitude = (int)(Math.log10(size) / 3.010299956639812);
+		
+		double quotient = size / Math.pow(1024, magnitude);
+		int pre = (int) Math.log10(quotient);
+		int decimals = digits - pre;
+		if(decimals < 0)
+			decimals = 0;
+		double factor = Math.pow(10, decimals - 1);
+		sb.append(Math.round(quotient * factor) / factor);
+		sb.append(" " + prefix[magnitude]);
+		
+		if(full)
+			sb.append(" (" + Long.toString(size) + " Byte)");
+		
+		return sb.toString(); 
+	}
+
+	
 	public static String getFolder()
 	{
 		javax.swing.JFileChooser fr = new javax.swing.JFileChooser();

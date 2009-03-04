@@ -36,7 +36,7 @@ public class FillDB
 			String name = line.substring(line.lastIndexOf("\\") + 1, line.lastIndexOf("."));
 			try
 			{
-				boolean fast = true;
+				boolean fast = false;
 				if(!fast)
 				{
 					File file = new File(line);
