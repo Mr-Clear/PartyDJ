@@ -5,10 +5,16 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import common.IPlayer;
 import common.ListException;
+import common.SettingException;
+import data.IData;
 import basics.Controller;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowStateListener;
 import lists.EmptyListModel;
 
 /**
@@ -23,11 +29,13 @@ public class ClassicWindow extends JFrame
 {	
 	private static final long serialVersionUID = 5672123337960808686L;
 	private Container gcp = getContentPane();
+	private IData data;
 	
 	public ClassicWindow()
 	{
 		super("Party DJ");
 		assert Controller.instance != null : "Controller nicht geladen!";
+		data = Controller.instance.data;
 		
 		GridBagConstraints con = new GridBagConstraints();
 		GridBagLayout layout = new GridBagLayout();
@@ -37,8 +45,12 @@ public class ClassicWindow extends JFrame
 		con.insets = new Insets(0, 0, 0, 0);
 		con.fill = GridBagConstraints.BOTH;
 		
+		//TODO Sam fragen was das macht.
+		setSize(560, 350);
+		/*System.out.println((Toolkit.getDefaultToolkit().getScreenSize().width - getSize().width) / 3 + " " + (Toolkit.getDefaultToolkit().getScreenSize().height - getSize().height) / 3);
 		setSize((Toolkit.getDefaultToolkit().getScreenSize().width - getSize().width) / 3, (Toolkit.getDefaultToolkit().getScreenSize().height - getSize().height) / 3);
-		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - getSize().width) / 4, (Toolkit.getDefaultToolkit().getScreenSize().height - getSize().height) / 4);
+		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - getSize().width) / 4, (Toolkit.getDefaultToolkit().getScreenSize().height - getSize().height) / 4);*/
+
 		gcp.setBackground(Color.darkGray);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -55,8 +67,8 @@ public class ClassicWindow extends JFrame
 		con.weightx = 1.0;
 		con.weighty = 1.0;
 		add(MainPart(), con);
-	
-		setExtendedState(MAXIMIZED_BOTH);
+		
+
 		setVisible(true);
 	}
 	
@@ -138,6 +150,8 @@ public class ClassicWindow extends JFrame
 
 		c.gridy = 1;
 		mainPart.add(Search(), c);
+		
+		manageSize();
 		
 		return mainPart;
 	}
@@ -450,5 +464,70 @@ public class ClassicWindow extends JFrame
 		button.setBorder(buttonBorder);
 
 		return button;
+	}
+	
+	/**Wird am Ende des Konstruktors aufgerufen um alles zu regeln was die Fenstergröße betrifft.*/
+	private void manageSize()
+	{
+		try
+		{
+			setSize(Integer.parseInt(data.readSetting("ClassicWindowWidth", "800")), Integer.parseInt(data.readSetting("ClassicWindowHeight", "600")));
+		}
+		catch (NumberFormatException e1)
+		{
+			setSize(800, 600);
+		}
+		catch (SettingException e1)
+		{
+			setSize(800, 600);
+		}
+		
+		try
+		{
+			setExtendedState(Integer.parseInt(data.readSetting("ClassicWindowState", Integer.toString(MAXIMIZED_BOTH))));
+		}
+		catch (NumberFormatException e)
+		{
+			setExtendedState(MAXIMIZED_BOTH);
+		}
+		catch (SettingException e)
+		{
+			setExtendedState(MAXIMIZED_BOTH);
+		}
+		
+		this.setLocationRelativeTo(null); //Macht dass Fenster in Bildschirmmitte steht
+		
+		addWindowStateListener(new WindowStateListener(){
+			public void windowStateChanged(WindowEvent evt)
+	        {
+	            resize();
+	        }});
+		
+		getContentPane().addComponentListener(new ComponentAdapter(){  
+	        public void componentResized(ComponentEvent evt) 
+	        {
+	            resize();
+	        }});
+	
+		resize();
+	}
+	
+	/** Wird aufgerufen wenn sich die Größe des Fensters ändert.*/
+	private void resize()
+	{
+        try
+		{
+        	if((getExtendedState() & Frame.MAXIMIZED_BOTH) == 0) // Wenn nicht maximiert
+        	{
+				data.writeSetting("ClassicWindowWidth", Integer.toString(getSize().width));
+				data.writeSetting("ClassicWindowHeight", Integer.toString(getSize().height));
+        	}
+			data.writeSetting("ClassicWindowState", Integer.toString(getExtendedState() & MAXIMIZED_BOTH)); // & MAXIMIZED_BOTH damit MINIMIZED nicht gespeichert wird.
+		}
+		catch (SettingException e)
+		{
+			e.printStackTrace();
+		}
+        
 	}
 }
