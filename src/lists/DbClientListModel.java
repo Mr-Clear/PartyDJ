@@ -1,6 +1,6 @@
 package lists;
 
-import java.util.HashMap;
+import java.util.Map;
 import common.ListException;
 import common.Track;
 import data.IData;
@@ -10,7 +10,7 @@ public class DbClientListModel extends LightClientListModel
 {
 	private String listName;
 	private final IData data = Controller.instance.data;
-	private final HashMap<Integer, Track> masterList = Controller.instance.listProvider.masterList;
+	private final Map<Integer, Track> masterList = Controller.instance.listProvider.masterList;
 	
 	protected DbClientListModel(String listName) throws ListException
 	{

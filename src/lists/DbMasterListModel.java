@@ -1,7 +1,8 @@
 package lists;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import common.*;
@@ -11,8 +12,8 @@ import basics.Controller;
 
 public class DbMasterListModel implements TrackListModel, MasterListListener, PlayStateListener
 {
-	private final ArrayList<Track> list;
-	private final HashSet<ListDataListener> dataListener = new HashSet<ListDataListener>();
+	private final List<Track> list;
+	private final Set<ListDataListener> dataListener = new HashSet<ListDataListener>();
 	
 	protected DbMasterListModel() throws ListException 
 	{

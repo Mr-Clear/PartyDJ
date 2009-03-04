@@ -46,7 +46,7 @@ public interface IData
 	 * @return Die Liste vom Typ java.util.ArrayList<common.Track>.
 	 * @throws ListException
 	 */
-	java.util.HashMap<Integer, Track> getMasterList() throws ListException;
+	java.util.Map<Integer, Track> getMasterList() throws ListException;
 	
 	/**Liest eine in der Datenbank gespeicherte Liste ein.
 	 * 
@@ -56,7 +56,7 @@ public interface IData
 	 * @return Die Liste vom Typ java.util.ArrayList<common.Track>.
 	 * @throws ListException
 	 */
-	java.util.ArrayList<Track> readList(String listName, String searchString, common.SortOrder order) throws ListException;
+	java.util.List<Track> readList(String listName, String searchString, common.SortOrder order) throws ListException;
 	
 	/**Fügt einen Track zur Hauptliste hinzu.
 	 * 

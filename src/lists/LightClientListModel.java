@@ -1,8 +1,10 @@
 package lists;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import basics.Controller;
@@ -11,9 +13,9 @@ import data.MasterListListener;
 
 public class LightClientListModel implements EditableListModel, MasterListListener, PlayStateListener
 {
-	private final ArrayList<Track> list;
-	private final HashMap<Integer, Track> masterList = Controller.instance.listProvider.masterList;
-	private final HashSet<ListDataListener> dataListener = new HashSet<ListDataListener>();
+	private final List<Track> list;
+	private final Map<Integer, Track> masterList = Controller.instance.listProvider.masterList;
+	private final Set<ListDataListener> dataListener = new HashSet<ListDataListener>();
 	
 	public LightClientListModel()
 	{
@@ -22,7 +24,7 @@ public class LightClientListModel implements EditableListModel, MasterListListen
 		initialise();
 	}
 	
-	protected LightClientListModel(ArrayList<Track> list)
+	protected LightClientListModel(List<Track> list)
 	{
 		assert Controller.instance != null : "Controller nicht geladen!";
 		this.list = list;

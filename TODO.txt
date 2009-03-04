@@ -1,2 +1,3 @@
 Serialisierbar....
 Track-Info auslesen
+Listen optimieren

@@ -1,6 +1,7 @@
 package lists;
 
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.ListModel;
 import basics.Controller;
 import common.ListException;
@@ -8,10 +9,10 @@ import common.Track;
 
 public class ListProvider
 {
-	public final HashMap<Integer, Track> masterList;
+	public final Map<Integer, Track> masterList;
 	
 	private DbMasterListModel masterListModel;
-	private HashMap<String, DbClientListModel> dbClientListModels = new HashMap<String, DbClientListModel>();
+	private Map<String, DbClientListModel> dbClientListModels = new HashMap<String, DbClientListModel>();
 	
 	public ListProvider() throws ListException
 	{
