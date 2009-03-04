@@ -24,7 +24,7 @@ import basics.Controller;
 import lists.EditableListModel;
 import common.ListException;
 import common.Track;
-
+//Servus
 public class PDJList extends JList
 {
 	private static final long serialVersionUID = -8653111853374564564L;
@@ -155,6 +155,9 @@ public class PDJList extends JList
 			if(SwingUtilities.isMiddleMouseButton(dge))
 			{
 				count++;
+
+				if(((PDJList)dge.getComponent()).getSelectedIndex() != -1)
+					((PDJList)dge.getComponent()).ensureIndexIsVisible(((PDJList)dge.getComponent()).getSelectedIndices()[(((PDJList)dge.getComponent()).getSelectedIndices().length -1)]);
 				
 				if(dge.getComponent() instanceof PDJList)
 				{
@@ -166,7 +169,6 @@ public class PDJList extends JList
 					
 					if(((PDJList)dge.getComponent()).getFirstVisibleIndex() <= startIndex)
 					{
-						System.out.println(((PDJList)dge.getComponent()).getFirstVisibleIndex());
 						((PDJList)dge.getComponent()).ensureIndexIsVisible(index - 1);
 						((PDJList)dge.getComponent()).setSelectionInterval(index, startIndex - 1);
 					}
