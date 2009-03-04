@@ -46,10 +46,12 @@ public class PDJList extends JList
 	
 	private void initialise(ListModel listModel, ListDropMode ldMode, String name)
 	{
+		final DragDropHandler handler = new DragDropHandler();
+		
 		this.setName(name);
 		this.listModel = listModel;
 		this.setListDropMode(ldMode);
-		this.setTransferHandler(new DragDropHandler());
+		this.setTransferHandler(handler);
 		this.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		this.setDragEnabled(true);
 		this.addMouseMotionListener(new MyMouseMotionListener());
@@ -160,6 +162,13 @@ public class PDJList extends JList
 					{
 						((PDJList)dge.getComponent()).ensureIndexIsVisible(index + 1);
 						((PDJList)dge.getComponent()).setSelectionInterval(index + 1, startIndex);
+					}
+					
+					if(((PDJList)dge.getComponent()).getFirstVisibleIndex() <= startIndex)
+					{
+						System.out.println(((PDJList)dge.getComponent()).getFirstVisibleIndex());
+						((PDJList)dge.getComponent()).ensureIndexIsVisible(index - 1);
+						((PDJList)dge.getComponent()).setSelectionInterval(index, startIndex - 1);
 					}
 				
 					if(index > listSize)
