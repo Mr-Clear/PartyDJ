@@ -155,9 +155,9 @@ public class PDJList extends JList
 			if(SwingUtilities.isMiddleMouseButton(dge))
 			{
 				count++;
-
-				if(((PDJList)dge.getComponent()).getSelectedIndex() > -1)
-					((PDJList)dge.getComponent()).ensureIndexIsVisible(((PDJList)dge.getComponent()).getSelectedIndices()[(((PDJList)dge.getComponent()).getSelectedIndices().length -1)]);
+				((PDJList)dge.getComponent()).setSelectedIndex(startIndex);
+				
+				((PDJList)dge.getComponent()).ensureIndexIsVisible(((PDJList)dge.getComponent()).getSelectedIndices()[(((PDJList)dge.getComponent()).getSelectedIndices().length -1)]);
 				
 				if(dge.getComponent() instanceof PDJList)
 				{
@@ -169,8 +169,19 @@ public class PDJList extends JList
 					
 					if(((PDJList)dge.getComponent()).getFirstVisibleIndex() <= startIndex)
 					{
-						((PDJList)dge.getComponent()).ensureIndexIsVisible(index - 1);
-						((PDJList)dge.getComponent()).setSelectionInterval(index, startIndex - 1);
+						if(index > 0)
+						{
+							((PDJList)dge.getComponent()).ensureIndexIsVisible(index - 1);
+							((PDJList)dge.getComponent()).setSelectionInterval(index, startIndex - 1);
+						}
+							
+						else
+						{
+							((PDJList)dge.getComponent()).ensureIndexIsVisible(index);
+							((PDJList)dge.getComponent()).setSelectionInterval(0, startIndex);
+						}
+							
+						
 					}
 				
 					if(index > listSize)
