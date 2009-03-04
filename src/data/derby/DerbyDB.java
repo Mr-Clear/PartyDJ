@@ -668,21 +668,24 @@ public class DerbyDB implements IData
 	{
 		synchronized(settings)
 		{
-			// In Datenbank speichern
-			try
+			if(!value.equals(readSetting(name)))	// Prüfen ob Einstellung tatsächlich verändert wurde
 			{
-				if(readSetting(name) == null)
-					executeUpdate("INSERT INTO SETTINGS VALUES(?, ?)", name, value);
-				else
-					executeUpdate("UPDATE SETTINGS SET VALUE = ? WHERE NAME = ?", value, name);
+				// In Datenbank speichern
+				try
+				{
+					if(readSetting(name) == null)
+						executeUpdate("INSERT INTO SETTINGS VALUES(?, ?)", name, value);
+					else
+						executeUpdate("UPDATE SETTINGS SET VALUE = ? WHERE NAME = ?", value, name);
+				}
+				catch (SQLException e)
+				{
+					throw new SettingException(e);
+				}
+				
+				// In temporäre Liste schreiben
+				settings.put(name, value);
 			}
-			catch (SQLException e)
-			{
-				throw new SettingException(e);
-			}
-			
-			// In temporäre Liste schreiben
-			settings.put(name, value);
 		}
 		
 		synchronized(settingListener)
