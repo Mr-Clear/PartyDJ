@@ -3,19 +3,15 @@ package gui;
 import gui.DnD.DragDropHandler;
 import gui.DnD.DragEvent;
 import gui.DnD.ListDropMode;
-import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DropMode;
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -24,8 +20,6 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import basics.Controller;
 import lists.EditableListModel;
 import common.ListException;
@@ -70,7 +64,6 @@ public class PDJList extends JList
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl C"),TransferHandler.getCopyAction().getValue(Action.NAME));
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl V"),TransferHandler.getPasteAction().getValue(Action.NAME));
 
-		this.setAutoscrolls(true);
 		this.getInputMap().put(KeyStroke.getKeyStroke("DELETE"), "Delete");
 		this.getActionMap().put("Delete", new AbstractAction("Delete") 
 											{
@@ -143,7 +136,6 @@ public class PDJList extends JList
 	private class MyMouseMotionListener extends MouseMotionAdapter
 	{
 		private int startIndex;
-		//private int endIndex;
 		private int listSize;
 		private int index;
 		
@@ -172,19 +164,28 @@ public class PDJList extends JList
 			{
 				count++;
 				
-				if(index > listSize)
-					((PDJList)dge.getComponent()).setSelectionInterval(listSize - 1, startIndex);
+				if(dge.getComponent() instanceof PDJList)
+				{
+					if(((PDJList)dge.getComponent()).getLastVisibleIndex() <= index)
+					{
+						((PDJList)dge.getComponent()).ensureIndexIsVisible(index + 1);
+						((PDJList)dge.getComponent()).setSelectionInterval(index + 1, startIndex);
+					}
 				
-				else if(index < 0)
-					((PDJList)dge.getComponent()).setSelectionInterval(0, startIndex);
-				
-				else
-					((PDJList)dge.getComponent()).setSelectionInterval(index, startIndex);
+					if(index > listSize)
+						((PDJList)dge.getComponent()).setSelectionInterval(listSize - 1, startIndex);
+					
+					else if(index < 0)
+						((PDJList)dge.getComponent()).setSelectionInterval(0, startIndex);
+					
+					else
+						((PDJList)dge.getComponent()).setSelectionInterval(index, startIndex);
+				}
 			}
 		}
 	}
 	
-	private class MyMouseListener extends MouseAdapter
+	class MyMouseListener extends MouseAdapter
 	{
 		
 		public void mouseClicked(MouseEvent e)
@@ -245,3 +246,4 @@ public class PDJList extends JList
 		
 	}	
 }
+
