@@ -1,4 +1,0 @@
-Tracks editieren
-Serialisierbar
-
-CVS mit Sam Testen
