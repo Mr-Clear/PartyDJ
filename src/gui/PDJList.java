@@ -20,6 +20,8 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import basics.Controller;
 import lists.EditableListModel;
 import common.ListException;
@@ -91,7 +93,7 @@ public class PDJList extends JList
 			{
 				try
 				{
-					Controller.instance.player.start(((Track)((PDJList)evt.getSource()).getSelectedValue()));
+					Controller.instance.player.start(((Track)((PDJList)evt.getSource()).getSelectedValues()[0]));
 				}
 				catch (PlayerException e)
 				{
@@ -205,6 +207,8 @@ public class PDJList extends JList
 					}
 				}
 			}
+			
+			
 		}
 		
 		public void mouseReleased(MouseEvent e)
@@ -228,4 +232,16 @@ public class PDJList extends JList
 		}
 		
 	}
+	
+	/*private class SelectionListener implements ListSelectionListener
+	{
+
+		public void valueChanged(ListSelectionEvent lse)
+		{
+			System.out.println("ListSelectionEvent");
+			focusedTrack = (Track)((PDJList)lse.getSource()).getSelectedValues()[0];
+			
+		}
+		
+	}*/
 }
