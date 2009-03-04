@@ -193,13 +193,13 @@ public class EditTrackWindow extends JDialog
 		btnSize.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0)
 			{
-				try
-				{
+				File file = new File(myTrack.path);
+				if(file.exists())
 					size = new File(myTrack.path).length();
-				}
-				catch(Exception e)
+				else
 				{
-					e.printStackTrace();
+					size = 0;
+					cmbProblem.setSelectedIndex(Track.Problem.problemToArrayIndex(Track.Problem.FILE_NOT_FOUND));
 				}
 				txtSize.setText(common.Functions.formatSize(size, 4, true));
 			}});
