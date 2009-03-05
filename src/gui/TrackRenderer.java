@@ -20,7 +20,7 @@ public class TrackRenderer implements ListCellRenderer
 			return new JLabel("null"); 
 		if(!(value instanceof Track))
 			return new JLabel("no Track: " + value); 
-		return new ListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+		return new ListCellRendererComponent(list, (Track)value, index, isSelected, cellHasFocus);
 	}
 
 	private class ListCellRendererComponent extends JPanel
@@ -30,10 +30,8 @@ public class TrackRenderer implements ListCellRenderer
 		private JLabel titel = new JLabel();
 		private JLabel duration = new JLabel();
 		
-		public ListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
+		public ListCellRendererComponent(JList list, Track track, int index, boolean isSelected, boolean cellHasFocus)
 		{
-			Track track = (Track)value;
-				
 			titel.setOpaque(true);
 			duration.setOpaque(true);
 			
@@ -84,6 +82,9 @@ public class TrackRenderer implements ListCellRenderer
 			
 			if(list.getFixedCellHeight() == -1)
 				list.setFixedCellHeight(this.getPreferredSize().height);
+			
+			/*if(Controller.instance.isLoadFinished() == true)
+				System.out.println(track.name);*/
 		}
 	}
 }

@@ -21,6 +21,8 @@ public class Controller
 	private final HashSet<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
 	private Track currentTrack;
 	private EditableListModel playList;
+	
+	private boolean loadFinished = false;
 
 	JFrame window;
 	
@@ -71,6 +73,7 @@ public class Controller
 		splash.setInfo("PartyDJ bereit :)");
 		data.writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
 		splash.close();
+		loadFinished = true;
 	}
 	
 	public void addPlayStateListener(PlayStateListener listener)
@@ -97,6 +100,12 @@ public class Controller
 		return playList;
 	}
 	
+	/** Gibt zurück ob der PartyDJ vollständig geladen ist. */
+	public boolean isLoadFinished()
+	{
+		return loadFinished;
+	}
+
 	public void closePartyDJ()
 	{
 		try

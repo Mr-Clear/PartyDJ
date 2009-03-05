@@ -1,6 +1,6 @@
 package common;
 
-public class Track
+public class Track implements Comparable<Track>
 {
 	public Track(int index, String path, String name, double duration, long size, Problem problem, String info)
 	{
@@ -31,6 +31,14 @@ public class Track
 	public String toString()
 	{
 		return name;
+	}
+	
+
+	public int compareTo(Track o)
+	{
+		if(o == null)
+			throw new NullPointerException();
+		return path.compareTo(((Track)o).path);
 	}
 	
 	/**Stellt ein Problem mit einem Track dar.

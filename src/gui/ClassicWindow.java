@@ -9,13 +9,15 @@ import common.SettingException;
 import data.IData;
 import basics.Controller;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
-import lists.EmptyListModel;
+import lists.SearchListModel;
 
 /**
  * Grafische Benutzeroberfläche für Party DJ.
@@ -68,7 +70,8 @@ public class ClassicWindow extends JFrame
 		con.weighty = 1.0;
 		add(MainPart(), con);
 		
-
+		manageSize();
+		
 		setVisible(true);
 	}
 	
@@ -150,8 +153,6 @@ public class ClassicWindow extends JFrame
 
 		c.gridy = 1;
 		mainPart.add(Search(), c);
-		
-		manageSize();
 		
 		return mainPart;
 	}
@@ -360,7 +361,8 @@ public class ClassicWindow extends JFrame
 	 */
 	public Component Search()
 	{
-		JTextField textField = new JTextField();
+		final JTextField textField = new JTextField();					// final damit die innere Klasse
+		final PDJList searchList = new PDJList(new SearchListModel());	// darauf zugreifen kann.
 		JPanel panel = new JPanel(new GridBagLayout());
 		JLabel label = new JLabel("Suche");
 		
@@ -376,6 +378,9 @@ public class ClassicWindow extends JFrame
 		textField.setBackground(Color.black);
 		textField.setForeground(Color.green);
 		
+		searchList.setForeground(new Color(0, 255, 0));
+		searchList.setBackground(Color.black);
+		
 		c.weightx = 0.0;
 		c.weighty = 0.0;
 		panel.add(label, c);
@@ -383,12 +388,30 @@ public class ClassicWindow extends JFrame
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		c.gridy = 2;
-		panel.add(List("Ergebnisse", new EmptyListModel(), ListDropMode.NONE), c);
+		panel.add(searchList, c);
 		
 		c.weighty = 0.0;
 		c.ipady = 8;
 		c.gridy = 1;
 		panel.add(textField, c);
+		
+		textField.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent arg0)
+			{
+				String text = textField.getText();
+				if(text != null && !text.equals(""))
+				{
+					try
+					{
+						((SearchListModel)searchList.getListModel()).search(text);
+					}
+					catch (ListException e)
+					{
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Suche fehlgeschlagen.\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+			}});
 		
 		return panel;
 	}

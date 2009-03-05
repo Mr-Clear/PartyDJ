@@ -177,7 +177,9 @@ public class DerbyDB implements IData
 	{
 		synchronized(conn)
 		{
-			return queryInt(queryRS(SQL, parameters));
+			int ret = queryInt(queryRS(SQL, parameters));
+			conn.commit();
+			return ret;
 		}
 	}
 
@@ -193,7 +195,9 @@ public class DerbyDB implements IData
 	{
 		synchronized(conn)
 		{
-			return queryString(queryRS(SQL, parameters));
+			String ret = queryString(queryRS(SQL, parameters));
+			conn.commit();
+			return ret;
 		}
 	}
 	
@@ -226,6 +230,7 @@ public class DerbyDB implements IData
 																rs.getString("INFO")));
 					}					
 					rs.close();
+					conn.commit();
 				}
 				catch (SQLException e)
 				{
@@ -277,7 +282,20 @@ public class DerbyDB implements IData
 				PreparedStatement ps = conn.prepareStatement(statement);
 				
 				if(searchString != null)
+				{
+					searchString = makeSearchString(searchString.replace("*", "%"));
+					if(searchString.charAt(0) == '^')
+						searchString = searchString.substring(1);
+					else
+						searchString = "%" + searchString;
+					
+					if(searchString.charAt(searchString.length() - 1) == '$')
+						searchString = searchString.substring(0, searchString.length() - 1);
+					else
+						searchString = searchString + "%";
+					
 					ps.setString(1, searchString);
+				}
 								
 				ArrayList<Track> list = new ArrayList<Track>();
 				
@@ -288,6 +306,7 @@ public class DerbyDB implements IData
 					while(rs.next())
 						list.add(masterList.get(rs.getInt(1)));
 					rs.close();
+					conn.commit();
 				}
 
 				return list;
@@ -892,7 +911,10 @@ public class DerbyDB implements IData
 	{
 		try
 		{
-			conn.close();
+			synchronized(conn)
+			{
+				conn.close();
+			}
 		}
 		catch (SQLException e)
 		{

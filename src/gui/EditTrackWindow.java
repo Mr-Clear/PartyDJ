@@ -101,7 +101,7 @@ public class EditTrackWindow extends JDialog
 		add(lblProblem, c);
 		
 		cmbProblem = new JComboBox(Track.Problem.getStringArray());
-		cmbProblem.setSelectedItem(Track.Problem.problemToArrayIndex(track.problem));
+		cmbProblem.setSelectedIndex(Track.Problem.problemToArrayIndex(track.problem));
 		c = new GridBagConstraints();
 		c.insets = insets;
 		c.gridx = 1;
@@ -306,7 +306,7 @@ public class EditTrackWindow extends JDialog
 				myTrack.info = txtarInfo.getText();
 				change = Track.TrackElement.INFO;
 			}
-
+			
 			if(changeCount == 1)
 			{
 				try

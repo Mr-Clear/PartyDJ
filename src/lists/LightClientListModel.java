@@ -1,60 +1,25 @@
 package lists;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import basics.Controller;
 import common.*;
-import data.MasterListListener;
 
-public class LightClientListModel implements EditableListModel, MasterListListener, PlayStateListener
+public class LightClientListModel extends BasicListModel implements EditableListModel
 {
-	private final List<Track> list;
 	private final Map<Integer, Track> masterList = Controller.instance.listProvider.masterList;
-	private final Set<ListDataListener> dataListener = new HashSet<ListDataListener>();
 	
 	public LightClientListModel()
 	{
-		assert Controller.instance != null : "Controller nicht geladen!";
-		list = new ArrayList<Track>();
-		initialise();
+		super(new ArrayList<Track>());
 	}
 	
-	protected LightClientListModel(List<Track> list)
+	public LightClientListModel(List<Track> list)
 	{
-		assert Controller.instance != null : "Controller nicht geladen!";
-		this.list = list;
-		initialise();
-	}
-	
-	private void initialise()
-	{
-		Controller.instance.addPlayStateListener(this);
-		Controller.instance.data.addMasterListListener(this);
-	}
-	
-	public int getSize()
-	{
-		return list.size();
-	}
-	
-	public Track getElementAt(int index)
-	{
-		return list.get(index);
-	}
-
-	public void addListDataListener(ListDataListener listener)
-	{
-		dataListener.add(listener);
-	}
-	
-	public void removeListDataListener(ListDataListener listener)
-	{
-		dataListener.remove(listener);
+		super(list);
 	}
 	
 	public void add(Track track) throws ListException
@@ -121,24 +86,9 @@ public class LightClientListModel implements EditableListModel, MasterListListen
 			remove(toRemove);
 		}
 	}
-
+	
 	public void trackAdded(Track track)	{} // Mir wurscht ;)
-
-	public void trackChanged(Track track)
-	{
-		synchronized(list)
-		{
-			for(int i = 0; i < list.size(); i++)
-			{
-				if(list.get(i) == track)
-				{
-					for(ListDataListener listener : dataListener)
-						listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, i, i));
-				}
-			}
-		}		
-	}
-
+	
 	public void trackDeleted(Track track)
 	{
 		synchronized(list)
@@ -155,26 +105,11 @@ public class LightClientListModel implements EditableListModel, MasterListListen
 					}
 					catch (ListException e)
 					{
-						//TODO
+						System.err.println("ListException in LightClientListModel.trackDeleted.");
 						e.printStackTrace();
 					}
 				}
 			}
 		}	
-	}
-
-	public void currentTrackChanged(Track playedLast, Track playingCurrent)
-	{
-		synchronized(list)
-		{
-			for(int i = 0; i < list.size(); i++)
-			{
-				if((playedLast != null && list.get(i) == playedLast) || (playingCurrent != null && list.get(i) == playingCurrent))
-				{
-					for(ListDataListener listener : dataListener)
-						listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, i, i));
-				}
-			}
-		}
 	}
 }
