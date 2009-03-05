@@ -557,7 +557,10 @@ public class DerbyDB implements IData
 		{
 			synchronized(conn)
 			{
-				executeUpdate("DELETE FROM FILES WHERE INDEX = ?", Integer.toString(track.index));
+				PreparedStatement ps = conn.prepareStatement("DELETE FROM FILES WHERE INDEX = ?");
+				ps.setString(1, Integer.toString(track.index));
+				ps.executeUpdate();
+				conn.commit();
 				
 				if(masterList != null)
 				{

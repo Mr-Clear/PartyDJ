@@ -1,3 +1,10 @@
-Serialisierbar....
-Track-Info auslesen
-Listen optimieren..
+!! Tracks beim löschen auch aus Listen löschen
+!! Wegen den vielen conn.commit DerbyDB nochmal durchgenen, damit conn.rollback zuverlässig funktioniert.
+   evtl. autoCommit
+Serialisierbar.....
+Track-Info auslesen.
+Listen optimieren...
+Sam muss ClassicWindow checken
+Andere GUI-APIs anschauen
+PopupMenu fertig machen
+CloseListener

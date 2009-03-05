@@ -401,14 +401,21 @@ public class ClassicWindow extends JFrame
 				String text = textField.getText();
 				if(text != null && !text.equals(""))
 				{
+					Color bgColor = textField.getBackground();
 					try
 					{
+						textField.setBackground(Color.GRAY);
+						//TODO textField neu zeichnen
 						((SearchListModel)searchList.getListModel()).search(text);
 					}
 					catch (ListException e)
 					{
 						e.printStackTrace();
 						JOptionPane.showMessageDialog(null, "Suche fehlgeschlagen.\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+					}
+					finally
+					{
+						textField.setBackground(bgColor);
 					}
 				}
 			}});

@@ -4,7 +4,6 @@ import gui.DnD.DragDropHandler;
 import gui.DnD.DragEvent;
 import gui.DnD.ListDropMode;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,8 +12,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DropMode;
 import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -219,43 +216,17 @@ public class PDJList extends JList
 					
 					if(list.getSelectedValue() != null)
 					{
-						JPopupMenu popup = new JPopupMenu();
-						JMenuItem newItem = new JMenuItem(list.getSelectedValue().toString());
-						newItem.setEnabled(false);
-						popup.add(newItem);
-						popup.addSeparator();
-						newItem = new JMenuItem("Bearbeiten...");
-						newItem.addActionListener(new EditListener((Track)list.getSelectedValue()));
-						popup.add(newItem);
-		
-						popup.show(list, e.getX(), e.getY());
+						//TODO Mehrfachauswahl
+						PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
 					}
 				}
 			}
-			
-			
 		}
 		
 		public void mouseReleased(MouseEvent e)
 		{
 			count = 0;
-		}
-		
-		
-		
-		private class EditListener implements ActionListener
-		{
-			private Track item;
-			EditListener(Track item)
-			{
-				this.item = item;
-			}
-			public void actionPerformed(ActionEvent e)
-			{
-					new EditTrackWindow(item);			
-			}				
-		}
-		
+		}		
 	}	
 }
 

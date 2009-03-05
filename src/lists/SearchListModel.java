@@ -41,26 +41,21 @@ public class SearchListModel extends BasicListModel
 
 	public void trackAdded(Track track)
 	{
-		try
+		if(searchString != null && searchString.length() > 0)
 		{
-			search(searchString);
-		}
-		catch (ListException e)
-		{
-			System.err.println("ListException in SearchListModel.trackAdded.");
-			e.printStackTrace();
+			try
+			{
+				search(searchString);
+			}
+			catch (ListException e)
+			{
+				System.err.println("ListException in SearchListModel.trackAdded.");
+				e.printStackTrace();
+			}
 		}
 	}
 	public void trackDeleted(Track track)
 	{
-		try
-		{
-			search(searchString);
-		}
-		catch (ListException e)
-		{
-			System.err.println("ListException in SearchListModel.trackDeleted.");
-			e.printStackTrace();
-		}
+		trackAdded(track);
 	}
 }
