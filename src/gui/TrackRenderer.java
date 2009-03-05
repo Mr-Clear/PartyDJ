@@ -3,7 +3,9 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -32,6 +34,9 @@ public class TrackRenderer implements ListCellRenderer
 		
 		public ListCellRendererComponent(JList list, Track track, int index, boolean isSelected, boolean cellHasFocus)
 		{
+			this.setBackground(Color.black);
+			GridBagConstraints c = new GridBagConstraints();
+			
 			titel.setOpaque(true);
 			duration.setOpaque(true);
 			
@@ -73,12 +78,23 @@ public class TrackRenderer implements ListCellRenderer
 				setBorder(BorderFactory.createLineBorder(Color.BLUE));
 			}
 			
-			titel.setPreferredSize(new Dimension(list.getSize().width - duration.getPreferredSize().width, titel.getMaximumSize().height));
+			
+			//titel.setPreferredSize(new Dimension(list.getSize().width - duration.getPreferredSize().width, titel.getMaximumSize().height));
 
-			setLayout(new BorderLayout());
-			add(titel, BorderLayout.CENTER);
+			
+			setLayout(new GridBagLayout());
+			
+			c.fill = c.BOTH;
+			c.weightx = 1.0;
+			
+			add(titel, c);
+			
 			if(list.getSize().width > duration.getPreferredSize().width * 4)
-				add(duration, BorderLayout.EAST);
+			{
+				c.weightx = 0.0;
+				add(duration, c);
+			}
+				
 			
 			if(list.getFixedCellHeight() == -1)
 				list.setFixedCellHeight(this.getPreferredSize().height);

@@ -123,7 +123,7 @@ public class ClassicWindow extends JFrame
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		
-		c.anchor = GridBagConstraints.WEST;
+		//c.anchor = GridBagConstraints.WEST;
 		mainPart.setBackground(Color.darkGray);
 
 		try
@@ -137,8 +137,16 @@ public class ClassicWindow extends JFrame
 		}
 		
 		c.gridy = 1;
-		mainPart.add(List("Playlist", new lists.LightClientListModel(), ListDropMode.COPY_OR_MOVE), c);
-
+		try
+		{
+			mainPart.add(List("Playlist", basics.Controller.instance.listProvider.getDbList("Test"), ListDropMode.COPY_OR_MOVE), c);
+		}
+		catch (ListException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		c.gridx = 1;
 		c.gridy = 0;
 		try
@@ -328,8 +336,8 @@ public class ClassicWindow extends JFrame
 		
 		
 		scrollPane.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
-		scrollPane.setVisible(true);
-		list.setVisible(true);
+		//scrollPane.setVisible(true);
+		//list.setVisible(true);
 		list.setForeground(new Color(0, 255, 0));
 		panel.setBackground(Color.darkGray);
 		label.setBackground(Color.darkGray);
@@ -341,8 +349,7 @@ public class ClassicWindow extends JFrame
 		c.weightx = 0.0;
 		c.weighty = 0.0;
 		c.fill = GridBagConstraints.BOTH;
-		c.anchor = GridBagConstraints.WEST;
-		
+		//c.anchor = GridBagConstraints.WEST;
 		panel.add(label, c);
 		
 		c.ipadx = super.getSize().width;
@@ -363,11 +370,12 @@ public class ClassicWindow extends JFrame
 	{
 		final JTextField textField = new JTextField();					// final damit die innere Klasse
 		final PDJList searchList = new PDJList(new SearchListModel());	// darauf zugreifen kann.
+		JScrollPane scrollPane = new JScrollPane(searchList);
 		JPanel panel = new JPanel(new GridBagLayout());
 		JLabel label = new JLabel("Suche");
 		
 		GridBagConstraints c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.WEST;
+		//c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(8, 0, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
 		textField.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
@@ -383,12 +391,13 @@ public class ClassicWindow extends JFrame
 		
 		c.weightx = 0.0;
 		c.weighty = 0.0;
+		c.fill = GridBagConstraints.BOTH;
 		panel.add(label, c);
 		
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		c.gridy = 2;
-		panel.add(searchList, c);
+		panel.add(scrollPane, c);
 		
 		c.weighty = 0.0;
 		c.ipady = 8;
@@ -431,15 +440,22 @@ public class ClassicWindow extends JFrame
 	public Component Slider(String title)
 	{
 		JLabel label = new JLabel(title);
-		JSlider slider = new JSlider(0, 100);
+		//JSlider slider = new JSlider(0, 100);
 		JPanel panel = new JPanel(new GridBagLayout());
 		
 		panel.setBackground(Color.darkGray);
 		label.setBackground(Color.darkGray);
 		label.setForeground(Color.green);
-		slider.setBackground(Color.darkGray);
+		//slider.setBackground(Color.darkGray);
 		label.setFont(new Font(label.getFont().getName(), Font.BOLD, 16)); 		
 		GridBagConstraints c = new GridBagConstraints();
+		
+		//-------------JProgessBar
+		final IPlayer player = basics.Controller.instance.player;
+		JProgressBar progressBar = new JProgressBar(0, (int)(player.getDuration()*100));
+		
+		//while...player.getPlayState()
+		progressBar.setValue((int)(player.getPosition()*100));
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(0, 0, 0, 0);
@@ -452,7 +468,9 @@ public class ClassicWindow extends JFrame
 		panel.add(label, c);
 		
 		c.gridy = 0;
-		panel.add(slider, c);
+		panel.add(progressBar, c);
+		
+		
 		
 		return panel;
 	}

@@ -3,6 +3,7 @@ package gui;
 import gui.DnD.DragDropHandler;
 import gui.DnD.DragEvent;
 import gui.DnD.ListDropMode;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -21,7 +22,7 @@ import basics.Controller;
 import lists.EditableListModel;
 import common.ListException;
 import common.Track;
-//Servus
+
 public class PDJList extends JList
 {
 	private static final long serialVersionUID = -8653111853374564564L;
@@ -103,7 +104,6 @@ public class PDJList extends JList
 			this.setDropMode(DropMode.ON);
 		
 		
-		this.setCellRenderer(new TrackRenderer());
 		this.setCellRenderer(new TrackRenderer());
 	}
 

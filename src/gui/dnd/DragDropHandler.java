@@ -221,7 +221,6 @@ public class DragDropHandler extends TransferHandler
 	protected void exportDone(JComponent component, Transferable data, int action) 
 	{
 		//Clipboard export
-		System.out.println("export");
 		StringTransfer transfer = new StringTransfer();
 		StringBuffer buffer = new StringBuffer();
 		String export = "";
