@@ -96,8 +96,7 @@ public class TrackRenderer implements ListCellRenderer
 				c.ipadx = 0;
 				c.weightx = 0.0;
 				add(duration, c);
-			}
-				
+			}	
 			
 			if(list.getFixedCellHeight() == -1)
 				list.setFixedCellHeight(this.getPreferredSize().height);
