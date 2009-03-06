@@ -130,20 +130,7 @@ public class PDJList extends JList
 		
 		
 		public void mouseDragged(MouseEvent dge)
-		{	
-			/*listSize = ((PDJList)dge.getComponent()).getModel().getSize();
-			index = dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight();
-			
-			if(count == 0)
-			{
-				if(index > listSize)
-					startIndex = listSize - 1;
-				
-				else
-					startIndex = index;
-			}*/
-				
-			
+		{
 			if(SwingUtilities.isLeftMouseButton(dge))
 			{
 				new DragEvent(dge);
@@ -242,9 +229,13 @@ public class PDJList extends JList
 					{
 						return;
 					}
-					
-					
 				}
+			}
+			
+			if(SwingUtilities.isLeftMouseButton(e))
+			{
+				if(e.getClickCount() == 2)
+					Controller.instance.player.start(((Track)((PDJList)e.getSource()).getSelectedValue()));
 			}
 		}
 		
