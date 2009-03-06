@@ -171,17 +171,15 @@ public class SimplePlayer implements IPlayer
 	
 	public double getDuration(Track track) throws PlayerException
 	{
-		Player p = getPlayer(track.path);
-		double d = p.getDuration().getSeconds();
-		p.close();
-		return d;
+		return getDuration(track.path);
 	}
 	
 	public double getDuration(String filePath) throws PlayerException
 	{
 		Player p = getPlayer(filePath);
 		double d = p.getDuration().getSeconds();
-		p.close();
+		p.stop();
+		p.deallocate();
 		return d;
 	}
 

@@ -14,29 +14,32 @@ import common.Track;
 
 public class TrackRenderer implements ListCellRenderer
 {
-	private JList list;
-	
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
-		this.list = list;
-		
 		if(value == null)
 			return new JLabel("null"); 
 		if(!(value instanceof Track))
-			return new JLabel("no Track: " + value); 
-		return new ListCellRendererComponent(list, (Track)value, index, isSelected, cellHasFocus);
+			return new JLabel("no Track: " + value);
+		
+		Track track = (Track)value;
+		
+		/*// Liest Track-Dauer automatisch ein. Deaktiviert da JList so lang mit Update braucht.
+		if(track.duration == 0 && track.problem == Track.Problem.NONE)
+			Controller.instance.pushTrackToUpdate(track); //*/
+		
+		return new TrackListCellRendererComponent(list, track, index, isSelected, cellHasFocus);
 	}
 
-	private class ListCellRendererComponent extends JPanel
+	private class TrackListCellRendererComponent extends JPanel
 	{
 		private static final long serialVersionUID = -1441760682667191892L;
 		
 		private JLabel titel = new JLabel();
 		private JLabel duration = new JLabel();
 		
-		public ListCellRendererComponent(JList list, Track track, int index, boolean isSelected, boolean cellHasFocus)
+		public TrackListCellRendererComponent(JList list, Track track, int index, boolean isSelected, boolean cellHasFocus)
 		{
-			this.setBackground(Color.black);
+			this.setBackground(list.getBackground());
 			GridBagConstraints c = new GridBagConstraints();
 			
 			titel.setOpaque(true);

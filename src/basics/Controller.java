@@ -1,5 +1,9 @@
 package basics;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import gui.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -21,6 +25,9 @@ public class Controller
 	private final HashSet<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
 	private Track currentTrack;
 	private EditableListModel playList;
+	
+	private Stack<Track> trackUpdateStack = new ArrayStack<Track>();
+	Timer trackUpdateTimer; 
 	
 	private boolean loadFinished = false;
 
@@ -66,8 +73,8 @@ public class Controller
 		player = new SimplePlayer(new PlayerListener());
 		
 		splash.setInfo("Lade Fenster");
-		window = new ClassicWindow();
-		//window = new TestWindow();
+		//window = new ClassicWindow();
+		window = new TestWindow();
 		
 		splash.setInfo("PartyDJ bereit :)");
 		data.writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
@@ -103,6 +110,17 @@ public class Controller
 	public boolean isLoadFinished()
 	{
 		return loadFinished;
+	}
+	
+	public void pushTrackToUpdate(Track track)
+	{
+		trackUpdateStack.push(track);
+		
+		if(trackUpdateTimer == null)
+		{
+			trackUpdateTimer = new Timer();
+			trackUpdateTimer.schedule(new TrackUpdateTask(trackUpdateStack), 0, 1); 
+		}
 	}
 
 	public void closePartyDJ()
@@ -194,3 +212,115 @@ public class Controller
 		}
 	}
 }
+
+class TrackUpdateTask extends TimerTask 
+{
+	final Stack<Track> trackUpdateStack;
+	final Controller controller = Controller.instance;
+	public TrackUpdateTask(Stack<Track> trackUpdateStack)
+	{
+		this.trackUpdateStack = trackUpdateStack;
+	}
+	
+	public void run() 
+	{
+		try
+		{
+			Track track = null;
+			synchronized(trackUpdateStack)
+			{
+				while(true)
+				{
+					if(trackUpdateStack.empty())
+					{
+						track = null;
+						break;
+					}
+					track = trackUpdateStack.pop();
+	
+					if(track.duration == 0 && track.problem == Track.Problem.NONE)
+					{
+						break;
+					}
+				}
+			}
+			
+			if(track == null)
+			{
+				controller.trackUpdateTimer = null;
+				this.cancel();
+			}
+			else
+			{
+				if(track.duration == 0)
+				{
+					try
+					{
+						track.duration = controller.player.getDuration(track);
+						try
+						{
+							controller.data.updateTrack(track, Track.TrackElement.DURATION);
+						}
+						catch (ListException e)
+						{}
+					}
+					catch (PlayerException e)
+					{
+						e.printStackTrace();
+						track.problem = e.problem;
+						try
+						{
+							controller.data.updateTrack(track, Track.TrackElement.PROBLEM);
+						}
+						catch (ListException e1)
+						{}
+					}
+				}
+				System.out.println("Controller updated duration: " + track.path);
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+}
+
+interface Stack<E> 
+{
+	public boolean empty();
+	public void push(E elt);
+	public E pop();
+}
+
+class ArrayStack<E> implements Stack<E> 
+{
+	private List<E> list;
+	public ArrayStack() 
+	{ 
+		list = new ArrayList<E>();
+	}
+	public boolean empty()
+	{
+		return list.size() == 0;
+	}
+	public void push(E e)
+	{
+		synchronized(list)
+		{
+			list.add(e);
+		}
+	} 
+	public E pop()
+	{
+		synchronized(list)
+		{
+			return list.remove(list.size()-1);
+		}
+	}
+	public String toString() 
+	{
+		return "stack"+list.toString();
+	}
+}
+
