@@ -18,8 +18,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import lists.SearchListModel;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 /**
@@ -35,6 +33,7 @@ public class ClassicWindow extends JFrame
 	private static final long serialVersionUID = 5672123337960808686L;
 	private Container gcp = getContentPane();
 	private IData data;
+	protected static final IPlayer player = basics.Controller.instance.player;
 	
 	public ClassicWindow()
 	{
@@ -94,7 +93,7 @@ public class ClassicWindow extends JFrame
 		c.weightx = 1.0;
 		c.weighty = 0.0;
 		c.gridx = 2;
-		control.add(Slider("Titel"), c);
+		control.add(Slider(player.getFileName()), c);
 		
 		c.weightx = 0.0;
 		c.weighty = 0.0;
@@ -168,7 +167,6 @@ public class ClassicWindow extends JFrame
 	 */
 	public JPanel Buttons()
 	{
-		final IPlayer player = basics.Controller.instance.player;
 		GridBagConstraints c = new GridBagConstraints();
 
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -215,14 +213,12 @@ public class ClassicWindow extends JFrame
 					boolean fwd = true;
 					public void mousePressed(MouseEvent me) 
 					{
-						System.out.println("MOUSE pressed");
 						fwd = true;
 						new fwdThread().start();
 					}
 						
 					public void mouseReleased(MouseEvent me) 
 					{
-						System.out.println("MOUSE released");
 						fwd = false;
 					}
 					
@@ -230,25 +226,13 @@ public class ClassicWindow extends JFrame
 					{
 						public void run()
 						{
-							System.out.println("run new thread");
 							while(fwd == true)
 							{
 								System.out.println("time +2seconds");
 								player.setPosition(player.getPosition() + 2);
-								/*try
-								{
-									player.wait(40);
-								}
-								catch (InterruptedException e)
-								{
-									e.printStackTrace();
-									break;
-								}*/
 							}
-							
 						}
 					}
-					
 				});
 		
 		bwd.addMouseListener(new MouseAdapter()
@@ -256,10 +240,8 @@ public class ClassicWindow extends JFrame
 					boolean bwd = true;
 					public void mousePressed(MouseEvent me) 
 					{
-						System.out.println("MOUSE pressed");
 						while(bwd == true)
 						{
-							System.out.println("time +2seconds");
 							player.setPosition(player.getPosition() - 2);
 						}
 							
@@ -267,7 +249,6 @@ public class ClassicWindow extends JFrame
 					
 					public void mouseReleased(MouseEvent me) 
 					{
-						System.out.println("MOUSE released");
 						bwd = false;
 					}
 				});
@@ -372,10 +353,10 @@ public class ClassicWindow extends JFrame
 		JLabel label = new JLabel("Suche");
 		
 		GridBagConstraints c = new GridBagConstraints();
-		//c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(8, 0, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
 		textField.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
+		scrollPane.setAutoscrolls(false);
 		
 		panel.setBackground(Color.darkGray);
 		label.setBackground(Color.darkGray);
@@ -448,12 +429,7 @@ public class ClassicWindow extends JFrame
 		GridBagConstraints c = new GridBagConstraints();
 		
 		//-------------JProgessBar
-		final IPlayer player = basics.Controller.instance.player;
-		JProgressBar progressBar = new JProgressBar(0, (int)(player.getDuration()*100));
-		
-		//while...player.getPlayState()
-		//TODO geht ned
-		//new Timer().schedule(new refresh(progressBar, player), 0, 5);
+		final JProgressBar progressBar = new JProgressBar(0, (int)(player.getDuration()*100));
 	
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(5, 0, 5, 0);
@@ -479,13 +455,17 @@ public class ClassicWindow extends JFrame
 	 */
 	public Component Volume()
 	{
-		JSlider volume = new JSlider(JSlider.VERTICAL, 0, 100, 0);
+		JSlider volume = new JSlider(JSlider.VERTICAL, 0, 100, player.getVolume());
 		JPanel panel = new JPanel(new GridBagLayout());
 		
 		GridBagConstraints c = new GridBagConstraints();
 		
 		panel.setBackground(Color.darkGray);
 		volume.setBackground(Color.darkGray);
+		
+		volume.setMinorTickSpacing(10);
+		volume.setMajorTickSpacing(20);
+		volume.setPaintTicks(true);
 		
 		c.fill = GridBagConstraints.BOTH;
 		c.weighty = 1.0;
@@ -494,6 +474,8 @@ public class ClassicWindow extends JFrame
 		
 		return panel;
 	}
+	
+	
 	
 	private JButton customizeButton(String iconPath)
 	{
@@ -576,22 +558,5 @@ public class ClassicWindow extends JFrame
 		}
         
 	}
-	
-	class refresh extends TimerTask
-	{
-		private JProgressBar progressBar;
-		private IPlayer player;
-		
-		refresh(JProgressBar progressBar, IPlayer player)
-		{
-			super();
-			this.player = player;
-			this.progressBar = progressBar;
-		}
-		
-		public void run()
-		{
-			progressBar.setValue((int)(player.getPosition()*100));
-		}
-	}
 }
+
