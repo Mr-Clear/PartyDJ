@@ -24,6 +24,7 @@ LISTS
     DESCRYPTION [String*128]
     SIZE [Int] 0
 
-LIST_name
-    FILES.INDEX [Int]
-    !POSITION [Int]
+LISTS_CONTENT
+    |!LIST [Int]
+    |FILES.INDEX [Int]
+    |!POSITION [Int]

@@ -13,12 +13,12 @@ public class DerbyDB implements IData
 {
 	Connection conn = null;
 	HashMap<Integer, Track> masterList;
-	final HashMap<String, String> listTables = new HashMap<String, String>();
+	final HashMap<String, Integer> listIndices = new HashMap<String, Integer>();
 	final HashMap<String, String> settings = new HashMap<String, String>();
 	final HashSet<SettingListener> settingListener = new HashSet<SettingListener>();
 	final HashSet<MasterListListener> masterListListener = new HashSet<MasterListListener>();
 	
-	public final String version = "0.1";
+	public final String version = "0.2";
 	
 	public DerbyDB(String dbName) throws OpenDbException
 	{
@@ -62,7 +62,7 @@ public class DerbyDB implements IData
 			try
 			{
 				writeSetting("DBID", String.format("%8H", new java.util.Random().nextLong()).replace(' ', '0'));
-				writeSetting("DBVersion", "0.1");
+				writeSetting("DBVersion", version);
 			}
 			catch (SettingException e1)
 			{
@@ -93,6 +93,7 @@ public class DerbyDB implements IData
 			
 			Statement s = conn.createStatement();
 			s.executeUpdate("CREATE TABLE SETTINGS (NAME VARCHAR(32) NOT NULL, VALUE VARCHAR(256), PRIMARY KEY (NAME))");
+			
 			s.executeUpdate("CREATE TABLE FILES (" +
 					"INDEX INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY, " +
 					"PATH VARCHAR(1024) NOT NULL, " +
@@ -104,9 +105,9 @@ public class DerbyDB implements IData
 					"INFO LONG VARCHAR, " +
 					"PRIMARY KEY (INDEX), " +
 					"UNIQUE (PATH))");
-			
 			s.executeUpdate("CREATE UNIQUE INDEX PATH ON FILES (PATH)");
 			s.executeUpdate("CREATE INDEX SEARCHNAME ON FILES (SEARCHNAME)");
+			
 			s.executeUpdate("CREATE TABLE LISTS " +
 					"(INDEX INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY, " +
 					"NAME VARCHAR(32) NOT NULL, " +
@@ -114,6 +115,10 @@ public class DerbyDB implements IData
 					"SIZE INTEGER DEFAULT 0, " +
 					"PRIMARY KEY (INDEX), " +
 					"UNIQUE (NAME))");
+			
+			s.executeUpdate("CREATE TABLE LISTS_CONTENT (LIST INTEGER NOT NULL, INDEX INTEGER NOT NULL, POSITION INTEGER NOT NULL)");
+			s.executeUpdate("CREATE INDEX LIST ON LISTS_CONTENT (LIST)");
+			s.executeUpdate("CREATE UNIQUE INDEX POSITION ON LISTS_CONTENT (POSITION)");
 			
 			s.close();
 			conn.commit();
@@ -130,7 +135,7 @@ public class DerbyDB implements IData
 				}
 				catch (SQLException e1)
 				{
-					throw new OpenDbException(e);
+					throw new OpenDbException("Rollback fehlgeschlagen!", e);
 				}
 			}
 			throw new OpenDbException(e.getNextException().getMessage(), e);
@@ -150,7 +155,6 @@ public class DerbyDB implements IData
 		synchronized(conn)
 		{
 			int ret = prepareStatement(SQL, parameters).executeUpdate();
-			conn.commit();			
 			return ret;
 		}
 	}
@@ -162,7 +166,6 @@ public class DerbyDB implements IData
 			PreparedStatement ps = conn.prepareStatement(SQL);
 			ps.setLong(1, parameter);
 			int ret = ps.executeUpdate();
-			conn.commit();			
 			return ret;
 		}
 	}
@@ -178,7 +181,6 @@ public class DerbyDB implements IData
 		synchronized(conn)
 		{
 			int ret = queryInt(queryRS(SQL, parameters));
-			conn.commit();
 			return ret;
 		}
 	}
@@ -196,7 +198,6 @@ public class DerbyDB implements IData
 		synchronized(conn)
 		{
 			String ret = queryString(queryRS(SQL, parameters));
-			conn.commit();
 			return ret;
 		}
 	}
@@ -245,133 +246,130 @@ public class DerbyDB implements IData
 	{
 		if(searchString != null)
 			searchString = makeSearchString(searchString);
-		String statement = null;
+		
 		try
 		{
-			if(listName == null)	// Inhalt aus MasterList
+			synchronized(conn)
 			{
-				if(searchString == null)
-					statement = "SELECT INDEX FROM FILES";
-				else
-					statement = "SELECT INDEX FROM FILES WHERE SEARCHNAME LIKE ?";
-									
-				switch(order)
+				PreparedStatement ps;
+				if(listName == null)	// Inhalt aus MasterList
 				{
-				case NONE:
-					break;
-				case MASTERLISTINDEX:
-					statement += " ORDER BY INDEX";
-					break;
-				case NAME:
-				case DEFAULT:
-					statement += " ORDER BY SEARCHNAME";
-					break;
-				case PATH:
-					statement += " ORDER BY PATH";
-					break;
-				case DURATION:
-					statement += " ORDER BY DURATION";
-					break;
-				case SIZE:
-					statement += " ORDER BY SIZE";
-					break;
-				case POSITION:
-					throw new ListException("SortOrder.POSITION wird von der Hauptliste nicht unterstützt.");
-				}
-				
-				PreparedStatement ps = conn.prepareStatement(statement);
-				
-				if(searchString != null)
-				{
-					searchString = makeSearchString(searchString.replace("*", "%"));
-					if(searchString.charAt(0) == '^')
-						searchString = searchString.substring(1);
-					else
-						searchString = "%" + searchString;
-					
-					if(searchString.charAt(searchString.length() - 1) == '$')
-						searchString = searchString.substring(0, searchString.length() - 1);
-					else
-						searchString = searchString + "%";
-					
-					ps.setString(1, searchString);
-				}
-								
-				ArrayList<Track> list = new ArrayList<Track>();
-				
-				synchronized(conn)
-				{
-					ResultSet rs = ps.executeQuery();
-
-					while(rs.next())
-						list.add(masterList.get(rs.getInt(1)));
-					rs.close();
-					conn.commit();
-				}
-
-				return list;
-			}
-			else					// Inhalt aus ClientList
-			{
-		
-
-				String listTable = getListTable(listName);
-				// Testen ob Liste existiert
-				if(listTable == null)
-				{
-					// Wenn nicht, Liste erstellen
-					addList(listName);
-					return new ArrayList<Track>();
-				}
-				else
-				{
+	
+					String statement;
 					if(searchString == null)
-						statement = "SELECT INDEX FROM " + listTable;
+						statement = "SELECT INDEX FROM FILES";
 					else
-						statement = "SELECT INDEX FROM FILES, " + listTable + " WHERE FILES.INDEX = L.INDEX AND FILES.SEARCHNAME LIKE ?";
+						statement = "SELECT INDEX FROM FILES WHERE SEARCHNAME LIKE ?";
 										
 					switch(order)
 					{
 					case NONE:
 						break;
-					case DEFAULT:
-					case POSITION:
-						statement += " ORDER BY " + listTable + ".POSITION";
-						break;
 					case MASTERLISTINDEX:
-						statement += " ORDER BY FILES.INDEX";
+						statement += " ORDER BY INDEX";
 						break;
 					case NAME:
-						statement += " ORDER BY FILES.SEARCHNAME";
+					case DEFAULT:
+						statement += " ORDER BY SEARCHNAME";
 						break;
 					case PATH:
-						statement += " ORDER BY FILES.PATH";
+						statement += " ORDER BY PATH";
 						break;
 					case DURATION:
-						statement += " ORDER BY FILES.DURATION";
+						statement += " ORDER BY DURATION";
 						break;
 					case SIZE:
-						statement += " ORDER BY FILES.SIZE";
+						statement += " ORDER BY SIZE";
 						break;
+					case POSITION:
+						throw new ListException("SortOrder.POSITION wird von der Hauptliste nicht unterstützt.");
 					}
 					
-					PreparedStatement ps = conn.prepareStatement(statement);
+					ps = conn.prepareStatement(statement);
 					
 					if(searchString != null)
-						ps.setString(1, searchString);
-									
-					ArrayList<Track> list = new ArrayList<Track>();
-					
-					synchronized(conn)
 					{
-						ResultSet rs = ps.executeQuery();
-		
-						while(rs.next())
-							list.add(masterList.get(rs.getInt(1)));
+						searchString = makeSearchString(searchString.replace("*", "%"));
+						if(searchString.charAt(0) == '^')
+							searchString = searchString.substring(1);
+						else
+							searchString = "%" + searchString;
+						
+						if(searchString.charAt(searchString.length() - 1) == '$')
+							searchString = searchString.substring(0, searchString.length() - 1);
+						else
+							searchString = searchString + "%";
+						
+						ps.setString(1, searchString);
 					}
-					
-					return list;
 				}
+				else					// Inhalt aus ClientList
+				{
+					int listIndex = getListIndex(listName);
+					// Testen ob Liste existiert
+					if(listIndex == -1)
+					{
+						// Wenn nicht, Liste erstellen
+						addList(listName);
+						return new ArrayList<Track>();
+					}
+					else
+					{
+	
+						String statement;
+						if(searchString == null)
+							statement = "SELECT INDEX FROM LISTS_CONTENT WHERE LIST = ?";
+						else
+							statement = "SELECT INDEX FROM FILES, LISTS_CONTENT WHERE LIST = ? AND FILES.INDEX = LISTS_CONTENT.INDEX AND FILES.SEARCHNAME LIKE ?";
+											
+						switch(order)
+						{
+						case NONE:
+							break;
+						case DEFAULT:
+						case POSITION:
+							statement += " ORDER BY POSITION";
+							break;
+						case MASTERLISTINDEX:
+							statement += " ORDER BY FILES.INDEX";
+							break;
+						case NAME:
+							statement += " ORDER BY SEARCHNAME";
+							break;
+						case PATH:
+							statement += " ORDER BY PATH";
+							break;
+						case DURATION:
+							statement += " ORDER BY DURATION";
+							break;
+						case SIZE:
+							statement += " ORDER BY SIZE";
+							break;
+						}
+						
+						ps = conn.prepareStatement(statement);
+						
+						ps.setInt(1, listIndex);
+						
+						if(searchString != null)
+							ps.setString(2, searchString);
+					}
+				}
+	
+				ArrayList<Track> list = new ArrayList<Track>();
+				
+				synchronized(conn)
+				{
+					ResultSet rs = ps.executeQuery();
+	
+					while(rs.next())
+						list.add(masterList.get(rs.getInt(1)));
+					
+					rs.close();
+					conn.commit();
+				}
+				
+				return list;
 			}
 		}
 		catch (SQLException e)
@@ -382,23 +380,21 @@ public class DerbyDB implements IData
 	
 	public int addTrack(Track track) throws ListException
 	{
-		
 		try
 		{
-			synchronized(conn)
+			int index;
+			try
 			{
-				int index;
-				try
+				index = checkIndex(track.path);
+			}
+			catch(ListException e)
+			{
+				index = -1;
+			}
+			if(index == -1)
+			{
+				synchronized(conn)
 				{
-					index = checkIndex(track.path);
-				}
-				catch(ListException e)
-				{
-					index = -1;
-				}
-				if(index == -1)
-				{
-
 					PreparedStatement ps = conn.prepareStatement("INSERT INTO FILES (PATH, SEARCHNAME, NAME, DURATION, SIZE, PROBLEM, INFO) VALUES(?, ?, ?, ?, ?, ?, ?)");
 					ps.setString(1, track.path);
 					ps.setString(2, makeSearchString(track.name));
@@ -409,24 +405,24 @@ public class DerbyDB implements IData
 					ps.setString(7, track.info);
 					ps.executeUpdate();
 					conn.commit();
-					
-					index = checkIndex(track.path);
-					track.index = index;
-					
-					if(masterList != null)
-					{
-						masterList.put(track.index, track);
-					}
-						
-					synchronized(masterListListener)
-					{
-						for(MasterListListener listener : masterListListener)
-							listener.trackAdded(track);
-					}					
 				}
-				track.index = -1;
-				return index;
+				
+				index = checkIndex(track.path);
+				track.index = index;
+				
+				if(masterList != null)
+				{
+					masterList.put(track.index, track);
+				}
+					
+				synchronized(masterListListener)
+				{
+					for(MasterListListener listener : masterListListener)
+						listener.trackAdded(track);
+				}					
 			}
+			track.index = -1;
+			return index;
 		}
 		catch (SQLException e)
 		{
@@ -461,22 +457,22 @@ public class DerbyDB implements IData
 				ps.setInt(8, track.index);
 				ps.executeUpdate();
 				conn.commit();
-				
-				if(masterList != null)
-				{
-					masterList.put(track.index, track);
-				}
-				
-				synchronized(masterListListener)
-				{
-					for(MasterListListener listener : masterListListener)
-						listener.trackChanged(track);
-				}
 			}
 			catch (SQLException e)
 			{
 				throw new ListException(e);
 			}
+		}
+		
+		if(masterList != null)
+		{
+			masterList.put(track.index, track);
+		}
+		
+		synchronized(masterListListener)
+		{
+			for(MasterListListener listener : masterListListener)
+				listener.trackChanged(track);
 		}
 	}
 	
@@ -532,22 +528,22 @@ public class DerbyDB implements IData
 				ps.setInt(lastSet, track.index);
 				ps.executeUpdate();
 				conn.commit();
-				
-				if(masterList != null)
-				{
-					masterList.put(track.index, track);
-				}
-				
-				synchronized(masterListListener)
-				{
-					for(MasterListListener listener : masterListListener)
-						listener.trackChanged(track);
-				}
 			}
 			catch (SQLException e)
 			{
 				throw new ListException(e);
 			}
+		}
+		
+		if(masterList != null)
+		{
+			masterList.put(track.index, track);
+		}
+		
+		synchronized(masterListListener)
+		{
+			for(MasterListListener listener : masterListListener)
+				listener.trackChanged(track);
 		}
 	}
 	
@@ -557,34 +553,33 @@ public class DerbyDB implements IData
 		{
 			synchronized(conn)
 			{
-				PreparedStatement ps = conn.prepareStatement("DELETE FROM FILES WHERE INDEX = ?");
-				ps.setString(1, Integer.toString(track.index));
-				ps.executeUpdate();
+				executeUpdate("DELETE FROM LISTS_CONTENT WHERE INDEX = ?", Integer.toString(track.index));
+				executeUpdate("DELETE FROM FILES WHERE INDEX = ?", Integer.toString(track.index));
 				conn.commit();
-				
-				if(masterList != null)
-				{
-					masterList.remove(track.index);
-				}
-				
-				synchronized(masterListListener)
-				{
-					for(MasterListListener listener : masterListListener)
-						listener.trackDeleted(track);
-				}
 			}
 		}
 		catch (SQLException e)
 		{
 			throw new ListException(e);
 		}
+		
+		if(masterList != null)
+		{
+			masterList.remove(track.index);
+		}
+		
+		synchronized(masterListListener)
+		{
+			for(MasterListListener listener : masterListListener)
+				listener.trackDeleted(track);
+		}
 	}
 	
-	int checkIndex(String TrackPath) throws ListException
+	int checkIndex(String trackPath) throws ListException
 	{
 		try
 		{
-			return queryInt("SELECT INDEX FROM FILES WHERE PATH = ?", TrackPath);
+			return queryInt("SELECT INDEX FROM FILES WHERE PATH = ?", trackPath);
 		}
 		catch (SQLException e)
 		{
@@ -607,25 +602,11 @@ public class DerbyDB implements IData
 		{
 			try
 			{
-				PreparedStatement ps = conn.prepareStatement("INSERT INTO LISTS (NAME) VALUES (?)");
-				ps.setString(1, listName);
-				ps.executeUpdate();
-				String listTable = getListTable(listName);
-				conn.createStatement().executeUpdate("CREATE TABLE " + listTable + " (INDEX INTEGER, POSITION INTEGER NOT NULL)");
-				conn.createStatement().executeUpdate("CREATE UNIQUE INDEX POSITION ON " + listTable + " (POSITION)");
+				executeUpdate("INSERT INTO LISTS (NAME) VALUES (?)", listName);
 				conn.commit();
 			}
 			catch (SQLException e)
 			{
-				try
-				{
-					conn.rollback();
-				}
-				catch (SQLException e1)
-				{
-					throw new ListException("Rollbakc fehlgeschlagen!", e1);
-				}
-				
 				if(e instanceof SQLIntegrityConstraintViolationException)
 					throw new ListException("Liste " + listName + " existiert bereits.", e);
 				throw new ListException(e);
@@ -633,27 +614,27 @@ public class DerbyDB implements IData
 		}
 	}
 	
-	String getListTable(String listName)
+	int getListIndex(String listName)
 	{
-		synchronized(listTables)
+		synchronized(listIndices)
 		{
 			//Wenn möglich aus temporärer Liste lesen
-			if(listTables.containsKey(listName))
+			if(listIndices.containsKey(listName))
 			{
-				return listTables.get(listName);
+				return listIndices.get(listName);
 			}
 			//Ansonsten aus Datenbank lesen
 			else
 			{
 				try
 				{
-					String listTable = "LIST_" + queryInt("SELECT INDEX FROM LISTS WHERE NAME = ?", listName);
-					listTables.put(listName, listTable);
-					return listTable;
+					int listIndex = queryInt("SELECT INDEX FROM LISTS WHERE NAME = ?", listName);
+					listIndices.put(listName, listIndex);
+					return listIndex;
 				}
 				catch (SQLException e)
 				{
-					return null;
+					return -1;
 				}
 			}
 		}
@@ -663,14 +644,19 @@ public class DerbyDB implements IData
 	{
 		try
 		{
-			String listTable = getListTable(listName);
-			PreparedStatement ps = conn.prepareStatement("DELETE FROM LISTS WHERE NAME = ?");
-			ps.setString(1, listName);
-			ps.executeUpdate();
-			executeUpdate("DROP TABLE " + listTable);	//Führt commit aus.
-			// Aus temporärer Liste löschen
-			if(listTables.containsKey(listName))
-				listTables.remove(listName);
+			synchronized(conn)
+			{
+				int listIndex = getListIndex(listName);
+				PreparedStatement ps = conn.prepareStatement("DELETE FROM LISTS WHERE NAME = ?");
+				ps.setString(1, listName);
+				ps.executeUpdate();
+				
+				ps = conn.prepareStatement("DELETE FROM LISTS_CONTENT WHERE LIST = ?");
+				ps.setInt(1, listIndex);
+				ps.executeUpdate();
+				
+				conn.commit();
+			}
 		}
 		catch (SQLException e)
 		{
@@ -684,6 +670,10 @@ public class DerbyDB implements IData
 			}
 			throw new ListException(e);
 		}
+		
+		// Aus temporärer Liste löschen
+		if(listIndices.containsKey(listName))
+			listIndices.remove(listName);
 	}
 	
 	public void writeSetting(String name, String value) throws SettingException
@@ -699,6 +689,7 @@ public class DerbyDB implements IData
 						executeUpdate("INSERT INTO SETTINGS VALUES(?, ?)", name, value);
 					else
 						executeUpdate("UPDATE SETTINGS SET VALUE = ? WHERE NAME = ?", value, name);
+					conn.commit();
 				}
 				catch (SQLException e)
 				{
@@ -740,6 +731,7 @@ public class DerbyDB implements IData
 						settings.put(name, value);
 					else						
 						value = defaultValue;
+					conn.commit();
 					return value;
 				}
 				catch (SQLException e)
@@ -762,41 +754,44 @@ public class DerbyDB implements IData
 
 	public void insertTrack(String listName, Track track) throws ListException
 	{
-		try
-		{
-			synchronized(conn)
-			{
-				String listTable = getListTable(listName);
-				int position = queryInt("SELECT SIZE FROM LISTS WHERE NAME = ?", listName);
-				PreparedStatement ps = conn.prepareStatement("INSERT INTO " + listTable + " (INDEX, POSITION) VALUES(?, ?)");
-				ps.setInt(1, track.index);
-				ps.setInt(2, position);
-				ps.executeUpdate();
-				executeUpdate("UPDATE LISTS SET SIZE = ?", Integer.toString(position + 1));  // Führt commit aus.
-			}
-		}
-		catch (SQLException e)
+		synchronized(conn)
 		{
 			try
 			{
-				conn.rollback();
+				int listIndex = getListIndex(listName);
+				int position = queryInt("SELECT SIZE FROM LISTS WHERE INDEX = ?", Integer.toString(listIndex));
+				PreparedStatement ps = conn.prepareStatement("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)");
+				ps.setInt(1, listIndex);
+				ps.setInt(2, track.index);
+				ps.setInt(3, position);
+				ps.executeUpdate();
+				executeUpdate("UPDATE LISTS SET SIZE = ?", Integer.toString(position + 1));
+				conn.commit();
+				
 			}
-			catch (SQLException e1)
+			catch (SQLException e)
 			{
-				throw new ListException("Rollback fehlgeschlagen!", e1);
+				try
+				{
+					conn.rollback();
+				}
+				catch (SQLException e1)
+				{
+					throw new ListException("Rollback fehlgeschlagen!", e1);
+				}
+				throw new ListException(e);
 			}
-			throw new ListException(e);
 		}
 	}
 	
 	public void insertTrackAt(String listName, Track track, int trackPosition) throws ListException
 	{
-		try
+		synchronized(conn)
 		{
-			synchronized(conn)
+			try
 			{
-				String listTable = getListTable(listName);
-				int size = queryInt("SELECT SIZE FROM LISTS WHERE NAME = ?", listName);
+				int listIndex = getListIndex(listName);
+				int size = queryInt("SELECT SIZE FROM LISTS WHERE INDEX = ?", Integer.toString(listIndex));
 				
 				// trackPosition korrigieren.
 				if(trackPosition < 0)
@@ -806,71 +801,81 @@ public class DerbyDB implements IData
 				
 				for(int i = size; i >= trackPosition; i--)
 				{
-					PreparedStatement ps = conn.prepareStatement("UPDATE " + listTable + " SET POSITION = ? WHERE POSITION = ?");
+					PreparedStatement ps = conn.prepareStatement("UPDATE LISTS_CONTENT SET POSITION = ? WHERE POSITION = ? AND LIST = ?");
 					ps.setInt(1, i + 1);
 					ps.setInt(2, i);
+					ps.setInt(3, listIndex);
 					ps.executeUpdate();
 				}
 				
-				PreparedStatement ps = conn.prepareStatement("INSERT INTO " + listTable + " (INDEX, POSITION) VALUES(?, ?)");
-				ps.setInt(1, track.index);
-				ps.setInt(2, trackPosition);
+				PreparedStatement ps = conn.prepareStatement("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)");
+				ps.setInt(1, listIndex);
+				ps.setInt(2, track.index);
+				ps.setInt(3, trackPosition);
 				ps.executeUpdate();
-				executeUpdate("UPDATE LISTS SET SIZE = ?", Integer.toString(size + 1));  // Führt commit aus.
+				executeUpdate("UPDATE LISTS SET SIZE = ? WHERE INDEX = ?", Integer.toString(size + 1), Integer.toString(listIndex));
+				
+				conn.commit();
 			}
-		}
-		catch (SQLException e)
-		{
-			try
+			
+			catch (SQLException e)
 			{
-				conn.rollback();
+				try
+				{
+					conn.rollback();
+				}
+				catch (SQLException e1)
+				{
+					throw new ListException("Rollback fehlgeschlagen!", e1);
+				}
+				throw new ListException(e);
 			}
-			catch (SQLException e1)
-			{
-				throw new ListException("Rollback fehlgeschlagen!", e1);
-			}
-			throw new ListException(e);
 		}
 	}
 
 	public void removeTrack(String listName, int trackPosition) throws ListException
 	{
-		try
+		synchronized(conn)
 		{
-			synchronized(conn)
+			try
 			{
-				String listTable = getListTable(listName);
+				int listIndex = getListIndex(listName);
 				
-				int size = queryInt("SELECT SIZE FROM LISTS WHERE NAME = ?", listName);
+				int size = queryInt("SELECT SIZE FROM LISTS WHERE INDEX = ?", Integer.toString(listIndex));
 				
 				// Wenn trackPosition ausserhalb der Liste, nichts löschen.
 				if(trackPosition < 0 || trackPosition >= size)
 					return;
 
-				PreparedStatement ps = conn.prepareStatement("DELETE FROM " + listTable + " WHERE POSITION = ?");
+				PreparedStatement ps = conn.prepareStatement("DELETE FROM LISTS_CONTENT WHERE POSITION = ? AND LIST = ?");
 				ps.setInt(1, trackPosition);
+				ps.setInt(2, listIndex);
 				ps.executeUpdate();
 				for(int i = trackPosition; i < size; i++)
 				{
-					ps = conn.prepareStatement("UPDATE " + listTable + " SET POSITION = ? WHERE POSITION = ?");
+					ps = conn.prepareStatement("UPDATE LISTS_CONTENT SET POSITION = ? WHERE POSITION = ? AND LIST = ?");
 					ps.setInt(1, i);
 					ps.setInt(2, i + 1);
+					ps.setInt(3, listIndex);
 					ps.executeUpdate();
 				}
-				executeUpdate("UPDATE LISTS SET SIZE = ?", Integer.toString(size - 1));  // Führt commit aus.
+				executeUpdate("UPDATE LISTS SET SIZE = ? WHERE INDEX = ?", Integer.toString(size - 1), Integer.toString(listIndex));
+				
+				conn.commit();
 			}
-		}
-		catch (SQLException e)
-		{
-			try
+
+			catch (SQLException e)
 			{
-				conn.rollback();
+				try
+				{
+					conn.rollback();
+				}
+				catch (SQLException e1)
+				{
+					throw new ListException("Rollback fehlgeschlagen!", e1);
+				}
+				throw new ListException(e);
 			}
-			catch (SQLException e1)
-			{
-				throw new ListException("Rollback fehlgeschlagen!", e1);
-			}
-			throw new ListException(e);
 		}
 	}
 	
