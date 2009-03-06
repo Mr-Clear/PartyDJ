@@ -18,7 +18,7 @@ public class DerbyDB implements IData
 	final HashSet<SettingListener> settingListener = new HashSet<SettingListener>();
 	final HashSet<MasterListListener> masterListListener = new HashSet<MasterListListener>();
 	
-	public final String version = "0.2";
+	public final String version = "0.2a";
 	
 	public DerbyDB(String dbName) throws OpenDbException
 	{
@@ -118,7 +118,7 @@ public class DerbyDB implements IData
 			
 			s.executeUpdate("CREATE TABLE LISTS_CONTENT (LIST INTEGER NOT NULL, INDEX INTEGER NOT NULL, POSITION INTEGER NOT NULL)");
 			s.executeUpdate("CREATE INDEX LIST ON LISTS_CONTENT (LIST)");
-			s.executeUpdate("CREATE UNIQUE INDEX POSITION ON LISTS_CONTENT (POSITION)");
+			s.executeUpdate("CREATE INDEX POSITION ON LISTS_CONTENT (POSITION)");
 			
 			s.close();
 			conn.commit();
