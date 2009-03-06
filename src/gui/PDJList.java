@@ -87,6 +87,7 @@ public class PDJList extends JList
             											}
             									}
 											});
+		
 		this.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "Return");
 		this.getActionMap().put("Return", new AbstractAction("Return") 
 								{
@@ -222,7 +223,7 @@ public class PDJList extends JList
 									}
 								}
 							}
-							//list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+							list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
 							PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());	
 						}
 					}

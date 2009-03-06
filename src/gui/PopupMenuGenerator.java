@@ -1,21 +1,16 @@
 package gui;
 
 import gui.DnD.DragDropHandler;
-import gui.DnD.DragEvent;
 import gui.DnD.TrackSelection;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -76,9 +71,7 @@ public class PopupMenuGenerator
 		
 		}
 		
-		newItem.setEnabled(listEditable);
-		newItem.addActionListener(listener);
-		menu.add(newItem);
+		
 		
 		newItem = new JMenuItem("Kopieren [Strg + C]");
 		newItem.setActionCommand("Copy");
@@ -168,7 +161,7 @@ class PopupMenuItemListener implements ActionListener
 		else if(command.equals("Copy"))
 		{
 			TrackTransfer transfer = new TrackTransfer();
-			transfer.setClipboardContents(list.getSelectedValues());		
+			transfer.setClipboardContents(list.getSelectedValues());
 		}
 			
 		else if(command.equals("Cut"))
@@ -176,27 +169,13 @@ class PopupMenuItemListener implements ActionListener
 			TrackTransfer transfer = new TrackTransfer();
 			transfer.setClipboardContents(list.getSelectedValues());
 			
-			if(list.getListModel() instanceof EditableListModel)
-			{
-				
-				for(int i = list.getSelectedIndices().length; i > 0; i--)
-	        	{
-	        		try
-					{
-						((EditableListModel)list.getListModel()).remove(list.getSelectedIndices()[i-1]);
-					}
-					catch (ListException e1)
-					{
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-	        	}
-				
-			}
+			new DragDropHandler().exportDone(list, new TrackSelection(list.getSelectedValues()),  javax.swing.TransferHandler.MOVE );
 		}
 		
-		else if(command.equals("Paste"));
-			//TODO Sams Job
+		else if(command.equals("Paste"))
+			new DragDropHandler().importData(list, Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null));
+		
+			
 			
 		else if(command.equals("OpenFile"))
 		{
@@ -213,8 +192,7 @@ class PopupMenuItemListener implements ActionListener
             System.out.println(file.getPath());
             // TODO Datei in Liste laden
 		}
-		else
-			;
+		else;
 	}
 }
 
@@ -288,28 +266,4 @@ class TrackTransfer implements ClipboardOwner
 	    clipboard.setContents(trackSelection, this);
 	}
 	
-	/*public Track getClipboardContents() 
-	{
-	    String result = "";
-	    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-	    Transferable contents = clipboard.getContents(null);
-	    
-	    if ((contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) 
-	    {
-	      try
-	      {
-	        result = (String)contents.getTransferData(new DataFlavor(Track.class, "Track flavor"));
-	      }
-	      
-	      catch (UnsupportedFlavorException ex)
-	      {
-	        ex.printStackTrace();
-	      }
-	      
-	      catch (IOException ex) {
-	        ex.printStackTrace();
-	      }
-	    }
-	    return result;
-	  }*/
-	}
+}

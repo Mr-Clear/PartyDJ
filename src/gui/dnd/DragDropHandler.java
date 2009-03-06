@@ -1,11 +1,7 @@
 package gui.DnD;
 
 import gui.PDJList;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
@@ -21,8 +17,7 @@ public class DragDropHandler extends TransferHandler
 	private static final long serialVersionUID = 6601023550058648978L;
 	
 	public boolean canImport(TransferHandler.TransferSupport info)
-	{	
-		System.out.println("canImport");
+	{
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 			return false;
 		
@@ -34,9 +29,81 @@ public class DragDropHandler extends TransferHandler
         return true;
 	}
 	
+	public synchronized boolean importData(PDJList list, Transferable transferable)
+	{
+		if (!transferable.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
+		{
+			System.out.println("Unsupported Flavor");
+			return false;
+		}
+		
+		Object[] data = null;
+		PDJList pdjList = list;
+		ListModel listModel = (ListModel)pdjList.getModel();
+		
+		try
+		{
+			data = (Object[])transferable.getTransferData(new DataFlavor(Track.class, "Track flavor"));
+		}
+		catch (UnsupportedFlavorException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+				
+		switch (list.getListDropMode())
+		{
+		case NONE:					break;
+		
+		case COPY:					try
+									{
+										for(int i = data.length; i > 0; i--)
+										{
+											((EditableListModel)listModel).add(list.getSelectedIndex() + 1, (Track)data[i-1]);
+										}	
+									}
+									catch (ListException e)
+									{
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									break;
+					
+		case MOVE:					System.out.println("MOVE not supported");
+									break;
+									
+		case DELETE:				break;
+									
+		case COPY_OR_MOVE:			try
+									{
+										for(int i = data.length; i > 0; i--)
+										{
+											((EditableListModel)listModel).add(list.getSelectedIndex() + 1, (Track)data[i-1]);
+										}	
+									}
+									catch (ListException e)
+									{
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									break;
+		}
+		return true;
+	}
+	
+	
+	
+	
+	
+	
 	public synchronized boolean importData(TransferHandler.TransferSupport info)
 	{
-		System.out.println("importData");
 		Object[] data = null;
 					
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
@@ -44,9 +111,7 @@ public class DragDropHandler extends TransferHandler
 			System.out.println("Unsupported Flavor");
 			return false;
 		}
-		
-
-		
+	
 		PDJList pdjList = (PDJList)info.getComponent();
 		ListModel listModel = (ListModel)pdjList.getModel();
 		
@@ -188,7 +253,7 @@ public class DragDropHandler extends TransferHandler
 		}
 		
 		if(!info.isDrop()) 
-        {	System.out.println("noDrop");
+        {
 				for(int i = data.length; i > 0; i--)
 				{
 					try
@@ -209,7 +274,6 @@ public class DragDropHandler extends TransferHandler
 	
 	public Transferable createTransferable(JComponent c)
 	{
-		System.out.println("createTransferable");
 		PDJList pdjList = (PDJList)c;
 		Object[] values = pdjList.getSelectedValues();
 
@@ -223,7 +287,6 @@ public class DragDropHandler extends TransferHandler
 	
 	public void exportDone(JComponent component, Transferable data, int action) 
 	{
-		System.out.println("exportDone");
 		//Clipboard export
 		/*StringTransfer transfer = new StringTransfer();
 		StringBuffer buffer = new StringBuffer();

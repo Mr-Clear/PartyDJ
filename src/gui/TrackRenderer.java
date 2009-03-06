@@ -80,10 +80,6 @@ public class TrackRenderer implements ListCellRenderer
 				setBorder(BorderFactory.createLineBorder(Color.BLUE));
 			}
 			
-			
-			//titel.setPreferredSize(new Dimension(list.getSize().width - duration.getPreferredSize().width, titel.getMaximumSize().height));
-
-			
 			setLayout(new GridBagLayout());
 			
 			c.ipadx = -100000;
