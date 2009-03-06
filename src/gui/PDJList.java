@@ -105,6 +105,8 @@ public class PDJList extends JList
 		
 		
 		this.setCellRenderer(new TrackRenderer());
+		this.setPrototypeCellValue("123-45-6789");
+
 	}
 
 	public void setListDropMode(ListDropMode ldMode)
