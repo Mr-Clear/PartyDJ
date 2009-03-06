@@ -44,27 +44,34 @@ public class UpdateDB
 		
 		for(int list : lists)
 		{
-			List<Integer> elementsTrack = new ArrayList<Integer>();
-			List<Integer> elementsPosition = new ArrayList<Integer>();
-			rs = s.executeQuery("SELECT INDEX, POSITION FROM LIST_" + list);
-			while(rs.next())
+			try
 			{
-				elementsTrack.add(rs.getInt(1));
-				elementsPosition.add(rs.getInt(2));
+				List<Integer> elementsTrack = new ArrayList<Integer>();
+				List<Integer> elementsPosition = new ArrayList<Integer>();
+				rs = s.executeQuery("SELECT INDEX, POSITION FROM LIST_" + list);
+				while(rs.next())
+				{
+					elementsTrack.add(rs.getInt(1));
+					elementsPosition.add(rs.getInt(2));
+				}
+				rs.close();
+				
+				for(int i = 0; i < elementsPosition.size(); i++)
+				{
+					PreparedStatement ps = data.conn.prepareStatement("INSERT INTO LISTS_CONTENT VALUES(?, ?, ?)");
+					ps.setInt(1, list);
+					ps.setInt(2, elementsTrack.get(i));
+					ps.setInt(3, elementsPosition.get(i));
+					ps.executeUpdate();
+					ps.close();
+				}
+				
+				s.executeUpdate("DROP TABLE LIST_" + list);
 			}
-			rs.close();
-			
-			for(int i = 0; i < elementsPosition.size(); i++)
+			catch (SQLException e)
 			{
-				PreparedStatement ps = data.conn.prepareStatement("INSERT INTO LISTS_CONTENT VALUES(?, ?, ?)");
-				ps.setInt(1, list);
-				ps.setInt(2, elementsTrack.get(i));
-				ps.setInt(3, elementsPosition.get(i));
-				ps.executeUpdate();
-				ps.close();
+				//Wegen einem Fehler in der alten Version kann sein, dass die Liste nicht exisiert. 
 			}
-			
-			s.executeUpdate("DROP TABLE LIST_" + list);
 		}
 		
 		data.conn.commit();
