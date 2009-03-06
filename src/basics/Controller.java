@@ -53,7 +53,6 @@ public class Controller
 		}
 		catch (OpenDbException e)
 		{
-			// TODO Debuginfo entfernen!
 			System.err.println("Keine Verbindung zur Datenbank möglich:");
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "Keine Verbindung zur Datenbank möglich!\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
@@ -110,7 +109,8 @@ public class Controller
 	{
 		try
 		{
-			data.close();
+			if(data != null)
+				data.close();
 		}
 		catch (ListException e)
 		{
