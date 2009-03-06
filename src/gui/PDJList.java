@@ -131,7 +131,7 @@ public class PDJList extends JList
 		
 		public void mouseDragged(MouseEvent dge)
 		{	
-			listSize = ((PDJList)dge.getComponent()).getModel().getSize();
+			/*listSize = ((PDJList)dge.getComponent()).getModel().getSize();
 			index = dge.getY() / ((PDJList)dge.getComponent()).getFixedCellHeight();
 			
 			if(count == 0)
@@ -141,7 +141,7 @@ public class PDJList extends JList
 				
 				else
 					startIndex = index;
-			}
+			}*/
 				
 			
 			if(SwingUtilities.isLeftMouseButton(dge))
@@ -151,45 +151,56 @@ public class PDJList extends JList
 			
 			if(SwingUtilities.isMiddleMouseButton(dge))
 			{
-				count++;
-				((PDJList)dge.getComponent()).setSelectedIndex(startIndex);
-				
-				((PDJList)dge.getComponent()).ensureIndexIsVisible(((PDJList)dge.getComponent()).getSelectedIndices()[(((PDJList)dge.getComponent()).getSelectedIndices().length -1)]);
-				
 				if(dge.getComponent() instanceof PDJList)
 				{
-					if(((PDJList)dge.getComponent()).getLastVisibleIndex() <= index)
-					{
-						((PDJList)dge.getComponent()).ensureIndexIsVisible(index + 1);
-						((PDJList)dge.getComponent()).setSelectionInterval(index + 1, startIndex);
-					}
+					PDJList pdjList = ((PDJList)dge.getComponent());
+					listSize = pdjList.getModel().getSize();
+					index = dge.getY() / pdjList.getFixedCellHeight();
 					
-					if(((PDJList)dge.getComponent()).getFirstVisibleIndex() <= startIndex)
+					if(index >= 0)
 					{
-						if(index > 0)
+						if(count == 0)
 						{
-							((PDJList)dge.getComponent()).ensureIndexIsVisible(index - 1);
-							((PDJList)dge.getComponent()).setSelectionInterval(index, startIndex - 1);
-						}
+							if(index > listSize)
+								startIndex = listSize - 1;
 							
-						else
-						{
-							((PDJList)dge.getComponent()).ensureIndexIsVisible(index);
-							((PDJList)dge.getComponent()).setSelectionInterval(0, startIndex);
+							else
+								startIndex = index;
 						}
-							
 						
+						pdjList.ensureIndexIsVisible(index);
+						
+						if(index == startIndex)
+							pdjList.setSelectedIndex(index);
+						
+						if(startIndex < index)
+						{
+							pdjList.setSelectionInterval(index, startIndex);
+							pdjList.ensureIndexIsVisible(index + 2);
+						}
+						
+						if(index < startIndex)
+						{
+							pdjList.setSelectionInterval(startIndex, index);
+							pdjList.ensureIndexIsVisible(index - 2);
+						}
 					}
-				
-					if(index > listSize)
-						((PDJList)dge.getComponent()).setSelectionInterval(listSize - 1, startIndex);
 					
-					else if(index < 0)
-						((PDJList)dge.getComponent()).setSelectionInterval(0, startIndex);
-					
-					else
-						((PDJList)dge.getComponent()).setSelectionInterval(index, startIndex);
-				}
+					if(index < 0)
+					{
+						if(count == 0)
+						{
+							startIndex = 0;
+						}
+						
+						if(startIndex > index)
+						{
+							pdjList.setSelectionInterval(startIndex, 0);
+							pdjList.ensureIndexIsVisible(0);
+						}
+					}
+				}	
+				count++;
 			}
 		}
 	}
