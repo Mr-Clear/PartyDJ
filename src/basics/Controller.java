@@ -73,8 +73,8 @@ public class Controller
 		player = new SimplePlayer(new PlayerListener());
 		
 		splash.setInfo("Lade Fenster");
-		//window = new ClassicWindow();
-		window = new TestWindow();
+		window = new ClassicWindow();
+		//window = new TestWindow();
 		
 		splash.setInfo("PartyDJ bereit :)");
 		data.writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
