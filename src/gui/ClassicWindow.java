@@ -5,7 +5,9 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import common.IPlayer;
 import common.ListException;
+import common.PlayStateListener;
 import common.SettingException;
+import common.Track;
 import data.IData;
 import basics.Controller;
 import java.awt.*;
@@ -33,6 +35,8 @@ public class ClassicWindow extends JFrame
 	private static final long serialVersionUID = 5672123337960808686L;
 	private Container gcp = getContentPane();
 	private IData data;
+	private Timer refreshTimer;
+	private JProgressBar progressBar ;
 	protected static final IPlayer player = basics.Controller.instance.player;
 	
 	public ClassicWindow()
@@ -148,6 +152,7 @@ public class ClassicWindow extends JFrame
 		try
 		{
 			mainPart.add(List("Wunschliste", basics.Controller.instance.listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
+			Controller.instance.setPlayList(basics.Controller.instance.listProvider.getDbList("Wunschliste"));
 		}
 		catch (ListException e)
 		{
@@ -429,7 +434,19 @@ public class ClassicWindow extends JFrame
 		GridBagConstraints c = new GridBagConstraints();
 		
 		//-------------JProgessBar
-		final JProgressBar progressBar = new JProgressBar(0, (int)(player.getDuration()*100));
+		Controller.instance.addPlayStateListener(new PlayState());
+		progressBar = new JProgressBar();
+		
+		refreshTimer = new Timer(0, new ActionListener()
+									{
+										public void actionPerformed(ActionEvent evt)
+										{
+											System.out.println((int)(player.getPosition()*1000));
+											progressBar.setValue((int)(player.getPosition()*1000));
+											//if(!player.getPlayState())
+												//refreshTimer.stop();
+										}
+									});
 	
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(5, 0, 5, 0);
@@ -443,8 +460,8 @@ public class ClassicWindow extends JFrame
 		
 		c.gridy = 0;
 		panel.add(progressBar, c);
-		
-		
+	
+		refreshTimer.start();
 		
 		return panel;
 	}
@@ -557,6 +574,19 @@ public class ClassicWindow extends JFrame
 			e.printStackTrace();
 		}
         
+	}
+	
+	class PlayState implements PlayStateListener
+	{
+		public int duration;
+		
+		public void currentTrackChanged(Track playedLast, Track playingCurrent)
+		{
+			duration = (int)(playingCurrent.duration*1000);
+			System.out.println("duration" + duration);
+			progressBar.setMinimum(0);
+			progressBar.setMaximum(duration);
+		}
 	}
 }
 
