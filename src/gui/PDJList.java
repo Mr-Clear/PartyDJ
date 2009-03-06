@@ -3,7 +3,6 @@ package gui;
 import gui.DnD.DragDropHandler;
 import gui.DnD.DragEvent;
 import gui.DnD.ListDropMode;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -207,18 +206,32 @@ public class PDJList extends JList
 				{
 					try
 					{
-						list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+						if(e.getY() / list.getFixedCellHeight() <= list.getLastVisibleIndex())
+						{
+							if(list.getSelectedIndex() == -1)
+								list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+							
+							for(int i = list.getSelectedIndices().length; i > 0; i--)
+							{
+								if((int)(e.getY() / list.getFixedCellHeight()) == list.getSelectedIndices()[i-1])
+								{
+									if(list.getSelectedValue() != null)
+									{
+										PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
+										return;
+									}
+								}
+							}
+							//list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+							PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());	
+						}
 					}
 					catch (IndexOutOfBoundsException ex)
 					{
 						return;
 					}
 					
-					if(list.getSelectedValue() != null)
-					{
-						//TODO Mehrfachauswahl
-						PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
-					}
+					
 				}
 			}
 		}

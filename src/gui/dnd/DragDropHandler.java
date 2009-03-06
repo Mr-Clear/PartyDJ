@@ -9,7 +9,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import java.util.StringTokenizer;
 import javax.swing.JComponent;
 import javax.swing.ListModel;
 import javax.swing.TransferHandler;
@@ -23,6 +22,7 @@ public class DragDropHandler extends TransferHandler
 	
 	public boolean canImport(TransferHandler.TransferSupport info)
 	{	
+		System.out.println("canImport");
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 			return false;
 		
@@ -36,6 +36,7 @@ public class DragDropHandler extends TransferHandler
 	
 	public synchronized boolean importData(TransferHandler.TransferSupport info)
 	{
+		System.out.println("importData");
 		Object[] data = null;
 					
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
@@ -69,7 +70,7 @@ public class DragDropHandler extends TransferHandler
 		
 		
 		if (info.isDrop())
-		{			
+		{	
 			PDJList.DropLocation dropLocation = (PDJList.DropLocation)info.getDropLocation();
 			if(info.getComponent() instanceof PDJList)
 			{
@@ -187,11 +188,12 @@ public class DragDropHandler extends TransferHandler
 		}
 		
 		if(!info.isDrop()) 
-        {
+        {	System.out.println("noDrop");
 				for(int i = data.length; i > 0; i--)
 				{
 					try
 					{
+						System.out.println((Track)data[i-1]);
 						((EditableListModel)listModel).add((Track)data[i-1]);
 					}
 					catch (ListException e)
@@ -205,8 +207,9 @@ public class DragDropHandler extends TransferHandler
 			
 	}
 	
-	protected Transferable createTransferable(JComponent c)
+	public Transferable createTransferable(JComponent c)
 	{
+		System.out.println("createTransferable");
 		PDJList pdjList = (PDJList)c;
 		Object[] values = pdjList.getSelectedValues();
 
@@ -218,10 +221,11 @@ public class DragDropHandler extends TransferHandler
 		 return COPY_OR_MOVE;
 	}
 	
-	protected void exportDone(JComponent component, Transferable data, int action) 
+	public void exportDone(JComponent component, Transferable data, int action) 
 	{
+		System.out.println("exportDone");
 		//Clipboard export
-		StringTransfer transfer = new StringTransfer();
+		/*StringTransfer transfer = new StringTransfer();
 		StringBuffer buffer = new StringBuffer();
 		String export = "";
 		
@@ -239,7 +243,7 @@ public class DragDropHandler extends TransferHandler
 			export += tokenizer.nextToken() + System.getProperty("line.separator");
 		}
 		
-		transfer.setClipboardContents(export);
+		transfer.setClipboardContents(export);*/
 
        
         if(action == MOVE)
@@ -271,43 +275,7 @@ public class DragDropHandler extends TransferHandler
         
     }
 	
-	class StringTransfer implements ClipboardOwner
-	{
-
-		public void lostOwnership(Clipboard clipboard, Transferable contents){}
-		
-		public void setClipboardContents(String string)
-		{
-			StringSelection stringSelection = new StringSelection(string);
-		    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		    clipboard.setContents(stringSelection, this);
-		}
-		
-		public String getClipboardContents() 
-		{
-		    String result = "";
-		    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		    Transferable contents = clipboard.getContents(null);
-		    
-		    if ((contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) 
-		    {
-		      try
-		      {
-		        result = (String)contents.getTransferData(DataFlavor.stringFlavor);
-		      }
-		      
-		      catch (UnsupportedFlavorException ex)
-		      {
-		        ex.printStackTrace();
-		      }
-		      
-		      catch (IOException ex) {
-		        ex.printStackTrace();
-		      }
-		    }
-		    return result;
-		  }
-		}
+	
 		
 	}
 	

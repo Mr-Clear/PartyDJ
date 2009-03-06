@@ -8,7 +8,7 @@ import common.Track;
 
 public class TrackSelection implements Transferable
 {
-	private Object[] trackArray;
+	private final Object[] trackArray;
 	private final DataFlavor trackFlavor = new DataFlavor(Track.class, "Track flavor");
 	private final DataFlavor flavors[] = {trackFlavor};
 

@@ -1,10 +1,21 @@
 package gui;
 
+import gui.DnD.DragDropHandler;
+import gui.DnD.DragEvent;
+import gui.DnD.TrackSelection;
 import java.awt.Color;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -28,6 +39,7 @@ public class PopupMenuGenerator
 		boolean listEditable = list.getListModel() instanceof EditableListModel;
 		JPopupMenu menu = new JPopupMenu();
 		
+
 		JMenuItem newItem = new JMenuItem(list.getSelectedValue().toString());
 		newItem.setForeground(new Color(0, 128, 0));
 		newItem.setActionCommand("Play");
@@ -55,18 +67,25 @@ public class PopupMenuGenerator
 			newItem.setEnabled(listEditable);
 			newItem.addActionListener(listener);
 			menu.add(newItem);
-		}
 			
+			newItem = new JMenuItem("Ausschneiden [Strg + X]");
+			newItem.setActionCommand("Cut");
+			newItem.setEnabled(listEditable);
+			newItem.addActionListener(listener);
+			menu.add(newItem);
+		
+		}
+		
+		newItem.setEnabled(listEditable);
+		newItem.addActionListener(listener);
+		menu.add(newItem);
+		
 		newItem = new JMenuItem("Kopieren [Strg + C]");
 		newItem.setActionCommand("Copy");
 		newItem.addActionListener(listener);
 		menu.add(newItem);
 
-		newItem = new JMenuItem("Ausschneiden [Strg + X]");
-		newItem.setActionCommand("Cut");
-		newItem.setEnabled(listEditable);
-		newItem.addActionListener(listener);
-		menu.add(newItem);
+		
 
 		newItem = new JMenuItem("Einfügen [Strg + V]");
 		newItem.setActionCommand("Paste");
@@ -98,6 +117,7 @@ class PopupMenuItemListener implements ActionListener
 {
 	private PDJList list;
 	private Track track;
+	
 	PopupMenuItemListener(PDJList list, Track track)
 	{
 		this.list = list;
@@ -133,8 +153,10 @@ class PopupMenuItemListener implements ActionListener
 			if(list.getListModel() instanceof EditableListModel)
 				try
 				{
-					// TODO Mehrfachauswahl
-					((EditableListModel)list.getListModel()).remove(list.getSelectedIndex());
+					for(int i = list.getSelectedIndices().length; i > 0; i--)
+					{
+						((EditableListModel)(list.getListModel())).remove(list.getSelectedIndices()[i-1]);
+					}
 				}
 				catch (ListException e1)
 				{
@@ -142,15 +164,40 @@ class PopupMenuItemListener implements ActionListener
 					JOptionPane.showMessageDialog(null, "Track konnte nicht entfernt werden:\n" + track.name + "\n\n" + e1.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 				}	
 		}
+		
 		else if(command.equals("Copy"))
-			//TODO Sams Job
-			;
+		{
+			TrackTransfer transfer = new TrackTransfer();
+			transfer.setClipboardContents(list.getSelectedValues());		
+		}
+			
 		else if(command.equals("Cut"))
+		{
+			TrackTransfer transfer = new TrackTransfer();
+			transfer.setClipboardContents(list.getSelectedValues());
+			
+			if(list.getListModel() instanceof EditableListModel)
+			{
+				
+				for(int i = list.getSelectedIndices().length; i > 0; i--)
+	        	{
+	        		try
+					{
+						((EditableListModel)list.getListModel()).remove(list.getSelectedIndices()[i-1]);
+					}
+					catch (ListException e1)
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+	        	}
+				
+			}
+		}
+		
+		else if(command.equals("Paste"));
 			//TODO Sams Job
-			;
-		else if(command.equals("Paste"))
-			//TODO Sams Job
-			;
+			
 		else if(command.equals("OpenFile"))
 		{
 			final JFileChooser fileChooser = new JFileChooser("Datei öffnen:");
@@ -207,6 +254,7 @@ class FileMenuListener implements MenuListener
 		{
 			FileMenuItemListener listener = new FileMenuItemListener();
 			menu.addSeparator();
+			
 			for(String file : files)
 			{
 				JMenuItem newItem = new JMenuItem(file);
@@ -227,3 +275,41 @@ class FileMenuItemListener implements ActionListener
 		// TODO Datei in Liste laden
 	}
 }
+
+class TrackTransfer implements ClipboardOwner
+{
+
+	public void lostOwnership(Clipboard clipboard, Transferable contents){}
+	
+	public void setClipboardContents(Object[] track)
+	{
+		TrackSelection trackSelection = new TrackSelection(track);
+	    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+	    clipboard.setContents(trackSelection, this);
+	}
+	
+	/*public Track getClipboardContents() 
+	{
+	    String result = "";
+	    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+	    Transferable contents = clipboard.getContents(null);
+	    
+	    if ((contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor)) 
+	    {
+	      try
+	      {
+	        result = (String)contents.getTransferData(new DataFlavor(Track.class, "Track flavor"));
+	      }
+	      
+	      catch (UnsupportedFlavorException ex)
+	      {
+	        ex.printStackTrace();
+	      }
+	      
+	      catch (IOException ex) {
+	        ex.printStackTrace();
+	      }
+	    }
+	    return result;
+	  }*/
+	}

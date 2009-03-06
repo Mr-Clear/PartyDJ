@@ -1,11 +1,9 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -16,8 +14,12 @@ import common.Track;
 
 public class TrackRenderer implements ListCellRenderer
 {
+	private JList list;
+	
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
+		this.list = list;
+		
 		if(value == null)
 			return new JLabel("null"); 
 		if(!(value instanceof Track))
@@ -84,13 +86,15 @@ public class TrackRenderer implements ListCellRenderer
 			
 			setLayout(new GridBagLayout());
 			
-			c.fill = c.BOTH;
+			c.ipadx = -100000;
+			c.fill = GridBagConstraints.BOTH;
 			c.weightx = 1.0;
 			
 			add(titel, c);
 			
-			if(list.getSize().width > duration.getPreferredSize().width * 4)
+			if(list.getSize().width > duration.getPreferredSize().width * 8)
 			{
+				c.ipadx = 0;
 				c.weightx = 0.0;
 				add(duration, c);
 			}

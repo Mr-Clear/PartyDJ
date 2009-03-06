@@ -18,6 +18,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import lists.SearchListModel;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 /**
  * Grafische Benutzeroberfläche für Party DJ.
@@ -47,12 +50,8 @@ public class ClassicWindow extends JFrame
 		con.insets = new Insets(0, 0, 0, 0);
 		con.fill = GridBagConstraints.BOTH;
 		
-		//TODO Sam fragen was das macht.
-		setSize(560, 350);
-		/*System.out.println((Toolkit.getDefaultToolkit().getScreenSize().width - getSize().width) / 3 + " " + (Toolkit.getDefaultToolkit().getScreenSize().height - getSize().height) / 3);
-		setSize((Toolkit.getDefaultToolkit().getScreenSize().width - getSize().width) / 3, (Toolkit.getDefaultToolkit().getScreenSize().height - getSize().height) / 3);
-		setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - getSize().width) / 4, (Toolkit.getDefaultToolkit().getScreenSize().height - getSize().height) / 4);*/
-
+		manageSize();
+		
 		gcp.setBackground(Color.darkGray);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -69,8 +68,6 @@ public class ClassicWindow extends JFrame
 		con.weightx = 1.0;
 		con.weighty = 1.0;
 		add(MainPart(), con);
-		
-		manageSize();
 		
 		setVisible(true);
 	}
@@ -139,7 +136,7 @@ public class ClassicWindow extends JFrame
 		c.gridy = 1;
 		try
 		{
-			mainPart.add(List("Playlist", basics.Controller.instance.listProvider.getDbList("Test"), ListDropMode.COPY_OR_MOVE), c);
+			mainPart.add(List("Playlist", basics.Controller.instance.listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
 		}
 		catch (ListException e1)
 		{
@@ -151,7 +148,7 @@ public class ClassicWindow extends JFrame
 		c.gridy = 0;
 		try
 		{
-			mainPart.add(List("Wunschliste", basics.Controller.instance.listProvider.getDbList("Test"), ListDropMode.COPY_OR_MOVE), c);
+			mainPart.add(List("Wunschliste", basics.Controller.instance.listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
 		}
 		catch (ListException e)
 		{
@@ -447,7 +444,7 @@ public class ClassicWindow extends JFrame
 		label.setBackground(Color.darkGray);
 		label.setForeground(Color.green);
 		//slider.setBackground(Color.darkGray);
-		label.setFont(new Font(label.getFont().getName(), Font.BOLD, 16)); 		
+		label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18)); 		
 		GridBagConstraints c = new GridBagConstraints();
 		
 		//-------------JProgessBar
@@ -455,13 +452,14 @@ public class ClassicWindow extends JFrame
 		JProgressBar progressBar = new JProgressBar(0, (int)(player.getDuration()*100));
 		
 		//while...player.getPlayState()
-		progressBar.setValue((int)(player.getPosition()*100));
-		
+		//TODO geht ned
+		//new Timer().schedule(new refresh(progressBar, player), 0, 5);
+	
 		c.anchor = GridBagConstraints.WEST;
-		c.insets = new Insets(0, 0, 0, 0);
+		c.insets = new Insets(5, 0, 5, 0);
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1.0;
-		c.weighty = 1.0;
+		c.weighty = 0.2;
 
 		c.gridx = 0;
 		c.gridy = 1;
@@ -577,5 +575,23 @@ public class ClassicWindow extends JFrame
 			e.printStackTrace();
 		}
         
+	}
+	
+	class refresh extends TimerTask
+	{
+		private JProgressBar progressBar;
+		private IPlayer player;
+		
+		refresh(JProgressBar progressBar, IPlayer player)
+		{
+			super();
+			this.player = player;
+			this.progressBar = progressBar;
+		}
+		
+		public void run()
+		{
+			progressBar.setValue((int)(player.getPosition()*100));
+		}
 	}
 }
