@@ -69,8 +69,8 @@ public class TrackRenderer implements ListCellRenderer
 			Track currentTrack = Controller.instance.getCurrentTrack();
 			if(currentTrack != null && currentTrack.index == track.index)
 			{
-				titel.setForeground(Color.RED);
-				duration.setForeground(Color.RED);
+				titel.setForeground(new Color(64, 192, 255));
+				duration.setForeground(new Color(64, 192, 255));
 			}
 			if(track.problem != Track.Problem.NONE)
 			{

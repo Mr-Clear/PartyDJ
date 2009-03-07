@@ -441,7 +441,7 @@ public class ClassicWindow extends JFrame
 									{
 										public void actionPerformed(ActionEvent evt)
 										{
-											System.out.println((int)(player.getPosition()*1000));
+											//System.out.println((int)(player.getPosition()*1000));
 											progressBar.setValue((int)(player.getPosition()*1000));
 											//if(!player.getPlayState())
 												//refreshTimer.stop();
@@ -461,6 +461,7 @@ public class ClassicWindow extends JFrame
 		c.gridy = 0;
 		panel.add(progressBar, c);
 	
+		refreshTimer.setDelay(40);
 		refreshTimer.start();
 		
 		return panel;

@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import simplePlayer.SimplePlayer;
 import common.*;
+import common.Track.TrackElement;
 
 import lists.EditableListModel;
 import lists.ListProvider;
@@ -75,6 +76,7 @@ public class Controller
 		splash.setInfo("Lade Fenster");
 		window = new ClassicWindow();
 		//window = new TestWindow();
+		//window = new SettingWindow();
 		
 		splash.setInfo("PartyDJ bereit :)");
 		data.writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
@@ -119,7 +121,7 @@ public class Controller
 		if(trackUpdateTimer == null)
 		{
 			trackUpdateTimer = new Timer();
-			trackUpdateTimer.schedule(new TrackUpdateTask(trackUpdateStack), 0, 1); 
+			trackUpdateTimer.schedule(new TrackUpdateTask(trackUpdateStack), 0, 1000); 
 		}
 	}
 
@@ -193,6 +195,17 @@ public class Controller
 
 		public void trackChanged(Track track)
 		{
+			if(track.duration != player.getDuration())
+			{
+				track.duration = player.getDuration();
+				try
+				{
+					data.updateTrack(track, TrackElement.DURATION);
+				}
+				catch (ListException e)
+				{}
+			}
+			
 			if(currentTrack != track)
 			{
 				Track oldTrack = currentTrack;
