@@ -37,7 +37,7 @@ public class ClassicWindow extends JFrame
 	private static final long serialVersionUID = 5672123337960808686L;
 	private Container gcp = getContentPane();
 	private IData data;
-	private static Timer refreshTimer;
+	private Timer refreshTimer;
 	private PDJSlider slider;
 	private JLabel label;
 	private static JSlider volume;
@@ -49,6 +49,7 @@ public class ClassicWindow extends JFrame
 		this.setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/Schriftzug.png"));
 		assert Controller.instance != null : "Controller nicht geladen!";
 		data = Controller.instance.data;
+		Controller.instance.player.addPlayStateListener(new PlayState());
 		
 		GridBagConstraints con = new GridBagConstraints();
 		GridBagLayout layout = new GridBagLayout();
@@ -436,9 +437,7 @@ public class ClassicWindow extends JFrame
 		label.setBackground(Color.darkGray);
 		label.setForeground(Color.green);
 		label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18)); 		
-		GridBagConstraints c = new GridBagConstraints();
-		
-		Controller.instance.addPlayStateListener(new PlayState());
+		GridBagConstraints c = new GridBagConstraints();	
 		
 		refreshTimer = new Timer(0, new ActionListener()
 									{
@@ -466,11 +465,6 @@ public class ClassicWindow extends JFrame
 		refreshTimer.setDelay(40);
 		
 		return panel;
-	}
-	
-	public static Timer getRefreshTimer()
-	{
-		return refreshTimer;
 	}
 	
 	/**
@@ -604,6 +598,16 @@ public class ClassicWindow extends JFrame
 			slider.setMaximum(duration * 10000);
 			slider.setMajorTickSpacing(duration * 2500);
 			slider.setMinorTickSpacing(duration * 1250);
+		}
+
+		public void playStateChanged(boolean playState)
+		{
+			if(playState)
+				refreshTimer.start();
+			
+			else
+				refreshTimer.stop();
+			
 		}
 	}
 	

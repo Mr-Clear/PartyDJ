@@ -59,4 +59,8 @@ public interface IPlayer
 	 *  @param Contact Ansprechpartner
 	 */
 	void setContact(PlayerContact Contact);
+	
+	void addPlayStateListener(PlayStateListener listener);
+	
+	void removePlayStateListener(PlayStateListener listener);
 }

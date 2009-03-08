@@ -24,7 +24,7 @@ abstract class BasicListModel implements TrackListModel, PlayStateListener, Mast
 	{
 		assert Controller.instance != null : "Controller nicht geladen!";
 		this.list = list;
-		Controller.instance.addPlayStateListener(this);
+		Controller.instance.player.addPlayStateListener(this);
 		Controller.instance.data.addMasterListListener(this);
 	}
 	
@@ -62,6 +62,7 @@ abstract class BasicListModel implements TrackListModel, PlayStateListener, Mast
 			}
 		}
 	}
+	public void playStateChanged(boolean playState){}
 	
 	public void trackChanged(Track track)
 	{
@@ -77,4 +78,5 @@ abstract class BasicListModel implements TrackListModel, PlayStateListener, Mast
 			}
 		}		
 	}
+
 }

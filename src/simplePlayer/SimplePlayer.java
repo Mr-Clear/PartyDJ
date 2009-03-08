@@ -3,6 +3,8 @@ package simplePlayer;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.media.*;
 import common.*;
@@ -20,9 +22,13 @@ import common.Track.Problem;
  */
 public class SimplePlayer implements IPlayer
 {
-	boolean status;
 	public int volume;
+	
 	PlayerContact contact;
+	
+	private final Set<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
+	private boolean status;
+	private Track currentTrack;
 	
 	Player p;
 	
@@ -68,7 +74,6 @@ public class SimplePlayer implements IPlayer
 		if(p != null)
 			p.stop();
 		
-		gui.ClassicWindow.getRefreshTimer().stop();
 		changeState(false);
 	}
 
@@ -77,7 +82,6 @@ public class SimplePlayer implements IPlayer
 		if(p != null)
 			p.start();
 		
-		gui.ClassicWindow.getRefreshTimer().start();
 		changeState(true);
 		
 	}
@@ -140,7 +144,6 @@ public class SimplePlayer implements IPlayer
 	{
 		setPosition(0);
 		play();
-		gui.ClassicWindow.getRefreshTimer().start();
 	}
 
 	public void start(Track track)
@@ -183,9 +186,14 @@ public class SimplePlayer implements IPlayer
 									}
 								});
 		p.start();
-		gui.ClassicWindow.getRefreshTimer().start();
 		
-		contact.trackChanged(track);
+		if(currentTrack != track)
+		{
+			Track oldTrack = currentTrack;
+			currentTrack = track;
+			for(PlayStateListener listener : playStateListener)
+				listener.currentTrackChanged(oldTrack, currentTrack);
+		}
 
 		changeState(true);
 	}
@@ -194,7 +202,6 @@ public class SimplePlayer implements IPlayer
 	{
 		if(p != null)
 			p.stop();
-		gui.ClassicWindow.getRefreshTimer().stop();
 		changeState(false);
 	}
 
@@ -289,8 +296,20 @@ public class SimplePlayer implements IPlayer
 		if(newStatus != status)
 		{
 			status = newStatus;
-			if(contact != null)
-				contact.stateChanged(status);
+			
+			for(PlayStateListener listener: playStateListener)
+			{
+				listener.playStateChanged(status);
+			}
 		}
+	}
+	
+	public void addPlayStateListener(PlayStateListener listener)
+	{
+		playStateListener.add(listener);
+	}
+	public void removePlayStateListener(PlayStateListener listener)
+	{
+		playStateListener.remove(listener);
 	}
 }

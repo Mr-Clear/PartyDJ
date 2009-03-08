@@ -94,10 +94,16 @@ public class TestWindow extends JFrame
 		
 		text.addActionListener(new TextBoxListener());
 
-		Controller.instance.addPlayStateListener(new PlayStateListener(){
+		Controller.instance.player.addPlayStateListener(new PlayStateListener(){
 			public void currentTrackChanged(Track playedLast, Track playingCurrent)
 			{
 				setTitle(playingCurrent.name);			
+			}
+
+			public void playStateChanged(boolean playState)
+			{
+				// TODO Auto-generated method stub
+				
 			}});
 				
 		setVisible(true);

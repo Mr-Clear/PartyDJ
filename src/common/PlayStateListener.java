@@ -12,4 +12,11 @@ public interface PlayStateListener
 	 * @param playingCurrent Track der jetzt gespielt wird.
 	 */
 	void currentTrackChanged (Track playedLast, Track playingCurrent);
+	
+	
+	/**Der Player wurde gestartet oder gestoppt.
+	 * 
+	 * @param playState Spielt noch oder nicht.
+	 */
+	void playStateChanged (boolean playState);
 }

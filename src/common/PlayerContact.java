@@ -18,18 +18,7 @@ public interface PlayerContact
 	 * @return Dateiname des nächsten Liedes.
 	 */
 	Track requestPreviousTrack();
-	
-	/**Der aktuelle Track hat sich geändert
-	 * 
-	 * @param track Der jetzt aktuelle Track.
-	 */
-	void trackChanged(Track track);
-	
-	/**Der Player ändert seinen Status.
-	 * 
-	 * @param Status neuer Status.
-	 */
-	void stateChanged(boolean Status);
+
 	
 	/**Der Player ist fertig mit dem abspielen.*/
 	void playCompleted();

@@ -1,6 +1,5 @@
 package basics;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -23,8 +22,6 @@ public class Controller
 	public IData data = null;
 	public ListProvider listProvider;
 	public IPlayer player;
-	
-	private final HashSet<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
 	private Track currentTrack;
 	private EditableListModel playList;
 	
@@ -37,7 +34,7 @@ public class Controller
 	
 	public Controller() throws Exception
 	{
-		//SplashWindow splash = new SplashWindow(); 
+		SplashWindow splash = new SplashWindow(); 
 		
 		if(instance == null)
 			instance = this;
@@ -55,7 +52,7 @@ public class Controller
 
 		
 		//Datenbank verbinden
-		//splash.setInfo("Verbinde zur Datenbank");
+		splash.setInfo("Verbinde zur Datenbank");
 		try
 		{
 			data = new DerbyDB(Functions.getFolder() + System.getProperty("file.separator") + "DataBase");
@@ -68,30 +65,21 @@ public class Controller
 			System.exit(1);
 		}
 		
-		//splash.setInfo("Lade Listen");
-		listProvider = new ListProvider();
-		
-		//splash.setInfo("Lade Player");
+		splash.setInfo("Lade Player");
 		player = new SimplePlayer(new PlayerListener());
 		
-		//splash.setInfo("Lade Fenster");
+		splash.setInfo("Lade Listen");
+		listProvider = new ListProvider();
+		
+		splash.setInfo("Lade Fenster");
 		window = new ClassicWindow();
 		//window = new TestWindow();
 		//window = new SettingWindow();
 		
-		//splash.setInfo("PartyDJ bereit :)");
-		//data.writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
-		//splash.close();
+		splash.setInfo("PartyDJ bereit :)");
+		data.writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
+		splash.close();
 		loadFinished = true;
-	}
-	
-	public void addPlayStateListener(PlayStateListener listener)
-	{
-		playStateListener.add(listener);
-	}
-	public void removeMasterListListener(PlayStateListener listener)
-	{
-		playStateListener.remove(listener);
 	}
 	
 	public Track getCurrentTrack()
@@ -194,6 +182,7 @@ public class Controller
 			return null;
 		}
 
+		// TODO
 		public void trackChanged(Track track)
 		{
 			if(track.duration != player.getDuration())
@@ -205,14 +194,6 @@ public class Controller
 				}
 				catch (ListException e)
 				{}
-			}
-			
-			if(currentTrack != track)
-			{
-				Track oldTrack = currentTrack;
-				currentTrack = track;
-				for(PlayStateListener listener : playStateListener)
-					listener.currentTrackChanged(oldTrack, currentTrack);
 			}
 		}
 		public void stateChanged(boolean Status)
