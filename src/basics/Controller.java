@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import gui.*;
+import gui.settings.SettingWindow;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import simplePlayer.SimplePlayer;
