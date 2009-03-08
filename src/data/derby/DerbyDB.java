@@ -112,7 +112,6 @@ public class DerbyDB implements IData
 					"(INDEX INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY, " +
 					"NAME VARCHAR(32) NOT NULL, " +
 					"DESCRYPTION VARCHAR(128), " +
-					"SIZE INTEGER DEFAULT 0, " +
 					"PRIMARY KEY (INDEX), " +
 					"UNIQUE (NAME))");
 			
@@ -549,19 +548,29 @@ public class DerbyDB implements IData
 	
 	public void deleteTrack(Track track) throws ListException
 	{
-		try
+		synchronized(conn)
 		{
-			synchronized(conn)
+			try
 			{
+
 				executeUpdate("DELETE FROM LISTS_CONTENT WHERE INDEX = ?", Integer.toString(track.index));
 				executeUpdate("DELETE FROM FILES WHERE INDEX = ?", Integer.toString(track.index));
 				conn.commit();
 			}
+			catch (SQLException e)
+			{
+				try
+				{
+					conn.rollback();
+				}
+				catch (SQLException e1)
+				{
+					throw new ListException("Rollback fehlgeschlagen!", e1);
+				}
+				throw new ListException(e);
+			}
 		}
-		catch (SQLException e)
-		{
-			throw new ListException(e);
-		}
+
 		
 		if(masterList != null)
 		{
@@ -759,13 +768,12 @@ public class DerbyDB implements IData
 			try
 			{
 				int listIndex = getListIndex(listName);
-				int position = queryInt("SELECT SIZE FROM LISTS WHERE INDEX = ?", Integer.toString(listIndex));
+				int position = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
 				PreparedStatement ps = conn.prepareStatement("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)");
 				ps.setInt(1, listIndex);
 				ps.setInt(2, track.index);
 				ps.setInt(3, position);
 				ps.executeUpdate();
-				executeUpdate("UPDATE LISTS SET SIZE = ?", Integer.toString(position + 1));
 				conn.commit();
 				
 			}
@@ -791,7 +799,7 @@ public class DerbyDB implements IData
 			try
 			{
 				int listIndex = getListIndex(listName);
-				int size = queryInt("SELECT SIZE FROM LISTS WHERE INDEX = ?", Integer.toString(listIndex));
+				int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
 				
 				// trackPosition korrigieren.
 				if(trackPosition < 0)
@@ -813,7 +821,6 @@ public class DerbyDB implements IData
 				ps.setInt(2, track.index);
 				ps.setInt(3, trackPosition);
 				ps.executeUpdate();
-				executeUpdate("UPDATE LISTS SET SIZE = ? WHERE INDEX = ?", Integer.toString(size + 1), Integer.toString(listIndex));
 				
 				conn.commit();
 			}
@@ -841,7 +848,7 @@ public class DerbyDB implements IData
 			{
 				int listIndex = getListIndex(listName);
 				
-				int size = queryInt("SELECT SIZE FROM LISTS WHERE INDEX = ?", Integer.toString(listIndex));
+				int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
 				
 				// Wenn trackPosition ausserhalb der Liste, nichts löschen.
 				if(trackPosition < 0 || trackPosition >= size)
@@ -859,7 +866,6 @@ public class DerbyDB implements IData
 					ps.setInt(3, listIndex);
 					ps.executeUpdate();
 				}
-				executeUpdate("UPDATE LISTS SET SIZE = ? WHERE INDEX = ?", Integer.toString(size - 1), Integer.toString(listIndex));
 				
 				conn.commit();
 			}
