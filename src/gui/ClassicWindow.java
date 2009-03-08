@@ -3,6 +3,8 @@ package gui;
 import gui.DnD.ListDropMode;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import common.IPlayer;
 import common.ListException;
 import common.PlayStateListener;
@@ -35,15 +37,15 @@ public class ClassicWindow extends JFrame
 	private static final long serialVersionUID = 5672123337960808686L;
 	private Container gcp = getContentPane();
 	private IData data;
-	private Timer refreshTimer;
-	private JProgressBar progressBar;
-	private JSlider slider;
+	public static Timer refreshTimer;
+	private PDJSlider slider;
 	private JLabel label;
 	protected static final IPlayer player = basics.Controller.instance.player;
 	
 	public ClassicWindow()
 	{
 		super("Party DJ");
+		this.setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/Schriftzug.png"));
 		assert Controller.instance != null : "Controller nicht geladen!";
 		data = Controller.instance.data;
 		
@@ -93,16 +95,19 @@ public class ClassicWindow extends JFrame
 		
 		c.weightx = 0.05;
 		c.weighty = 0.0;
+		c.ipadx = 75;
 		c.gridx = 1;
 		control.add(Volume(), c);
 		
 		c.weightx = 1.0;
 		c.weighty = 0.0;
+		c.ipadx = 500;
 		c.gridx = 2;
 		control.add(Slider(), c);
 		
 		c.weightx = 0.0;
 		c.weighty = 0.0;
+		c.ipadx = 0;
 		c.gridx = 0;
 		c.gridy = 0;
 		control.add(Buttons(), c);
@@ -125,7 +130,6 @@ public class ClassicWindow extends JFrame
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		
-		//c.anchor = GridBagConstraints.WEST;
 		mainPart.setBackground(Color.darkGray);
 
 		try
@@ -235,7 +239,6 @@ public class ClassicWindow extends JFrame
 						{
 							while(fwd == true)
 							{
-								System.out.println("time +2seconds");
 								player.setPosition(player.getPosition() + 2);
 							}
 						}
@@ -424,14 +427,13 @@ public class ClassicWindow extends JFrame
 	 */
 	public Component Slider()
 	{
-		JLabel label = new JLabel();
-		slider = new JSlider();
+		label = new JLabel(" ");
+		slider = new PDJSlider();
 		JPanel panel = new JPanel(new GridBagLayout());
 		
 		panel.setBackground(Color.darkGray);
 		label.setBackground(Color.darkGray);
 		label.setForeground(Color.green);
-		slider.setBackground(Color.darkGray);
 		label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18)); 		
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -441,9 +443,9 @@ public class ClassicWindow extends JFrame
 									{
 										public void actionPerformed(ActionEvent evt)
 										{
-											slider.setValue((int)(player.getPosition()*10000));
-											//if(!player.getPlayState())
-												//refreshTimer.stop();
+											slider.setStartLabel(common.Functions.formatTime(player.getPosition()));
+											slider.setEndLabel("-" + common.Functions.formatTime(player.getDuration() - player.getPosition()));
+											slider.setValue((int)(player.getPosition() * 10000));
 										}
 									});
 	
@@ -461,7 +463,6 @@ public class ClassicWindow extends JFrame
 		panel.add(slider, c);
 	
 		refreshTimer.setDelay(40);
-		refreshTimer.start();
 		
 		return panel;
 	}
@@ -476,6 +477,8 @@ public class ClassicWindow extends JFrame
 		JPanel panel = new JPanel(new GridBagLayout());
 		
 		GridBagConstraints c = new GridBagConstraints();
+		
+		
 		
 		panel.setBackground(Color.darkGray);
 		volume.setBackground(Color.darkGray);
@@ -583,10 +586,25 @@ public class ClassicWindow extends JFrame
 		public void currentTrackChanged(Track playedLast, Track playingCurrent)
 		{
 			label.setText(playingCurrent.name);
-			duration = (int)(playingCurrent.duration*10000);
-			progressBar.setMinimum(0);
-			slider.setMaximum(duration);
+			duration = (int)playingCurrent.duration;
+	
+			slider.setMiddleLabel(common.Functions.formatTime(duration));
+			slider.setMaximum(duration * 10000);
+			slider.setMajorTickSpacing(duration * 2500);
+			slider.setMinorTickSpacing(duration * 1250);
 		}
+	}
+	
+	class VolumeListener implements ChangeListener
+	{
+
+		public void stateChanged(ChangeEvent e)
+		{
+			JSlider slider;
+			if(e.getSource() instanceof JSlider)
+				slider = (JSlider)e.getSource();
+		}
+		
 	}
 }
 

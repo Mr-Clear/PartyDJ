@@ -21,7 +21,7 @@ import common.Track.Problem;
 public class SimplePlayer implements IPlayer
 {
 	boolean status;
-	int volume;
+	public int volume;
 	PlayerContact contact;
 	
 	Player p;
@@ -53,6 +53,8 @@ public class SimplePlayer implements IPlayer
 	{
 		if(p != null)
 			p.stop();
+		
+		gui.ClassicWindow.refreshTimer.stop();
 		changeState(false);
 	}
 
@@ -60,6 +62,8 @@ public class SimplePlayer implements IPlayer
 	{
 		if(p != null)
 			p.start();
+		
+		gui.ClassicWindow.refreshTimer.start();
 		changeState(true);
 		
 	}
@@ -95,19 +99,24 @@ public class SimplePlayer implements IPlayer
 	public void setVolume(int Volume)
 	{
 		if(Volume < 0)
-			Volume = 0;
+		{
+			if(status)
+				p.getGainControl().setMute(true);
+		}
+		
 		else if(Volume > 100)
 			Volume = 100;
 		
 		volume = Volume;
-		
-		// TODO
+
+		p.getGainControl().setLevel(volume/100f);
 	}
 
 	public void start()
 	{
 		setPosition(0);
 		play();
+		gui.ClassicWindow.refreshTimer.start();
 	}
 
 	public void start(Track track)
@@ -148,6 +157,7 @@ public class SimplePlayer implements IPlayer
 									}
 								});
 		p.start();
+		gui.ClassicWindow.refreshTimer.start();
 		
 		contact.trackChanged(track);
 
@@ -158,6 +168,7 @@ public class SimplePlayer implements IPlayer
 	{
 		if(p != null)
 			p.stop();
+		gui.ClassicWindow.refreshTimer.stop();
 		changeState(false);
 	}
 
