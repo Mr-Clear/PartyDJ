@@ -139,14 +139,17 @@ public class DragDropHandler extends TransferHandler
 			PDJList.DropLocation dropLocation = (PDJList.DropLocation)info.getDropLocation();
 			if(info.getComponent() instanceof PDJList)
 			{
-					{
-						if(DragEvent.dge.getComponent() != info.getComponent())
-						{	
-							switch (((PDJList)info.getComponent()).getListDropMode())
-							{
-							case NONE:					break;
-							
-							case COPY:					try
+				{
+					if(DragEvent.dge.getComponent() != info.getComponent())
+					{	
+						switch (((PDJList)info.getComponent()).getListDropMode())
+						{
+						case NONE:					break;
+						
+						case COPY:					if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+													{
+														try
+														
 														{
 															for(int i = data.length; i > 0; i--)
 															{
@@ -158,12 +161,15 @@ public class DragDropHandler extends TransferHandler
 															// TODO Auto-generated catch block
 															e.printStackTrace();
 														}
-														break;
-										
-							case MOVE:					System.out.println("MOVE not supported");
-														break;
-														
-							case DELETE:				try
+													}
+													break;
+									
+						case MOVE:					System.out.println("MOVE not supported");
+													break;
+													
+						case DELETE:				if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+													{
+														try
 														{
 															for(int i = data.length; i > 0; i--)
 															{
@@ -175,9 +181,12 @@ public class DragDropHandler extends TransferHandler
 															// TODO Auto-generated catch block
 															e.printStackTrace();
 														}
-														break;
-														
-							case COPY_OR_MOVE:			try
+													}
+													break;
+													
+						case COPY_OR_MOVE:			if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+													{
+														try
 														{
 															for(int i = data.length; i > 0; i--)
 															{
@@ -189,20 +198,23 @@ public class DragDropHandler extends TransferHandler
 															// TODO Auto-generated catch block
 															e.printStackTrace();
 														}
-														break;
-							}
+													}
+													break;
 						}
+					}
+					
+					if(DragEvent.dge.getComponent() == info.getComponent())
+					{
+						if(pdjList.getSelectedValues().length >= pdjList.getModel().getSize())
+							return false;
 						
-						if(DragEvent.dge.getComponent() == info.getComponent())
+						switch (((PDJList)info.getComponent()).getListDropMode())
 						{
-							if(pdjList.getSelectedValues().length >= pdjList.getModel().getSize())
-								return false;
-							
-							switch (((PDJList)info.getComponent()).getListDropMode())
-							{
-							case NONE:					break;
-							
-							case COPY:					try
+						case NONE:					break;
+						
+						case COPY:					if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+													{
+														try
 														{
 															for(int i = data.length; i > 0; i--)
 															{
@@ -214,14 +226,17 @@ public class DragDropHandler extends TransferHandler
 															// TODO Auto-generated catch block
 															e.printStackTrace();
 														}
-														break;
-										
-							case MOVE:					System.out.println("MOVE not supported");
-														break;
-														
-							case DELETE:				break;
-														
-							case COPY_OR_MOVE:			try
+													}
+													break;
+									
+						case MOVE:					System.out.println("MOVE not supported");
+													break;
+													
+						case DELETE:				break;
+													
+						case COPY_OR_MOVE:			if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+													{
+														try
 														{
 															int addIndex = dropLocation.getIndex();
 															PDJList list = ((PDJList)DragEvent.dge.getComponent());
@@ -243,12 +258,11 @@ public class DragDropHandler extends TransferHandler
 															// TODO Auto-generated catch block
 															e.printStackTrace();
 														}
+													}
 														break;
-
-							}
 						}
-						
 					}
+				}
 			}
 		}
 		
