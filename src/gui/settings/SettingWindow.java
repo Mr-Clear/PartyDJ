@@ -28,8 +28,6 @@ public class SettingWindow extends JFrame
 		splitPane.add(tree);
 		splitPane.add(panel);
 		this.add(splitPane);
-		//new JLabel(new ImageIcon("cow.jpg")), new JLabel(new ImageIcon("astronaut.jpg")));
-		//splitPane.setOneTouchExpandable(true);
 		
 		setVisible(true);
 	}

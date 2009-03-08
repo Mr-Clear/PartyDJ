@@ -2,9 +2,7 @@ package gui.settings;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Panel;
-import javax.swing.JComponent;
 
 public class SettingContainer extends Panel
 {

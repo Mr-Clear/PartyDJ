@@ -850,6 +850,7 @@ public class DerbyDB implements IData
 				
 				int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
 				
+				
 				// Wenn trackPosition ausserhalb der Liste, nichts löschen.
 				if(trackPosition < 0 || trackPosition >= size)
 					return;
@@ -857,7 +858,7 @@ public class DerbyDB implements IData
 				PreparedStatement ps = conn.prepareStatement("DELETE FROM LISTS_CONTENT WHERE POSITION = ? AND LIST = ?");
 				ps.setInt(1, trackPosition);
 				ps.setInt(2, listIndex);
-				ps.executeUpdate();
+				
 				for(int i = trackPosition; i < size; i++)
 				{
 					ps = conn.prepareStatement("UPDATE LISTS_CONTENT SET POSITION = ? WHERE POSITION = ? AND LIST = ?");
