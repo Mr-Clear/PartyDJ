@@ -29,6 +29,20 @@ public class SimplePlayer implements IPlayer
 	public SimplePlayer(PlayerContact playerContact)
 	{
 		contact = playerContact;
+		try
+		{
+			volume = Integer.parseInt(basics.Controller.instance.data.readSetting("PlayerVolume", "100"));
+		}
+		catch (NumberFormatException e)
+		{
+			volume = 100;
+			e.printStackTrace();
+		}
+		catch (SettingException e)
+		{
+			volume = 100;
+			e.printStackTrace();
+		}
 	}
 	
 	public void fadeIn()
@@ -54,7 +68,7 @@ public class SimplePlayer implements IPlayer
 		if(p != null)
 			p.stop();
 		
-		gui.ClassicWindow.refreshTimer.stop();
+		gui.ClassicWindow.getRefreshTimer().stop();
 		changeState(false);
 	}
 
@@ -63,7 +77,7 @@ public class SimplePlayer implements IPlayer
 		if(p != null)
 			p.start();
 		
-		gui.ClassicWindow.refreshTimer.start();
+		gui.ClassicWindow.getRefreshTimer().start();
 		changeState(true);
 		
 	}
@@ -96,27 +110,37 @@ public class SimplePlayer implements IPlayer
 		p.setMediaTime(new Time(Seconds));
 	}
 
-	public void setVolume(int Volume)
+	public void setVolume(int volume)
 	{
-		if(Volume < 0)
+		if(volume < 0)
+			volume = 0;
+		
+		else if(volume > 100)
+			volume = 100;
+		
+		this.volume = volume;
+
+		try
 		{
-			if(status)
-				p.getGainControl().setMute(true);
+			basics.Controller.instance.data.writeSetting("PlayerVolume", String.valueOf(volume));
+		}
+		catch (SettingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		else if(Volume > 100)
-			Volume = 100;
+		if(status)
+			p.getGainControl().setLevel(volume/100f);
 		
-		volume = Volume;
-
-		p.getGainControl().setLevel(volume/100f);
+		gui.ClassicWindow.setVolume(volume);
 	}
 
 	public void start()
 	{
 		setPosition(0);
 		play();
-		gui.ClassicWindow.refreshTimer.start();
+		gui.ClassicWindow.getRefreshTimer().start();
 	}
 
 	public void start(Track track)
@@ -130,6 +154,8 @@ public class SimplePlayer implements IPlayer
 		try
 		{
 			p = getPlayer(track.path);
+		
+			p.getGainControl().setLevel(volume / 100f);
 		}
 		catch (PlayerException e)
 		{
@@ -157,7 +183,7 @@ public class SimplePlayer implements IPlayer
 									}
 								});
 		p.start();
-		gui.ClassicWindow.refreshTimer.start();
+		gui.ClassicWindow.getRefreshTimer().start();
 		
 		contact.trackChanged(track);
 
@@ -168,7 +194,7 @@ public class SimplePlayer implements IPlayer
 	{
 		if(p != null)
 			p.stop();
-		gui.ClassicWindow.refreshTimer.stop();
+		gui.ClassicWindow.getRefreshTimer().stop();
 		changeState(false);
 	}
 

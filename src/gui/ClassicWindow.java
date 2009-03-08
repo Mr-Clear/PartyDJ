@@ -37,9 +37,10 @@ public class ClassicWindow extends JFrame
 	private static final long serialVersionUID = 5672123337960808686L;
 	private Container gcp = getContentPane();
 	private IData data;
-	public static Timer refreshTimer;
+	private static Timer refreshTimer;
 	private PDJSlider slider;
 	private JLabel label;
+	private static JSlider volume;
 	protected static final IPlayer player = basics.Controller.instance.player;
 	
 	public ClassicWindow()
@@ -467,18 +468,23 @@ public class ClassicWindow extends JFrame
 		return panel;
 	}
 	
+	public static Timer getRefreshTimer()
+	{
+		return refreshTimer;
+	}
+	
 	/**
 	 * Erzeugt den Lautstärkeregler.
 	 * @return	JPanel mit GridBagLayout, welches den Lautstärkeregler beinhaltet.
 	 */
 	public Component Volume()
 	{
-		JSlider volume = new JSlider(JSlider.VERTICAL, 0, 100, player.getVolume());
+		volume = new JSlider(JSlider.VERTICAL, 0, 100, player.getVolume());
 		JPanel panel = new JPanel(new GridBagLayout());
 		
 		GridBagConstraints c = new GridBagConstraints();
 		
-		
+		volume.addChangeListener(new VolumeListener());
 		
 		panel.setBackground(Color.darkGray);
 		volume.setBackground(Color.darkGray);
@@ -495,6 +501,10 @@ public class ClassicWindow extends JFrame
 		return panel;
 	}
 	
+	public static void setVolume(int vol)
+	{
+		volume.setValue(vol);
+	}
 	
 	
 	private JButton customizeButton(String iconPath)
@@ -587,6 +597,8 @@ public class ClassicWindow extends JFrame
 		{
 			label.setText(playingCurrent.name);
 			duration = (int)playingCurrent.duration;
+			
+			volume.setValue(player.getVolume());
 	
 			slider.setMiddleLabel(common.Functions.formatTime(duration));
 			slider.setMaximum(duration * 10000);
@@ -597,12 +609,15 @@ public class ClassicWindow extends JFrame
 	
 	class VolumeListener implements ChangeListener
 	{
-
 		public void stateChanged(ChangeEvent e)
 		{
 			JSlider slider;
 			if(e.getSource() instanceof JSlider)
 				slider = (JSlider)e.getSource();
+			else
+				slider = new JSlider();
+			
+			player.setVolume(slider.getValue());
 		}
 		
 	}

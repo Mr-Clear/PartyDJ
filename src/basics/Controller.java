@@ -37,7 +37,7 @@ public class Controller
 	
 	public Controller() throws Exception
 	{
-		SplashWindow splash = new SplashWindow(); 
+		//SplashWindow splash = new SplashWindow(); 
 		
 		if(instance == null)
 			instance = this;
@@ -55,7 +55,7 @@ public class Controller
 
 		
 		//Datenbank verbinden
-		splash.setInfo("Verbinde zur Datenbank");
+		//splash.setInfo("Verbinde zur Datenbank");
 		try
 		{
 			data = new DerbyDB(Functions.getFolder() + System.getProperty("file.separator") + "DataBase");
@@ -68,20 +68,20 @@ public class Controller
 			System.exit(1);
 		}
 		
-		splash.setInfo("Lade Listen");
+		//splash.setInfo("Lade Listen");
 		listProvider = new ListProvider();
 		
-		splash.setInfo("Lade Player");
+		//splash.setInfo("Lade Player");
 		player = new SimplePlayer(new PlayerListener());
 		
-		splash.setInfo("Lade Fenster");
+		//splash.setInfo("Lade Fenster");
 		window = new ClassicWindow();
 		//window = new TestWindow();
 		//window = new SettingWindow();
 		
-		splash.setInfo("PartyDJ bereit :)");
-		data.writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
-		splash.close();
+		//splash.setInfo("PartyDJ bereit :)");
+		//data.writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
+		//splash.close();
 		loadFinished = true;
 	}
 	
