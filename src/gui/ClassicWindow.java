@@ -36,7 +36,9 @@ public class ClassicWindow extends JFrame
 	private Container gcp = getContentPane();
 	private IData data;
 	private Timer refreshTimer;
-	private JProgressBar progressBar ;
+	private JProgressBar progressBar;
+	private JSlider slider;
+	private JLabel label;
 	protected static final IPlayer player = basics.Controller.instance.player;
 	
 	public ClassicWindow()
@@ -97,7 +99,7 @@ public class ClassicWindow extends JFrame
 		c.weightx = 1.0;
 		c.weighty = 0.0;
 		c.gridx = 2;
-		control.add(Slider(player.getFileName()), c);
+		control.add(Slider(), c);
 		
 		c.weightx = 0.0;
 		c.weighty = 0.0;
@@ -420,29 +422,26 @@ public class ClassicWindow extends JFrame
 	 * @param Titel des gespielten Liedes.
 	 * @return JPanel mit GridBagLayout, welches den Titel und Slider beinhaltet.
 	 */
-	public Component Slider(String title)
+	public Component Slider()
 	{
-		JLabel label = new JLabel(title);
-		//JSlider slider = new JSlider(0, 100);
+		JLabel label = new JLabel();
+		slider = new JSlider();
 		JPanel panel = new JPanel(new GridBagLayout());
 		
 		panel.setBackground(Color.darkGray);
 		label.setBackground(Color.darkGray);
 		label.setForeground(Color.green);
-		//slider.setBackground(Color.darkGray);
+		slider.setBackground(Color.darkGray);
 		label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18)); 		
 		GridBagConstraints c = new GridBagConstraints();
 		
-		//-------------JProgessBar
 		Controller.instance.addPlayStateListener(new PlayState());
-		progressBar = new JProgressBar();
 		
 		refreshTimer = new Timer(0, new ActionListener()
 									{
 										public void actionPerformed(ActionEvent evt)
 										{
-											//System.out.println((int)(player.getPosition()*1000));
-											progressBar.setValue((int)(player.getPosition()*1000));
+											slider.setValue((int)(player.getPosition()*10000));
 											//if(!player.getPlayState())
 												//refreshTimer.stop();
 										}
@@ -459,7 +458,7 @@ public class ClassicWindow extends JFrame
 		panel.add(label, c);
 		
 		c.gridy = 0;
-		panel.add(progressBar, c);
+		panel.add(slider, c);
 	
 		refreshTimer.setDelay(40);
 		refreshTimer.start();
@@ -583,10 +582,10 @@ public class ClassicWindow extends JFrame
 		
 		public void currentTrackChanged(Track playedLast, Track playingCurrent)
 		{
-			duration = (int)(playingCurrent.duration*1000);
-			System.out.println("duration" + duration);
+			label.setText(playingCurrent.name);
+			duration = (int)(playingCurrent.duration*10000);
 			progressBar.setMinimum(0);
-			progressBar.setMaximum(duration);
+			slider.setMaximum(duration);
 		}
 	}
 }
