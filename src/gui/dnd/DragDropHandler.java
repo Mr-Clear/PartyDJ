@@ -167,7 +167,7 @@ public class DragDropHandler extends TransferHandler
 						case MOVE:					System.out.println("MOVE not supported");
 													break;
 													
-						case DELETE:				if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+						case DELETE:				if(((PDJList)DragEvent.dge.getComponent()).getListModel() instanceof EditableListModel)
 													{
 														try
 														{
