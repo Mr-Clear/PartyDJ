@@ -13,11 +13,13 @@ public class SettingWindow extends JFrame
 	private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 	private final JTree tree;
 	private final SettingContainer panel = new SettingContainer();
+	private final Frame me = this;
 	
 	public SettingWindow()
 	{
+		super("Party DJ Einstellungens");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(400, 300);
+		setSize(1000, 600);
 		
 		tree = new JTree(createTree());
 		tree.addMouseListener(new TreeListener());
@@ -28,6 +30,10 @@ public class SettingWindow extends JFrame
 		splitPane.add(tree);
 		splitPane.add(panel);
 		this.add(splitPane);
+		
+		tree.setSelectionRow(0);
+		
+		new TreeListener().mouseClicked(new MouseEvent(tree, 0, 0, 0, 0, 0, 0, false));
 		
 		setVisible(true);
 	}
@@ -53,7 +59,7 @@ public class SettingWindow extends JFrame
 			{
 				lastPath = path;
 				
-				System.out.println(path);
+				//System.out.println(path);
 				
 				if(path.getPathCount() >= 1)
 				{
@@ -66,7 +72,7 @@ public class SettingWindow extends JFrame
 							String second = path.getPathComponent(1).toString();
 							
 							if(second.equals("Hauptliste"))
-								panel.setSettingComponent(new MasterList());
+								panel.setSettingComponent(new MasterList(me));
 							else
 								panel.setSettingComponent(new JPanel());
 							//panel.add(new JLabel());

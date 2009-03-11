@@ -2,7 +2,6 @@ package lists;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.ListModel;
 import basics.Controller;
 import common.ListException;
 import common.Track;
@@ -21,7 +20,7 @@ public class ListProvider
 		masterListModel = new DbMasterListModel();
 	}
 	
-	public ListModel getMasterList() throws ListException
+	public DbMasterListModel getMasterList() throws ListException
 	{
 		return masterListModel;
 	}

@@ -390,8 +390,12 @@ public class DerbyDB implements IData
 			{
 				index = -1;
 			}
+				
 			if(index == -1)
 			{
+				if(track.name == null)
+					track.name = track.path.substring(track.path.lastIndexOf("\\") + 1, track.path.lastIndexOf("."));
+				
 				synchronized(conn)
 				{
 					PreparedStatement ps = conn.prepareStatement("INSERT INTO FILES (PATH, SEARCHNAME, NAME, DURATION, SIZE, PROBLEM, INFO) VALUES(?, ?, ?, ?, ?, ?, ?)");
@@ -407,6 +411,7 @@ public class DerbyDB implements IData
 				}
 				
 				index = checkIndex(track.path);
+				conn.commit();
 				track.index = index;
 				
 				if(masterList != null)
@@ -420,7 +425,10 @@ public class DerbyDB implements IData
 						listener.trackAdded(track);
 				}					
 			}
-			track.index = -1;
+			else
+				conn.commit(); //commit nach checkIndex()
+			
+			track.index = index;
 			return index;
 		}
 		catch (SQLException e)
@@ -548,6 +556,8 @@ public class DerbyDB implements IData
 	
 	public void deleteTrack(Track track) throws ListException
 	{
+		if(track == null)
+			throw new NullPointerException("Kein Track übergeben.");
 		synchronized(conn)
 		{
 			try

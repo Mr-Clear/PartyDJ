@@ -4,5 +4,3 @@ Listen optimieren...
 Andere GUI-APIs anschauen
 PopupMenu fertig machen
 CloseListener
-ClassicWindow Titel
-Icon

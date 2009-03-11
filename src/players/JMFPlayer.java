@@ -272,7 +272,10 @@ public class JMFPlayer implements IPlayer
 	{
 		try
 		{
-			return Manager.createRealizedPlayer(new File(FileName).toURI().toURL());
+			Player newPlayer = Manager.createRealizedPlayer(new File(FileName).toURI().toURL());
+			if(newPlayer == null)
+				throw new NoPlayerException("Player ist null.");
+			return newPlayer;
 		}
 		catch (NoPlayerException e)
 		{
