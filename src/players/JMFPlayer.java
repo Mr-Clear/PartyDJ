@@ -1,4 +1,4 @@
-package simplePlayer;
+package players;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import common.Track.Problem;
  * 
  * @author Eraser
  */
-public class SimplePlayer implements IPlayer
+public class JMFPlayer implements IPlayer
 {
 	public int volume;
 	
@@ -32,7 +32,7 @@ public class SimplePlayer implements IPlayer
 	
 	Player p;
 	
-	public SimplePlayer(PlayerContact playerContact)
+	public JMFPlayer(PlayerContact playerContact)
 	{
 		contact = playerContact;
 		try
@@ -203,6 +203,7 @@ public class SimplePlayer implements IPlayer
 		if(p != null)
 			p.stop();
 		changeState(false);
+		 p.deallocate();
 	}
 
 	public double getDuration()

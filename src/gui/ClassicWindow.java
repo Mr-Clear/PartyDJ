@@ -46,7 +46,7 @@ public class ClassicWindow extends JFrame
 	public ClassicWindow()
 	{
 		super("Party DJ");
-		this.setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/Schriftzug.png"));
+		this.setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/p32.gif"));
 		assert Controller.instance != null : "Controller nicht geladen!";
 		data = Controller.instance.data;
 		Controller.instance.player.addPlayStateListener(new PlayState());
