@@ -41,12 +41,14 @@ public class ClassicWindow extends JFrame
 	private PDJSlider slider;
 	private JLabel label;
 	private static JSlider volume;
+	private ClassicWindow classicWindow;
 	protected static final IPlayer player = basics.Controller.instance.player;
 	
 	public ClassicWindow()
 	{
 		super("Party DJ");
 		this.setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/p32.gif"));
+		classicWindow = this;
 		assert Controller.instance != null : "Controller nicht geladen!";
 		data = Controller.instance.data;
 		Controller.instance.player.addPlayStateListener(new PlayState());
@@ -594,6 +596,8 @@ public class ClassicWindow extends JFrame
 			
 			volume.setValue(player.getVolume());
 	
+			classicWindow.setTitle(playingCurrent.name + "   -   PartyDJ");	
+			
 			slider.setMiddleLabel(common.Functions.formatTime(duration));
 			slider.setMaximum(duration * 10000);
 			slider.setMajorTickSpacing(duration * 2500);
