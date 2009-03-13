@@ -66,8 +66,6 @@ public class ClassicWindow extends JFrame
 		manageSize();
 		
 		gcp.setBackground(Color.darkGray);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		controller.registerWindow(this);
 		
 		con.gridx = 0;
 		con.gridy = 0;

@@ -41,8 +41,6 @@ public class Controller
 	Timer trackUpdateTimer; 
 	
 	private boolean loadFinished = false;
-
-	JFrame window;
 	
 	private Controller()
 	{
@@ -95,9 +93,9 @@ public class Controller
 		}
 		
 		splash.setInfo("Lade Fenster");
-		window = new ClassicWindow();
-		//window = new TestWindow();
-		window = new SettingWindow();
+		registerWindow(new ClassicWindow());
+		registerWindow(new TestWindow());
+		registerWindow(new SettingWindow());
 		
 		splash.setInfo("PartyDJ bereit :)");
 		try
