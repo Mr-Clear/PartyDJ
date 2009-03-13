@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import basics.Controller;
-import common.ListException;
-import common.SortOrder;
 import common.Track;
+import data.SortOrder;
 
 public class SearchListModel extends BasicListModel
 {
@@ -28,7 +27,7 @@ public class SearchListModel extends BasicListModel
 		int maxSize = getSize();
 		this.searchString = searchString;
 		
-		list = Controller.instance.data.readList(null, searchString, SortOrder.DEFAULT);
+		list = Controller.getInstance().getData().readList(null, searchString, SortOrder.DEFAULT);
 		
 		if(list.size() > maxSize)
 		maxSize = list.size();

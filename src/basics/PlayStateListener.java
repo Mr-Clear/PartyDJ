@@ -1,4 +1,6 @@
-package common;
+package basics;
+
+import common.Track;
 
 /**Empfängt Änderungen des Abspielzustandes. 
  * 

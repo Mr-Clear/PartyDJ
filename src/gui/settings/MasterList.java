@@ -23,8 +23,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import common.ListException;
-import common.PlayerException;
+import players.PlayerException;
+import lists.ListException;
 import common.Track;
 import data.IData;
 import basics.Controller;
@@ -33,8 +33,8 @@ public class MasterList extends JPanel
 {
 	private static final long serialVersionUID = 6101715371957303072L;
 	private PDJList list;
-	private final Controller controller = Controller.instance;
-	private final IData data = controller.data;
+	private final Controller controller = Controller.getInstance();
+	private final IData data = controller.getData();
 	private final Frame frame;
 
 	public MasterList(Frame parent)
@@ -89,7 +89,7 @@ public class MasterList extends JPanel
 						        common.Track.Problem problem = common.Track.Problem.NONE;
 						        try
 								{
-						        	duration = controller.player.getDuration(filePath);
+						        	duration = controller.getPlayer().getDuration(filePath);
 								}
 								catch (PlayerException e)
 								{
@@ -133,7 +133,7 @@ public class MasterList extends JPanel
 								//Absteigend löschen, damit keine Indexfehler auftreten
 								for(int i = selected.length - 1; i >= 0; i--)
 								{
-									data.deleteTrack(controller.listProvider.getMasterList().getElementAt(selected[i]));
+									data.deleteTrack(controller.getListProvider().getMasterList().getElementAt(selected[i]));
 								}
 							}
 							catch (ListException e)
@@ -147,7 +147,7 @@ public class MasterList extends JPanel
 		
 		try
 		{
-			PDJScrollList scrollList = new PDJScrollList(controller.listProvider.getMasterList());
+			PDJScrollList scrollList = new PDJScrollList(controller.getListProvider().getMasterList());
 			list = scrollList.getList();
 			box.add(scrollList);
 		}
@@ -272,7 +272,7 @@ public class MasterList extends JPanel
 			
 			setSize(new Dimension(500, 100));
 			setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-			this.addWindowListener(this);
+			addWindowListener(this);
 			
 			setLayout(new BorderLayout());
 			

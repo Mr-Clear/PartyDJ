@@ -1,4 +1,4 @@
-package common;
+package lists;
 
 /** Tritt auf wenn beim Zugriff auf eine Liste nicht funktioniert */
 public class ListException extends Exception

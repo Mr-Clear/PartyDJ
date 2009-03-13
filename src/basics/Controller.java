@@ -1,54 +1,68 @@
 package basics;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Frame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Stack;
 import gui.*;
+import gui.settings.SettingWindow;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import players.IPlayer;
 import players.JMFPlayer;
+import players.PlayerException;
 import common.*;
 import common.Track.TrackElement;
 
 import lists.EditableListModel;
+import lists.ListException;
 import lists.ListProvider;
 import data.*;
 import data.derby.DerbyDB;
 
 public class Controller
 {
-	public static Controller instance = null;
-	public IData data = null;
-	public ListProvider listProvider;
-	public IPlayer player;
+	private static Controller instance;
+	private IData data;
+	private ListProvider listProvider;
+	private IPlayer player;
 	private Track currentTrack;
 	private EditableListModel playList;
 	
-	private Stack<Track> trackUpdateStack = new ArrayStack<Track>();
+	private Thread closeListenTread;
+	private Runtime runtime = Runtime.getRuntime();
+	
+	private final Set<CloseListener> closeListener = new HashSet<CloseListener>();
+	private final Set<Frame> windows = new HashSet<Frame>();
+	
+	private Stack<Track> trackUpdateStack = new Stack<Track>();
 	Timer trackUpdateTimer; 
 	
 	private boolean loadFinished = false;
 
 	JFrame window;
 	
-	public Controller() throws Exception
+	private Controller()
 	{
+		
 		SplashWindow splash = new SplashWindow(); 
 		
 		if(instance == null)
 			instance = this;
 		else
-			throw new Exception("Es darf nur ein Controller erstellt werden!");
+			throw new RuntimeException("Es darf nur ein Controller erstellt werden!");
 		
-	     Runtime run = Runtime.getRuntime();
-	     run.addShutdownHook(new Thread()
-	     {
-		     public void run()
-		     {
-		    	 closePartyDJ();
-		     }
-	     });
-
+	     
+	     closeListenTread = new Thread()
+				     {
+					     public void run()
+					     {
+					    	 closePartyDJ();
+					     }
+				     };
+	     runtime.addShutdownHook(closeListenTread);
 		
 		//Datenbank verbinden
 		splash.setInfo("Verbinde zur Datenbank");
@@ -68,19 +82,59 @@ public class Controller
 		player = new JMFPlayer(new PlayerListener());
 		
 		splash.setInfo("Lade Listen");
-		listProvider = new ListProvider();
+		try
+		{
+			listProvider = new ListProvider();
+		}
+		catch (ListException e)
+		{
+			System.err.println("Listen konnten nicht geladen werden:");
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Listen konnten nicht geladen werden!\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
+		}
 		
 		splash.setInfo("Lade Fenster");
 		window = new ClassicWindow();
 		//window = new TestWindow();
-		//window = new SettingWindow();
+		window = new SettingWindow();
 		
 		splash.setInfo("PartyDJ bereit :)");
-		data.writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
+		try
+		{
+			getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
+		}
+		catch (SettingException e){}
 		splash.close();
 		loadFinished = true;
 	}
 	
+
+	/**
+	 * @return Die Instanz des Controllers.
+	 */
+	public static Controller getInstance()
+	{
+		return instance;
+	}
+
+	public IData getData()
+	{
+		return data;
+	}
+	
+	public IPlayer getPlayer()
+	{
+		return player;
+	}
+	
+	public ListProvider getListProvider()
+	{
+		return listProvider;
+	}
+	
+
+
 	public Track getCurrentTrack()
 	{
 		return currentTrack;
@@ -102,6 +156,9 @@ public class Controller
 		return loadFinished;
 	}
 	
+	/**Schiebt einen Track auf den Duration-Update-Stapel.
+	 * Damit wird die länge des Tracks eingelesen, sobald er an der Reihe ist.
+	 */
 	public void pushTrackToUpdate(Track track)
 	{
 		trackUpdateStack.push(track);
@@ -112,40 +169,58 @@ public class Controller
 			trackUpdateTimer.schedule(new TrackUpdateTask(trackUpdateStack), 0, 1000); 
 		}
 	}
+	
+	/**Registriert ein Fenster.
+	 * Erstellt einen WindowsListener für das Fenster der bei windowColsing das Fenster schließt.
+	 * Wenn das letzte registrierte Fenster geschlossen wird, beendet sich der PartyDJ.
+	 */
+	public void registerWindow(JFrame window)
+	{
+		windows.add(window);
+		window.addWindowListener(new ClientWindowListener(window));
+	}
+	
+	/**Schließt das angegebene Fenster.
+	 * Wenn es das letzte registrierte Fenster ist, wird der PartyDJ beendet.
+	 * 
+	 * @param window
+	 */
+	public void unregisterWindow(Frame window)
+	{
+		windows.remove(window);
+		window.dispose();
+		if(windows.isEmpty())
+			closePartyDJ();
+	}
+	
+	public void addCloseListener(CloseListener listener)
+	{
+		closeListener.add(listener);
+	}
+	public void removeCloseListener(CloseListener listener)
+	{
+		closeListener.remove(listener);
+	}
 
 	public void closePartyDJ()
 	{
-		try
+		runtime.removeShutdownHook(closeListenTread);
+		synchronized(closeListener)
 		{
-			if(data != null)
-				data.close();
+			for(CloseListener listener : closeListener)
+				listener.closing();
 		}
-		catch (ListException e)
-		{
-			e.printStackTrace();
-		}
+		System.exit(0);
 	}
 
-	public static void main(String[] args)
+	private class PlayerListener implements PlayerContact
 	{
-		try
-		{
-			new basics.Controller();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}		
-	}
-	
-	class PlayerListener implements PlayerContact
-	{
-
-		public void playCompleted()
+		public Track predictNextTrack()
 		{
 			// TODO Auto-generated method stub
+			return null;
 		}
-
+		
 		public Track requestNextTrack()
 		{
 			Track nextTrack = null;
@@ -184,18 +259,19 @@ public class Controller
 		// TODO
 		public void trackChanged(Track track)
 		{
-			if(track.duration != player.getDuration())
+			if(track.duration != getPlayer().getDuration())
 			{
-				track.duration = player.getDuration();
+				track.duration = getPlayer().getDuration();
 				try
 				{
-					data.updateTrack(track, TrackElement.DURATION);
+					getData().updateTrack(track, TrackElement.DURATION);
 				}
 				catch (ListException e)
 				{}
 			}
 		}
-		public void stateChanged(boolean Status)
+		
+		public void playCompleted()
 		{
 			// TODO Auto-generated method stub
 		}
@@ -205,116 +281,31 @@ public class Controller
 			JOptionPane.showMessageDialog(null, "Fehler beim Abspielen:\n" + track.name + "\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-}
-
-class TrackUpdateTask extends TimerTask 
-{
-	final Stack<Track> trackUpdateStack;
-	final Controller controller = Controller.instance;
-	public TrackUpdateTask(Stack<Track> trackUpdateStack)
+	
+	class ClientWindowListener extends WindowAdapter
 	{
-		this.trackUpdateStack = trackUpdateStack;
+		Frame window;
+		ClientWindowListener(Frame window)
+		{
+			this.window = window;
+		}
+		
+		public void windowClosing(WindowEvent arg0)
+		{
+			unregisterWindow(window);
+		}
 	}
 	
-	public void run() 
+	public static void main(String[] args)
 	{
 		try
 		{
-			Track track = null;
-			synchronized(trackUpdateStack)
-			{
-				while(true)
-				{
-					if(trackUpdateStack.empty())
-					{
-						track = null;
-						break;
-					}
-					track = trackUpdateStack.pop();
-	
-					if(track.duration == 0 && track.problem == Track.Problem.NONE)
-					{
-						break;
-					}
-				}
-			}
-			
-			if(track == null)
-			{
-				controller.trackUpdateTimer = null;
-				this.cancel();
-			}
-			else
-			{
-				if(track.duration == 0)
-				{
-					try
-					{
-						track.duration = controller.player.getDuration(track);
-						try
-						{
-							controller.data.updateTrack(track, Track.TrackElement.DURATION);
-						}
-						catch (ListException e)
-						{}
-					}
-					catch (PlayerException e)
-					{
-						e.printStackTrace();
-						track.problem = e.problem;
-						try
-						{
-							controller.data.updateTrack(track, Track.TrackElement.PROBLEM);
-						}
-						catch (ListException e1)
-						{}
-					}
-				}
-				System.out.println("Controller updated duration: " + track.path);
-			}
+			new basics.Controller();
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
-		}
-	}
-}
-
-interface Stack<E> 
-{
-	public boolean empty();
-	public void push(E elt);
-	public E pop();
-}
-
-class ArrayStack<E> implements Stack<E> 
-{
-	private List<E> list;
-	public ArrayStack() 
-	{ 
-		list = new ArrayList<E>();
-	}
-	public boolean empty()
-	{
-		return list.size() == 0;
-	}
-	public void push(E e)
-	{
-		synchronized(list)
-		{
-			list.add(e);
-		}
-	} 
-	public E pop()
-	{
-		synchronized(list)
-		{
-			return list.remove(list.size()-1);
-		}
-	}
-	public String toString() 
-	{
-		return "stack"+list.toString();
+		}		
 	}
 }
 

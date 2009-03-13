@@ -16,9 +16,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
+import players.PlayerException;
+import lists.ListException;
 import basics.Controller;
-import common.ListException;
-import common.PlayerException;
 import common.Track;
 import common.Track.Problem;
 
@@ -147,7 +147,7 @@ public class EditTrackWindow extends JDialog
 			{
 				try
 				{
-					duration = Controller.instance.player.getDuration(myTrack);
+					duration = Controller.getInstance().getPlayer().getDuration(myTrack);
 				}
 				catch (PlayerException e)
 				{
@@ -311,7 +311,7 @@ public class EditTrackWindow extends JDialog
 			{
 				try
 				{
-					Controller.instance.data.updateTrack(myTrack, change);
+					Controller.getInstance().getData().updateTrack(myTrack, change);
 				}
 				catch (ListException e)
 				{
@@ -323,7 +323,7 @@ public class EditTrackWindow extends JDialog
 			{
 				try
 				{
-					Controller.instance.data.updateTrack(myTrack);
+					Controller.getInstance().getData().updateTrack(myTrack);
 				}
 				catch (ListException e)
 				{

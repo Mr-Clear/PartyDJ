@@ -3,7 +3,6 @@ package lists;
 import java.util.HashMap;
 import java.util.Map;
 import basics.Controller;
-import common.ListException;
 import common.Track;
 
 public class ListProvider
@@ -15,8 +14,8 @@ public class ListProvider
 	
 	public ListProvider() throws ListException
 	{
-		assert Controller.instance != null : "Controller nicht geladen!";
-		masterList = Controller.instance.data.getMasterList();
+		assert Controller.getInstance() != null : "Controller nicht geladen!";
+		masterList = Controller.getInstance().getData().getMasterList();
 		masterListModel = new DbMasterListModel();
 	}
 	

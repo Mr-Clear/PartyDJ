@@ -1,4 +1,4 @@
-package common;
+package players;
 import common.Track.Problem;
 
 /**Tritt auf, wenn der Player einen Fehler beim Abspielen auffängt.*/

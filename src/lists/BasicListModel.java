@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import basics.Controller;
-import common.PlayStateListener;
+import basics.PlayStateListener;
 import common.Track;
 import data.MasterListListener;
 
@@ -17,15 +17,16 @@ import data.MasterListListener;
  */
 abstract class BasicListModel implements TrackListModel, PlayStateListener, MasterListListener
 {
-	protected Set<ListDataListener> dataListener = new HashSet<ListDataListener>();
+	private final Controller controller = Controller.getInstance();
+	protected final Set<ListDataListener> dataListener = new HashSet<ListDataListener>();
 	protected List<Track> list;
 	
 	public BasicListModel(List<Track> list)
 	{
-		assert Controller.instance != null : "Controller nicht geladen!";
+		assert Controller.getInstance() != null : "Controller nicht geladen!";
 		this.list = list;
-		Controller.instance.player.addPlayStateListener(this);
-		Controller.instance.data.addMasterListListener(this);
+		controller.getPlayer().addPlayStateListener(this);
+		controller.getData().addMasterListListener(this);
 	}
 	
 	public int getSize()

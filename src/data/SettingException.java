@@ -1,4 +1,4 @@
-package common;
+package data;
 
 /**Tritt auf, wenn eine Einstellung nicht geschrieben oder gelesen werden kann.*/
 public class SettingException extends Exception

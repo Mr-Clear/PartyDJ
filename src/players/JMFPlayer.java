@@ -7,9 +7,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.media.*;
-import common.*;
+import basics.Controller;
+import basics.PlayStateListener;
+import basics.PlayerContact;
 import common.Track;
 import common.Track.Problem;
+import data.IData;
+import data.SettingException;
 
 
 /**Einfacher Player.
@@ -22,6 +26,7 @@ import common.Track.Problem;
  */
 public class JMFPlayer implements IPlayer
 {
+	private IData data = Controller.getInstance().getData(); 
 	public int volume;
 	
 	PlayerContact contact;
@@ -37,7 +42,7 @@ public class JMFPlayer implements IPlayer
 		contact = playerContact;
 		try
 		{
-			volume = Integer.parseInt(basics.Controller.instance.data.readSetting("PlayerVolume", "100"));
+			volume = Integer.parseInt(data.readSetting("PlayerVolume", "100"));
 		}
 		catch (NumberFormatException e)
 		{
@@ -126,7 +131,7 @@ public class JMFPlayer implements IPlayer
 
 		try
 		{
-			basics.Controller.instance.data.writeSetting("PlayerVolume", String.valueOf(volume));
+			data.writeSetting("PlayerVolume", String.valueOf(volume));
 		}
 		catch (SettingException e)
 		{

@@ -1,7 +1,7 @@
 package gui;
 
-import gui.DnD.DragDropHandler;
-import gui.DnD.TrackSelection;
+import gui.dnd.DragDropHandler;
+import gui.dnd.TrackSelection;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -21,7 +21,7 @@ import javax.swing.event.MenuListener;
 import basics.Controller;
 import lists.DbMasterListModel;
 import lists.EditableListModel;
-import common.ListException;
+import lists.ListException;
 import common.Track;
 
 //TODO Mehrfachauswahl
@@ -122,7 +122,7 @@ class PopupMenuItemListener implements ActionListener
 		String command = e.getActionCommand();
 		
 		if(command.equals("Play"))
-			Controller.instance.player.start(track);
+			Controller.getInstance().getPlayer().start(track);
 		
 		else if(command.equals("Edit"))
 			new EditTrackWindow(track);
@@ -133,7 +133,7 @@ class PopupMenuItemListener implements ActionListener
 				return;
 			try
 			{
-				Controller.instance.data.deleteTrack(track);
+				Controller.getInstance().getData().deleteTrack(track);
 			}
 			catch (ListException e1)
 			{

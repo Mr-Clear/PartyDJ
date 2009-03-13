@@ -1,7 +1,6 @@
 package data;
 
-import common.ListException;
-import common.SettingException;
+import lists.ListException;
 import common.Track;
 
 public interface IData
@@ -56,7 +55,7 @@ public interface IData
 	 * @return Die Liste vom Typ java.util.ArrayList<common.Track>.
 	 * @throws ListException
 	 */
-	java.util.List<Track> readList(String listName, String searchString, common.SortOrder order) throws ListException;
+	java.util.List<Track> readList(String listName, String searchString, data.SortOrder order) throws ListException;
 	
 	/**Fügt einen Track zur Hauptliste hinzu.
 	 * 

@@ -1,6 +1,5 @@
 package lists;
 
-import common.ListException;
 import common.Track;
 
 public interface EditableListModel extends TrackListModel 

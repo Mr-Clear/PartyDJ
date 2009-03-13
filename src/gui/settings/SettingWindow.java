@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import basics.Controller;
 
 public class SettingWindow extends JFrame
 {
@@ -18,7 +19,8 @@ public class SettingWindow extends JFrame
 	public SettingWindow()
 	{
 		super("Party DJ Einstellungens");
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		Controller.getInstance().registerWindow(this);
 		setSize(1000, 600);
 		
 		tree = new JTree(createTree());

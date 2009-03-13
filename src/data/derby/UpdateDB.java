@@ -3,7 +3,7 @@ package data.derby;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import common.SettingException;
+import data.SettingException;
 
 public class UpdateDB
 {

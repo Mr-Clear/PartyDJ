@@ -1,5 +1,5 @@
 package gui;
-import gui.DnD.ListDropMode;
+import gui.dnd.ListDropMode;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -11,32 +11,36 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 
 import javax.swing.*;
-import common.ListException;
-import common.PlayStateListener;
-import common.SettingException;
+import lists.ListException;
+import lists.ListProvider;
 import common.Track;
 import data.IData;
+import data.SettingException;
 import basics.Controller;
+import basics.PlayStateListener;
 
 public class TestWindow extends JFrame 
 {
 	private static final long serialVersionUID = -3880026026104218593L;
 
+	private Controller controller = Controller.getInstance();
+	private final ListProvider listProvider = controller.getListProvider();
+	IData data = controller.getData();
+	
 	JScrollPane masterListPane;
 	JList masterList;
 	JScrollPane testListPane;
 	JList testList;
 	JTextField text = new JTextField();
 	
-	IData data = Controller.instance.data;
 	
 	public TestWindow() throws HeadlessException
 	{
 		super("PartyDJ");
 		try
 		{
-			masterList = new PDJList(Controller.instance.listProvider.getMasterList(), ListDropMode.DELETE, "");
-			testList = new PDJList(Controller.instance.listProvider.getDbList("Test"));
+			masterList = new PDJList(listProvider.getMasterList(), ListDropMode.DELETE, "");
+			testList = new PDJList(listProvider.getDbList("Test"));
 		}
 		catch (ListException e1)
 		{
@@ -81,7 +85,7 @@ public class TestWindow extends JFrame
 				
 		try
 		{
-			text.setText(Controller.instance.data.readSetting("Test", "Default"));
+			text.setText(controller.getData().readSetting("Test", "Default"));
 		}
 		catch (SettingException e)
 		{
@@ -94,7 +98,7 @@ public class TestWindow extends JFrame
 		
 		text.addActionListener(new TextBoxListener());
 
-		Controller.instance.player.addPlayStateListener(new PlayStateListener(){
+		controller.getPlayer().addPlayStateListener(new PlayStateListener(){
 			public void currentTrackChanged(Track playedLast, Track playingCurrent)
 			{
 				setTitle(playingCurrent.name);			
@@ -137,7 +141,7 @@ public class TestWindow extends JFrame
 
 			try
 			{
-				Controller.instance.data.writeSetting("Test", text.getText());
+				controller.getData().writeSetting("Test", text.getText());
 			}
 			catch (SettingException e)
 			{

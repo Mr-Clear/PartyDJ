@@ -1,20 +1,21 @@
 package lists;
 
 import java.util.Map;
-import common.ListException;
 import common.Track;
 import data.IData;
+import data.SortOrder;
 import basics.Controller;
 
 public class DbClientListModel extends LightClientListModel
 {
+	private final Controller controller = Controller.getInstance();
+	private final IData data = controller.getData();
 	private String listName;
-	private final IData data = Controller.instance.data;
-	private final Map<Integer, Track> masterList = Controller.instance.listProvider.masterList;
+	private final Map<Integer, Track> masterList = controller.getListProvider().masterList;
 	
 	protected DbClientListModel(String listName) throws ListException
 	{
-		super(Controller.instance.data.readList(listName, null, common.SortOrder.POSITION));
+		super(Controller.getInstance().getData().readList(listName, null, SortOrder.POSITION));
 		this.listName = listName;
 	}
 	

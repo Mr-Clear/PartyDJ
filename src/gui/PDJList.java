@@ -1,8 +1,8 @@
 package gui;
 
-import gui.DnD.DragDropHandler;
-import gui.DnD.DragEvent;
-import gui.DnD.ListDropMode;
+import gui.dnd.DragDropHandler;
+import gui.dnd.DragEvent;
+import gui.dnd.ListDropMode;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -19,7 +19,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import basics.Controller;
 import lists.EditableListModel;
-import common.ListException;
+import lists.ListException;
 import common.Track;
 
 public class PDJList extends JList
@@ -94,7 +94,7 @@ public class PDJList extends JList
 									private static final long serialVersionUID = -2342506838333821595L;
 									public void actionPerformed(ActionEvent evt) 
 									{
-										Controller.instance.player.start(((Track)((PDJList)evt.getSource()).getSelectedValues()[0]));
+										Controller.getInstance().getPlayer().start(((Track)((PDJList)evt.getSource()).getSelectedValues()[0]));
 									}
 								});
 		
@@ -237,7 +237,7 @@ public class PDJList extends JList
 			if(SwingUtilities.isLeftMouseButton(e))
 			{
 				if(e.getClickCount() == 2)
-					Controller.instance.player.start(((Track)((PDJList)e.getSource()).getSelectedValue()));
+					Controller.getInstance().getPlayer().start(((Track)((PDJList)e.getSource()).getSelectedValue()));
 			}
 		}
 		

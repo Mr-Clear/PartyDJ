@@ -10,7 +10,7 @@ public class DbMasterListModel extends BasicListModel
 {
 	protected DbMasterListModel() throws ListException 
 	{
-		super(Controller.instance.data.readList(null, null, common.SortOrder.NAME));
+		super(Controller.getInstance().getData().readList(null, null, data.SortOrder.NAME));
 	}
 
 	public void trackAdded(Track track)

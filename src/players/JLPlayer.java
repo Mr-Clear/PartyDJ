@@ -5,18 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import basics.PlayStateListener;
+import basics.PlayerContact;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
-import common.IPlayer;
-import common.PlayStateListener;
-import common.PlayerContact;
-import common.PlayerException;
-import common.SettingException;
 import common.Track;
+import data.SettingException;
 
 
 /**Einfacher Player.

@@ -10,7 +10,7 @@ import common.*;
 
 public class LightClientListModel extends BasicListModel implements EditableListModel
 {
-	private final Map<Integer, Track> masterList = Controller.instance.listProvider.masterList;
+	private final Map<Integer, Track> masterList = Controller.getInstance().getListProvider().masterList;
 	
 	public LightClientListModel()
 	{

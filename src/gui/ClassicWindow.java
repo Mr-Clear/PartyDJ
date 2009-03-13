@@ -1,17 +1,16 @@
 package gui;
 
-import gui.DnD.ListDropMode;
+import gui.dnd.ListDropMode;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import common.IPlayer;
-import common.ListException;
-import common.PlayStateListener;
-import common.SettingException;
+import players.IPlayer;
 import common.Track;
 import data.IData;
+import data.SettingException;
 import basics.Controller;
+import basics.PlayStateListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +20,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import lists.ListException;
+import lists.ListProvider;
 import lists.SearchListModel;
 
 
@@ -28,30 +29,31 @@ import lists.SearchListModel;
  * Grafische Benutzeroberfläche für Party DJ.
  * 
  * @author Sam
- * @version 0.0.0.0.0.1
+ * @version 0.0
  */
 
 
 public class ClassicWindow extends JFrame
 {	
 	private static final long serialVersionUID = 5672123337960808686L;
+	private final Controller controller = Controller.getInstance();
+	private final IPlayer player = controller.getPlayer();
+	private final ListProvider listProvider = controller.getListProvider();
+	private final IData data = controller.getData();
 	private Container gcp = getContentPane();
-	private IData data;
 	private Timer refreshTimer;
 	private PDJSlider slider;
 	private JLabel label;
 	private static JSlider volume;
 	private ClassicWindow classicWindow;
-	protected static final IPlayer player = basics.Controller.instance.player;
 	
 	public ClassicWindow()
 	{
 		super("Party DJ");
 		this.setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/p32.gif"));
 		classicWindow = this;
-		assert Controller.instance != null : "Controller nicht geladen!";
-		data = Controller.instance.data;
-		Controller.instance.player.addPlayStateListener(new PlayState());
+		assert Controller.getInstance() != null : "Controller nicht geladen!";
+		player.addPlayStateListener(new PlayState());
 		
 		GridBagConstraints con = new GridBagConstraints();
 		GridBagLayout layout = new GridBagLayout();
@@ -64,7 +66,8 @@ public class ClassicWindow extends JFrame
 		manageSize();
 		
 		gcp.setBackground(Color.darkGray);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		controller.registerWindow(this);
 		
 		con.gridx = 0;
 		con.gridy = 0;
@@ -138,7 +141,7 @@ public class ClassicWindow extends JFrame
 
 		try
 		{
-			mainPart.add(List("Alle", basics.Controller.instance.listProvider.getMasterList(), ListDropMode.DELETE), c);
+			mainPart.add(List("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
 		}
 		catch (ListException e)
 		{
@@ -149,7 +152,7 @@ public class ClassicWindow extends JFrame
 		c.gridy = 1;
 		try
 		{
-			mainPart.add(List("Playlist", basics.Controller.instance.listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
+			mainPart.add(List("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
 		}
 		catch (ListException e1)
 		{
@@ -161,8 +164,8 @@ public class ClassicWindow extends JFrame
 		c.gridy = 0;
 		try
 		{
-			mainPart.add(List("Wunschliste", basics.Controller.instance.listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
-			Controller.instance.setPlayList(basics.Controller.instance.listProvider.getDbList("Wunschliste"));
+			mainPart.add(List("Wunschliste", listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
+			Controller.getInstance().setPlayList(listProvider.getDbList("Wunschliste"));
 		}
 		catch (ListException e)
 		{

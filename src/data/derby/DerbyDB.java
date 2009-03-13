@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import basics.CloseListener;
+import lists.ListException;
 
 import common.*;
 import data.*;
 
-public class DerbyDB implements IData
+public class DerbyDB implements IData, CloseListener
 {
 	Connection conn = null;
 	HashMap<Integer, Track> masterList;
@@ -241,7 +243,7 @@ public class DerbyDB implements IData
 		return masterList;
 	}
 	
-	public ArrayList<Track> readList(String listName, String searchString, common.SortOrder order) throws ListException
+	public ArrayList<Track> readList(String listName, String searchString, data.SortOrder order) throws ListException
 	{
 		if(searchString != null)
 			searchString = makeSearchString(searchString);
@@ -931,7 +933,7 @@ public class DerbyDB implements IData
 			return Track.Problem.OTHER;
 		}
 	}
-
+	
 	public void close() throws ListException
 	{
 		try
@@ -944,6 +946,19 @@ public class DerbyDB implements IData
 		catch (SQLException e)
 		{
 			throw new ListException(e);
+		}
+	}
+
+	public void closing() //Von CloseListener
+	{
+		try
+		{
+			close();
+		}
+		catch (ListException e)
+		{
+			System.err.println("Fehler beim Schlieﬂen der Datenbank.");
+			e.printStackTrace();
 		}
 	}
 }

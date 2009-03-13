@@ -1,4 +1,4 @@
-package common;
+package data;
 
 public enum SortOrder
 {

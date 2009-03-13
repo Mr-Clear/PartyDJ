@@ -1,6 +1,6 @@
 package gui;
 
-import gui.DnD.ListDropMode;
+import gui.dnd.ListDropMode;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 
