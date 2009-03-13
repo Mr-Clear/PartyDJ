@@ -1,6 +1,5 @@
-Serialisierbar.....
-Track-Info auslesen.
+Serialisierbar......
+Track-Info auslesen..
 Listen optimieren...
-Andere GUI-APIs anschauen
+Andere GUI-APIs anschauen.
 PopupMenu fertig machen
-CloseListener
