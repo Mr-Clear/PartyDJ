@@ -1,4 +1,4 @@
-package gui.DnD;
+package gui.dndy;
 
 import gui.PDJList;
 import java.awt.datatransfer.DataFlavor;
@@ -9,7 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.ListModel;
 import javax.swing.TransferHandler;
 import lists.EditableListModel;
-import common.ListException;
+import lists.ListException;
 import common.Track;
 
 public class DragDropHandler extends TransferHandler
