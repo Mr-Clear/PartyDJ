@@ -1,4 +1,4 @@
-package gui.dndy;
+package gui.dnd;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

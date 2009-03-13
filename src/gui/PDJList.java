@@ -1,8 +1,8 @@
 package gui;
 
-import gui.dndy.DragDropHandler;
-import gui.dndy.DragEvent;
-import gui.dndy.ListDropMode;
+import gui.dnd.DragDropHandler;
+import gui.dnd.DragEvent;
+import gui.dnd.ListDropMode;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;

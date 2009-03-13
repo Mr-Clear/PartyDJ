@@ -1,4 +1,4 @@
-package gui.dndy;
+package gui.dnd;
 
 import java.awt.event.MouseEvent;
 

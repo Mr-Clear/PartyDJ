@@ -1,4 +1,4 @@
-package gui.dndy;
+package gui.dnd;
 
 import gui.PDJList;
 import java.awt.datatransfer.DataFlavor;

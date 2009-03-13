@@ -1,7 +1,7 @@
 package gui;
 
-import gui.dndy.DragDropHandler;
-import gui.dndy.TrackSelection;
+import gui.dnd.DragDropHandler;
+import gui.dnd.TrackSelection;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;

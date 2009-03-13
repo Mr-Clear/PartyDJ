@@ -1,5 +1,5 @@
 package gui;
-import gui.dndy.ListDropMode;
+import gui.dnd.ListDropMode;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
