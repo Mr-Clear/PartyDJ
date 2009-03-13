@@ -51,7 +51,6 @@ public class TestWindow extends JFrame
 		masterListPane = new JScrollPane(masterList);
 		testListPane = new JScrollPane(testList);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		try
 		{
 			setSize(Integer.parseInt(data.readSetting("TestWindowWidth", "800")), Integer.parseInt(data.readSetting("TestWindowHeight", "500")));
