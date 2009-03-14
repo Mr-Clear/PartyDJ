@@ -45,7 +45,7 @@ public class JLPlayer implements IPlayer
 			contact = playerContact;
 			try
 			{
-				volume = Integer.parseInt(basics.Controller.instance.data.readSetting("PlayerVolume", "100"));
+				volume = Integer.parseInt(basics.Controller.getInstance().getData().readSetting("PlayerVolume", "100"));
 			}
 			catch (NumberFormatException e)
 			{
