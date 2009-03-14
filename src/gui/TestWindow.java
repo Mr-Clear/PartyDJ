@@ -37,6 +37,7 @@ public class TestWindow extends JFrame
 	public TestWindow() throws HeadlessException
 	{
 		super("PartyDJ");
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		try
 		{
 			masterList = new PDJList(listProvider.getMasterList(), ListDropMode.DELETE, "");

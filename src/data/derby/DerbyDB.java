@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import basics.CloseListener;
 import lists.ListException;
@@ -94,7 +95,8 @@ public class DerbyDB implements IData, CloseListener
 			conn.setAutoCommit(false);
 			
 			Statement s = conn.createStatement();
-			s.executeUpdate("CREATE TABLE SETTINGS (NAME VARCHAR(32) NOT NULL, VALUE VARCHAR(256), PRIMARY KEY (NAME))");
+			s.executeUpdate("CREATE TABLE SETTINGS (NAME VARCHAR(32) NOT NULL, VALUE LONG VARCHAR, PRIMARY KEY (NAME))");
+			s.executeUpdate("CREATE INDEX SETTING ON SETTINGS (NAME)");
 			
 			s.executeUpdate("CREATE TABLE FILES (" +
 					"INDEX INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY, " +
@@ -243,10 +245,24 @@ public class DerbyDB implements IData, CloseListener
 		return masterList;
 	}
 	
-	public ArrayList<Track> readList(String listName, String searchString, data.SortOrder order) throws ListException
+	public List<Track> readList(String listName, String searchString, data.SortOrder order) throws ListException
 	{
 		if(searchString != null)
-			searchString = makeSearchString(searchString);
+		{
+			searchString = makeSearchString(searchString.replace("*", "%"));
+			if(searchString.charAt(0) == '^')
+				searchString = searchString.substring(1);
+			else
+				searchString = "%" + searchString;
+			
+			if(searchString.charAt(searchString.length() - 1) == '$')
+				searchString = searchString.substring(0, searchString.length() - 1);
+			else
+				searchString = searchString + "%";
+		}
+		
+		if(order == null)
+			order = data.SortOrder.DEFAULT;
 		
 		try
 		{
@@ -290,17 +306,6 @@ public class DerbyDB implements IData, CloseListener
 					
 					if(searchString != null)
 					{
-						searchString = makeSearchString(searchString.replace("*", "%"));
-						if(searchString.charAt(0) == '^')
-							searchString = searchString.substring(1);
-						else
-							searchString = "%" + searchString;
-						
-						if(searchString.charAt(searchString.length() - 1) == '$')
-							searchString = searchString.substring(0, searchString.length() - 1);
-						else
-							searchString = searchString + "%";
-						
 						ps.setString(1, searchString);
 					}
 				}
@@ -319,9 +324,9 @@ public class DerbyDB implements IData, CloseListener
 	
 						String statement;
 						if(searchString == null)
-							statement = "SELECT INDEX FROM LISTS_CONTENT WHERE LIST = ?";
+							statement = "SELECT FILES.INDEX FROM FILES, LISTS_CONTENT WHERE LIST = ? AND FILES.INDEX = LISTS_CONTENT.INDEX";
 						else
-							statement = "SELECT INDEX FROM FILES, LISTS_CONTENT WHERE LIST = ? AND FILES.INDEX = LISTS_CONTENT.INDEX AND FILES.SEARCHNAME LIKE ?";
+							statement = "SELECT FILES.INDEX FROM FILES, LISTS_CONTENT WHERE LIST = ? AND FILES.INDEX = LISTS_CONTENT.INDEX AND FILES.SEARCHNAME LIKE ?";
 											
 						switch(order)
 						{
@@ -329,22 +334,22 @@ public class DerbyDB implements IData, CloseListener
 							break;
 						case DEFAULT:
 						case POSITION:
-							statement += " ORDER BY POSITION";
+							statement += " ORDER BY LISTS_CONTENT.POSITION";
 							break;
 						case MASTERLISTINDEX:
 							statement += " ORDER BY FILES.INDEX";
 							break;
 						case NAME:
-							statement += " ORDER BY SEARCHNAME";
+							statement += " ORDER BY FILES.SEARCHNAME";
 							break;
 						case PATH:
-							statement += " ORDER BY PATH";
+							statement += " ORDER BY FILES.PATH";
 							break;
 						case DURATION:
-							statement += " ORDER BY DURATION";
+							statement += " ORDER BY FILES.DURATION";
 							break;
 						case SIZE:
-							statement += " ORDER BY SIZE";
+							statement += " ORDER BY FILES.SIZE";
 							break;
 						}
 						
@@ -695,6 +700,22 @@ public class DerbyDB implements IData, CloseListener
 		// Aus temporärer Liste löschen
 		if(listIndices.containsKey(listName))
 			listIndices.remove(listName);
+	}
+	
+	public List<String> getLists() throws ListException
+	{
+		List<String> lists = new ArrayList<String>();
+		try
+		{
+			ResultSet rs = queryRS("SELECT NAME FROM LISTS ORDER BY NAME");
+			while(rs.next())
+				lists.add(rs.getString(1));
+		}
+		catch (SQLException e)
+		{
+			throw new ListException(e);
+		}
+		return lists;
 	}
 	
 	public void writeSetting(String name, String value) throws SettingException

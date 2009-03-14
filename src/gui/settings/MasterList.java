@@ -3,6 +3,7 @@ package gui.settings;
 import gui.PDJList;
 import gui.PDJScrollList;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -15,18 +16,24 @@ import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 import players.PlayerException;
 import lists.ListException;
+import lists.SearchListModel;
+import lists.TrackListModel;
 import common.Track;
 import data.IData;
+import data.SortOrder;
 import basics.Controller;
 
 public class MasterList extends JPanel
@@ -36,6 +43,12 @@ public class MasterList extends JPanel
 	private final Controller controller = Controller.getInstance();
 	private final IData data = controller.getData();
 	private final Frame frame;
+	
+	private JComboBox sortOrderBox;
+	private JComboBox listBox;
+	private JTextField searchText;
+	
+	private SearchListModel listModel;
 
 	public MasterList(Frame parent)
 	{
@@ -43,10 +56,9 @@ public class MasterList extends JPanel
 		frame = parent;
 
 		setLayout(new BorderLayout());
-		
 		Box box = Box.createVerticalBox();
 		
-		box.add(Box.createRigidArea(new Dimension(8, 8)));
+		box.add(Box.createVerticalStrut(8));
 		
 		JButton addFolder = new JButton("Verzeichnis einfügen...");
 		addFolder.addActionListener(new ActionListener(){
@@ -115,45 +127,79 @@ public class MasterList extends JPanel
 		box.add(addFile);
 		
 		
-		box.add(Box.createRigidArea(new Dimension(8, 8)));
+		box.add(Box.createVerticalStrut(8));
 		
 		JButton removeFile = new JButton("Tracks entfernen");
 		removeFile.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0)
 						{
-							int[] selected = list.getSelectedIndices();
-							if(selected.length == 0)
-								return;
-							//Sicherheitsabfrage
-							if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Alle " + selected.length + " Tracks aus Hauptliste entfernen?", "Tracks entfernen", JOptionPane.YES_NO_OPTION))
-								return;
-
-							try
+							synchronized(list)
 							{
-								//Absteigend löschen, damit keine Indexfehler auftreten
-								for(int i = selected.length - 1; i >= 0; i--)
+								int[] selected = list.getSelectedIndices();
+								if(selected.length == 0)
+									return;
+								//Sicherheitsabfrage
+								if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Alle " + selected.length + " Tracks aus Hauptliste entfernen?", "Tracks entfernen", JOptionPane.YES_NO_OPTION))
+									return;
+	
+								try
 								{
-									data.deleteTrack(controller.getListProvider().getMasterList().getElementAt(selected[i]));
+									//Absteigend löschen, damit keine Indexfehler auftreten
+									for(int i = selected.length - 1; i >= 0; i--)
+									{
+										//TODO ProgressBar o.ä.
+										data.deleteTrack(((TrackListModel)list.getListModel()).getElementAt(selected[i]));
+									}
 								}
-							}
-							catch (ListException e)
-							{
-								JOptionPane.showMessageDialog(null, "Löschen Fehlgeschlagen:\n" + e.getMessage(), "Tracks entfernen", JOptionPane.ERROR_MESSAGE);
+								catch (ListException e)
+								{
+									JOptionPane.showMessageDialog(null, "Löschen Fehlgeschlagen:\n" + e.getMessage(), "Tracks entfernen", JOptionPane.ERROR_MESSAGE);
+								}
 							}
 						}});
 		box.add(removeFile);
 		
-		box.add(Box.createRigidArea(new Dimension(8, 8)));
+		box.add(Box.createVerticalStrut(8));
+		
 		
 		try
 		{
-			PDJScrollList scrollList = new PDJScrollList(controller.getListProvider().getMasterList());
+			listModel = new SearchListModel(null, SortOrder.DEFAULT, null);
+			ActionListener listener = new ListParameterActionListener();
+			Box hbox = Box.createHorizontalBox();
+			hbox.add(Box.createHorizontalStrut(8));
+			hbox.add(new JLabel("Reihenfolge:"));
+			hbox.add(Box.createHorizontalStrut(4));
+			sortOrderBox = new JComboBox(SortOrder.getStringArray());
+			sortOrderBox.setSelectedIndex(1);
+			sortOrderBox.addActionListener(listener);
+			hbox.add(sortOrderBox);
+			hbox.add(Box.createHorizontalStrut(8));
+			hbox.add(new JLabel("Liste:"));
+			hbox.add(Box.createHorizontalStrut(4));
+			List<String> listBoxContent = data.getLists();
+			listBoxContent.add(0, "Hauptliste");
+			listBox = new JComboBox(listBoxContent.toArray());
+			listBox.addActionListener(listener);
+			hbox.add(listBox);
+			hbox.add(Box.createHorizontalStrut(8));
+			hbox.add(new JLabel("Suchtext:"));
+			hbox.add(Box.createHorizontalStrut(4));
+			searchText = new JTextField();
+			searchText.addActionListener(listener);
+			hbox.add(searchText);
+			hbox.add(Box.createHorizontalStrut(8));
+			box.add(hbox);
+			box.add(Box.createVerticalStrut(8));
+			PDJScrollList scrollList = new PDJScrollList(listModel);
 			list = scrollList.getList();
+			scrollList.setPreferredSize(scrollList.getMaximumSize());
 			box.add(scrollList);
 		}
 		catch (ListException e)
 		{
-			JLabel list = new JLabel("Kann hauptliste nicht laden:\n" + e.getMessage());
+			JLabel list = new JLabel("Kann Liste nicht laden: \n" + e.getMessage());
+			list.setForeground(Color.RED);
 			box.add(list);
 		}
 		
@@ -182,13 +228,13 @@ public class MasterList extends JPanel
 			setLayout(new BorderLayout());
 			
 			Box box = Box.createVerticalBox();
-			box.add(Box.createRigidArea(new Dimension(8, 8)));
+			box.add(Box.createVerticalStrut(8));
 			label = new JLabel("Öffne Datei...");
 			box.add(label);
-			box.add(Box.createRigidArea(new Dimension(8, 8)));
+			box.add(Box.createVerticalStrut(8));
 			progressBar = new JProgressBar();
 			box.add(progressBar);
-			box.add(Box.createRigidArea(new Dimension(8, 8)));
+			box.add(Box.createVerticalStrut(8));
 			
 			add(box);
 			
@@ -277,16 +323,16 @@ public class MasterList extends JPanel
 			setLayout(new BorderLayout());
 			
 			Box box = Box.createVerticalBox();
-			box.add(Box.createRigidArea(new Dimension(8, 8)));
+			box.add(Box.createVerticalStrut(8));
 			lblFolder = new JLabel("Öffne Ordner...");
 			box.add(lblFolder);
-			box.add(Box.createRigidArea(new Dimension(8, 8)));
+			box.add(Box.createVerticalStrut(8));
 			lblTrack = new JLabel("...");
 			box.add(lblTrack);
-			box.add(Box.createRigidArea(new Dimension(8, 8)));
+			box.add(Box.createVerticalStrut(8));
 			progressBar = new JProgressBar();
 			box.add(progressBar);
-			box.add(Box.createRigidArea(new Dimension(8, 8)));
+			box.add(Box.createVerticalStrut(8));
 			
 			add(box);
 			
@@ -326,7 +372,7 @@ public class MasterList extends JPanel
 
 			for(String file : files)
 			{
-				addTrack(file);
+				addTrack(folder + System.getProperty("file.separator") + file);
 			}
 			
 			File[] folders = folder.listFiles(new FileFilter (){
@@ -378,5 +424,29 @@ public class MasterList extends JPanel
 		public void windowDeiconified(WindowEvent arg0){}
 		public void windowIconified(WindowEvent arg0){}
 		public void windowOpened(WindowEvent arg0){}
+	}
+	
+	class ListParameterActionListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			String searchTextString = searchText.getText();
+			if(searchTextString.length() == 0)
+				searchTextString = null;
+			String selectedList;
+			if(listBox.getSelectedIndex() == 0)
+				selectedList = null;
+			else
+				selectedList = (String)listBox.getSelectedItem();
+			try
+			{
+				listModel.search(searchTextString, SortOrder.arrayIndexToSortOrder(sortOrderBox.getSelectedIndex()), selectedList);
+				list.validate();
+			}
+			catch (ListException e1)
+			{
+				JOptionPane.showMessageDialog(null, "Fehler beim durchsuchen.\n" + e1.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 }

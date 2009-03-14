@@ -56,7 +56,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 	public void remove(int index) throws ListException
 	{
 		if(index < 0 || index >= getSize())
-			return;		////Wenn der Index ausserhalb der Liste ist, nichts machen.
+			return;		////Wenn der Index auﬂerhalb der Liste ist, nichts machen.
 		list.remove(index);
 		for(ListDataListener listener : dataListener)
 			listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index, index));
@@ -65,7 +65,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 	public void move(int oldIndex, int newIndex) throws ListException
 	{
 		if(oldIndex < 0 || oldIndex >= getSize() || newIndex < 0 || newIndex > getSize() || oldIndex == newIndex)
-			return;		//Wenn der Index ausserhalb der Liste ist, oder Indizes gleich, nichts machen.
+			return;		//Wenn der Index auﬂerhalb der Liste ist, oder Indices gleich, nichts machen.
 		
 		int toAdd;
 		int toRemove;

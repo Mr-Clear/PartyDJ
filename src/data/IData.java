@@ -1,5 +1,6 @@
 package data;
 
+import java.util.List;
 import lists.ListException;
 import common.Track;
 
@@ -23,13 +24,13 @@ public interface IData
 	/**Liest eine Einstellung.
 	 * 
 	 * @param Name Name der Einstellung.
-	 * @param Default Standartwert, der zurückgegeben wird, wenn Einstellung nicht vorhanden ist.
+	 * @param Default Standardwert, der zurückgegeben wird, wenn Einstellung nicht vorhanden ist.
 	 * @return Wert der Einstellung.
 	 * @throws ListException
 	 */
 	String readSetting(String name, String defaultValue) throws SettingException;
 	
-	/**Fügt einen SettingListener hinzu, der Änderungen an den Winstellungen empfängt.
+	/**Fügt einen SettingListener hinzu, der Änderungen an den Einstellungen empfängt.
 	 * 
 	 * @param listener Der SettingListener der hinzugefügt wird.
 	 */
@@ -42,7 +43,7 @@ public interface IData
 	
 	/**Gibt die Hauptliste aus der Datenbank zurück.
 	 * 
-	 * @return Die Liste vom Typ java.util.ArrayList<common.Track>.
+	 * @return Die Liste vom Typ java.util.Map<Integer, Track>.
 	 * @throws ListException
 	 */
 	java.util.Map<Integer, Track> getMasterList() throws ListException;
@@ -51,11 +52,11 @@ public interface IData
 	 * 
 	 * @param listName Name der Liste. null: Liest die Hauptliste.
 	 * @param searchString Suchbedingung. null: Keine Einschränkung.
-	 * @param order Sortierreihnevolge.
-	 * @return Die Liste vom Typ java.util.ArrayList<common.Track>.
+	 * @param order Sortierreihenfolge.
+	 * @return Die Liste vom Typ List<Track>.
 	 * @throws ListException
 	 */
-	java.util.List<Track> readList(String listName, String searchString, data.SortOrder order) throws ListException;
+	List<Track> readList(String listName, String searchString, data.SortOrder order) throws ListException;
 	
 	/**Fügt einen Track zur Hauptliste hinzu.
 	 * 
@@ -108,6 +109,13 @@ public interface IData
 	 */
 	void removeList(String listName) throws ListException;
 	
+	/**Gibt alle Client-Listen in der Datenbank zurück.
+	 * 
+	 * @return Ein String-Array mit den Namen der Listen.
+	 * @throws ListException
+	 */
+	List<String> getLists() throws ListException;
+	
 	/**Fügt einen Track in eine Liste ein.
 	 * 
 	 * @param ListName Name der Liste.
@@ -119,7 +127,7 @@ public interface IData
 	 * 
 	 * @param ListName Name der Liste.
 	 * @param Track Track der eingefügt wird.
-	 * @param trackPosition Postition des Tracks.
+	 * @param trackPosition Position des Tracks.
 	 * @throws ListException
 	 */
 	void insertTrackAt(String listName, Track track, int trackPosition) throws ListException;

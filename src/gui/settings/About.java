@@ -1,9 +1,12 @@
 package gui.settings;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import basics.Controller;
 
 public class About extends JPanel
 {
@@ -12,17 +15,33 @@ public class About extends JPanel
 	public About()
 	{
 		super();
-		JLabel picture = null;
+		
+		setLayout(new BorderLayout());
+		Box box = Box.createVerticalBox();
+		
+		box.add(Box.createRigidArea(new Dimension(8, 8)));
+		
+		JLabel lbl = null;
 		try
 		{
-			picture = new JLabel(new ImageIcon("Resources/Schriftzug.png"));
+			lbl = new JLabel(new ImageIcon("Resources/Schriftzug.png"));
 		}
 		catch (NullPointerException e)
 		{
-			picture = new JLabel("Hier fehlt ein Bild :(");
+			lbl = new JLabel("Hier fehlt ein Bild :(");
 		}
+		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		box.add(lbl);
+
+		box.add(Box.createVerticalGlue());
+		lbl = new JLabel("PartyDJ Version " + Controller.getInstance().version);
+		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		box.add(lbl);
 		
-		picture.setHorizontalAlignment(JLabel.CENTER);
-		add(picture, BorderLayout.CENTER);
+		box.add(Box.createRigidArea(new Dimension(8, 8)));
+		lbl = new JLabel("Geschrieben von Thomas Klier und Samantha Vordermeier");
+		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		box.add(lbl);
+		add(box);
 	}
 }

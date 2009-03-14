@@ -50,7 +50,8 @@ public class ClassicWindow extends JFrame
 	public ClassicWindow()
 	{
 		super("Party DJ");
-		this.setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/p32.gif"));
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/p32.gif"));
 		classicWindow = this;
 		assert Controller.getInstance() != null : "Controller nicht geladen!";
 		player.addPlayStateListener(new PlayState());
@@ -167,7 +168,7 @@ public class ClassicWindow extends JFrame
 		}
 		catch (ListException e)
 		{
-			JOptionPane.showMessageDialog(this, "Konnte Testliste nicht erstellen!", "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Konnte Wunschliste nicht erstellen!", "PartyDJ", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 
@@ -419,6 +420,15 @@ public class ClassicWindow extends JFrame
 					{
 						textField.setBackground(bgColor);
 					}
+				}
+				else
+				{
+					try
+					{
+						((SearchListModel)searchList.getListModel()).search(null);
+					}
+					catch (ListException e)
+					{}
 				}
 			}});
 		

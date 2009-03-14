@@ -6,7 +6,7 @@ __ Primary Key
 
 SETTINGS
     |_NAME_ [String*32]
-    VALUE [String*256]
+    VALUE [String]
 
 FILES
     +_INDEX_ [Int, Auto]

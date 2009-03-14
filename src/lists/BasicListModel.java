@@ -10,7 +10,7 @@ import basics.PlayStateListener;
 import common.Track;
 import data.MasterListListener;
 
-/**Stellt die grundlegenden Funktionen einer TrackList dar.
+/**Stellt die grundlegenden Funktion einer TrackList dar.
  * 
  * @author Eraser
  *

@@ -11,9 +11,11 @@ public class UpdateDB
 	{
 		try
 		{
-			if((oldVersion.equals("unknown") || oldVersion.equals("0.1")) && newVersion.equals("0.2a"))
+			if(!newVersion.equals(data.version))
+				return false;
+			if((oldVersion.equals("unknown") || oldVersion.equals("0.1")))
 				return to0_2a(data);
-			if(oldVersion.equals("0.2") && newVersion.equals("0.2a"))
+			if(oldVersion.equals("0.2"))
 				return v0_2to0_2a(data);
 			else
 				return false;

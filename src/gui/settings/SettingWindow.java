@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import basics.Controller;
 
 public class SettingWindow extends JFrame
 {
@@ -19,7 +18,9 @@ public class SettingWindow extends JFrame
 	public SettingWindow()
 	{
 		super("Party DJ Einstellungens");
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(1000, 600);
+		setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/Settings32.gif"));
 		
 		tree = new JTree(createTree());
 		tree.addMouseListener(new TreeListener());
@@ -40,7 +41,7 @@ public class SettingWindow extends JFrame
 	
 	private TreeNode createTree()
 	{
-		DefaultMutableTreeNode  root = new DefaultMutableTreeNode("Einstellungen");
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Einstellungen");
 		
 		root.add(new DefaultMutableTreeNode("Hauptliste"));
 		

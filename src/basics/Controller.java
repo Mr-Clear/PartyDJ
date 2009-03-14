@@ -24,6 +24,8 @@ import data.derby.DerbyDB;
 
 public class Controller
 {
+	public final String version = "3.0.1";
+	
 	private static Controller instance;
 	private IData data;
 	private ListProvider listProvider;
@@ -42,9 +44,8 @@ public class Controller
 	
 	private boolean loadFinished = false;
 	
-	private Controller()
+	private Controller(String[] args)
 	{
-		
 		SplashWindow splash = new SplashWindow(); 
 		
 		if(instance == null)
@@ -52,21 +53,42 @@ public class Controller
 		else
 			throw new RuntimeException("Es darf nur ein Controller erstellt werden!");
 		
-	     
-	     closeListenTread = new Thread()
-				     {
-					     public void run()
-					     {
-					    	 closePartyDJ();
-					     }
-				     };
-	     runtime.addShutdownHook(closeListenTread);
+		closeListenTread = new Thread(){
+					public void run()
+					{
+						closePartyDJ();
+					}};
+		runtime.addShutdownHook(closeListenTread);
+		
+		String dbPath = Functions.getFolder() + System.getProperty("file.separator") + "DataBase";
+		
+		int lastParam = 0;
+		for(String arg : args)
+		{
+			String argl = arg.toLowerCase();
+			if(arg.charAt(0) == '-')
+			{
+				if(argl.equals("-dbpath"))
+					lastParam = 1;
+				else
+					lastParam = 0;
+			}
+			else
+			{
+				switch(lastParam)
+				{
+				case 1:
+					dbPath = arg;
+				}
+				lastParam = 0;
+			}
+		}
 		
 		//Datenbank verbinden
 		splash.setInfo("Verbinde zur Datenbank");
 		try
 		{
-			data = new DerbyDB(Functions.getFolder() + System.getProperty("file.separator") + "DataBase");
+			data = new DerbyDB(dbPath);
 		}
 		catch (OpenDbException e)
 		{
@@ -94,7 +116,7 @@ public class Controller
 		
 		splash.setInfo("Lade Fenster");
 		registerWindow(new ClassicWindow());
-		registerWindow(new TestWindow());
+		//registerWindow(new TestWindow());
 		registerWindow(new SettingWindow());
 		
 		splash.setInfo("PartyDJ bereit :)");
@@ -276,6 +298,7 @@ public class Controller
 		
 		public void reportProblem(PlayerException e, Track track)
 		{
+			track.problem = e.problem;
 			JOptionPane.showMessageDialog(null, "Fehler beim Abspielen:\n" + track.name + "\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -298,7 +321,7 @@ public class Controller
 	{
 		try
 		{
-			new basics.Controller();
+			new basics.Controller(args);
 		}
 		catch (Exception e)
 		{
