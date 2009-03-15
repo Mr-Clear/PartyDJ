@@ -60,6 +60,7 @@ public class Controller
 		runtime.addShutdownHook(closeListenTread);
 		
 		String dbPath = Functions.getFolder() + System.getProperty("file.separator") + "DataBase";
+		int whichPlayer = 0;	// 0=JMF, 1=JL
 		
 		int lastParam = 0;
 		for(String arg : args)
@@ -69,6 +70,8 @@ public class Controller
 			{
 				if(argl.equals("-dbpath"))
 					lastParam = 1;
+				else if(argl.equals("-player"))
+					lastParam = 2;
 				else
 					lastParam = 0;
 			}
@@ -77,6 +80,12 @@ public class Controller
 				switch(lastParam)
 				{
 				case 1:
+					dbPath = arg;
+				case 2:
+					if(argl.equals("jmf"))
+						whichPlayer = 0;
+					else if(argl.equals("jl"))
+						whichPlayer = 1;
 					dbPath = arg;
 				}
 				lastParam = 0;
@@ -98,9 +107,17 @@ public class Controller
 		}
 		
 		splash.setInfo("Lade Player");
-		PlayerListener playerListener = new PlayerListener();
-		//player = new players.JMFPlayer(playerListener);
-		player = new players.JLPlayer(playerListener);
+		PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener
+		switch(whichPlayer)
+		{
+		case 0:
+		default:			
+			player = new players.JMFPlayer(playerListener);
+			break;
+		case 1:
+			player = new players.JLPlayer(playerListener);
+			break;
+		}
 		player.addPlayStateListener(playerListener);
 		
 		splash.setInfo("Lade Listen");
