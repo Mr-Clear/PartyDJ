@@ -277,22 +277,7 @@ public class Controller
 			// TODO Auto-generated method stub
 			return null;
 		}
-
-		// TODO
-		public void trackChanged(Track track)
-		{
-			if(track.duration != getPlayer().getDuration())
-			{
-				track.duration = getPlayer().getDuration();
-				try
-				{
-					getData().updateTrack(track, TrackElement.DURATION);
-				}
-				catch (ListException e)
-				{}
-			}
-		}
-		
+	
 		public void playCompleted()
 		{
 			// TODO Auto-generated method stub
@@ -321,7 +306,6 @@ public class Controller
 		//--- PlayStateListener
 		public void currentTrackChanged(Track playedLast, Track playingCurrent)
 		{
-			System.out.println("currentTrackChanged");
 			if(playingCurrent.duration == 0)
 				try
 				{
