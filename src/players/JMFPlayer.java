@@ -213,14 +213,20 @@ public class JMFPlayer implements IPlayer
 	public double getDuration()
 	{
 		if(p != null)
-			return p.getDuration().getSeconds();
+		{
+			double duration = p.getDuration().getSeconds();
+			contact.trackDurationCalculated(currentTrack, duration);
+			return duration;
+		}
 		else
 			return 0;
 	}
 	
 	public double getDuration(Track track) throws PlayerException
 	{
-		return getDuration(track.path);
+		double duration = getDuration(track.path);
+		contact.trackDurationCalculated(currentTrack, duration);
+		return duration;
 	}
 	
 	public double getDuration(String filePath) throws PlayerException
