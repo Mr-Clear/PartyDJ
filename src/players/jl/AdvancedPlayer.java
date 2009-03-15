@@ -3,6 +3,8 @@ package players.jl;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import javax.swing.JOptionPane;
+import common.Track.Problem;
 import players.PlayerException;
 
 import javazoom.jl.decoder.Bitstream;
@@ -28,14 +30,15 @@ public class AdvancedPlayer
 	private Decoder decoder;
 	/** The AudioDevice the audio samples are written to. */
 	private JavaSoundAudioDevice audio;
-	/** Listener for the playback process */
-	private PlaybackListener listener;
-	/**Will be initialised with the path of the playing Track when getDuration gets called*/
+	
+	private boolean paused = false;
+
 	private static String durationPath;
-	/**Duration of the song being played*/
 	private static double duration;
-	/**Number of frames of a track*/
-	private static int frames = 0;
+	
+	private static final double frameDuration = 0.02612245;
+	
+	private double position;
 	
 	int count = 0;
 
@@ -49,28 +52,34 @@ public class AdvancedPlayer
 		audio.open(decoder = new Decoder());
 	}
 	
-	public void play() throws JavaLayerException
-	{
-		play(Integer.MAX_VALUE);
-	}
-
 	/**
-	 * Plays a number of MPEG audio frames.
-	 *
-	 * @param	frames	The number of frames to play.
-	 * @return	true if the last frame was played, or false if there are
-	 *			more frames.
+	 * Plays a range of MPEG audio frames
+	 * @param start	The first frame to play
+	 * @param end		The last frame to play
+	 * @return true if the last frame was played, or false if there are more frames.
 	 */
-	public boolean play(int frames) throws JavaLayerException
+	public boolean play(double start) throws JavaLayerException
 	{
+		if(!skip(start))
+			return false;
+		
+		return play();
+	}
+	
+	public boolean play() throws JavaLayerException
+	{
+		paused = false;
 		boolean ftd = true;
 		
-		if(listener != null) 
-			listener.playbackStarted(createEvent(PlaybackEvent.STARTED));
-
-		while (frames-- > 0 && ftd)
+		while (ftd)
 		{
 			ftd = decodeFrame();
+			position += frameDuration;
+			if(paused)
+			{
+				paused = false;
+				return true;
+			}
 		}
 			
 		AudioDevice out = audio;
@@ -78,15 +87,14 @@ public class AdvancedPlayer
 		{
 			out.flush();
 			
-			synchronized (this)
-			{
-				close();
-			}
-			
-			if(listener != null) 
-				listener.playbackFinished(createEvent(out, PlaybackEvent.STOPPED));
+			close();
 		}
-		return ftd;
+		return true;
+	}
+	
+	public void pause()
+	{
+		paused = true;
 	}
 
 	/**
@@ -104,10 +112,7 @@ public class AdvancedPlayer
 			{
 				bitstream.close();
 			}
-			catch (BitstreamException ex)
-			{
-				ex.printStackTrace();
-			}
+			catch (BitstreamException ex){}
 		}
 	}
 
@@ -163,81 +168,14 @@ public class AdvancedPlayer
 		bitstream.closeFrame();
 		return true;
 	}
-
-	/**
-	 * Plays a range of MPEG audio frames
-	 * @param start	The first frame to play
-	 * @param end		The last frame to play
-	 * @return true if the last frame was played, or false if there are more frames.
-	 */
-	public boolean play(final int start, final int end) throws JavaLayerException
-	{
-		boolean ret = true;
-		int offset = start;
-		
-		synchronized(this)
-		{
-			while (offset-- > 0 && ret) 
-				ret = skipFrame();
-		}
-		
-		
-		return play(end - start);
-	}
-
-	/**
-	 * Constructs a PlaybackEvent
-	 */
-	private PlaybackEvent createEvent(int id)
-	{
-		return createEvent(audio, id);
-	}
-
-	/**
-	 * Constructs a PlaybackEvent
-	 */
-	private PlaybackEvent createEvent(AudioDevice dev, int id)
-	{
-		return new PlaybackEvent(this, id, dev.getPosition());
-	}
-
-	/**
-	 * sets the PlaybackListener
-	 */
-	public void setPlayBackListener(PlaybackListener listener)
-	{
-		this.listener = listener;
-	}
-
-	/**
-	 * gets the PlaybackListener
-	 */
-	public PlaybackListener getPlayBackListener()
-	{
-		return listener;
-	}
-
-	/**
-	 * closes the player and notifies PlaybackListener
-	 */
-	public void stop()
-	{
-		listener.playbackFinished(createEvent(PlaybackEvent.STOPPED));
-		close();
-	}
 	
 	/**
 	 * 
-	 * @return Returns the position in milliseconds
+	 * @return Returns the position in seconds
 	 */
-	public int getPosition()
+	public double getPosition()
 	{
-		if(audio != null)
-		{
-			return audio.getPosition();
-		}
-		
-		return 0;
+		return position;
 	}
 	
 	/**
@@ -252,72 +190,61 @@ public class AdvancedPlayer
 		{
 			if(durationPath.equals(filePath))
 			{
-				return duration / 1000;
+				return duration;
 			}	
 		}
 		
 		Bitstream bs = null;
 		float calcDuration = 0;
-		frames = 0;
 		
 		try
 		{
 			bs = new Bitstream(new FileInputStream(filePath));
 		}
-		catch (FileNotFoundException e1)
+		catch (FileNotFoundException e)
 		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			throw new PlayerException(Problem.FILE_NOT_FOUND, e);
 		}
 		
 		try
 		{
 			while(bs.readFrame() != null)
 			{
-				frames++;
-				try
-				{
-					calcDuration += bs.readFrame().ms_per_frame();
-				}
-				catch (BitstreamException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				double spf = bs.readFrame().ms_per_frame() / 1000;
+				//TODO Vor Release unbedingt raus nehmen!
+				if(spf != frameDuration)
+					javax.swing.JOptionPane.showMessageDialog(null, "Frame hat unerwartete Länge:\nErwartet: " + frameDuration + "\nErmittelt: " + spf + "\nPosition: " + calcDuration , "DebugInfo sollte nie zu sehen sein.", JOptionPane.ERROR_MESSAGE);
+				//TODO Vor Release unbedingt raus nehmen!
+				calcDuration += bs.readFrame().ms_per_frame();
 				bs.closeFrame();
 			}
 		}
 		catch (BitstreamException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new PlayerException(Problem.CANT_PLAY, e);
 		}
 		
 		try
 		{
 			bs.close();
 		}
-		catch (BitstreamException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		durationPath = filePath;
+		catch (BitstreamException e){}
 		
+		durationPath = filePath;
 		duration = calcDuration;
 		
-		return (duration / 1000);
+		return (duration);
 	}
 	
 	/**
 	 * 
-	 * @param seconds
+	 * @param newPosition
 	 */
 	//TODO jede Menge
-	public synchronized void setPosition(double seconds)
+	public boolean skip(double newPosition)
 	{
-		System.out.println(seconds);
-		try
+		
+		/*try
 		{
 			bitstream.unreadFrame();
 		}
@@ -326,24 +253,26 @@ public class AdvancedPlayer
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		bitstream.closeFrame();
+		bitstream.closeFrame();*/
 		
-		for(int i = 0; i < seconds; i++)
+		while(position < newPosition)
 		{
 			Header header = null;
 			try
 			{
 				header = bitstream.readFrame();
+				position += frameDuration;
+				
 			}
 			catch (BitstreamException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return false;
 			}
 			
 			if(header != null)
 				bitstream.closeFrame();
 		}
+		return true;
 	}
 
 }

@@ -225,45 +225,17 @@ public class ClassicWindow extends JFrame
 		
 		fwd.addMouseListener(new MouseAdapter()
 				{
-					boolean fwd = true;
-					public void mousePressed(MouseEvent me) 
+					public void mouseClicked(MouseEvent me) 
 					{
-						fwd = true;
-						new fwdThread().start();
-					}
-						
-					public void mouseReleased(MouseEvent me) 
-					{
-						fwd = false;
-					}
-					
-					class fwdThread extends Thread
-					{
-						public void run()
-						{
-							while(fwd == true)
-							{
-								player.setPosition(player.getPosition() + 2);
-							}
-						}
+						player.setPosition(player.getPosition() + 5);
 					}
 				});
 		
 		bwd.addMouseListener(new MouseAdapter()
 				{
-					boolean bwd = true;
-					public void mousePressed(MouseEvent me) 
+					public void mouseClicked(MouseEvent me) 
 					{
-						while(bwd == true)
-						{
-							player.setPosition(player.getPosition() - 2);
-						}
-							
-					}
-					
-					public void mouseReleased(MouseEvent me) 
-					{
-						bwd = false;
+						player.setPosition(player.getPosition() - 5);
 					}
 				});
 		

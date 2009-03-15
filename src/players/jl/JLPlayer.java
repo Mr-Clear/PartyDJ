@@ -11,6 +11,7 @@ import players.PlayerException;
 import basics.PlayerContact;
 import javazoom.jl.decoder.JavaLayerException;
 import common.Track;
+import common.Track.Problem;
 import data.SettingException;
 
 
@@ -32,7 +33,6 @@ public class JLPlayer implements IPlayer
 		private Track currentTrack;
 		private PlayerThread startThread;
 		private FileInputStream fis = null;
-		private PlaybackListener listener = new myPlaybackListener();
 		
 		AdvancedPlayer p;
 		
@@ -79,7 +79,7 @@ public class JLPlayer implements IPlayer
 	public void fadeInOut()
 	{
 		if(status)
-			p.stop();
+			p.pause();
 		
 		else
 		{
@@ -97,7 +97,7 @@ public class JLPlayer implements IPlayer
 
 	public void fadeOut()
 	{
-		p.stop();
+		p.pause();
 	}
 
 	public double getDuration()
@@ -138,7 +138,10 @@ public class JLPlayer implements IPlayer
 
 	public double getPosition()
 	{
-		return p.getPosition() / 1000;
+		if(p != null)
+			return p.getPosition();
+		else
+			return 0;
 	}
 
 	public int getVolume()
@@ -149,7 +152,8 @@ public class JLPlayer implements IPlayer
 
 	public void pause()
 	{
-		p.stop();
+		p.pause();
+		changeState(false);
 	}
 
 	public void play()
@@ -179,7 +183,7 @@ public class JLPlayer implements IPlayer
 	public void playPause()
 	{
 		if(status)
-			p.stop();
+			p.pause();
 		else
 		{
 			try
@@ -209,9 +213,9 @@ public class JLPlayer implements IPlayer
 		contact = Contact;
 	}
 
-	public void setPosition(double seconds)
+	public synchronized void setPosition(double seconds)
 	{
-		p.setPosition(seconds);
+		start(currentTrack, seconds);
 	}
 
 	public void setVolume(int Volume)
@@ -222,23 +226,36 @@ public class JLPlayer implements IPlayer
 
 	public void start()
 	{
-		play();
-		//pbe.setFrame(0);
+		start(currentTrack);
 	}
 
 	public void start(Track track)
 	{
-		startThread = new PlayerThread(track);
+		if(currentTrack != track)
+		{
+			Track oldTrack = currentTrack;
+			currentTrack = track;
+			for(PlayStateListener listener : playStateListener)
+				listener.currentTrackChanged(oldTrack, currentTrack);
+		}
+		
+		start(track, 0);
+	}
+	
+	private void start(Track track, double position)
+	{
+		startThread = new PlayerThread(track, position);
 		startThread.start();
+		changeState(true);
 	}
 
 	public void stop()
 	{
-		p.stop();
 		p.close();
+		p = null;
 	}
 	
-	private AdvancedPlayer getPlayer(final String fileName)
+	private AdvancedPlayer getPlayer(final String fileName) throws PlayerException
 	{
 		if(p != null)
 		{
@@ -247,21 +264,16 @@ public class JLPlayer implements IPlayer
 			{
 				fis.close();
 			}
-			catch (IOException e2)
-			{
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
+			catch (IOException e2){}
 		}
 		
 		try
 		{
 			fis = new FileInputStream(fileName);
 		}
-		catch (FileNotFoundException e1)
+		catch (FileNotFoundException e)
 		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			throw new PlayerException(Problem.FILE_NOT_FOUND, e);
 		}
 		
 		try
@@ -270,11 +282,9 @@ public class JLPlayer implements IPlayer
 		}
 		catch (JavaLayerException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new PlayerException(Problem.CANT_PLAY, e);
 		}
 		
-		p.setPlayBackListener(listener);
 		
 		return p;
 	}
@@ -291,37 +301,16 @@ public class JLPlayer implements IPlayer
 			}
 		}
 	}
-
-	class myPlaybackListener extends PlaybackListener 
-	{
-		public void playbackStarted(PlaybackEvent evt)
-		{
-			changeState(true);
-		}
-		
-		public void playbackFinished(PlaybackEvent evt)
-		{
-			changeState(false);
-			if(contact != null)
-			{
-				Track next = contact.requestNextTrack();
-				if(next == null)
-					contact.playCompleted();
-				else
-					start(next);
-			}
-			evt.getSource().close();
-		}
-	}
 	
 	class PlayerThread extends Thread
 	{
 		Track track;
+		double start;
 		
-		public PlayerThread(Track track)
+		public PlayerThread(Track track, double start)
 		{
-			super();
 			this.track = track;
+			this.start = start;
 		}
 		
 		public void run()
@@ -332,23 +321,23 @@ public class JLPlayer implements IPlayer
 			if(p != null)
 				p.close();
 			
-			getPlayer(track.path);
-			
-			if(currentTrack != track)
-			{
-				Track oldTrack = currentTrack;
-				currentTrack = track;
-				for(PlayStateListener listener : playStateListener)
-					listener.currentTrackChanged(oldTrack, currentTrack);
-			}
 			try
 			{
-				p.play();
+				p = getPlayer(track.path);
+			}
+			catch (PlayerException e)
+			{
+				contact.reportProblem(e, track);
+			}
+			
+
+			try
+			{
+				p.play(start);
 			}
 			catch (JavaLayerException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				contact.reportProblem(new PlayerException(Problem.CANT_PLAY, e), track);
 			}
 		}
 	}
