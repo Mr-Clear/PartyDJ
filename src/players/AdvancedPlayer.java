@@ -30,9 +30,13 @@ public class AdvancedPlayer
 	/** Listener for the playback process */
 	private PlaybackListener listener;
 	/**Will be initialised with the path of the playing Track when getDuration gets called*/
-	private String durationPath;
+	private static String durationPath;
 	/**Duration of the song being played*/
-	private double duration;
+	private static double duration;
+	/**Number of frames of a track*/
+	private static int frames = 0;
+	
+	int count = 0;
 
 	/**
 	 * Creates a new Player instance.
@@ -58,14 +62,14 @@ public class AdvancedPlayer
 	 */
 	public boolean play(int frames) throws JavaLayerException
 	{
-		boolean ret = true;
+		boolean ftd = true;
 		
 		if(listener != null) 
 			listener.playbackStarted(createEvent(PlaybackEvent.STARTED));
 
-		while (frames-- > 0 && ret)
+		while (frames-- > 0 && ftd)
 		{
-			ret = decodeFrame();
+			ftd = decodeFrame();
 		}
 			
 		AudioDevice out = audio;
@@ -81,7 +85,7 @@ public class AdvancedPlayer
 			if(listener != null) 
 				listener.playbackFinished(createEvent(out, PlaybackEvent.STOPPED));
 		}
-		return ret;
+		return ftd;
 	}
 
 	/**
@@ -122,8 +126,8 @@ public class AdvancedPlayer
 			Header h = bitstream.readFrame();
 			if (h == null) 
 				return false;
-
-			SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
+			
+			SampleBuffer output = (SampleBuffer)decoder.decodeFrame(h, bitstream);
 
 			synchronized (this)
 			{
@@ -149,6 +153,7 @@ public class AdvancedPlayer
 	 */
 	protected boolean skipFrame() throws JavaLayerException
 	{
+		count++;
 		Header h = bitstream.readFrame();
 		
 		if (h == null) 
@@ -169,8 +174,12 @@ public class AdvancedPlayer
 		boolean ret = true;
 		int offset = start;
 		
-		while (offset-- > 0 && ret) 
+		synchronized(this)
+		{
+			while (offset-- > 0 && ret) 
 			ret = skipFrame();
+		}
+		
 		
 		return play(end - start);
 	}
@@ -208,7 +217,7 @@ public class AdvancedPlayer
 	}
 
 	/**
-	 * closes the player and notifies PlaybackListene
+	 * closes the player and notifies PlaybackListener
 	 */
 	public void stop()
 	{
@@ -216,27 +225,39 @@ public class AdvancedPlayer
 		close();
 	}
 	
-	public int getPostion()
+	/**
+	 * 
+	 * @return Returns the position in milliseconds
+	 */
+	public int getPosition()
 	{
 		if(audio != null)
+		{
 			return audio.getPosition();
+		}
 		
 		return 0;
 	}
 	
-	public double getDuration(String filePath) throws PlayerException
+	/**
+	 * 
+	 * @param filePath	Path of the track being played
+	 * @return	The duration of the track in seconds
+	 * @throws PlayerException
+	 */
+	public static double getDuration(String filePath) throws PlayerException
 	{
 		if(durationPath != null)
 		{
 			if(durationPath.equals(filePath))
 			{
-				return this.duration / 1000;
+				return duration / 1000;
 			}	
 		}
 		
-		
 		Bitstream bs = null;
-		float duration = 0;
+		float calcDuration = 0;
+		frames = 0;
 		
 		try
 		{
@@ -252,9 +273,10 @@ public class AdvancedPlayer
 		{
 			while(bs.readFrame() != null)
 			{
+				frames++;
 				try
 				{
-					duration += bs.readFrame().ms_per_frame();
+					calcDuration += bs.readFrame().ms_per_frame();
 				}
 				catch (BitstreamException e)
 				{
@@ -280,7 +302,47 @@ public class AdvancedPlayer
 			e.printStackTrace();
 		}
 		durationPath = filePath;
-		this.duration = duration;
+		
+		duration = calcDuration;
+		
 		return (duration / 1000);
 	}
+	
+	/**
+	 * 
+	 * @param seconds
+	 */
+	//TODO jede Menge
+	public synchronized void setPosition(double seconds)
+	{
+		System.out.println(seconds);
+		try
+		{
+			bitstream.unreadFrame();
+		}
+		catch (BitstreamException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		bitstream.closeFrame();
+		
+		for(int i = 0; i < seconds; i++)
+		{
+			Header header = null;
+			try
+			{
+				header = bitstream.readFrame();
+			}
+			catch (BitstreamException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if(header != null)
+				bitstream.closeFrame();
+		}
+	}
+
 }

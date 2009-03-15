@@ -120,7 +120,7 @@ public class JLPlayer implements IPlayer
 
 	public double getDuration(String filePath) throws PlayerException
 	{
-		return p.getDuration(filePath);
+		return AdvancedPlayer.getDuration(filePath);
 	}
 
 	public String getFileName()
@@ -135,7 +135,7 @@ public class JLPlayer implements IPlayer
 
 	public double getPosition()
 	{
-		return p.getPostion() / 1000;
+		return p.getPosition() / 1000;
 	}
 
 	public int getVolume()
@@ -208,7 +208,7 @@ public class JLPlayer implements IPlayer
 
 	public void setPosition(double seconds)
 	{
-		//pbe.setFrame((int)(seconds * 38));
+		p.setPosition(seconds);
 	}
 
 	public void setVolume(int Volume)
