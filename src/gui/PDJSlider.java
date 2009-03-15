@@ -1,16 +1,19 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 import javax.swing.Timer;
+import javax.swing.border.BevelBorder;
 import common.Track;
 import data.IData;
 import data.MasterListAdapter;
@@ -22,10 +25,11 @@ public class PDJSlider extends JPanel
 {
 	private static final long serialVersionUID = -4711501280677705114L;
 	
+	private JLabel titel = new JLabel(" ");
 	private JLabel start = new JLabel(" ");
 	private JLabel end = new JLabel(" ");
 	private JLabel middle = new JLabel(" ");
-	private JSlider slider = new JSlider();
+	private Slider slider = new Slider();
 	
 	private Track currentTrack;
 	private double duration;
@@ -38,14 +42,16 @@ public class PDJSlider extends JPanel
 	
 	public PDJSlider()
 	{
-		this.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
+		this.setLayout(new BorderLayout());
+		Box vBox = Box.createVerticalBox();
 		
 		this.setBackground(Color.darkGray);
+
+		titel.setBackground(Color.darkGray);
+		titel.setForeground(Color.green);
+		titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, 18));
 		
 		slider.setBackground(Color.darkGray);
-		slider.setPaintTicks(true);
-		slider.setValue(0);
 		
 		start.setForeground(Color.green);
 		middle.setForeground(Color.green);
@@ -58,33 +64,22 @@ public class PDJSlider extends JPanel
 		end.setVisible(true);
 		start.setVisible(true);
 		
-		c.fill = GridBagConstraints.BOTH;
-		c.gridwidth = 3;
-		c.ipadx = 800;
-		c.gridx = 0;
-		c.gridy = 0;
-		this.add(slider, c);
-		
-		c.fill = GridBagConstraints.NONE;
-		c.gridwidth = 0;
-		c.anchor = GridBagConstraints.WEST;
-		c.insets = new Insets(0, 0, 0, 0);
-		c.ipadx = 0;
-		c.gridwidth = 1;
-		c.gridx = 0;
-		c.gridy = 1;
-		this.add(start, c);
-		
-		c.anchor = GridBagConstraints.CENTER;
-		c.gridx = 1;
-		c.insets = new Insets(0, 367, 0, 0);
-		this.add(middle, c);
-		
-		c.gridx = 2;
-		c.anchor = GridBagConstraints.EAST;
-		c.insets = new Insets(0, 0, 0, 0);
-		this.add(end, c);
-		
+		Box hBox = Box.createHorizontalBox();
+		hBox.add(titel);
+		hBox.add(Box.createHorizontalGlue());
+		vBox.add(hBox);
+		vBox.add(Box.createVerticalStrut(8));
+		vBox.add(slider);
+		vBox.add(Box.createVerticalStrut(4));
+		hBox = Box.createHorizontalBox();
+		hBox.add(start);
+		hBox.add(Box.createHorizontalGlue());
+		hBox.add(middle);
+		hBox.add(Box.createHorizontalGlue());
+		hBox.add(end);
+		vBox.add(hBox);
+		add(vBox);
+
 		refreshTimer = new Timer(0, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent evt)
@@ -101,6 +96,7 @@ public class PDJSlider extends JPanel
 						if(currentTrack != playingCurrent)
 						{
 							currentTrack = playingCurrent;
+							titel.setText(playingCurrent.name);
 							setDuration(playingCurrent.duration);
 						}
 					}
@@ -121,18 +117,18 @@ public class PDJSlider extends JPanel
 					{
 						setDuration(track.duration);
 					}
+					titel.setText(track.name);
 				}			
 			}});
 		
-		this.setVisible(true);
+		setDuration(0);
+		setPosition(0);
 	}
 	
 	public void setDuration(double duration)
 	{
 		this.duration = duration;
-		slider.setMaximum((int)(duration * 10000));
-		slider.setMajorTickSpacing((int)(duration * 2500));
-		slider.setMinorTickSpacing((int)(duration * 1250));
+		slider.setMaximum(duration);
 		middle.setText(common.Functions.formatTime(duration));
 		end.setText("-" + common.Functions.formatTime(duration - position));
 	}
@@ -142,8 +138,41 @@ public class PDJSlider extends JPanel
 		this.position = position;
 		if(position > duration)
 			setDuration(position);
-		slider.setValue((int)(position * 10000));
+		slider.setValue(position);
 		start.setText(common.Functions.formatTime(player.getPosition()));
 		end.setText("-" + common.Functions.formatTime(duration - position));
+	}
+	
+	class Slider extends JComponent
+	{
+		private static final long serialVersionUID = -1283733626056623005L;
+		double duration;
+		double position;
+		
+		public Slider()
+		{
+			super();
+			this.setMinimumSize(new Dimension(150, 20));
+			this.setPreferredSize(new Dimension(Integer.MAX_VALUE, 20));
+			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+		}
+		
+		@Override 
+		protected void paintComponent( Graphics g ) 
+		{ 
+			super.paintComponent(g);
+			g.fillRect(1, 1, (int) ((getSize().width - 3) / duration * position), getSize().height - 3);
+		}
+		
+		public void setMaximum(double max)
+		{
+			duration = max;
+		}
+		
+		public void setValue(double val)
+		{
+			position = val;
+			repaint();
+		}
 	}
 }
