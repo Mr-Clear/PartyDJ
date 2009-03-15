@@ -146,6 +146,9 @@ public class PDJList extends JList
 					listSize = pdjList.getModel().getSize();
 					index = dge.getY() / pdjList.getFixedCellHeight();
 					
+					if(index > pdjList.getLastVisibleIndex())
+						index = pdjList.getLastVisibleIndex();
+					
 					if(index >= 0)
 					{
 						if(count == 0)
