@@ -11,13 +11,13 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 
 import javax.swing.*;
+import players.PlayStateAdapter;
 import lists.ListException;
 import lists.ListProvider;
 import common.Track;
 import data.IData;
 import data.SettingException;
 import basics.Controller;
-import basics.PlayStateListener;
 
 public class TestWindow extends JFrame 
 {
@@ -98,16 +98,10 @@ public class TestWindow extends JFrame
 		
 		text.addActionListener(new TextBoxListener());
 
-		controller.getPlayer().addPlayStateListener(new PlayStateListener(){
+		controller.getPlayer().addPlayStateListener(new PlayStateAdapter(){
 			public void currentTrackChanged(Track playedLast, Track playingCurrent)
 			{
 				setTitle(playingCurrent.name);			
-			}
-
-			public void playStateChanged(boolean playState)
-			{
-				// TODO Auto-generated method stub
-				
 			}});
 				
 		setVisible(true);

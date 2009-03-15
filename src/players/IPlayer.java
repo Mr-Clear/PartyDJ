@@ -1,7 +1,6 @@
 package players;
 
 import common.Track;
-import basics.PlayStateListener;
 import basics.PlayerContact;
 
 public interface IPlayer

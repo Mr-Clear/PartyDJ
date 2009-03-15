@@ -6,11 +6,11 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import players.IPlayer;
+import players.PlayStateListener;
 import common.Track;
 import data.IData;
 import data.SettingException;
 import basics.Controller;
-import basics.PlayStateListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -623,6 +623,12 @@ public class ClassicWindow extends JFrame
 			
 			else
 				refreshTimer.stop();
+			
+		}
+
+		public void volumeChanged(int volume)
+		{
+			// TODO Auto-generated method stub
 			
 		}
 	}

@@ -1,4 +1,4 @@
-package basics;
+package players;
 
 import common.Track;
 
@@ -21,4 +21,10 @@ public interface PlayStateListener
 	 * @param playState Spielt noch oder nicht.
 	 */
 	void playStateChanged (boolean playState);
+	
+	/**Die Lautstärke wurde geändert.
+	 * 
+	 * @param volume Neue Lautstärke zwischen 0 und 100.
+	 */
+	void volumeChanged (int volume);
 }

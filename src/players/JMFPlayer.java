@@ -8,7 +8,6 @@ import java.util.Set;
 
 import javax.media.*;
 import basics.Controller;
-import basics.PlayStateListener;
 import basics.PlayerContact;
 import common.Track;
 import common.Track.Problem;

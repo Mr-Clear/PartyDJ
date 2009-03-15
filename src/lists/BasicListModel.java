@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import players.PlayStateListener;
 import basics.Controller;
-import basics.PlayStateListener;
 import common.Track;
 import data.MasterListListener;
 
@@ -79,5 +79,6 @@ abstract class BasicListModel implements TrackListModel, PlayStateListener, Mast
 			}
 		}		
 	}
-
+	
+	public void volumeChanged(int volume){}
 }

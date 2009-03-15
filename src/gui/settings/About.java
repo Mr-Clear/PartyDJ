@@ -1,11 +1,11 @@
 package gui.settings;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import data.SettingException;
 import basics.Controller;
 
 public class About extends JPanel
@@ -19,7 +19,7 @@ public class About extends JPanel
 		setLayout(new BorderLayout());
 		Box box = Box.createVerticalBox();
 		
-		box.add(Box.createRigidArea(new Dimension(8, 8)));
+		box.add(Box.createVerticalStrut(8));
 		
 		JLabel lbl = null;
 		try
@@ -38,10 +38,24 @@ public class About extends JPanel
 		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		box.add(lbl);
 		
-		box.add(Box.createRigidArea(new Dimension(8, 8)));
+		box.add(Box.createVerticalStrut(8));
 		lbl = new JLabel("Geschrieben von Thomas Klier und Samantha Vordermeier");
 		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		box.add(lbl);
+		
+		box.add(Box.createVerticalStrut(8));
+		lbl = new JLabel("Tracks gesammt: " + Controller.getInstance().getListProvider().masterList.size());
+		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		box.add(lbl);
+		
+		try
+		{
+			lbl = new JLabel("Ladedauer: " + Integer.parseInt(Controller.getInstance().getData().readSetting("LastLoadTime")) / 1000d + "Sekunden");
+			lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+			box.add(lbl);
+		}catch (SettingException e){}
+
+
 		add(box);
 	}
 }
