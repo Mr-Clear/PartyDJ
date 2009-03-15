@@ -6,12 +6,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import basics.PlayerContact;
-import javazoom.jl.decoder.Bitstream;
-import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.advanced.AdvancedPlayer;
-import javazoom.jl.player.advanced.PlaybackEvent;
-import javazoom.jl.player.advanced.PlaybackListener;
 import common.Track;
 import data.SettingException;
 
@@ -32,17 +27,16 @@ public class JLPlayer implements IPlayer
 		private final Set<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
 		private boolean status;
 		private Track currentTrack;
-		private int frame;
 		private PlayerThread startThread;
 		private FileInputStream fis = null;
-		private String durationPath;
-		private double duration;
+		private PlaybackListener listener = new myPlaybackListener();
 		
 		AdvancedPlayer p;
 		
 		public JLPlayer(PlayerContact playerContact)
 		{
 			contact = playerContact;
+			
 			try
 			{
 				volume = Integer.parseInt(basics.Controller.getInstance().getData().readSetting("PlayerVolume", "100"));
@@ -119,65 +113,14 @@ public class JLPlayer implements IPlayer
 
 	public double getDuration(Track track) throws PlayerException
 	{
-		return getDuration(track.path);
+		double d = getDuration(track.path);
+		contact.trackDurationCalculated(track, d);
+		return d;
 	}
 
 	public double getDuration(String filePath) throws PlayerException
 	{
-		if(durationPath != null)
-		{
-			if(durationPath.equals(filePath))
-				return this.duration / 1000;
-		}
-		
-		
-		Bitstream bs = null;
-		float duration = 0;
-		
-		try
-		{
-			bs = new Bitstream(new FileInputStream(filePath));
-		}
-		catch (FileNotFoundException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		try
-		{
-			while(bs.readFrame() != null)
-			{
-				try
-				{
-					duration += bs.readFrame().ms_per_frame();
-				}
-				catch (BitstreamException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				bs.closeFrame();
-			}
-		}
-		catch (BitstreamException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		try
-		{
-			bs.close();
-		}
-		catch (BitstreamException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		durationPath = filePath;
-		this.duration = duration;
-		return (duration / 1000);
+		return p.getDuration(filePath);
 	}
 
 	public String getFileName()
@@ -192,7 +135,7 @@ public class JLPlayer implements IPlayer
 
 	public double getPosition()
 	{
-		return frame / 38;
+		return p.getPostion() / 1000;
 	}
 
 	public int getVolume()
@@ -317,6 +260,7 @@ public class JLPlayer implements IPlayer
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
 		try
 		{
 			p = new AdvancedPlayer(fis);
@@ -326,7 +270,8 @@ public class JLPlayer implements IPlayer
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		p.setPlayBackListener(new myPlaybackListener());
+		
+		p.setPlayBackListener(listener);
 		
 		return p;
 	}
@@ -349,7 +294,6 @@ public class JLPlayer implements IPlayer
 		public void playbackStarted(PlaybackEvent evt)
 		{
 			changeState(true);
-			frame = evt.getFrame();
 		}
 		
 		public void playbackFinished(PlaybackEvent evt)
@@ -405,6 +349,5 @@ public class JLPlayer implements IPlayer
 			}
 		}
 	}
-	
 
 }

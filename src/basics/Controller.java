@@ -99,8 +99,8 @@ public class Controller
 		
 		splash.setInfo("Lade Player");
 		PlayerListener playerListener = new PlayerListener();
-		player = new players.JMFPlayer(playerListener);
-		//player = new players.JLPlayer(playerListener);
+		//player = new players.JMFPlayer(playerListener);
+		player = new players.JLPlayer(playerListener);
 		player.addPlayStateListener(playerListener);
 		
 		splash.setInfo("Lade Listen");
