@@ -1,4 +1,4 @@
-package players;
+package players.jmf;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.media.*;
+import players.IPlayer;
+import players.PlayStateListener;
+import players.PlayerException;
 import basics.Controller;
 import basics.PlayerContact;
 import common.Track;

@@ -1,8 +1,9 @@
-package players;
+package players.jl;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import players.PlayerException;
 
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
@@ -177,7 +178,7 @@ public class AdvancedPlayer
 		synchronized(this)
 		{
 			while (offset-- > 0 && ret) 
-			ret = skipFrame();
+				ret = skipFrame();
 		}
 		
 		

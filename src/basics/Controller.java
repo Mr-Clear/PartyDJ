@@ -93,7 +93,6 @@ public class Controller
 			}
 		}
 		
-		System.out.println(dbPath);
 		//Datenbank verbinden
 		splash.setInfo("Verbinde zur Datenbank");
 		try
@@ -114,10 +113,10 @@ public class Controller
 		{
 		case 0:
 		default:			
-			player = new players.JMFPlayer(playerListener);
+			player = new players.jmf.JMFPlayer(playerListener);
 			break;
 		case 1:
-			player = new players.JLPlayer(playerListener);
+			player = new players.jl.JLPlayer(playerListener);
 			break;
 		}
 		player.addPlayStateListener(playerListener);

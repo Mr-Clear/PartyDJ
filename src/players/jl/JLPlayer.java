@@ -1,10 +1,13 @@
-package players;
+package players.jl;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import players.IPlayer;
+import players.PlayStateListener;
+import players.PlayerException;
 import basics.PlayerContact;
 import javazoom.jl.decoder.JavaLayerException;
 import common.Track;
