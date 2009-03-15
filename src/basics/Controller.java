@@ -1,4 +1,5 @@
 package basics;
+import gui.SplashWindow;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -6,12 +7,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
 import java.util.Stack;
-import gui.*;
-import gui.settings.SettingWindow;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import players.JLPlayer;
 import players.IPlayer;
+import players.PlayStateListener;
 import players.PlayerException;
 import common.*;
 import common.Track.TrackElement;
@@ -99,7 +98,10 @@ public class Controller
 		}
 		
 		splash.setInfo("Lade Player");
-		player = new JLPlayer(new PlayerListener());
+		PlayerListener playerListener = new PlayerListener();
+		player = new players.JMFPlayer(playerListener);
+		//player = new players.JLPlayer(playerListener);
+		player.addPlayStateListener(playerListener);
 		
 		splash.setInfo("Lade Listen");
 		try
@@ -115,9 +117,9 @@ public class Controller
 		}
 		
 		splash.setInfo("Lade Fenster");
-		registerWindow(new ClassicWindow());
-		//registerWindow(new TestWindow());
-		registerWindow(new SettingWindow());
+		registerWindow(new gui.ClassicWindow());
+		//registerWindow(new gui.TestWindow());
+		//registerWindow(new gui.settings.SettingWindow());
 		
 		splash.setInfo("PartyDJ bereit :)");
 		try
@@ -233,7 +235,7 @@ public class Controller
 		System.exit(0);
 	}
 
-	private class PlayerListener implements PlayerContact
+	private class PlayerListener implements PlayerContact, PlayStateListener
 	{
 		public Track predictNextTrack()
 		{
@@ -315,6 +317,21 @@ public class Controller
 			}
 			
 		}
+
+		//--- PlayStateListener
+		public void currentTrackChanged(Track playedLast, Track playingCurrent)
+		{
+			System.out.println("currentTrackChanged");
+			if(playingCurrent.duration == 0)
+				try
+				{
+					player.getDuration(playingCurrent);
+				}
+				catch (PlayerException e){}
+		}
+
+		public void playStateChanged(boolean playState){}
+		public void volumeChanged(int volume){}
 	}
 	
 	class ClientWindowListener extends WindowAdapter

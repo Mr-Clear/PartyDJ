@@ -41,7 +41,6 @@ public class ClassicWindow extends JFrame
 	private final ListProvider listProvider = controller.getListProvider();
 	private final IData data = controller.getData();
 	private Container gcp = getContentPane();
-	private Timer refreshTimer;
 	private PDJSlider slider;
 	private JLabel label;
 	private JSlider volume;
@@ -452,16 +451,7 @@ public class ClassicWindow extends JFrame
 		label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18)); 		
 		GridBagConstraints c = new GridBagConstraints();	
 		
-		refreshTimer = new Timer(0, new ActionListener()
-									{
-										public void actionPerformed(ActionEvent evt)
-										{
-											slider.setStartLabel(common.Functions.formatTime(player.getPosition()));
-											slider.setMiddleLabel(common.Functions.formatTime(player.getDuration()));
-											slider.setEndLabel("-" + common.Functions.formatTime(player.getDuration() - player.getPosition()));
-											slider.setValue((int)(player.getPosition() * 10000));
-										}
-									});
+
 	
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(5, 0, 5, 0);
@@ -475,8 +465,6 @@ public class ClassicWindow extends JFrame
 		
 		c.gridy = 0;
 		panel.add(slider, c);
-	
-		refreshTimer.setDelay(40);
 		
 		return panel;
 	}
@@ -604,27 +592,14 @@ public class ClassicWindow extends JFrame
 		public void currentTrackChanged(Track playedLast, Track playingCurrent)
 		{
 			label.setText(playingCurrent.name);
-			duration = (int)playingCurrent.duration;
 			
 			volume.setValue(player.getVolume());
 	
 			classicWindow.setTitle(playingCurrent.name + "   -   PartyDJ");	
-			
-			slider.setMiddleLabel(common.Functions.formatTime(duration));
-			slider.setMaximum(duration * 10000);
-			slider.setMajorTickSpacing(duration * 2500);
-			slider.setMinorTickSpacing(duration * 1250);
 		}
 
 		public void playStateChanged(boolean playState)
-		{
-			if(playState)
-				refreshTimer.start();
-			
-			else
-				refreshTimer.stop();
-			
-		}
+		{}
 
 		public void volumeChanged(int volume)
 		{
