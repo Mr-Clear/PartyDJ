@@ -1,10 +1,11 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -25,15 +26,15 @@ public class PDJSlider extends JPanel
 {
 	private static final long serialVersionUID = -4711501280677705114L;
 	
-	private JLabel titel = new JLabel(" ");
+	private JLabel titel = new JLabel("Titel");
 	private JLabel start = new JLabel(" ");
 	private JLabel end = new JLabel(" ");
 	private JLabel middle = new JLabel(" ");
 	private Slider slider = new Slider();
 	
 	private Track currentTrack;
-	private double duration;
-	private double position;
+	private double duration = 0;
+	private double position = 0;
 
 	private Controller controller = Controller.getInstance();
 	private IPlayer player = controller.getPlayer();
@@ -42,10 +43,11 @@ public class PDJSlider extends JPanel
 	
 	public PDJSlider()
 	{
-		this.setLayout(new BorderLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		this.setLayout(new GridBagLayout());
 		Box vBox = Box.createVerticalBox();
 		
-		this.setBackground(Color.darkGray);
+		this.setBackground(Color.blue);
 
 		titel.setBackground(Color.darkGray);
 		titel.setForeground(Color.green);
@@ -78,7 +80,11 @@ public class PDJSlider extends JPanel
 		hBox.add(Box.createHorizontalGlue());
 		hBox.add(end);
 		vBox.add(hBox);
-		add(vBox);
+		
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1.0;
+		this.add(vBox, c);
+		
 
 		refreshTimer = new Timer(0, new ActionListener()
 		{
@@ -139,7 +145,7 @@ public class PDJSlider extends JPanel
 		if(position > duration)
 			setDuration(position);
 		slider.setValue(position);
-		start.setText(common.Functions.formatTime(player.getPosition()));
+		start.setText(common.Functions.formatTime(position));
 		end.setText("-" + common.Functions.formatTime(duration - position));
 	}
 	
@@ -152,8 +158,8 @@ public class PDJSlider extends JPanel
 		public Slider()
 		{
 			super();
-			this.setMinimumSize(new Dimension(150, 20));
-			this.setPreferredSize(new Dimension(Integer.MAX_VALUE, 20));
+			this.setMinimumSize(new Dimension(100, 20));
+			this.setPreferredSize(new Dimension(500, 20));
 			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		}
 		

@@ -97,9 +97,16 @@ public class ClassicWindow extends JFrame
 		c.fill = GridBagConstraints.BOTH;
 		control.setBackground(Color.darkGray);	
 		
-		c.weightx = 0.05;
+		c.weightx = 0.0;
 		c.weighty = 0.0;
-		c.ipadx = 75;
+		c.ipadx = 10;
+		c.gridx = 0;
+		c.gridy = 0;
+		control.add(Buttons(), c);
+		
+		c.weightx = 0.0;
+		c.weighty = 0.0;
+		c.ipadx = 50;
 		c.gridx = 1;
 		control.add(Volume(), c);
 		
@@ -108,14 +115,7 @@ public class ClassicWindow extends JFrame
 		c.ipadx = 500;
 		c.gridx = 2;
 		control.add(Slider(), c);
-		
-		c.weightx = 0.0;
-		c.weighty = 0.0;
-		c.ipadx = 0;
-		c.gridx = 0;
-		c.gridy = 0;
-		control.add(Buttons(), c);
-		
+				
 		return control;
 	}
 	
@@ -449,6 +449,8 @@ public class ClassicWindow extends JFrame
 		GridBagConstraints c = new GridBagConstraints();	
 			
 		c.gridy = 0;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1.0;
 		panel.add(slider, c);
 		
 		return panel;
