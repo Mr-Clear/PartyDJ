@@ -60,7 +60,7 @@ public class Controller
 		runtime.addShutdownHook(closeListenTread);
 		
 		String dbPath = Functions.getFolder() + System.getProperty("file.separator") + "DataBase";
-		int whichPlayer = 0;	// 0=JMF, 1=JL
+		int whichPlayer = -1;	// 0=JMF, 1=JL
 		
 		int lastParam = 0;
 		for(String arg : args)
@@ -325,11 +325,7 @@ public class Controller
 		public void currentTrackChanged(Track playedLast, Track playingCurrent)
 		{
 			if(playingCurrent.duration == 0)
-				try
-				{
-					player.getDuration(playingCurrent);
-				}
-				catch (PlayerException e){}
+				player.getDuration();
 		}
 
 		public void playStateChanged(boolean playState){}

@@ -47,7 +47,7 @@ public class PDJSlider extends JPanel
 		this.setLayout(new GridBagLayout());
 		Box vBox = Box.createVerticalBox();
 		
-		this.setBackground(Color.blue);
+		this.setBackground(Color.darkGray);
 
 		titel.setBackground(Color.darkGray);
 		titel.setForeground(Color.green);

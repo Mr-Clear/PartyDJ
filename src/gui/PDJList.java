@@ -226,8 +226,8 @@ public class PDJList extends JList
 									}
 								}
 							}
-							list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
-							PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());	
+								list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+								PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
 						}
 					}
 					catch (IndexOutOfBoundsException ex)

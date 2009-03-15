@@ -14,7 +14,7 @@ public enum SortOrder
 	public static String[] getStringArray()
 	{
 		return new String[]{"Unsortiert", 
-							"Standart", 
+							"Standard", 
 							"Nach Position in der Liste",
 							"Nach Index in der Hauptliste",
 							"Nach Name",

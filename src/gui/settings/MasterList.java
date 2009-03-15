@@ -126,7 +126,6 @@ public class MasterList extends JPanel
 						}});
 		box.add(addFile);
 		
-		
 		box.add(Box.createVerticalStrut(8));
 		
 		JButton removeFile = new JButton("Tracks entfernen");
@@ -157,8 +156,8 @@ public class MasterList extends JPanel
 								}
 							}
 						}});
-		box.add(removeFile);
 		
+		box.add(removeFile);
 		box.add(Box.createVerticalStrut(8));
 		
 		
