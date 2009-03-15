@@ -81,17 +81,19 @@ public class Controller
 				{
 				case 1:
 					dbPath = arg;
+					break;
 				case 2:
 					if(argl.equals("jmf"))
 						whichPlayer = 0;
 					else if(argl.equals("jl"))
 						whichPlayer = 1;
-					dbPath = arg;
+					break;
 				}
 				lastParam = 0;
 			}
 		}
 		
+		System.out.println(dbPath);
 		//Datenbank verbinden
 		splash.setInfo("Verbinde zur Datenbank");
 		try
