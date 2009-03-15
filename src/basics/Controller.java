@@ -301,6 +301,20 @@ public class Controller
 			track.problem = e.problem;
 			JOptionPane.showMessageDialog(null, "Fehler beim Abspielen:\n" + track.name + "\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 		}
+
+		public void trackDurationCalculated(Track track, double duration)
+		{
+			if(track.duration != duration)
+			{
+				track.duration = duration;
+				try
+				{
+					data.updateTrack(track, TrackElement.DURATION);
+				}
+				catch (ListException e){}
+			}
+			
+		}
 	}
 	
 	class ClientWindowListener extends WindowAdapter

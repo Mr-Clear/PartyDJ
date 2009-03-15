@@ -40,4 +40,11 @@ public interface PlayerContact
 	 * @param track Betreffender Track.
 	 */
 	void reportProblem(PlayerException e, Track track);
+	
+	/**Der Player hat die Dauer eines Liedes berechnet.
+	 * 
+	 * @param track Track dessen Dauer berechnet wurde.
+	 * @param duration Dauer des Tracks.
+	 */
+	void trackDurationCalculated(Track track, double duration);
 }
