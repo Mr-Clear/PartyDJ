@@ -42,7 +42,6 @@ public class ClassicWindow extends JFrame
 	private final IData data = controller.getData();
 	private Container gcp = getContentPane();
 	private PDJSlider slider;
-	private JLabel label;
 	private JSlider volume;
 	private ClassicWindow classicWindow;
 	
@@ -441,28 +440,14 @@ public class ClassicWindow extends JFrame
 	 */
 	public Component Slider()
 	{
-		label = new JLabel(" ");
 		slider = new PDJSlider();
 		JPanel panel = new JPanel(new GridBagLayout());
 		
 		panel.setBackground(Color.darkGray);
-		label.setBackground(Color.darkGray);
-		label.setForeground(Color.green);
-		label.setFont(new Font(label.getFont().getName(), Font.BOLD, 18)); 		
+		slider.setBackground(Color.darkGray);
+		slider.setForeground(Color.green);
 		GridBagConstraints c = new GridBagConstraints();	
-		
-
-	
-		c.anchor = GridBagConstraints.WEST;
-		c.insets = new Insets(5, 0, 5, 0);
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1.0;
-		c.weighty = 0.2;
-
-		c.gridx = 0;
-		c.gridy = 1;
-		panel.add(label, c);
-		
+			
 		c.gridy = 0;
 		panel.add(slider, c);
 		
@@ -591,10 +576,6 @@ public class ClassicWindow extends JFrame
 		
 		public void currentTrackChanged(Track playedLast, Track playingCurrent)
 		{
-			label.setText(playingCurrent.name);
-			
-			volume.setValue(player.getVolume());
-	
 			classicWindow.setTitle(playingCurrent.name + "   -   PartyDJ");	
 		}
 
@@ -604,7 +585,6 @@ public class ClassicWindow extends JFrame
 		public void volumeChanged(int volume)
 		{
 			// TODO Auto-generated method stub
-			
 		}
 	}
 	
