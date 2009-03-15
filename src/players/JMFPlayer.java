@@ -142,7 +142,7 @@ public class JMFPlayer implements IPlayer
 		if(status)
 			p.getGainControl().setLevel(volume/100f);
 		
-		gui.ClassicWindow.setVolume(volume);
+		//gui.ClassicWindow.setVolume(volume);
 	}
 
 	public void start()

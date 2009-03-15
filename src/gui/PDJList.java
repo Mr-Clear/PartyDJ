@@ -248,6 +248,6 @@ public class PDJList extends JList
 		{
 			count = 0;
 		}		
-	}	
+	}
 }
 

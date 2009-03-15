@@ -44,7 +44,7 @@ public class ClassicWindow extends JFrame
 	private Timer refreshTimer;
 	private PDJSlider slider;
 	private JLabel label;
-	private static JSlider volume;
+	private JSlider volume;
 	private ClassicWindow classicWindow;
 	
 	public ClassicWindow()
@@ -457,6 +457,7 @@ public class ClassicWindow extends JFrame
 										public void actionPerformed(ActionEvent evt)
 										{
 											slider.setStartLabel(common.Functions.formatTime(player.getPosition()));
+											slider.setMiddleLabel(common.Functions.formatTime(player.getDuration()));
 											slider.setEndLabel("-" + common.Functions.formatTime(player.getDuration() - player.getPosition()));
 											slider.setValue((int)(player.getPosition() * 10000));
 										}
@@ -508,7 +509,7 @@ public class ClassicWindow extends JFrame
 		return panel;
 	}
 	
-	public static void setVolume(int vol)
+	public void setVolume(int vol)
 	{
 		volume.setValue(vol);
 	}

@@ -36,12 +36,13 @@ public class JLPlayer implements IPlayer
 		private int frame;
 		private PlayerThread startThread;
 		private FileInputStream fis = null;
+		private String durationPath;
+		private double duration;
 		
 		AdvancedPlayer p;
 		
 		public JLPlayer(PlayerContact playerContact)
 		{
-			System.out.println("Konstruktor");
 			contact = playerContact;
 			try
 			{
@@ -124,6 +125,13 @@ public class JLPlayer implements IPlayer
 
 	public double getDuration(String filePath) throws PlayerException
 	{
+		if(durationPath != null)
+		{
+			if(durationPath.equals(filePath))
+				return this.duration / 1000;
+		}
+		
+		
 		Bitstream bs = null;
 		float duration = 0;
 		
@@ -168,7 +176,8 @@ public class JLPlayer implements IPlayer
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
+		durationPath = filePath;
+		this.duration = duration;
 		return (duration / 1000);
 	}
 
@@ -184,7 +193,6 @@ public class JLPlayer implements IPlayer
 
 	public double getPosition()
 	{
-		System.out.println(startThread.getState());
 		return frame / 38;
 	}
 
@@ -367,13 +375,11 @@ public class JLPlayer implements IPlayer
 		public PlayerThread(Track track)
 		{
 			super();
-			System.out.println("thread");
 			this.track = track;
 		}
 		
 		public void run()
 		{
-			System.out.println("run");
 			if(track == null)
 				return;
 			

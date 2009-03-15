@@ -10,8 +10,8 @@ import gui.*;
 import gui.settings.SettingWindow;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import players.JLPlayer;
 import players.IPlayer;
-import players.JMFPlayer;
 import players.PlayerException;
 import common.*;
 import common.Track.TrackElement;
@@ -99,7 +99,7 @@ public class Controller
 		}
 		
 		splash.setInfo("Lade Player");
-		player = new JMFPlayer(new PlayerListener());
+		player = new JLPlayer(new PlayerListener());
 		
 		splash.setInfo("Lade Listen");
 		try

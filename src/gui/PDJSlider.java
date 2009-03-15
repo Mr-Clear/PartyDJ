@@ -25,7 +25,7 @@ public class PDJSlider extends JPanel
 		
 		this.setBackground(Color.darkGray);
 		
-		slider.setBackground(Color.darkGray);
+		slider.setBackground(Color.yellow);
 		slider.setPaintTicks(true);
 		slider.setValue(0);
 		
@@ -42,7 +42,7 @@ public class PDJSlider extends JPanel
 		
 		c.fill = GridBagConstraints.BOTH;
 		c.gridwidth = 3;
-		c.ipadx = 785;
+		c.ipadx = 800;
 		c.gridx = 0;
 		c.gridy = 0;
 		this.add(slider, c);
