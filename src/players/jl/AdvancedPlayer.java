@@ -3,7 +3,6 @@ package players.jl;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import javax.swing.JOptionPane;
 import common.Track.Problem;
 import players.PlayerException;
 
@@ -213,9 +212,9 @@ public class AdvancedPlayer
 				double spf = bs.readFrame().ms_per_frame() / 1000;
 				//TODO Vor Release unbedingt raus nehmen!
 				if(spf != frameDuration)
-					javax.swing.JOptionPane.showMessageDialog(null, "Frame hat unerwartete Länge:\nErwartet: " + frameDuration + "\nErmittelt: " + spf + "\nPosition: " + calcDuration , "DebugInfo sollte nie zu sehen sein.", JOptionPane.ERROR_MESSAGE);
+					System.out.println("Frame hat unerwartete Länge:\nErwartet:  " + frameDuration + "\nErmittelt: " + spf + "\nPosition: " + calcDuration + "\n");
 				//TODO Vor Release unbedingt raus nehmen!
-				calcDuration += bs.readFrame().ms_per_frame();
+				calcDuration += spf;
 				bs.closeFrame();
 			}
 		}
