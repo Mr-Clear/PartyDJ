@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import basics.CloseListener;
 import lists.ListException;
 
@@ -16,10 +18,10 @@ public class DerbyDB implements IData, CloseListener
 {
 	Connection conn = null;
 	HashMap<Integer, Track> masterList;
-	final HashMap<String, Integer> listIndices = new HashMap<String, Integer>();
-	final HashMap<String, String> settings = new HashMap<String, String>();
-	final HashSet<SettingListener> settingListener = new HashSet<SettingListener>();
-	final HashSet<MasterListListener> masterListListener = new HashSet<MasterListListener>();
+	final Map<String, Integer> listIndices = new HashMap<String, Integer>();
+	final Map<String, String> settings = new HashMap<String, String>();
+	final Set<SettingListener> settingListener = new HashSet<SettingListener>();
+	final Set<MasterListListener> masterListListener = new HashSet<MasterListListener>();
 	
 	public final String version = "0.2a";
 	

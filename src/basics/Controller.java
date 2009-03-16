@@ -103,11 +103,12 @@ public class Controller
 		{
 			System.err.println("Keine Verbindung zur Datenbank möglich:");
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Keine Verbindung zur Datenbank möglich!\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Keine Verbindung zur Datenbank möglich!\n\n" + dbPath + "\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
 		
 		splash.setInfo("Lade Player");
+		System.out.println(whichPlayer);
 		PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener
 		switch(whichPlayer)
 		{
