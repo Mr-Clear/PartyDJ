@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -142,14 +144,12 @@ public class PDJSlider extends JPanel
 	public void setPosition(double position)
 	{
 		this.position = position;
-		if(position > duration)
-			setDuration(position);
 		slider.setValue(position);
 		start.setText(common.Functions.formatTime(position));
 		end.setText("-" + common.Functions.formatTime(duration - position));
 	}
 	
-	class Slider extends JComponent
+	class Slider extends JComponent implements MouseListener
 	{
 		private static final long serialVersionUID = -1283733626056623005L;
 		double duration;
@@ -161,6 +161,7 @@ public class PDJSlider extends JPanel
 			this.setMinimumSize(new Dimension(100, 20));
 			this.setPreferredSize(new Dimension(500, 20));
 			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+			this.addMouseListener(this);
 		}
 		
 		@Override 
@@ -179,6 +180,38 @@ public class PDJSlider extends JPanel
 		{
 			position = val;
 			repaint();
+		}
+
+		public void mouseClicked(MouseEvent e)
+		{
+			if(duration > position)
+			{
+				player.setPosition((e.getX() - 1d) / (getSize().width - 3d) * duration);
+			}			
+		}
+
+		public void mouseEntered(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void mouseExited(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void mousePressed(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void mouseReleased(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
 		}
 	}
 }

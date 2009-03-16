@@ -22,7 +22,7 @@ import data.SettingException;
  * @author Sam
  */
 
-public class JLPlayer implements IPlayer
+public class JLPlayer implements IPlayer, PlaybackListener
 {
 	public int volume;
 		
@@ -104,13 +104,9 @@ public class JLPlayer implements IPlayer
 	{
 		try
 		{
-			return getDuration(currentTrack.path);
+			return getDuration(currentTrack);
 		}
-		catch (PlayerException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		catch (PlayerException e){}
 		return 0;
 	}
 
@@ -231,6 +227,7 @@ public class JLPlayer implements IPlayer
 
 	public void start(Track track)
 	{
+		start(track, 0);
 		if(currentTrack != track)
 		{
 			Track oldTrack = currentTrack;
@@ -238,8 +235,6 @@ public class JLPlayer implements IPlayer
 			for(PlayStateListener listener : playStateListener)
 				listener.currentTrackChanged(oldTrack, currentTrack);
 		}
-		
-		start(track, 0);
 	}
 	
 	private void start(Track track, double position)
@@ -340,6 +335,12 @@ public class JLPlayer implements IPlayer
 				contact.reportProblem(new PlayerException(Problem.CANT_PLAY, e), track);
 			}
 		}
+	}
+
+	public void playbackFinished(AdvancedPlayer source, int reason)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 }

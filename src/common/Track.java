@@ -25,14 +25,13 @@ public class Track implements Comparable<Track>
 	public long size;
 	/** Bekannte Probleme mit dem Track */
 	public Problem problem;
-	/** Beliebigen Info über den Track */
+	/** Beliebige Info über den Track */
 	public String info;
 	
 	public String toString()
 	{
 		return name;
 	}
-	
 
 	public int compareTo(Track o)
 	{

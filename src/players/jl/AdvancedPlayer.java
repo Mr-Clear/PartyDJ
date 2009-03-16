@@ -24,7 +24,7 @@ import javazoom.jl.player.JavaSoundAudioDevice;
 public class AdvancedPlayer
 {
 	/** The MPEG audio bitstream.*/
-	private Bitstream bitstream;
+	private Bitstream bitStream;
 	/** The MPEG audio decoder. */
 	private Decoder decoder;
 	/** The AudioDevice the audio samples are written to. */
@@ -46,7 +46,7 @@ public class AdvancedPlayer
 	 */
 	public AdvancedPlayer(InputStream stream) throws JavaLayerException
 	{
-		bitstream = new Bitstream(stream);
+		bitStream = new Bitstream(stream);
 		audio = (JavaSoundAudioDevice) FactoryRegistry.systemRegistry().createAudioDevice();
 		audio.open(decoder = new Decoder());
 	}
@@ -76,11 +76,10 @@ public class AdvancedPlayer
 			position += frameDuration;
 			if(paused)
 			{
-				paused = false;
 				return true;
 			}
 		}
-			
+		
 		AudioDevice out = audio;
 		if (out != null)
 		{
@@ -109,7 +108,7 @@ public class AdvancedPlayer
 			out.close();
 			try
 			{
-				bitstream.close();
+				bitStream.close();
 			}
 			catch (BitstreamException ex){}
 		}
@@ -128,11 +127,11 @@ public class AdvancedPlayer
 			if (out == null) 
 				return false;
 
-			Header h = bitstream.readFrame();
+			Header h = bitStream.readFrame();
 			if (h == null) 
 				return false;
 			
-			SampleBuffer output = (SampleBuffer)decoder.decodeFrame(h, bitstream);
+			SampleBuffer output = (SampleBuffer)decoder.decodeFrame(h, bitStream);
 
 			synchronized (this)
 			{
@@ -143,7 +142,7 @@ public class AdvancedPlayer
 				}
 			}
 
-			bitstream.closeFrame();
+			bitStream.closeFrame();
 		}
 		catch (RuntimeException ex)
 		{
@@ -159,12 +158,12 @@ public class AdvancedPlayer
 	protected boolean skipFrame() throws JavaLayerException
 	{
 		count++;
-		Header h = bitstream.readFrame();
+		Header h = bitStream.readFrame();
 		
 		if (h == null) 
 			return false;
 		
-		bitstream.closeFrame();
+		bitStream.closeFrame();
 		return true;
 	}
 	
@@ -210,10 +209,6 @@ public class AdvancedPlayer
 			while(bs.readFrame() != null)
 			{
 				double spf = bs.readFrame().ms_per_frame() / 1000;
-				//TODO Vor Release unbedingt raus nehmen!
-				if(spf != frameDuration)
-					System.out.println("Frame hat unerwartete Länge:\nErwartet:  " + frameDuration + "\nErmittelt: " + spf + "\nPosition: " + calcDuration + "\n");
-				//TODO Vor Release unbedingt raus nehmen!
 				calcDuration += spf;
 				bs.closeFrame();
 			}
@@ -235,31 +230,17 @@ public class AdvancedPlayer
 		return (duration);
 	}
 	
-	/**
-	 * 
-	 * @param newPosition
-	 */
-	//TODO jede Menge
-	public boolean skip(double newPosition)
+	//TODO JEDE MENGE
+	private boolean skip(double newPosition)
 	{
-		
-		/*try
-		{
-			bitstream.unreadFrame();
-		}
-		catch (BitstreamException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		bitstream.closeFrame();*/
-		
+		double position = this.position;
+		this.position = newPosition;
 		while(position < newPosition)
 		{
 			Header header = null;
 			try
 			{
-				header = bitstream.readFrame();
+				header = bitStream.readFrame();
 				position += frameDuration;
 				
 			}
@@ -269,9 +250,14 @@ public class AdvancedPlayer
 			}
 			
 			if(header != null)
-				bitstream.closeFrame();
+				bitStream.closeFrame();
 		}
+		this.position = position;
 		return true;
 	}
-
+	
+	public void setGlobalVolume(int volume)
+	{
+		//audio.
+	}
 }

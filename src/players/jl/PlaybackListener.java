@@ -1,8 +1,12 @@
 package players.jl;
 
-
-public abstract class PlaybackListener
+public interface PlaybackListener
 {
-	public void playbackStarted(PlaybackEvent evt){}
-	public void playbackFinished(PlaybackEvent evt){}
+	void playbackFinished(AdvancedPlayer source, int reason);
+	public enum Reason
+	{
+		END_OF_TRACK,
+		RECEIVED_STOP,
+		RECEIVED_PAUSE
+	}
 }

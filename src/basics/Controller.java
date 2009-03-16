@@ -108,7 +108,6 @@ public class Controller
 		}
 		
 		splash.setInfo("Lade Player");
-		System.out.println(whichPlayer);
 		PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener
 		switch(whichPlayer)
 		{
