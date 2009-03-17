@@ -12,7 +12,6 @@ import javax.swing.JOptionPane;
 import players.IPlayer;
 import players.PlayStateListener;
 import players.PlayerException;
-import players.PlayStateListener.Reason;
 import common.*;
 import common.Track.TrackElement;
 
@@ -359,7 +358,7 @@ public class Controller
 			{
 				try
 				{
-					while(lastPlayedList.getSize() < 100)
+					while(lastPlayedList.getSize() > 100)
 						lastPlayedList.remove(0);
 					lastPlayedList.add(lastPlayedList.getSize(), playingCurrent);
 				}
