@@ -258,9 +258,7 @@ public class AdvancedPlayer
 	public void setGlobalVolume(int volume)
 	{
 		FloatControl gainControl = (FloatControl) audio.getSourceDataLine().getControl(FloatControl.Type.MASTER_GAIN);
-		float dB = (float)((Math.log(volume + 1)/Math.log(101)) * 86 - 80);
+		float dB = (float)(Math.log((volume + 1) * 172.17390699942) / Math.log(101 * 172.17390699942) * 86 - 80);
 		gainControl.setValue(dB);
-		
-		System.out.println("dB:   " + dB);
 	}
 }

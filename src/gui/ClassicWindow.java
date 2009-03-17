@@ -556,9 +556,9 @@ public class ClassicWindow extends JFrame
 		public void playStateChanged(boolean playState)
 		{}
 
-		public void volumeChanged(int volume)
+		public void volumeChanged(int vol)
 		{
-			// TODO Auto-generated method stub
+			volume.setValue(vol);
 		}
 	}
 	
@@ -569,12 +569,12 @@ public class ClassicWindow extends JFrame
 			JSlider slider;
 			if(e.getSource() instanceof JSlider)
 				slider = (JSlider)e.getSource();
+			
 			else
-				slider = new JSlider();
+				return;
 			
 			player.setVolume(slider.getValue());
 		}
-		
 	}
 }
 

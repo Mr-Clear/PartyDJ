@@ -12,6 +12,7 @@ import basics.PlayerContact;
 import javazoom.jl.decoder.JavaLayerException;
 import common.Track;
 import common.Track.Problem;
+import data.MasterListListener;
 import data.SettingException;
 
 
@@ -24,37 +25,37 @@ import data.SettingException;
 
 public class JLPlayer implements IPlayer, PlaybackListener
 {
-	public int volume;
+	private int volume;
+	
+	PlayerContact contact;
+	
+	private final Set<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
+	private boolean status;
+	private Track currentTrack;
+	private PlayerThread startThread;
+	private FileInputStream fis = null;
+	
+	AdvancedPlayer p;
+	
+	public JLPlayer(PlayerContact playerContact)
+	{
+		contact = playerContact;
 		
-		PlayerContact contact;
-		
-		private final Set<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
-		private boolean status;
-		private Track currentTrack;
-		private PlayerThread startThread;
-		private FileInputStream fis = null;
-		
-		AdvancedPlayer p;
-		
-		public JLPlayer(PlayerContact playerContact)
+		try
 		{
-			contact = playerContact;
-			
-			try
-			{
-				volume = Integer.parseInt(basics.Controller.getInstance().getData().readSetting("PlayerVolume", "100"));
-			}
-			catch (NumberFormatException e)
-			{
-				volume = 100;
-				e.printStackTrace();
-			}
-			catch (SettingException e)
-			{
-				volume = 100;
-				e.printStackTrace();
-			}
+			volume = Integer.parseInt(basics.Controller.getInstance().getData().readSetting("PlayerVolume", "100"));
 		}
+		catch (NumberFormatException e)
+		{
+			volume = 100;
+			e.printStackTrace();
+		}
+		catch (SettingException e)
+		{
+			volume = 100;
+			e.printStackTrace();
+		}
+	}
 		
 	public void addPlayStateListener(PlayStateListener listener)
 	{
@@ -142,8 +143,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public int getVolume()
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return volume;
 	}
 
 	public void pause()
@@ -214,9 +214,15 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		start(currentTrack, seconds);
 	}
 
-	public void setVolume(int Volume)
+	public void setVolume(int volume)
 	{
-		p.setGlobalVolume(Volume);
+		this.volume = volume;
+		
+		if(getPlayState())
+			p.setGlobalVolume(volume);
+		
+		for(PlayStateListener listener : playStateListener)
+			listener.volumeChanged(this.volume);
 	}
 
 	public void start()
@@ -273,6 +279,9 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		try
 		{
 			p = new AdvancedPlayer(fis);
+			
+			for(PlayStateListener listener : playStateListener)
+				listener.volumeChanged(volume);
 		}
 		catch (JavaLayerException e)
 		{
