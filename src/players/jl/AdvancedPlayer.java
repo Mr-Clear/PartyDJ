@@ -3,6 +3,7 @@ package players.jl;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import javax.sound.sampled.FloatControl;
 import common.Track.Problem;
 import players.PlayerException;
 
@@ -13,8 +14,6 @@ import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.SampleBuffer;
 import javazoom.jl.player.AudioDevice;
-import javazoom.jl.player.FactoryRegistry;
-import javazoom.jl.player.JavaSoundAudioDevice;
 
 /**
  * Simple MP3-Player with advanced Features
@@ -28,7 +27,7 @@ public class AdvancedPlayer
 	/** The MPEG audio decoder. */
 	private Decoder decoder;
 	/** The AudioDevice the audio samples are written to. */
-	private JavaSoundAudioDevice audio;
+	private SoundAudioDevice audio;
 	
 	private boolean paused = false;
 
@@ -47,7 +46,7 @@ public class AdvancedPlayer
 	public AdvancedPlayer(InputStream stream) throws JavaLayerException
 	{
 		bitStream = new Bitstream(stream);
-		audio = (JavaSoundAudioDevice) FactoryRegistry.systemRegistry().createAudioDevice();
+		audio = (SoundAudioDevice)FactoryRegistry.systemRegistry().createAudioDevice();
 		audio.open(decoder = new Decoder());
 	}
 	
@@ -258,6 +257,10 @@ public class AdvancedPlayer
 	
 	public void setGlobalVolume(int volume)
 	{
-		//audio.
+		FloatControl gainControl = (FloatControl) audio.getSourceDataLine().getControl(FloatControl.Type.MASTER_GAIN);
+		float dB = (float)((Math.log(volume + 1)/Math.log(101)) * 86 - 80);
+		gainControl.setValue(dB);
+		
+		System.out.println("dB:   " + dB);
 	}
 }

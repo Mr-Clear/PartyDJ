@@ -259,7 +259,7 @@ public class ClassicWindow extends JFrame
 				{
 					public void mouseClicked(MouseEvent me) 
 					{
-						player.fadeInOut();
+						player.setVolume(100);
 					}
 				});
 				

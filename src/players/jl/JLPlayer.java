@@ -216,8 +216,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void setVolume(int Volume)
 	{
-		// TODO Auto-generated method stub
-		
+		p.setGlobalVolume(Volume);
 	}
 
 	public void start()
@@ -279,8 +278,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		{
 			throw new PlayerException(Problem.CANT_PLAY, e);
 		}
-		
-		
 		return p;
 	}
 	
