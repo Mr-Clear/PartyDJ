@@ -12,9 +12,11 @@ import javax.swing.JOptionPane;
 import players.IPlayer;
 import players.PlayStateListener;
 import players.PlayerException;
+import players.PlayStateListener.Reason;
 import common.*;
 import common.Track.TrackElement;
 
+import lists.DbClientListModel;
 import lists.EditableListModel;
 import lists.ListException;
 import lists.ListProvider;
@@ -23,7 +25,7 @@ import data.derby.DerbyDB;
 
 public class Controller
 {
-	public final String version = "3.0.1";
+	public final String version = "3.0.0a";
 	
 	private static Controller instance;
 	private IData data;
@@ -31,6 +33,8 @@ public class Controller
 	private IPlayer player;
 	private Track currentTrack;
 	private EditableListModel playList;
+	
+	private DbClientListModel lastPlayedList;
 	
 	private Thread closeListenTread;
 	private Runtime runtime = Runtime.getRuntime();
@@ -134,6 +138,8 @@ public class Controller
 		try
 		{
 			listProvider = new ListProvider();
+			playList = listProvider.getDbList("Wunschliste");
+			lastPlayedList = listProvider.getDbList("LastPlayed");
 		}
 		catch (ListException e)
 		{
@@ -146,7 +152,7 @@ public class Controller
 		splash.setInfo("Lade Fenster");
 		registerWindow(new gui.ClassicWindow());
 		//registerWindow(new gui.TestWindow());
-		//registerWindow(new gui.settings.SettingWindow());
+		registerWindow(new gui.settings.SettingWindow());
 		
 		splash.setInfo("PartyDJ bereit :)");
 		try
@@ -301,8 +307,21 @@ public class Controller
 
 		public Track requestPreviousTrack()
 		{
-			// TODO Auto-generated method stub
-			return null;
+			if(lastPlayedList.getSize() == 0)
+				return null;
+			
+			Track previous = lastPlayedList.getElementAt(lastPlayedList.getSize() - 1);
+			try
+			{
+				lastPlayedList.remove(lastPlayedList.getSize() - 1);
+				playList.add(0, currentTrack);
+			}
+			catch (ListException e)
+			{
+				e.printStackTrace();
+			}
+			
+			return previous;
 		}
 	
 		public void playCompleted()
@@ -331,10 +350,24 @@ public class Controller
 		}
 
 		//--- PlayStateListener
-		public void currentTrackChanged(Track playedLast, Track playingCurrent)
+		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
 			if(playingCurrent.duration == 0)
 				player.getDuration();
+			
+			if(reason != Reason.RECEIVED_BACKWARD)
+			{
+				try
+				{
+					while(lastPlayedList.getSize() < 100)
+						lastPlayedList.remove(0);
+					lastPlayedList.add(lastPlayedList.getSize(), playingCurrent);
+				}
+				catch (ListException e)
+				{
+					e.printStackTrace();
+				}
+			}
 		}
 
 		public void playStateChanged(boolean playState){}

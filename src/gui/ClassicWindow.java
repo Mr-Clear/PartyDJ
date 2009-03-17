@@ -163,7 +163,6 @@ public class ClassicWindow extends JFrame
 		try
 		{
 			mainPart.add(List("Wunschliste", listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
-			Controller.getInstance().setPlayList(listProvider.getDbList("Wunschliste"));
 		}
 		catch (ListException e)
 		{
@@ -373,33 +372,24 @@ public class ClassicWindow extends JFrame
 			public void actionPerformed(ActionEvent arg0)
 			{
 				String text = textField.getText();
-				if(text != null && !text.equals(""))
+				if(text == null)
+					text = "";
+
+				Color bgColor = textField.getBackground();
+				try
 				{
-					Color bgColor = textField.getBackground();
-					try
-					{
-						textField.setBackground(Color.GRAY);
-						//TODO textField neu zeichnen
-						((SearchListModel)searchList.getListModel()).search(text);
-					}
-					catch (ListException e)
-					{
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(null, "Suche fehlgeschlagen.\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
-					}
-					finally
-					{
-						textField.setBackground(bgColor);
-					}
+					textField.setBackground(Color.GRAY);
+					//TODO textField neu zeichnen
+					((SearchListModel)searchList.getListModel()).search(text);
 				}
-				else
+				catch (ListException e)
 				{
-					try
-					{
-						((SearchListModel)searchList.getListModel()).search(null);
-					}
-					catch (ListException e)
-					{}
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Suche fehlgeschlagen.\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+				}
+				finally
+				{
+					textField.setBackground(bgColor);
 				}
 			}});
 		
@@ -549,7 +539,7 @@ public class ClassicWindow extends JFrame
 	{
 		public int duration;
 		
-		public void currentTrackChanged(Track playedLast, Track playingCurrent)
+		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
 			classicWindow.setTitle(playingCurrent.name + "   -   PartyDJ");	
 		}

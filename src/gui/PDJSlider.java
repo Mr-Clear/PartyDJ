@@ -99,7 +99,7 @@ public class PDJSlider extends JPanel
 		refreshTimer.setDelay(40);
 		
 		player.addPlayStateListener(new PlayStateAdapter(){
-					public void currentTrackChanged(Track playedLast, Track playingCurrent)
+					public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 					{
 						if(currentTrack != playingCurrent)
 						{

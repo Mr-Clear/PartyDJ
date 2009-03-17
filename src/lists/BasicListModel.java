@@ -49,7 +49,7 @@ abstract class BasicListModel implements TrackListModel, PlayStateListener, Mast
 		dataListener.remove(listener);
 	}
 	
-	public void currentTrackChanged(Track playedLast, Track playingCurrent)
+	public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 	{
 		synchronized(list)
 		{

@@ -10,6 +10,7 @@ import javax.media.*;
 import players.IPlayer;
 import players.PlayStateListener;
 import players.PlayerException;
+import players.PlayStateListener.Reason;
 import basics.Controller;
 import basics.PlayerContact;
 import common.Track;
@@ -95,12 +96,12 @@ public class JMFPlayer implements IPlayer
 	
 	public void playNext()
 	{
-		start(contact.requestNextTrack());
+		start(contact.requestNextTrack(), Reason.RECEIVED_FORWARD);
 	}
 
 	public void playPrevious()
 	{
-		start(contact.requestPreviousTrack());
+		start(contact.requestPreviousTrack(), Reason.RECEIVED_BACKWARD);
 	}
 
 	public void playPause()
@@ -152,8 +153,13 @@ public class JMFPlayer implements IPlayer
 		setPosition(0);
 		play();
 	}
-
+	
 	public void start(Track track)
+	{
+		start(track, Reason.RECEIVED_NEW_TRACK);
+	}
+
+	private void start(Track track, Reason reason)
 	{
 		if(track == null)
 			return;
@@ -185,7 +191,7 @@ public class JMFPlayer implements IPlayer
 												if(next == null)
 													contact.playCompleted();
 												else
-													start(next);
+													start(next, Reason.END_OF_TRACK);
 											}
 											((Player)e.getSource()).stop();
 											((Player)e.getSource()).deallocate();
@@ -199,7 +205,7 @@ public class JMFPlayer implements IPlayer
 			Track oldTrack = currentTrack;
 			currentTrack = track;
 			for(PlayStateListener listener : playStateListener)
-				listener.currentTrackChanged(oldTrack, currentTrack);
+				listener.currentTrackChanged(oldTrack, currentTrack, reason);
 		}
 
 		changeState(true);

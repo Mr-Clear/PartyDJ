@@ -9,7 +9,7 @@ import data.SortOrder;
 
 public class SearchListModel extends BasicListModel
 {
-	private String searchString;
+	private String searchString = "";
 	private SortOrder sortOrder;
 	private String dbList;
 	
@@ -63,10 +63,17 @@ public class SearchListModel extends BasicListModel
 	private int search() throws ListException
 	{
 		int maxSize = getSize();
-		list = Controller.getInstance().getData().readList(dbList, searchString, sortOrder);
-		
-		if(list.size() > maxSize)
-		maxSize = list.size();
+		if(searchString == null || searchString.length() > 0)
+		{
+			list = Controller.getInstance().getData().readList(dbList, searchString, sortOrder);
+			
+			if(list.size() > maxSize)
+			maxSize = list.size();
+		}
+		else
+		{
+			list = new ArrayList<Track>();
+		}
 		
 		for(ListDataListener listener : dataListener)
 			listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, maxSize));
@@ -76,17 +83,14 @@ public class SearchListModel extends BasicListModel
 
 	public void trackAdded(Track track)
 	{
-		if(searchString == null || searchString.length() > 0)
+		try
 		{
-			try
-			{
-				search();
-			}
-			catch (ListException e)
-			{
-				System.err.println("ListException in SearchListModel.trackAdded.");
-				e.printStackTrace();
-			}
+			search();
+		}
+		catch (ListException e)
+		{
+			System.err.println("ListException in SearchListModel.trackAdded.");
+			e.printStackTrace();
 		}
 	}
 	public void trackDeleted(Track track)
