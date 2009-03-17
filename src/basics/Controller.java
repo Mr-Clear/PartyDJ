@@ -93,7 +93,6 @@ public class Controller
 			}
 		}
 		
-		//Datenbank verbinden
 		splash.setInfo("Verbinde zur Datenbank");
 		try
 		{
@@ -119,7 +118,17 @@ public class Controller
 			player = new players.jl.JLPlayer(playerListener);
 			break;
 		}
+		try
+		{
+			player.setVolume(Integer.parseInt(data.readSetting("Volume", "100")));
+		}
+		catch (NumberFormatException e1)
+			{player.setVolume(100);}
+		catch (SettingException e1)
+			{player.setVolume(100);}
+		
 		player.addPlayStateListener(playerListener);
+
 		
 		splash.setInfo("Lade Listen");
 		try
@@ -329,7 +338,14 @@ public class Controller
 		}
 
 		public void playStateChanged(boolean playState){}
-		public void volumeChanged(int volume){}
+		public void volumeChanged(int volume)
+		{
+			try
+			{
+				data.writeSetting("Volume", Integer.toString(volume));
+			}
+			catch (SettingException e){}
+		}
 	}
 	
 	class ClientWindowListener extends WindowAdapter
