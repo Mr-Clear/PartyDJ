@@ -278,8 +278,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		
 		try
 		{
-			p = new AdvancedPlayer(fis);
-			
+			p = new AdvancedPlayer(fis, volume);
 			for(PlayStateListener listener : playStateListener)
 				listener.volumeChanged(volume);
 		}
@@ -301,6 +300,11 @@ public class JLPlayer implements IPlayer, PlaybackListener
 				listener.playStateChanged(status);
 			}
 		}
+	}
+	
+	public static float volumeToDB(int vol)
+	{
+		return (float)(Math.log((vol + 1) * 172.17390699942) / Math.log(101 * 172.17390699942) * 86 - 80);
 	}
 	
 	class PlayerThread extends Thread

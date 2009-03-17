@@ -33,6 +33,7 @@ public class AdvancedPlayer
 
 	private static String durationPath;
 	private static double duration;
+	private int volume;
 	
 	private static final double frameDuration = 0.02612245;
 	
@@ -43,11 +44,12 @@ public class AdvancedPlayer
 	/**
 	 * Creates a new Player instance.
 	 */
-	public AdvancedPlayer(InputStream stream) throws JavaLayerException
+	public AdvancedPlayer(InputStream stream, int vol) throws JavaLayerException
 	{
 		bitStream = new Bitstream(stream);
 		audio = (SoundAudioDevice)FactoryRegistry.systemRegistry().createAudioDevice();
 		audio.open(decoder = new Decoder());
+		volume = vol;
 	}
 	
 	/**
@@ -68,7 +70,7 @@ public class AdvancedPlayer
 	{
 		paused = false;
 		boolean ftd = true;
-		
+
 		while (ftd)
 		{
 			ftd = decodeFrame();
@@ -83,7 +85,6 @@ public class AdvancedPlayer
 		if (out != null)
 		{
 			out.flush();
-			
 			close();
 		}
 		return true;
@@ -257,7 +258,7 @@ public class AdvancedPlayer
 	
 	public void setGlobalVolume(int volume)
 	{
-		FloatControl gainControl = (FloatControl) audio.getSourceDataLine().getControl(FloatControl.Type.MASTER_GAIN);
+		FloatControl gainControl = (FloatControl)audio.getSourceDataLine().getControl(FloatControl.Type.MASTER_GAIN);
 		float dB = (float)(Math.log((volume + 1) * 172.17390699942) / Math.log(101 * 172.17390699942) * 86 - 80);
 		gainControl.setValue(dB);
 	}

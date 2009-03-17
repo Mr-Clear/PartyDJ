@@ -7,6 +7,7 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
+import basics.Controller;
 
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.JavaLayerException;
@@ -82,6 +83,10 @@ public class SoundAudioDevice extends AudioDeviceBase
          		source = (SourceDataLine)line;
                 //source.open(fmt, millisecondsToBytes(fmt, 2000));
 				source.open(fmt);
+				
+                FloatControl gainControl = (FloatControl)source.getControl(FloatControl.Type.MASTER_GAIN);
+                gainControl.setValue(JLPlayer.volumeToDB(Controller.getInstance().getPlayer().getVolume()));
+                
                 /*
                 if (source.isControlSupported(FloatControl.Type.MASTER_GAIN))
                 {
@@ -89,6 +94,7 @@ public class SoundAudioDevice extends AudioDeviceBase
                     c.setValue(c.getMaximum());
                 }*/
                 source.start();
+                
 
             }
         } catch (RuntimeException ex)
