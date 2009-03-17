@@ -12,8 +12,9 @@ public interface PlayStateListener
 	 * 
 	 * @param playedLast Zuletzt gespielter Track.
 	 * @param playingCurrent Track der jetzt gespielt wird.
+	 * @param reason Grund für den wechsel.
 	 */
-	void currentTrackChanged (Track playedLast, Track playingCurrent);
+	void currentTrackChanged (Track playedLast, Track playingCurrent, Reason reason);
 	
 	
 	/**Der Player wurde gestartet oder gestoppt.
@@ -27,4 +28,12 @@ public interface PlayStateListener
 	 * @param volume Neue Lautstärke zwischen 0 und 100.
 	 */
 	void volumeChanged (int volume);
+	
+	public enum Reason
+	{
+		END_OF_TRACK,
+		RECEIVED_FORWARD,
+		RECEIVED_BACKWARD,
+		RECEIVED_NEW_TRACK
+	}
 }
