@@ -32,7 +32,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	private final Set<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
 	private boolean status;
 	private Track currentTrack;
-	private PlayerThread startThread;
 	private FileInputStream fis = null;
 	
 	AdvancedPlayer p;
@@ -244,8 +243,31 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	
 	private void start(Track track, double position)
 	{
-		startThread = new PlayerThread(track, position);
-		startThread.start();
+		if(track == null)
+			return;
+		
+		if(p != null)
+			p.close();
+		
+		try
+		{
+			p = getPlayer(track.path);
+		}
+		catch (PlayerException e)
+		{
+			contact.reportProblem(e, track);
+		}
+		
+
+		try
+		{
+			p.play(position);
+		}
+		catch (JavaLayerException e)
+		{
+			contact.reportProblem(new PlayerException(Problem.CANT_PLAY, e), track);
+		}
+		
 		changeState(true);
 	}
 
@@ -307,45 +329,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		return (float)(Math.log((vol + 1) * 172.17390699942) / Math.log(101 * 172.17390699942) * 86 - 80);
 	}
 	
-	class PlayerThread extends Thread
-	{
-		Track track;
-		double start;
-		
-		public PlayerThread(Track track, double start)
-		{
-			this.track = track;
-			this.start = start;
-		}
-		
-		public void run()
-		{
-			if(track == null)
-				return;
-			
-			if(p != null)
-				p.close();
-			
-			try
-			{
-				p = getPlayer(track.path);
-			}
-			catch (PlayerException e)
-			{
-				contact.reportProblem(e, track);
-			}
-			
-
-			try
-			{
-				p.play(start);
-			}
-			catch (JavaLayerException e)
-			{
-				contact.reportProblem(new PlayerException(Problem.CANT_PLAY, e), track);
-			}
-		}
-	}
 
 	public void playbackFinished(AdvancedPlayer source, int reason)
 	{

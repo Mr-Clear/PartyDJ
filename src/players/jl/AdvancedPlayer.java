@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import javax.sound.sampled.FloatControl;
+import common.Track;
 import common.Track.Problem;
 import players.PlayerException;
 
@@ -28,18 +29,20 @@ public class AdvancedPlayer
 	private Decoder decoder;
 	/** The AudioDevice the audio samples are written to. */
 	private SoundAudioDevice audio;
+
+	private PlayerThread startThread;
 	
 	private boolean paused = false;
 
 	private static String durationPath;
 	private static double duration;
-	private int volume;
 	
 	private static final double frameDuration = 0.02612245;
 	
 	private double position;
 	
 	int count = 0;
+	private int volume;
 
 	/**
 	 * Creates a new Player instance.
@@ -68,25 +71,8 @@ public class AdvancedPlayer
 	
 	public boolean play() throws JavaLayerException
 	{
-		paused = false;
-		boolean ftd = true;
-
-		while (ftd)
-		{
-			ftd = decodeFrame();
-			position += frameDuration;
-			if(paused)
-			{
-				return true;
-			}
-		}
-		
-		AudioDevice out = audio;
-		if (out != null)
-		{
-			out.flush();
-			close();
-		}
+		startThread = new PlayerThread();
+		startThread.start();
 		return true;
 	}
 	
@@ -261,5 +247,42 @@ public class AdvancedPlayer
 		FloatControl gainControl = (FloatControl)audio.getSourceDataLine().getControl(FloatControl.Type.MASTER_GAIN);
 		float dB = (float)(Math.log((volume + 1) * 172.17390699942) / Math.log(101 * 172.17390699942) * 86 - 80);
 		gainControl.setValue(dB);
+	}
+	
+	class PlayerThread extends Thread
+	{
+		Track track;
+		double start;
+		
+		public void run()
+		{
+			paused = false;
+			boolean ftd = true;
+
+			while (ftd)
+			{
+				try
+				{
+					ftd = decodeFrame();
+				}
+				catch (JavaLayerException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				position += frameDuration;
+				if(paused)
+				{
+					return;
+				}
+			}
+			
+			AudioDevice out = audio;
+			if (out != null)
+			{
+				out.flush();
+				close();
+			}
+		}
 	}
 }

@@ -6,6 +6,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import players.IPlayer;
+import players.PlayStateAdapter;
 import players.PlayStateListener;
 import common.Track;
 import data.IData;
@@ -259,7 +260,7 @@ public class ClassicWindow extends JFrame
 				{
 					public void mouseClicked(MouseEvent me) 
 					{
-						player.setVolume(100);
+						player.fadeOut();
 					}
 				});
 				
@@ -544,7 +545,7 @@ public class ClassicWindow extends JFrame
         
 	}
 	
-	class PlayState implements PlayStateListener
+	class PlayState extends PlayStateAdapter
 	{
 		public int duration;
 		

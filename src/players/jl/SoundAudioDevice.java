@@ -85,7 +85,7 @@ public class SoundAudioDevice extends AudioDeviceBase
 				source.open(fmt);
 				
                 FloatControl gainControl = (FloatControl)source.getControl(FloatControl.Type.MASTER_GAIN);
-                gainControl.setValue(JLPlayer.volumeToDB(Controller.getInstance().getPlayer().getVolume()));
+                gainControl.setValue(-80.0f);
                 
                 /*
                 if (source.isControlSupported(FloatControl.Type.MASTER_GAIN))
