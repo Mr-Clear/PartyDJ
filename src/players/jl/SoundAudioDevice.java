@@ -7,7 +7,6 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-import basics.Controller;
 
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.JavaLayerException;

@@ -31,18 +31,15 @@ public class AdvancedPlayer
 	private SoundAudioDevice audio;
 
 	private PlayerThread startThread;
-	
 	private boolean paused = false;
-
 	private static String durationPath;
 	private static double duration;
-	
 	private static final double frameDuration = 0.02612245;
-	
 	private double position;
-	
 	int count = 0;
 	private int volume;
+	private boolean fadeOut = false;
+	private boolean fadeIn = false;
 
 	/**
 	 * Creates a new Player instance.
@@ -249,6 +246,16 @@ public class AdvancedPlayer
 		gainControl.setValue(dB);
 	}
 	
+	public void fadeOut()
+	{
+		fadeOut = true;
+	}
+	
+	public void fadeIn()
+	{
+		fadeIn = true;
+	}
+	
 	class PlayerThread extends Thread
 	{
 		Track track;
@@ -270,7 +277,16 @@ public class AdvancedPlayer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				if(!fadeIn && !fadeOut && count == 0)
+					setGlobalVolume(volume);
+				
+				else if(fadeIn)
+				{
+				}
+				
 				position += frameDuration;
+				
 				if(paused)
 				{
 					return;

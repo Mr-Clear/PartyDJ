@@ -2,7 +2,6 @@ package players.jl;
 
 
 import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.AudioDeviceFactory;
 
 /**
@@ -14,8 +13,6 @@ import javazoom.jl.player.AudioDeviceFactory;
 public class SoundAudioDeviceFactory extends AudioDeviceFactory
 {
 	private boolean tested = false;
-
-	static private final String DEVICE_CLASS_NAME = "javazoom.jl.player.JavaSoundAudioDevice";
 	
 	public synchronized SoundAudioDevice createAudioDevice()
 		throws JavaLayerException

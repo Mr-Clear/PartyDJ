@@ -12,7 +12,6 @@ import basics.PlayerContact;
 import javazoom.jl.decoder.JavaLayerException;
 import common.Track;
 import common.Track.Problem;
-import data.MasterListListener;
 import data.SettingException;
 
 
@@ -65,15 +64,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void fadeIn()
 	{
-		try
-		{
-			p.play();
-		}
-		catch (JavaLayerException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		p.fadeIn();
 	}
 
 	public void fadeInOut()
@@ -155,6 +146,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	{
 		if(p != null)
 		{
+			System.out.println("play");
 			try
 			{
 				p.play();
@@ -237,7 +229,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 			Track oldTrack = currentTrack;
 			currentTrack = track;
 			for(PlayStateListener listener : playStateListener)
-				listener.currentTrackChanged(oldTrack, currentTrack);
+				listener.currentTrackChanged(oldTrack, currentTrack, players.PlayStateListener.Reason.RECEIVED_NEW_TRACK);
 		}
 	}
 	
@@ -258,9 +250,9 @@ public class JLPlayer implements IPlayer, PlaybackListener
 			contact.reportProblem(e, track);
 		}
 		
-
 		try
 		{
+			p.fadeIn();
 			p.play(position);
 		}
 		catch (JavaLayerException e)
