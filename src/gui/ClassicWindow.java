@@ -7,7 +7,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import players.IPlayer;
 import players.PlayStateAdapter;
-import players.PlayStateListener;
 import common.Track;
 import data.IData;
 import data.SettingException;
@@ -197,7 +196,7 @@ public class ClassicWindow extends JFrame
 		JButton bwd = customizeButton("Resources/Zurückspulen.png");
 		JButton skipFWD = customizeButton("Resources/Vor.png");
 		JButton skipBWD = customizeButton("Resources/Zurück.png");
-		JButton fade = customizeButton("Resources/Abblenden.png");
+		JButton setting = customizeButton("Resources/Einstellungen.png");
 		
 		play.addMouseListener(new MouseAdapter()
 		{
@@ -255,11 +254,11 @@ public class ClassicWindow extends JFrame
 						}
 					});
 		
-		fade.addMouseListener(new MouseAdapter()
+		setting.addMouseListener(new MouseAdapter()
 				{
 					public void mouseClicked(MouseEvent me) 
 					{
-						player.fadeOut();
+						controller.registerWindow(new gui.settings.SettingWindow());
 					}
 				});
 				
@@ -267,8 +266,8 @@ public class ClassicWindow extends JFrame
 				
 				panel.add(play, c);
 				panel.add(pause, c);
-				panel.add(fade, c);
 				panel.add(stop, c);
+				panel.add(setting, c);
 				
 				c.gridy = 1;
 				

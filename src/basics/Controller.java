@@ -151,7 +151,7 @@ public class Controller
 		splash.setInfo("Lade Fenster");
 		registerWindow(new gui.ClassicWindow());
 		//registerWindow(new gui.TestWindow());
-		registerWindow(new gui.settings.SettingWindow());
+		//registerWindow(new gui.settings.SettingWindow());
 		
 		splash.setInfo("PartyDJ bereit :)");
 		try

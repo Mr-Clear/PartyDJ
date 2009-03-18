@@ -64,7 +64,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void fadeIn()
 	{
-		p.fadeIn();
 	}
 
 	public void fadeInOut()
@@ -253,7 +252,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		
 		try
 		{
-			//p.fadeIn();
 			p.play(position);
 		}
 		catch (JavaLayerException e)
