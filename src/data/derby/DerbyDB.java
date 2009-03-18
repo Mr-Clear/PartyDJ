@@ -803,11 +803,11 @@ public class DerbyDB implements IData, CloseListener
 			try
 			{
 				int listIndex = getListIndex(listName);
-				int position = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
+				int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
 				PreparedStatement ps = conn.prepareStatement("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)");
 				ps.setInt(1, listIndex);
 				ps.setInt(2, track.index);
-				ps.setInt(3, position);
+				ps.setInt(3, size);
 				ps.executeUpdate();
 				conn.commit();
 				
@@ -845,8 +845,8 @@ public class DerbyDB implements IData, CloseListener
 				for(int i = size; i >= trackPosition; i--)
 				{
 					PreparedStatement ps = conn.prepareStatement("UPDATE LISTS_CONTENT SET POSITION = ? WHERE POSITION = ? AND LIST = ?");
-					ps.setInt(1, i + 1);
-					ps.setInt(2, i);
+					ps.setInt(1, i);
+					ps.setInt(2, i - 1);
 					ps.setInt(3, listIndex);
 					ps.executeUpdate();
 				}
