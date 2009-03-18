@@ -164,7 +164,17 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void playNext()
 	{
-		start(contact.requestNextTrack());
+		Track track = contact.requestNextTrack();
+		start(track, 0);
+		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_FORWARD);
+	}
+	
+
+	public void playPrevious()
+	{
+		Track track = contact.requestPreviousTrack();
+		start(track, 0);
+		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_BACKWARD);
 	}
 
 	public void playPause()
@@ -185,10 +195,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		}
 	}
 
-	public void playPrevious()
-	{
-		start(contact.requestPreviousTrack());
-	}
 
 	public void removePlayStateListener(PlayStateListener listener)
 	{
@@ -219,18 +225,13 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	public void start()
 	{
 		start(currentTrack);
+		
 	}
 
 	public void start(Track track)
 	{
 		start(track, 0);
-		if(currentTrack != track)
-		{
-			Track oldTrack = currentTrack;
-			currentTrack = track;
-			for(PlayStateListener listener : playStateListener)
-				listener.currentTrackChanged(oldTrack, currentTrack, players.PlayStateListener.Reason.RECEIVED_NEW_TRACK);
-		}
+		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_NEW_TRACK);
 	}
 	
 	private void start(Track track, double position)
@@ -252,7 +253,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		
 		try
 		{
-			p.fadeIn();
+			//p.fadeIn();
 			p.play(position);
 		}
 		catch (JavaLayerException e)
@@ -322,10 +323,25 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	}
 	
 
-	public void playbackFinished(AdvancedPlayer source, int reason)
+	public void playbackFinished(AdvancedPlayer source, Reason reason)
 	{
-		// TODO Auto-generated method stub
-		
+		if(reason == Reason.END_OF_TRACK)
+		{
+			Track track = contact.requestNextTrack();
+			start(track, 0);
+			currentTrackChanged(track, players.PlayStateListener.Reason.END_OF_TRACK);
+		}
+	}
+	
+	private void currentTrackChanged(Track track, players.PlayStateListener.Reason reason)
+	{
+		if(currentTrack != track)
+		{
+			Track oldTrack = currentTrack;
+			currentTrack = track;
+			for(PlayStateListener listener : playStateListener)
+				listener.currentTrackChanged(oldTrack, currentTrack, reason);
+		}
 	}
 
 }

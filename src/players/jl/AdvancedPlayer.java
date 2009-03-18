@@ -277,7 +277,7 @@ public class AdvancedPlayer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				if(!fadeIn && !fadeOut && count == 0)
 					setGlobalVolume(volume);
 				
