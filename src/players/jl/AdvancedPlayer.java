@@ -278,12 +278,7 @@ public class AdvancedPlayer
 					e.printStackTrace();
 				}
 
-				if(!fadeIn && !fadeOut && count == 0)
-					setGlobalVolume(volume);
 				
-				else if(fadeIn)
-				{
-				}
 				
 				position += frameDuration;
 				
@@ -296,9 +291,18 @@ public class AdvancedPlayer
 			AudioDevice out = audio;
 			if (out != null)
 			{
+				if(!fadeIn && !fadeOut && count == 0)
+					setGlobalVolume(volume);
+				
+				else if(fadeIn)
+				{
+				}
+				
 				out.flush();
 				close();
 			}
+			
+			
 		}
 	}
 }
