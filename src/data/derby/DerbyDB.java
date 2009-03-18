@@ -742,13 +742,13 @@ public class DerbyDB implements IData, CloseListener
 				
 				// In temporäre Liste schreiben
 				settings.put(name, value);
+				
+				synchronized(settingListener)
+				{
+					for(SettingListener listener : settingListener)
+						listener.settingChanged(name, value);
+				}
 			}
-		}
-		
-		synchronized(settingListener)
-		{
-			for(SettingListener listener : settingListener)
-				listener.settingChanged(name, value);
 		}
 	}
 	

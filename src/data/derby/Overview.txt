@@ -22,7 +22,6 @@ LISTS
     +_INDEX_ [Int, Auto]
     |NAME [String*32]
     DESCRYPTION [String*128]
-    SIZE [Int] 0
 
 LISTS_CONTENT
     |!LIST [Int]
