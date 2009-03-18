@@ -10,3 +10,6 @@ ClassicWindow sinnvolle Fehlermeldungen wenn die Listen nicht gehen.
 ComboBoxen von gui.settings.MasterList fixen.
 RMB von gui.settings.MasterList fixen.
 Funktion der Maustasten in PDJList wählbar
+
+Mal merken, System LookAndFeel:
+	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
