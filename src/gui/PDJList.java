@@ -206,35 +206,42 @@ public class PDJList extends JList
 			
 			if(SwingUtilities.isRightMouseButton(e))
 			{
-				synchronized(list)
+				if(((PDJList)e.getSource()).getTopLevelAncestor() instanceof ClassicWindow)
 				{
-					try
+					synchronized(list)
 					{
-						if(e.getY() / list.getFixedCellHeight() <= list.getLastVisibleIndex())
+						try
 						{
-							if(list.getSelectedIndex() == -1)
-								list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
-							
-							for(int i = list.getSelectedIndices().length; i > 0; i--)
+							if(e.getY() / list.getFixedCellHeight() <= list.getLastVisibleIndex())
 							{
-								if((int)(e.getY() / list.getFixedCellHeight()) == list.getSelectedIndices()[i-1])
+								if(list.getSelectedIndex() == -1)
 								{
-									if(list.getSelectedValue() != null)
+									list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+								}
+									
+								
+								for(int i = list.getSelectedIndices().length; i > 0; i--)
+								{
+									if((int)(e.getY() / list.getFixedCellHeight()) == list.getSelectedIndices()[i-1])
 									{
-										PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
-										return;
+										if(list.getSelectedValue() != null)
+										{
+											PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
+											return;
+										}
 									}
 								}
+									list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+									PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
 							}
-								list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
-								PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
+						}
+						catch (IndexOutOfBoundsException ex)
+						{
+							return;
 						}
 					}
-					catch (IndexOutOfBoundsException ex)
-					{
-						return;
-					}
 				}
+				
 			}
 			
 			if(SwingUtilities.isLeftMouseButton(e))

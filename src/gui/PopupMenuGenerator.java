@@ -34,7 +34,6 @@ public class PopupMenuGenerator
 		boolean listEditable = list.getListModel() instanceof EditableListModel;
 		JPopupMenu menu = new JPopupMenu();
 		
-
 		JMenuItem newItem = new JMenuItem(list.getSelectedValue().toString());
 		newItem.setForeground(new Color(0, 128, 0));
 		newItem.setActionCommand("Play");
@@ -68,17 +67,12 @@ public class PopupMenuGenerator
 			newItem.setEnabled(listEditable);
 			newItem.addActionListener(listener);
 			menu.add(newItem);
-		
 		}
-		
-		
 		
 		newItem = new JMenuItem("Kopieren [Strg + C]");
 		newItem.setActionCommand("Copy");
 		newItem.addActionListener(listener);
 		menu.add(newItem);
-
-		
 
 		newItem = new JMenuItem("Einfügen [Strg + V]");
 		newItem.setActionCommand("Paste");
@@ -98,8 +92,7 @@ public class PopupMenuGenerator
 		newItem = new JMenuItem("Datei öffnen...");
 		newItem.setActionCommand("OpenFile");
 		newItem.addActionListener(listener);
-		fileMenu.add(newItem);
-				
+		fileMenu.add(newItem);	
 		return menu;
 	}
 	

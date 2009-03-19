@@ -299,8 +299,6 @@ public class ClassicWindow extends JFrame
 		
 		
 		scrollPane.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
-		//scrollPane.setVisible(true);
-		//list.setVisible(true);
 		list.setForeground(new Color(0, 255, 0));
 		panel.setBackground(Color.darkGray);
 		label.setBackground(Color.darkGray);
@@ -312,7 +310,6 @@ public class ClassicWindow extends JFrame
 		c.weightx = 0.0;
 		c.weighty = 0.0;
 		c.fill = GridBagConstraints.BOTH;
-		//c.anchor = GridBagConstraints.WEST;
 		panel.add(label, c);
 		
 		c.ipadx = super.getSize().width;

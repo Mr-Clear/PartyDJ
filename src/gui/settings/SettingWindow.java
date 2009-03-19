@@ -17,7 +17,7 @@ public class SettingWindow extends JFrame
 	
 	public SettingWindow()
 	{
-		super("Party DJ Einstellungens");
+		super("Party DJ Einstellungen");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(1000, 600);
 		setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/Settings32.gif"));
