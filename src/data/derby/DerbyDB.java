@@ -122,8 +122,7 @@ public class DerbyDB implements IData, CloseListener
 					"UNIQUE (NAME))");
 			
 			s.executeUpdate("CREATE TABLE LISTS_CONTENT (LIST INTEGER NOT NULL, INDEX INTEGER NOT NULL, POSITION INTEGER NOT NULL)");
-			s.executeUpdate("CREATE INDEX LIST ON LISTS_CONTENT (LIST)");
-			s.executeUpdate("CREATE INDEX POSITION ON LISTS_CONTENT (POSITION)");
+			s.executeUpdate("CREATE UNIQUE INDEX POSITIONS ON LISTS_CONTENT (LIST, POSITION)");
 			
 			s.close();
 			conn.commit();
@@ -893,6 +892,7 @@ public class DerbyDB implements IData, CloseListener
 				PreparedStatement ps = conn.prepareStatement("DELETE FROM LISTS_CONTENT WHERE POSITION = ? AND LIST = ?");
 				ps.setInt(1, trackPosition);
 				ps.setInt(2, listIndex);
+				ps.executeUpdate();
 				
 				for(int i = trackPosition; i < size; i++)
 				{

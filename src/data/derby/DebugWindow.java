@@ -1,37 +1,31 @@
 package data.derby;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.GroupLayout;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.WindowConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
+import data.SettingException;
 import data.SettingListener;
 import basics.Controller;
 
-
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
 public class DebugWindow extends javax.swing.JFrame
 {
 	private static final long serialVersionUID = 5132578068185235035L;
@@ -39,32 +33,18 @@ public class DebugWindow extends javax.swing.JFrame
 	private JScrollPane listsContentScrollPane;
 	private JScrollPane settingsScrollPane;
 	private JList listsList;
+	private JButton executeUpdate;
+	private JButton executeQuery;
+	private JTextField sqlText;
 	private JTable settingsTable;
-	private JTable listsContentTable;
 	
 	private final DerbyDB data = (DerbyDB)Controller.getInstance().getData();
 	private ListsContentTableModel listsContentTableModel;
-	//private final Connection conn = data.conn; 
-	
-
-	/**
-	* Auto-generated main method to display this JFrame
-	 * @throws SQLException 
-	*/
-	/*public static void main(String[] args)
-	{
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				DebugWindow inst = new DebugWindow();
-				inst.setLocationRelativeTo(null);
-				inst.setVisible(true);
-			}
-		});
-	}*/
+	private final DebugWindow Me = this;
 	
 	public DebugWindow() 
 	{
-		super();
+		super("Database Dubug Window - Don't do shit!");
 		initGUI();
 		
 		setVisible(true);
@@ -93,7 +73,7 @@ public class DebugWindow extends javax.swing.JFrame
 		{
 			listsContentScrollPane = new JScrollPane();
 			{
-				listsContentTable = new JTable(listsContentTableModel = new ListsContentTableModel(), new ListsContentTableColumnModel());
+				final JTable listsContentTable = new JTable(listsContentTableModel = new ListsContentTableModel(), new ListsContentTableColumnModel());
 				listsContentScrollPane.setViewportView(listsContentTable);
 			}
 		}
@@ -104,22 +84,93 @@ public class DebugWindow extends javax.swing.JFrame
 				settingsScrollPane.setViewportView(settingsTable);
 			}
 		}
+		{
+			sqlText = new JTextField();
+			sqlText.setText("SELECT * FROM SETTINGS");
+		}
+		{
+			executeQuery = new JButton();
+			executeQuery.setText("Execute Query");
+			executeQuery.addActionListener(new ActionListener(){
+						public void actionPerformed(ActionEvent e)
+						{
+							StringBuilder content = new StringBuilder();
+							try
+							{
+								ResultSet rs = data.conn.createStatement().executeQuery(sqlText.getText());
+								ResultSetMetaData metaData = rs.getMetaData();
+								int cCount = metaData.getColumnCount();
+								for(int i = 1; i <= cCount; i++)
+								{
+									content.append(metaData.getColumnLabel(i).replace("\"", "\"\""));
+									if(i <= cCount - 1)
+										content.append(';');
+								}
+								content.append('\n');
+								while(rs.next())
+								{
+									for(int i = 1; i <= cCount; i++)
+									{
+										content.append(rs.getObject(i).toString().replace("\"", "\"\""));
+										if(i <= cCount - 1)
+											content.append(';');
+									}
+									content.append('\n');
+								}
+								new DataOutputDialog(Me, content.toString());
+							}
+							catch (Throwable e1)
+							{
+								new DataOutputDialog(Me, e1);
+							}
+						}});
+		}
+		{
+			executeUpdate = new JButton();
+			executeUpdate.setText("Execute Update");
+			executeUpdate.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e)
+				{
+					try
+					{
+						int rows = data.conn.createStatement().executeUpdate(sqlText.getText());
+						JOptionPane.showMessageDialog(null, rows, "PartyDJ", JOptionPane.INFORMATION_MESSAGE);
+					}
+					catch (Throwable e1)
+					{
+						new DataOutputDialog(Me, e1);
+					}
+				}});
+		}
 		thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 			.addContainerGap()
 			.addGroup(thisLayout.createParallelGroup()
 			    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 			        .addComponent(listsScrollPane, GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE)
 			        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-			        .addComponent(listsContentScrollPane, 0, 412, Short.MAX_VALUE))
-			    .addComponent(settingsScrollPane, GroupLayout.Alignment.LEADING, 0, 541, Short.MAX_VALUE))
+			        .addComponent(listsContentScrollPane, 0, 377, Short.MAX_VALUE))
+			    .addComponent(settingsScrollPane, GroupLayout.Alignment.LEADING, 0, 507, Short.MAX_VALUE))
+			.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+			.addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+			    .addComponent(sqlText, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+			    .addComponent(executeQuery, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			    .addComponent(executeUpdate, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 			.addContainerGap());
 		thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 			.addContainerGap()
 			.addGroup(thisLayout.createParallelGroup()
-			    .addComponent(listsScrollPane, GroupLayout.Alignment.LEADING, 0, 553, Short.MAX_VALUE)
-			    .addComponent(listsContentScrollPane, GroupLayout.Alignment.LEADING, 0, 553, Short.MAX_VALUE))
-			.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-			.addComponent(settingsScrollPane, 0, 316, Short.MAX_VALUE)
+			    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+			        .addGroup(thisLayout.createParallelGroup()
+			            .addComponent(listsScrollPane, GroupLayout.Alignment.LEADING, 0, 576, Short.MAX_VALUE)
+			            .addComponent(listsContentScrollPane, GroupLayout.Alignment.LEADING, 0, 576, Short.MAX_VALUE))
+			        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+			        .addComponent(settingsScrollPane, 0, 328, Short.MAX_VALUE))
+			    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+			        .addComponent(sqlText, 0, 709, Short.MAX_VALUE)
+			        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+			        .addComponent(executeQuery, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+			        .addComponent(executeUpdate, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)))
 			.addContainerGap());
 		pack();
 		this.setSize(950, 600);
@@ -178,6 +229,26 @@ public class DebugWindow extends javax.swing.JFrame
 			
 			fireTableChanged(null);			
 		}
+		
+	    public boolean isCellEditable(int rowIndex, int columnIndex)
+	    {
+	    	return columnIndex == 1;
+	    }
+	    
+	    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+	    {
+	    	if(columnIndex == 1)
+	    	{
+	    		try
+				{
+					data.writeSetting(settings.get(rowIndex)[0], aValue.toString());
+				}
+				catch (SettingException e)
+				{
+					e.printStackTrace();
+				}
+	    	}
+	    }
 	}
 	
 	class SettingsTableColumnModel extends DefaultTableColumnModel
@@ -211,14 +282,21 @@ public class DebugWindow extends javax.swing.JFrame
 	{
 		private static final long serialVersionUID = -5008336899891404273L;
 		private final List<String[]> content = new ArrayList<String[]>();
+		private int listIndex = 0;
 		
 		public ListsContentTableModel()
 		{
-			openList(0);
+			openList();
+		}
+		
+		public void openList()
+		{
+			openList(listIndex);
 		}
 		
 		public void openList(int listIndex)
 		{
+			this.listIndex = listIndex;
 			content.clear();
 			try
 			{
@@ -234,6 +312,7 @@ public class DebugWindow extends javax.swing.JFrame
 			{
 				e.printStackTrace();
 			}
+			fireTableDataChanged();
 		}
 		
 		public int getColumnCount()
@@ -250,6 +329,28 @@ public class DebugWindow extends javax.swing.JFrame
 		{
 			return content.get(rowIndex)[columnIndex];
 		}
+		
+	    public boolean isCellEditable(int rowIndex, int columnIndex)
+	    {
+	    	return columnIndex == 1;
+	    }
+	    
+	    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+	    {
+	    	if(columnIndex == 1)
+	    	{
+	    		try
+				{
+					data.executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE LIST = ? AND POSITION = ?", aValue.toString(), content.get(rowIndex)[0], content.get(rowIndex)[1]);
+					openList();
+				}
+				catch (SQLException e)
+				{
+					e.printStackTrace();
+				}
+	    	}
+	    	
+	    }
 	}
 	
 	class ListsContentTableColumnModel extends DefaultTableColumnModel
