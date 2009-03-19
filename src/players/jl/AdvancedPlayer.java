@@ -265,9 +265,14 @@ public class AdvancedPlayer
 		{
 			paused = false;
 			boolean ftd = true;
-
+			int count = 0;
+			
+			
 			while (ftd)
 			{
+				if(count == 1)
+					setGlobalVolume(volume);
+				
 				try
 				{
 					ftd = decodeFrame();
@@ -277,8 +282,6 @@ public class AdvancedPlayer
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
-				
 				
 				position += frameDuration;
 				
@@ -286,18 +289,14 @@ public class AdvancedPlayer
 				{
 					return;
 				}
+				
+				if(count <= 1)
+					count++;
 			}
 			
 			AudioDevice out = audio;
 			if (out != null)
 			{
-				if(!fadeIn && !fadeOut && count == 0)
-					setGlobalVolume(volume);
-				
-				else if(fadeIn)
-				{
-				}
-				
 				out.flush();
 				close();
 			}
