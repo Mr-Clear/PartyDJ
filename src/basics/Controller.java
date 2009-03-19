@@ -3,7 +3,9 @@ import gui.SplashWindow;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.Stack;
@@ -63,18 +65,21 @@ public class Controller
 		runtime.addShutdownHook(closeListenTread);
 		
 		String dbPath = Functions.getFolder() + System.getProperty("file.separator") + "DataBase";
+		List<String> windows = new ArrayList<String>();
 		int whichPlayer = -1;	// 0=JMF, 1=JL
 		
 		int lastParam = 0;
 		for(String arg : args)
 		{
 			String argl = arg.toLowerCase();
-			if(arg.charAt(0) == '-')
+			if(arg.charAt(0) == '-' || arg.charAt(0) == '+')
 			{
 				if(argl.equals("-dbpath"))
 					lastParam = 1;
 				else if(argl.equals("-player"))
 					lastParam = 2;
+				else if(argl.equals("+window"))
+					lastParam = 3;
 				else
 					lastParam = 0;
 			}
@@ -82,14 +87,17 @@ public class Controller
 			{
 				switch(lastParam)
 				{
-				case 1:
+				case 1:	//-dbpath
 					dbPath = arg;
 					break;
-				case 2:
+				case 2:	//-player
 					if(argl.equals("jmf"))
 						whichPlayer = 0;
 					else if(argl.equals("jl"))
 						whichPlayer = 1;
+					break;
+				case 3:	//+window
+					windows.add(arg);
 					break;
 				}
 				lastParam = 0;
@@ -97,62 +105,72 @@ public class Controller
 		}
 		
 		splash.setInfo("Verbinde zur Datenbank");
-		try
 		{
-			data = new DerbyDB(dbPath);
+			try
+			{
+				data = new DerbyDB(dbPath);
+			}
+			catch (OpenDbException e)
+			{
+				System.err.println("Keine Verbindung zur Datenbank möglich:");
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Keine Verbindung zur Datenbank möglich!\n\n" + dbPath + "\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+				System.exit(1);
+			}
+			
+			splash.setInfo("Lade Player");
+			PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener
+			switch(whichPlayer)
+			{
+			case 0:
+			default:			
+				player = new players.jmf.JMFPlayer(playerListener);
+				break;
+			case 1:
+				player = new players.jl.JLPlayer(playerListener);
+				break;
+			}
+			try
+			{
+				player.setVolume(Integer.parseInt(data.readSetting("Volume", "100")));
+			}
+			catch (NumberFormatException e1)
+				{player.setVolume(100);}
+			catch (SettingException e1)
+				{player.setVolume(100);}
+			
+			player.addPlayStateListener(playerListener);
 		}
-		catch (OpenDbException e)
-		{
-			System.err.println("Keine Verbindung zur Datenbank möglich:");
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Keine Verbindung zur Datenbank möglich!\n\n" + dbPath + "\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
-			System.exit(1);
-		}
-		
-		splash.setInfo("Lade Player");
-		PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener
-		switch(whichPlayer)
-		{
-		case 0:
-		default:			
-			player = new players.jmf.JMFPlayer(playerListener);
-			break;
-		case 1:
-			player = new players.jl.JLPlayer(playerListener);
-			break;
-		}
-		try
-		{
-			player.setVolume(Integer.parseInt(data.readSetting("Volume", "100")));
-		}
-		catch (NumberFormatException e1)
-			{player.setVolume(100);}
-		catch (SettingException e1)
-			{player.setVolume(100);}
-		
-		player.addPlayStateListener(playerListener);
-
 		
 		splash.setInfo("Lade Listen");
-		try
 		{
-			listProvider = new ListProvider();
-			playList = listProvider.getDbList("Wunschliste");
-			lastPlayedList = listProvider.getDbList("LastPlayed");
+			try
+			{
+				listProvider = new ListProvider();
+				playList = listProvider.getDbList("Wunschliste");
+				lastPlayedList = listProvider.getDbList("LastPlayed");
+			}
+			catch (ListException e)
+			{
+				System.err.println("Listen konnten nicht geladen werden:");
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Listen konnten nicht geladen werden!\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+				System.exit(1);
+			}
 		}
-		catch (ListException e)
-		{
-			System.err.println("Listen konnten nicht geladen werden:");
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Listen konnten nicht geladen werden!\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
-			System.exit(1);
-		}
+
 		
 		splash.setInfo("Lade Fenster");
-		registerWindow(new gui.ClassicWindow());
-		//registerWindow(new gui.TestWindow());
-		//registerWindow(new gui.settings.SettingWindow());
-		
+		{
+			if(windows.size() == 0)
+				windows.add("gui.ClassicWindow");
+			
+			for(String window : windows)
+			{
+				loadWindow(window);
+			}
+		}
+
 		splash.setInfo("PartyDJ bereit :)");
 		try
 		{
@@ -221,6 +239,32 @@ public class Controller
 		{
 			trackUpdateTimer = new Timer();
 			trackUpdateTimer.schedule(new TrackUpdateTask(trackUpdateStack), 0, 1000); 
+		}
+	}
+	
+	public boolean loadWindow(String className)
+	{
+		if(className.toLowerCase().equals("classic"))
+			className = "gui.ClassicWindow";
+		else if(className.toLowerCase().equals("settings"))
+			className = "gui.settings.SettingWindow";
+		else if(className.toLowerCase().equals("test"))
+			className = "gui.TestWindow";
+		else if(className.toLowerCase().equals("derbydebug"))
+			className = "data.derby.DebugWindow";
+		try
+		{
+			Class<?> c = Class.forName(className);
+			if(JFrame.class.isAssignableFrom(c))
+				registerWindow((JFrame)c.getConstructor().newInstance());
+			else
+				throw new ClassCastException(c.toString() + " ist kein Fenster");
+			return true;
+		}
+		catch (Exception e)
+		{
+			JOptionPane.showMessageDialog(null, "Fenster kann nicht geladen werden: " + className + "\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			return false;
 		}
 	}
 	
@@ -310,6 +354,7 @@ public class Controller
 				return null;
 			
 			Track previous = lastPlayedList.getElementAt(lastPlayedList.getSize() - 1);
+			
 			try
 			{
 				lastPlayedList.remove(lastPlayedList.getSize() - 1);
@@ -351,6 +396,7 @@ public class Controller
 		//--- PlayStateListener
 		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
+			currentTrack = playingCurrent;
 			if(playingCurrent.duration == 0)
 				player.getDuration();
 			
