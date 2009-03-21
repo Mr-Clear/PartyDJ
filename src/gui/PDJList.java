@@ -12,11 +12,13 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DropMode;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import players.PlayerException;
 import basics.Controller;
 import lists.EditableListModel;
 import lists.ListException;
@@ -79,11 +81,7 @@ public class PDJList extends JList
             												{
             													listModel.remove(indices[i-1]);
             												}
-            												catch (ListException e)
-            												{
-            													// TODO Auto-generated catch block
-            													e.printStackTrace();
-            												}
+            												catch (ListException e){}
             											}
             									}
 											});
@@ -94,7 +92,16 @@ public class PDJList extends JList
 									private static final long serialVersionUID = -2342506838333821595L;
 									public void actionPerformed(ActionEvent evt) 
 									{
-										Controller.getInstance().getPlayer().start(((Track)((PDJList)evt.getSource()).getSelectedValues()[0]));
+										Track track = ((Track)((PDJList)evt.getSource()).getSelectedValues()[0]);
+										try
+										{
+											Controller.getInstance().getPlayer().start(track);
+										}
+										catch (PlayerException e)
+										{
+											e.printStackTrace();
+											JOptionPane.showMessageDialog(null, "Track kann nicht wiedergegeben werden:\n" + track, "PartyDJ", JOptionPane.ERROR_MESSAGE);
+										}
 									}
 								});
 		
@@ -247,7 +254,18 @@ public class PDJList extends JList
 			if(SwingUtilities.isLeftMouseButton(e))
 			{
 				if(e.getClickCount() == 2)
-					Controller.getInstance().getPlayer().start(((Track)((PDJList)e.getSource()).getSelectedValue()));
+				{
+					Track track = ((Track)((PDJList)e.getSource()).getSelectedValue());
+					try
+					{
+						Controller.getInstance().getPlayer().start(track);
+					}
+					catch (PlayerException e1)
+					{
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Track kann nicht wiedergegeben werden:\n" + track, "PartyDJ", JOptionPane.ERROR_MESSAGE);
+					}
+				}
 			}
 		}
 		

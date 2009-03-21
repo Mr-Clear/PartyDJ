@@ -393,7 +393,6 @@ public class MasterList extends JPanel
 				search(subFolder, progress, ratio);
 				progress += ratio;
 			}
-
 		}
 		
 		private void addTrack(String path)

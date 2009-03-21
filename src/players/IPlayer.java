@@ -6,11 +6,11 @@ import basics.PlayerContact;
 public interface IPlayer
 {
 	/** Lädt den angegebenen Track, ohne ihn abzuspielen */
-	void load(Track track);
+	void load(Track track) throws PlayerException;
 	/** Spielt das aktuelle Lied von Anfang an.*/
 	void start();
 	/** Spielt den angegebenen Track von Anfang an.*/
-	void start(Track track);
+	void start(Track track) throws PlayerException;
 	/** Stopt den Player und spult zum Anfang des Liedes.*/
 	void stop();
 	/** Startet den player an der aktuellen Position.*/

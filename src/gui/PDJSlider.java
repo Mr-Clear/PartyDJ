@@ -101,11 +101,21 @@ public class PDJSlider extends JPanel
 		player.addPlayStateListener(new PlayStateAdapter(){
 					public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 					{
-						if(currentTrack != playingCurrent)
+						if(playingCurrent != null)
 						{
-							currentTrack = playingCurrent;
-							titel.setText(playingCurrent.name);
-							setDuration(playingCurrent.duration);
+							if(currentTrack != playingCurrent)
+							{
+								currentTrack = playingCurrent;
+								titel.setText(playingCurrent.name);
+								setDuration(playingCurrent.duration);
+							}
+						}
+						else
+						{
+							currentTrack = null;
+							titel.setText("Party DJ");
+							setPosition(0);
+							setDuration(0);
 						}
 					}
 					public void playStateChanged(boolean playState)

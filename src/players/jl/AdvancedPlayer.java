@@ -7,6 +7,7 @@ import javax.sound.sampled.FloatControl;
 import common.Track;
 import common.Track.Problem;
 import players.PlayStateAdapter;
+import players.PlayStateListener;
 import players.PlayerException;
 import players.jl.PlaybackListener.Reason;
 
@@ -30,19 +31,25 @@ public class AdvancedPlayer
 	private Bitstream bitStream;
 	private Decoder decoder;
 	private SoundAudioDevice audio;
-	private PlayerThread startThread;
-	private PlaybackListener jlPlayer;
+	//private PlayerThread startThread;
+	private JLPlayer jlPlayer;
 	private boolean paused = false;
 	private static String durationPath;
-	private static double duration;
+	private static double staticDuration;
 	private static final double frameDuration = 0.02612245;
 	private double position;
 	private int volume;
 	private int audioVolume;
 	private boolean fadeOut;
 	private long fadeStartTime;
-	private long fadeDuration = 1000;
-	int fadeSpeed = 1;
+	long fadeDuration = 1000;
+	/** Wenn false, sendet der Player kein playbackFinished */
+	boolean sendMessage = true;
+	private final PlayStateListener listener = new PlayStateAdapter(){
+		public void volumeChanged(int vol)
+		{
+			volume = vol;
+		}};
 
 	/**
 	 * Creates a new Player instance.
@@ -60,11 +67,7 @@ public class AdvancedPlayer
 			throw new PlayerException(Problem.FILE_NOT_FOUND, e);
 		}
 		
-		jlPlayer.addPlayStateListener(new PlayStateAdapter(){
-					public void volumeChanged(int vol)
-					{
-						volume = vol;
-					}});
+		jlPlayer.addPlayStateListener(listener);
 		
 		bitStream = new Bitstream(fis);
 		audio = (SoundAudioDevice)FactoryRegistry.systemRegistry().createAudioDevice();
@@ -72,12 +75,6 @@ public class AdvancedPlayer
 		volume = vol;
 	}
 	
-	/**
-	 * Plays a range of MPEG audio frames
-	 * @param start	The first frame to play
-	 * @param end		The last frame to play
-	 * @return true if the last frame was played, or false if there are more frames.
-	 */
 	public boolean play(double start) throws JavaLayerException
 	{
 		if(!skip(start))
@@ -88,8 +85,7 @@ public class AdvancedPlayer
 	
 	public boolean play() throws JavaLayerException
 	{
-		startThread = new PlayerThread();
-		startThread.start();
+		new PlayerThread().start();
 		return true;
 	}
 	
@@ -192,12 +188,9 @@ public class AdvancedPlayer
 	 */
 	public static double getDuration(String filePath) throws PlayerException
 	{
-		if(durationPath != null)
+		if(durationPath != null && durationPath.equals(filePath))
 		{
-			if(durationPath.equals(filePath))
-			{
-				return duration;
-			}	
+			return staticDuration;
 		}
 		
 		Bitstream bs = null;
@@ -233,9 +226,9 @@ public class AdvancedPlayer
 		catch (BitstreamException e){}
 		
 		durationPath = filePath;
-		duration = calcDuration;
+		staticDuration = calcDuration;
 		
-		return (duration);
+		return (staticDuration);
 	}
 	
 	//TODO JEDE MENGE
@@ -266,7 +259,7 @@ public class AdvancedPlayer
 	
 	public void setAudioVolume(double volume)
 	{
-		if(audio.getSourceDataLine() == null)
+		if(audio == null || audio.getSourceDataLine() == null)
 			return;
 		FloatControl gainControl = (FloatControl)audio.getSourceDataLine().getControl(FloatControl.Type.MASTER_GAIN);
 		float max = gainControl.getMaximum();
@@ -348,10 +341,15 @@ public class AdvancedPlayer
 				close();
 			}
 			
-			if(paused)
-				jlPlayer.playbackFinished(Me, Reason.RECEIVED_STOP);
-			else
-				jlPlayer.playbackFinished(Me, Reason.END_OF_TRACK);
+			jlPlayer.removePlayStateListener(listener);
+			
+			if(sendMessage)
+			{
+				if(paused)
+					jlPlayer.playbackFinished(Me, Reason.RECEIVED_STOP);
+				else
+					jlPlayer.playbackFinished(Me, Reason.END_OF_TRACK);
+			}
 		}
 	}
 }

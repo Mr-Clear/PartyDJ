@@ -193,15 +193,19 @@ public class Controller
 				if(firstTrack != null)
 				{
 					splash.setInfo("Starte " + firstTrack.name);
-					player.load(firstTrack);
-					double pos = 0;
 					try
 					{
-						pos = Double.parseDouble(data.readSetting("LastPosition", "0"));
+						player.load(firstTrack);
+						double pos = 0;
+						try
+						{
+							pos = Double.parseDouble(data.readSetting("LastPosition", "0"));
+						}
+						catch (NumberFormatException e){}catch (SettingException e){}
+						player.setPosition(pos);
+						player.fadeIn();
 					}
-					catch (NumberFormatException e){}catch (SettingException e){}
-					player.setPosition(pos);
-					player.fadeIn();
+					catch (PlayerException e){}
 				}
 			}
 		}

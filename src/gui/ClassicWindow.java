@@ -44,6 +44,7 @@ public class ClassicWindow extends JFrame
 	private PDJSlider slider;
 	private JSlider volume;
 	private ClassicWindow classicWindow;
+	private JButton buttonPause;
 	
 	public ClassicWindow()
 	{
@@ -276,7 +277,8 @@ public class ClassicWindow extends JFrame
 				panel.add(fwd, c);
 				panel.add(skipFWD, c);
 		
-		
+		buttonPause = pause;
+				
 		return panel;
 		
 	}
@@ -473,7 +475,7 @@ public class ClassicWindow extends JFrame
 		return button;
 	}
 	
-	/**Wird am Ende des Konstruktors aufgerufen um alles zu regeln was die Fenstergröße betrifft.*/
+	
 	private void manageSize()
 	{
 		try
@@ -502,7 +504,7 @@ public class ClassicWindow extends JFrame
 			setExtendedState(MAXIMIZED_BOTH);
 		}
 		
-		this.setLocationRelativeTo(null); //Macht dass Fenster in Bildschirmmitte steht
+		this.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
 		
 		addWindowStateListener(new WindowStateListener(){
 			public void windowStateChanged(WindowEvent evt)
@@ -551,7 +553,12 @@ public class ClassicWindow extends JFrame
 		}
 
 		public void playStateChanged(boolean playState)
-		{}
+		{
+			if(playState)
+				buttonPause.setIcon(new ImageIcon("Resources/Pause.png"));
+			else
+				buttonPause.setIcon(new ImageIcon("Resources/Resume.png"));
+		}
 
 		public void volumeChanged(int vol)
 		{

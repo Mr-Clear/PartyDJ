@@ -56,18 +56,32 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		}
 	}
 		
-	public void addPlayStateListener(PlayStateListener listener)
-	{
-		playStateListener.add(listener);
-	}
-
 	public void dispose(){}
 
 	public void fadeIn()
 	{
 		if(currentTrack != null)
 		{
-			load(currentTrack);
+			try
+			{
+				load(currentTrack);
+				p.fadeIn();
+				try
+				{
+					p.fadeDuration = 1000;
+					p.play(tempPosition);
+				}
+				catch (JavaLayerException e)
+				{
+					contact.reportProblem(new PlayerException(Problem.CANT_PLAY, e), currentTrack);
+				}
+				
+				changeState(true);
+			}
+			catch (PlayerException e1)
+			{
+				e1.printStackTrace();
+			}
 		}
 	}
 
@@ -82,8 +96,12 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void fadeOut()
 	{
+		tempPosition = getPosition();
 		if(p != null)
+		{
+			p.fadeDuration = 1000;
 			p.fadeOut();
+		}
 	}
 
 	public double getDuration()
@@ -135,6 +153,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void pause()
 	{
+		tempPosition = getPosition();
 		if(p != null)
 		{
 			tempPosition = p.getPosition();
@@ -145,27 +164,27 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void play()
 	{
-		if(p != null)
+		try
 		{
-			try
-			{
-				p.play();
-			}
-			catch (JavaLayerException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			start(currentTrack, tempPosition);
 		}
-		
-		changeState(true);
-		
+		catch (PlayerException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void playNext()
 	{
 		Track track = contact.requestNextTrack();
-		start(track, 0);
+		try
+		{
+			start(track, 0);
+		}
+		catch (PlayerException e)
+		{
+			contact.reportProblem(e, track);
+		}
 		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_FORWARD);
 	}
 	
@@ -173,7 +192,14 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	public void playPrevious()
 	{
 		Track track = contact.requestPreviousTrack();
-		start(track, 0);
+		try
+		{
+			start(track, 0);
+		}
+		catch (PlayerException e)
+		{
+			contact.reportProblem(e, track);
+		}
 		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_BACKWARD);
 	}
 
@@ -195,10 +221,20 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		}
 	}
 
-
+	public void addPlayStateListener(PlayStateListener listener)
+	{		
+		synchronized(playStateListener)
+		{
+			playStateListener.add(listener);
+		}
+	}
+	
 	public void removePlayStateListener(PlayStateListener listener)
 	{
-		playStateListener.remove(listener);
+		synchronized(playStateListener)
+		{
+			playStateListener.remove(listener);
+		}
 	}
 
 	public void setContact(PlayerContact Contact)
@@ -208,60 +244,87 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public synchronized void setPosition(double seconds)
 	{
-		start(currentTrack, seconds);
+		p.sendMessage = false;
+		p.fadeDuration = 300;
+		p.fadeOut();
+		p = null;
+		tempPosition = seconds;
+		fadeIn();
+		p.fadeDuration = 300;
 	}
 
 	public void setVolume(int volume)
 	{
 		this.volume = volume;
 		
-		for(PlayStateListener listener : playStateListener)
-			listener.volumeChanged(this.volume);
+		synchronized(playStateListener)
+		{
+			for(PlayStateListener listener : playStateListener)
+				listener.volumeChanged(this.volume);
+		}
 	}
 
 	public void start()
 	{
-		start(currentTrack);
+		try
+		{
+			start(currentTrack);
+		}
+		catch (PlayerException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
-	public void load(Track track)
+	public void load(Track track) throws PlayerException
 	{
 		if(track == null)
 			return;
 		
 		close();
 		
-		try
-		{
-			p = getPlayer(track.path);
-		}
-		catch (PlayerException e)
-		{
-			contact.reportProblem(e, track);
-		}
+		p = getPlayer(track.path);
+
 		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_NEW_TRACK);
 	}
 
-	public void start(Track track)
+	public void start(Track track) throws PlayerException
 	{
-		start(track, 0);
+		try
+		{
+			start(track, 0);
+		}
+		catch (PlayerException e)
+		{
+			return;
+		}
 		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_NEW_TRACK);
 	}
 	
-	private void start(Track track, double position)
+	private void start(Track track, double position) throws PlayerException
 	{
-		load(track);
-		
-		try
+		if(track != null)
 		{
-			p.play(position);
+			try
+			{
+				load(track);
+				
+				try
+				{
+					p.play(position);
+				}
+				catch (JavaLayerException e)
+				{
+					contact.reportProblem(new PlayerException(Problem.CANT_PLAY, e), track);
+				}
+				
+				changeState(true);
+			}
+			catch (PlayerException e1)
+			{
+				throw e1;
+			}
 		}
-		catch (JavaLayerException e)
-		{
-			contact.reportProblem(new PlayerException(Problem.CANT_PLAY, e), track);
-		}
-		
-		changeState(true);
 	}
 
 	public void stop()
@@ -294,9 +357,12 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		{
 			status = newStatus;
 			
-			for(PlayStateListener listener: playStateListener)
+			synchronized(playStateListener)
 			{
-				listener.playStateChanged(status);
+				for(PlayStateListener listener: playStateListener)
+				{
+					listener.playStateChanged(status);
+				}
 			}
 		}
 	}
@@ -309,11 +375,19 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void playbackFinished(AdvancedPlayer source, Reason reason)
 	{
+		if(source == p)
 		if(reason == Reason.END_OF_TRACK)
 		{
 			Track track = contact.requestNextTrack();
 			if(track != null)
-				start(track, 0);
+				try
+				{
+					start(track, 0);
+				}
+				catch (PlayerException e)
+				{
+					contact.reportProblem(e, track);
+				}
 			currentTrackChanged(track, players.PlayStateListener.Reason.END_OF_TRACK);
 		}
 		else
@@ -350,6 +424,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		{
 			if(p != null)
 			{
+				p.fadeDuration = 500;
 				p.fadeOut();
 				while(status);
 			}			

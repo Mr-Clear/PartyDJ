@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import players.PlayerException;
 import basics.Controller;
 import lists.DbMasterListModel;
 import lists.EditableListModel;
@@ -115,8 +116,15 @@ class PopupMenuItemListener implements ActionListener
 		String command = e.getActionCommand();
 		
 		if(command.equals("Play"))
-			Controller.getInstance().getPlayer().start(track);
-		
+			try
+			{
+				Controller.getInstance().getPlayer().start(track);
+			}
+			catch (PlayerException e2)
+			{
+				e2.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Track kann nicht wiedergegeben werden:\n" + track, "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			}
 		else if(command.equals("Edit"))
 			new EditTrackWindow(track);
 		
