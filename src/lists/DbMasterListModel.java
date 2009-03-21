@@ -35,4 +35,14 @@ public class DbMasterListModel extends BasicListModel
 			}
 		}	
 	}
+	
+	public Track getTrackByPath(String path)
+	{
+		for(Track track : list)
+		{
+			if(track.path.equals(path))
+				return track;
+		}
+		return null;
+	}
 }

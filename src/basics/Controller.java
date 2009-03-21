@@ -15,6 +15,7 @@ import players.IPlayer;
 import players.PlayStateListener;
 import players.PlayerException;
 import common.*;
+import common.Track.Problem;
 import common.Track.TrackElement;
 
 import lists.DbClientListModel;
@@ -117,8 +118,10 @@ public class Controller
 				JOptionPane.showMessageDialog(null, "Keine Verbindung zur Datenbank möglich!\n\n" + dbPath + "\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 				System.exit(1);
 			}
+		}
 			
-			splash.setInfo("Lade Player");
+		splash.setInfo("Lade Player");
+		{
 			PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener
 			switch(whichPlayer)
 			{
@@ -168,6 +171,38 @@ public class Controller
 			for(String window : windows)
 			{
 				loadWindow(window);
+			}
+		}
+		
+		splash.setInfo("Starte");
+		{
+			String firstTrackPath = null;
+			try
+			{
+				firstTrackPath = data.readSetting("Playing");
+			}
+			catch (SettingException e1){}
+			if(firstTrackPath != null)
+			{
+				Track firstTrack = null;
+				try
+				{
+					firstTrack = listProvider.getMasterList().getTrackByPath(firstTrackPath);
+				}
+				catch (ListException e){}
+				if(firstTrack != null)
+				{
+					splash.setInfo("Starte " + firstTrack.name);
+					player.load(firstTrack);
+					double pos = 0;
+					try
+					{
+						pos = Double.parseDouble(data.readSetting("LastPosition", "0"));
+					}
+					catch (NumberFormatException e){}catch (SettingException e){}
+					player.setPosition(pos);
+					player.fadeIn();
+				}
 			}
 		}
 
@@ -242,6 +277,12 @@ public class Controller
 		}
 	}
 	
+	/**Lädt das Fenster mit dem angegebenen Namen und registriert es.
+	 * Wenn ein Fehler auftritt, wird eine Menldung ausgegeben. 
+	 * 
+	 * @param className Name des Fensters.
+	 * @return true, wenn erfolgreich.
+	 */
 	public boolean loadWindow(String className)
 	{
 		if(className.toLowerCase().equals("classic"))
@@ -303,6 +344,11 @@ public class Controller
 	public void closePartyDJ()
 	{
 		runtime.removeShutdownHook(closeListenTread);
+		try
+		{
+			data.writeSetting("LastPosition", Double.toString(player.getPosition()));
+		}
+		catch (SettingException e){}
 		synchronized(closeListener)
 		{
 			for(CloseListener listener : closeListener)
@@ -326,25 +372,22 @@ public class Controller
 			{
 				synchronized(playList)
 				{
-					if(playList != null)
+
+					if(playList.getSize() > 0)
 					{
-						if(playList.getSize() > 0);
+						nextTrack = playList.getElementAt(0);
+						try
 						{
-							nextTrack = playList.getElementAt(0);
-							try
-							{
-								playList.remove(0);
-							}
-							catch (ListException e)
-							{
-								e.printStackTrace();
-								//TODO
-							}
+							playList.remove(0);
+						}
+						catch (ListException e)
+						{
+							e.printStackTrace();
+							//TODO
 						}
 					}
 				}
 			}
-			// TODO Auto-generated method stub
 			return nextTrack;
 		}
 
@@ -381,6 +424,16 @@ public class Controller
 
 		public void trackDurationCalculated(Track track, double duration)
 		{
+			if(duration > 0 && track.problem != Problem.NONE)
+			{
+				track.problem = Problem.NONE;
+				try
+				{
+					data.updateTrack(track, TrackElement.PROBLEM);
+				}
+				catch (ListException e){}
+			}
+			
 			if(track.duration != duration)
 			{
 				track.duration = duration;
@@ -397,16 +450,36 @@ public class Controller
 		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
 			currentTrack = playingCurrent;
-			if(playingCurrent.duration == 0)
-				player.getDuration();
 			
-			if(reason != Reason.RECEIVED_BACKWARD)
+			if(playingCurrent != null)
+			{
+				try
+				{
+					data.writeSetting("Playing", playingCurrent.path);
+				}
+				catch (SettingException e){}
+				
+				if(playingCurrent.duration == 0)
+					player.getDuration();
+				
+				if(playingCurrent.duration > 0 && playingCurrent.problem != Problem.NONE)
+				{
+					playingCurrent.problem = Problem.NONE;
+					try
+					{
+						data.updateTrack(playingCurrent, TrackElement.PROBLEM);
+					}
+					catch (ListException e){}
+				}
+			}
+			
+			if(playedLast != null && reason != Reason.RECEIVED_BACKWARD)
 			{
 				try
 				{
 					while(lastPlayedList.getSize() > 100)
 						lastPlayedList.remove(0);
-					lastPlayedList.add(lastPlayedList.getSize(), playingCurrent);
+					lastPlayedList.add(lastPlayedList.getSize(), playedLast);
 				}
 				catch (ListException e)
 				{

@@ -210,7 +210,7 @@ public class ClassicWindow extends JFrame
 				{
 					public void mouseClicked(MouseEvent me) 
 					{
-						player.pause();
+						player.fadeInOut();
 					}
 				});
 
@@ -399,7 +399,14 @@ public class ClassicWindow extends JFrame
 	 */
 	public Component Slider()
 	{
+		try
+		{
 		slider = new PDJSlider();
+		}
+		catch(Throwable e)
+		{
+			e.printStackTrace();
+		}
 		JPanel panel = new JPanel(new GridBagLayout());
 		
 		panel.setBackground(Color.darkGray);
@@ -537,7 +544,10 @@ public class ClassicWindow extends JFrame
 		
 		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
-			classicWindow.setTitle(playingCurrent.name + "   -   PartyDJ");	
+			if(playingCurrent != null)
+				classicWindow.setTitle(playingCurrent.name + "   -   PartyDJ");
+			else
+				classicWindow.setTitle("PartyDJ");
 		}
 
 		public void playStateChanged(boolean playState)

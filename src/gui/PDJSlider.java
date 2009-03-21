@@ -129,8 +129,11 @@ public class PDJSlider extends JPanel
 				}			
 			}});
 		
-		setDuration(0);
-		setPosition(0);
+		currentTrack = player.getCurrentTrack();
+		if(currentTrack != null)
+			titel.setText(currentTrack.name);
+		setDuration(player.getDuration());
+		setPosition(player.getPosition());
 	}
 	
 	public void setDuration(double duration)
