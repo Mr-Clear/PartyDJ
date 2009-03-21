@@ -4,11 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.SourceDataLine;
 import common.Track;
 import common.Track.Problem;
 import players.PlayStateAdapter;
-import players.PlayStateListener;
 import players.PlayerException;
 import players.jl.PlaybackListener.Reason;
 
@@ -39,13 +37,11 @@ public class AdvancedPlayer
 	private static double duration;
 	private static final double frameDuration = 0.02612245;
 	private double position;
-	private int count = 0;
 	private int volume;
 	private int audioVolume;
 	private boolean fadeOut;
 	private long fadeStartTime;
-	private long fadeDuration = 2000;
-	
+	private long fadeDuration = 1000;
 	int fadeSpeed = 1;
 
 	/**
@@ -170,7 +166,6 @@ public class AdvancedPlayer
 	 */
 	protected boolean skipFrame() throws JavaLayerException
 	{
-		count++;
 		Header h = bitStream.readFrame();
 		
 		if (h == null) 
@@ -305,7 +300,6 @@ public class AdvancedPlayer
 		{
 			paused = false;
 			boolean ftd = true;
-			int count = 0;
 			
 			
 			while (ftd)
@@ -324,7 +318,13 @@ public class AdvancedPlayer
 				{
 					if(fadeOut)
 						paused = true;
-					setAudioVolume(volume);
+					else
+						setAudioVolume(volume);
+				}
+				
+				if(paused)
+				{
+					break;
 				}
 				
 				try
@@ -339,13 +339,6 @@ public class AdvancedPlayer
 				
 				position += frameDuration;
 				
-				if(paused)
-				{
-					return;
-				}
-				
-				if(count <= 1)
-					count++;
 			}
 			
 			if (audio != null)
@@ -355,7 +348,10 @@ public class AdvancedPlayer
 				close();
 			}
 			
-			jlPlayer.playbackFinished(Me, Reason.END_OF_TRACK);
+			if(paused)
+				jlPlayer.playbackFinished(Me, Reason.RECEIVED_STOP);
+			else
+				jlPlayer.playbackFinished(Me, Reason.END_OF_TRACK);
 		}
 	}
 }

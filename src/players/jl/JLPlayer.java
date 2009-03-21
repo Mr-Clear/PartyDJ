@@ -5,6 +5,8 @@ import java.util.Set;
 import players.IPlayer;
 import players.PlayStateListener;
 import players.PlayerException;
+import basics.CloseListener;
+import basics.Controller;
 import basics.PlayerContact;
 import javazoom.jl.decoder.JavaLayerException;
 import common.Track;
@@ -28,12 +30,15 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	private final Set<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
 	private boolean status;
 	private Track currentTrack;
+	/** Position im Pause Zustand */
+	private double tempPosition;
 	
 	AdvancedPlayer p;
 	
 	public JLPlayer(PlayerContact playerContact)
 	{
 		contact = playerContact;
+		Controller.getInstance().addCloseListener(new closeListener());
 		
 		try
 		{
@@ -60,8 +65,10 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void fadeIn()
 	{
-		if(p != null)
-			p.fadeIn();
+		if(currentTrack != null)
+		{
+			load(currentTrack);
+		}
 	}
 
 	public void fadeInOut()
@@ -128,7 +135,11 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void pause()
 	{
-		p.pause();
+		if(p != null)
+		{
+			tempPosition = p.getPosition();
+			p.pause();
+		}
 		changeState(false);
 	}
 
@@ -255,6 +266,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void stop()
 	{
+		tempPosition = 0;
 		close();
 	}
 	
@@ -304,6 +316,8 @@ public class JLPlayer implements IPlayer, PlaybackListener
 				start(track, 0);
 			currentTrackChanged(track, players.PlayStateListener.Reason.END_OF_TRACK);
 		}
+		else
+			changeState(false);
 	}
 	
 	private void currentTrackChanged(Track track, players.PlayStateListener.Reason reason)
@@ -312,8 +326,11 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		{
 			Track oldTrack = currentTrack;
 			currentTrack = track;
-			for(PlayStateListener listener : playStateListener)
-				listener.currentTrackChanged(oldTrack, currentTrack, reason);
+			synchronized(playStateListener)
+			{
+				for(PlayStateListener listener : playStateListener)
+					listener.currentTrackChanged(oldTrack, currentTrack, reason);
+			}
 		}
 	}
 	
@@ -323,6 +340,19 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		{
 			p.close();
 			p = null;
+		}
+		changeState(false);
+	}
+	
+	class closeListener implements CloseListener
+	{
+		public void closing()
+		{
+			if(p != null)
+			{
+				p.fadeOut();
+				while(status);
+			}			
 		}
 	}
 }
