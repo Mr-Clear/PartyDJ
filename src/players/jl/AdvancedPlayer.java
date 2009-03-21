@@ -2,11 +2,15 @@ package players.jl;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.IOException;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.SourceDataLine;
 import common.Track;
 import common.Track.Problem;
+import players.PlayStateAdapter;
+import players.PlayStateListener;
 import players.PlayerException;
+import players.jl.PlaybackListener.Reason;
 
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
@@ -23,30 +27,50 @@ import javazoom.jl.player.AudioDevice;
  */
 public class AdvancedPlayer
 {
-	/** The MPEG audio bitstream.*/
+	private final AdvancedPlayer Me = this;
+	private FileInputStream fis;
 	private Bitstream bitStream;
-	/** The MPEG audio decoder. */
 	private Decoder decoder;
-	/** The AudioDevice the audio samples are written to. */
 	private SoundAudioDevice audio;
-
 	private PlayerThread startThread;
+	private PlaybackListener jlPlayer;
 	private boolean paused = false;
 	private static String durationPath;
 	private static double duration;
 	private static final double frameDuration = 0.02612245;
 	private double position;
-	int count = 0;
+	private int count = 0;
 	private int volume;
-	private boolean fadeOut = false;
-	private boolean fadeIn = false;
+	private int audioVolume;
+	private boolean fadeOut;
+	private long fadeStartTime;
+	private long fadeDuration = 2000;
+	
+	int fadeSpeed = 1;
 
 	/**
 	 * Creates a new Player instance.
+	 * @throws PlayerException 
 	 */
-	public AdvancedPlayer(InputStream stream, int vol) throws JavaLayerException
+	AdvancedPlayer(String path, int vol, JLPlayer jlPlayer) throws JavaLayerException, PlayerException
 	{
-		bitStream = new Bitstream(stream);
+		this.jlPlayer = jlPlayer;
+		try
+		{
+			fis = new FileInputStream(path);
+		}
+		catch (FileNotFoundException e)
+		{
+			throw new PlayerException(Problem.FILE_NOT_FOUND, e);
+		}
+		
+		jlPlayer.addPlayStateListener(new PlayStateAdapter(){
+					public void volumeChanged(int vol)
+					{
+						volume = vol;
+					}});
+		
+		bitStream = new Bitstream(fis);
 		audio = (SoundAudioDevice)FactoryRegistry.systemRegistry().createAudioDevice();
 		audio.open(decoder = new Decoder());
 		volume = vol;
@@ -81,9 +105,15 @@ public class AdvancedPlayer
 	/**
 	 * Closes this player. Any audio currently playing is stopped
 	 * immediately.
+	 * @throws IOException 
 	 */
 	public synchronized void close()
 	{
+		try
+		{
+			fis.close();
+		}
+		catch (IOException e){}
 		AudioDevice out = audio;
 		if (out != null)
 		{
@@ -239,21 +269,31 @@ public class AdvancedPlayer
 		return true;
 	}
 	
-	public void setGlobalVolume(int volume)
+	public void setAudioVolume(double volume)
 	{
+		if(audio.getSourceDataLine() == null)
+			return;
 		FloatControl gainControl = (FloatControl)audio.getSourceDataLine().getControl(FloatControl.Type.MASTER_GAIN);
-		float dB = (float)(Math.log((volume + 1) * 172.17390699942) / Math.log(101 * 172.17390699942) * 86 - 80);
+		float max = gainControl.getMaximum();
+		float min = gainControl.getMinimum();
+		double factor = 228;
+		factor = 1;
+		float dB = (float)(Math.log((volume * factor + 1)) / Math.log(101 * factor) * (max - min) + min);
+		//System.out.println("Volume: " + volume + "; Factor: " + dB + "dB = " + Math.round(Math.pow(10, dB / 10) * 100) + "%");
 		gainControl.setValue(dB);
+		audioVolume = (int)volume;		
 	}
 	
 	public void fadeOut()
 	{
+		fadeStartTime = System.currentTimeMillis();
 		fadeOut = true;
 	}
 	
 	public void fadeIn()
 	{
-		fadeIn = true;
+		fadeStartTime = System.currentTimeMillis();
+		fadeOut = false;
 	}
 	
 	class PlayerThread extends Thread
@@ -270,8 +310,22 @@ public class AdvancedPlayer
 			
 			while (ftd)
 			{
-				if(count == 1)
-					setGlobalVolume(volume);
+				double fadeElapsed = System.currentTimeMillis() - fadeStartTime;
+				//System.out.println(fadeElapsed);
+				if(fadeElapsed < fadeDuration)
+				{
+					double progress = fadeElapsed / fadeDuration;
+					if(fadeOut)
+						setAudioVolume(volume * (1 - progress));
+					else
+						setAudioVolume(volume * (progress));
+				}
+				else if((fadeOut?0:volume) != audioVolume)
+				{
+					if(fadeOut)
+						paused = true;
+					setAudioVolume(volume);
+				}
 				
 				try
 				{
@@ -294,14 +348,14 @@ public class AdvancedPlayer
 					count++;
 			}
 			
-			AudioDevice out = audio;
-			if (out != null)
+			if (audio != null)
 			{
-				out.flush();
+				audio.flush();
+				audio.close();
 				close();
 			}
 			
-			
+			jlPlayer.playbackFinished(Me, Reason.END_OF_TRACK);
 		}
 	}
 }

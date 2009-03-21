@@ -136,11 +136,7 @@ public class JMFPlayer implements IPlayer
 		{
 			data.writeSetting("PlayerVolume", String.valueOf(volume));
 		}
-		catch (SettingException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		catch (SettingException e){}
 		
 		if(status)
 			p.getGainControl().setLevel(volume/100f);
@@ -247,10 +243,11 @@ public class JMFPlayer implements IPlayer
 		return d;
 	}
 
-	public String getFileName()
+	public Track getCurrentTrack()
 	{
+		//TODO
 		if(p != null)
-			return "kA";
+			return null;
 		else
 			return null;
 	}
@@ -334,5 +331,10 @@ public class JMFPlayer implements IPlayer
 	public void removePlayStateListener(PlayStateListener listener)
 	{
 		playStateListener.remove(listener);
+	}
+
+	public void load(Track track)
+	{
+		// TODO Auto-generated method stub
 	}
 }

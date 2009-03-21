@@ -5,6 +5,8 @@ import basics.PlayerContact;
 
 public interface IPlayer
 {
+	/** Lädt den angegebenen Track, ohne ihn abzuspielen */
+	void load(Track track);
 	/** Spielt das aktuelle Lied von Anfang an.*/
 	void start();
 	/** Spielt den angegebenen Track von Anfang an.*/
@@ -38,8 +40,8 @@ public interface IPlayer
 	/** Gibt die Dauer des Tracks in der angegebenen Datei in Sekunden zurück.
 	 * @throws PlayerException */
 	double getDuration(String filePath) throws PlayerException;
-	/** Gibt den Dateinamen des aktuellen Liedes zurück.*/
-	String getFileName();
+	/** Gibt den aktuellen Track zurück.*/
+	Track getCurrentTrack();
 	/** Gibt die aktuelle Position im Track in Sekunden zurück.*/
 	double getPosition();
 	/** Gibt true zurück wenn der Player läuft.*/

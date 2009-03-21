@@ -1,8 +1,5 @@
 package players.jl;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import players.IPlayer;
@@ -31,7 +28,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	private final Set<PlayStateListener> playStateListener = new HashSet<PlayStateListener>();
 	private boolean status;
 	private Track currentTrack;
-	private FileInputStream fis = null;
 	
 	AdvancedPlayer p;
 	
@@ -64,30 +60,23 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void fadeIn()
 	{
+		if(p != null)
+			p.fadeIn();
 	}
 
 	public void fadeInOut()
 	{
+
 		if(status)
-			p.pause();
-		
+			fadeOut();		
 		else
-		{
-			try
-			{
-				p.play();
-			}
-			catch (JavaLayerException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+			fadeIn();
 	}
 
 	public void fadeOut()
 	{
-		p.pause();
+		if(p != null)
+			p.fadeOut();
 	}
 
 	public double getDuration()
@@ -102,6 +91,8 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public double getDuration(Track track) throws PlayerException
 	{
+		if(track == null)
+			return 0;
 		double d = getDuration(track.path);
 		contact.trackDurationCalculated(track, d);
 		return d;
@@ -112,9 +103,9 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		return AdvancedPlayer.getDuration(filePath);
 	}
 
-	public String getFileName()
+	public Track getCurrentTrack()
 	{
-		return fis.toString();
+		return currentTrack;
 	}
 
 	public boolean getPlayState()
@@ -145,7 +136,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	{
 		if(p != null)
 		{
-			System.out.println("play");
 			try
 			{
 				p.play();
@@ -214,9 +204,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	{
 		this.volume = volume;
 		
-		if(getPlayState())
-			p.setGlobalVolume(volume);
-		
 		for(PlayStateListener listener : playStateListener)
 			listener.volumeChanged(this.volume);
 	}
@@ -224,7 +211,24 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	public void start()
 	{
 		start(currentTrack);
+	}
+	
+	public void load(Track track)
+	{
+		if(track == null)
+			return;
 		
+		close();
+		
+		try
+		{
+			p = getPlayer(track.path);
+		}
+		catch (PlayerException e)
+		{
+			contact.reportProblem(e, track);
+		}
+		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_NEW_TRACK);
 	}
 
 	public void start(Track track)
@@ -235,20 +239,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	
 	private void start(Track track, double position)
 	{
-		if(track == null)
-			return;
-		
-		if(p != null)
-			p.close();
-		
-		try
-		{
-			p = getPlayer(track.path);
-		}
-		catch (PlayerException e)
-		{
-			contact.reportProblem(e, track);
-		}
+		load(track);
 		
 		try
 		{
@@ -264,8 +255,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void stop()
 	{
-		p.close();
-		p = null;
+		close();
 	}
 	
 	private AdvancedPlayer getPlayer(final String fileName) throws PlayerException
@@ -273,27 +263,11 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		if(p != null)
 		{
 			p.close();
-			try
-			{
-				fis.close();
-			}
-			catch (IOException e2){}
 		}
-		
+
 		try
 		{
-			fis = new FileInputStream(fileName);
-		}
-		catch (FileNotFoundException e)
-		{
-			throw new PlayerException(Problem.FILE_NOT_FOUND, e);
-		}
-		
-		try
-		{
-			p = new AdvancedPlayer(fis, volume);
-			for(PlayStateListener listener : playStateListener)
-				listener.volumeChanged(volume);
+			p = new AdvancedPlayer(fileName, volume, this);
 		}
 		catch (JavaLayerException e)
 		{
@@ -326,7 +300,8 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		if(reason == Reason.END_OF_TRACK)
 		{
 			Track track = contact.requestNextTrack();
-			start(track, 0);
+			if(track != null)
+				start(track, 0);
 			currentTrackChanged(track, players.PlayStateListener.Reason.END_OF_TRACK);
 		}
 	}
@@ -341,5 +316,13 @@ public class JLPlayer implements IPlayer, PlaybackListener
 				listener.currentTrackChanged(oldTrack, currentTrack, reason);
 		}
 	}
-
+	
+	private void close()
+	{
+		if(p != null)
+		{
+			p.close();
+			p = null;
+		}
+	}
 }
