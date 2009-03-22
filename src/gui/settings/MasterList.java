@@ -16,7 +16,6 @@ import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -479,16 +478,16 @@ public class MasterList extends JPanel
 		private boolean goOn = true;
 		public void runStatusDialog(StatusDialog status, Object object)
 		{
-			java.io.PrintWriter pw = null;
+			/*java.io.PrintWriter pw = null;
 			try
 			{
 				 pw = new java.io.PrintWriter(new java.io.FileOutputStream("C:/Users/Eraser/Desktop/ReadDuration.csv"));
 			}
-			catch (FileNotFoundException e)
+			catch (java.io.FileNotFoundException e)
 			{
 				e.printStackTrace();
 			}
-			pw.println("Pfad;Lieddauer;Dateigröße;Lesedauer");
+			pw.println("Pfad;Lieddauer;Dateigröße;Lesedauer");*/
 			
 			int count = 0;
 			PDJList list = null;
@@ -511,9 +510,9 @@ public class MasterList extends JPanel
 				
 				try
 				{					
-					long time = System.nanoTime();
+					//long time = System.nanoTime();
 					controller.getPlayer().getDuration(track);
-					pw.println("\"" + track.path + "\";" + Double.toString(track.duration).replace('.', ',') + ";" + new File(track.path).length() + ";" + (System.nanoTime() - time));
+					//pw.println("\"" + track.path + "\";" + Double.toString(track.duration).replace('.', ',') + ";" + new File(track.path).length() + ";" + (System.nanoTime() - time));
 				}
 				catch (PlayerException pe){}
 				
@@ -524,8 +523,8 @@ public class MasterList extends JPanel
 					status.setBarPosition(count);
 				}
 			}
-			pw.flush();
-			pw.close();
+			/*pw.flush();
+			pw.close();*/
 		}
 	
 		public void stopTask()
