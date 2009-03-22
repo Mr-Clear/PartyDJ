@@ -1,7 +1,10 @@
 package gui.settings;
 
+import gui.EditTrackWindow;
 import gui.PDJList;
 import gui.PDJScrollList;
+import gui.StatusDialog;
+import gui.StatusDialog.ÖlaPalöma;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,8 +17,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -28,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import players.PlayerException;
+import players.jl.AdvancedPlayer;
 import lists.ListException;
 import lists.SearchListModel;
 import lists.TrackListModel;
@@ -36,7 +42,7 @@ import data.IData;
 import data.SortOrder;
 import basics.Controller;
 
-public class MasterList extends JPanel
+public class MasterList extends JPanel implements ÖlaPalöma
 {
 	private static final long serialVersionUID = 6101715371957303072L;
 	private PDJList list;
@@ -47,18 +53,29 @@ public class MasterList extends JPanel
 	private JComboBox sortOrderBox;
 	private JComboBox listBox;
 	private JTextField searchText;
+	private double duration;
+	private MasterList masterList;
+	
+	//Für StatusDialog
+	long time = 0;
+	private Track track;
+
 	
 	private SearchListModel listModel;
+	private boolean goOn = true;
 
 	public MasterList(Frame parent)
 	{
 		super();
 		frame = parent;
-
+		masterList = this;
+		
 		setLayout(new BorderLayout());
 		Box box = Box.createVerticalBox();
+		Box topBox = Box.createHorizontalBox();
+		Box buttonBox1 = Box.createVerticalBox();
 		
-		box.add(Box.createVerticalStrut(8));
+		buttonBox1.add(Box.createVerticalStrut(8));
 		
 		JButton addFolder = new JButton("Verzeichnis einfügen...");
 		addFolder.addActionListener(new ActionListener(){
@@ -76,7 +93,7 @@ public class MasterList extends JPanel
 							
 							new ReadFolder(folderPath, frame);
 						}});
-		box.add(addFolder);
+		buttonBox1.add(addFolder);
 		JButton addFile = new JButton("Datei einfügen...");
 		addFile.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0)
@@ -124,9 +141,9 @@ public class MasterList extends JPanel
 								}
 						    }
 						}});
-		box.add(addFile);
+		buttonBox1.add(addFile);
 		
-		box.add(Box.createVerticalStrut(8));
+		buttonBox1.add(Box.createVerticalStrut(8));
 		
 		JButton removeFile = new JButton("Tracks entfernen");
 		removeFile.addActionListener(new ActionListener(){
@@ -157,9 +174,48 @@ public class MasterList extends JPanel
 							}
 						}});
 		
-		box.add(removeFile);
-		box.add(Box.createVerticalStrut(8));
+		buttonBox1.add(removeFile);
+		buttonBox1.add(Box.createVerticalStrut(8));
+		topBox.add(Box.createHorizontalStrut(8));
+		topBox.add(buttonBox1);
 		
+		Box buttonBox2 = Box.createVerticalBox();
+
+		buttonBox2.add(Box.createVerticalStrut(8));
+		JButton modify = new JButton("Bearbeiten");
+		modify.addActionListener(new ActionListener()
+									{
+										public void actionPerformed(ActionEvent e)
+										{
+											new EditTrackWindow((Track)list.getSelectedValue());
+										}
+									});
+		buttonBox2.add(modify);
+		
+		JButton getDuration = new JButton("Dauer einlesen");
+		getDuration.addActionListener(new ActionListener()
+										{
+											public void actionPerformed(ActionEvent e)
+											{
+												StatusDialog status;
+												
+												if(list.getSelectedValues() != null)
+												{
+													if(list.getSelectedValues().length > 5)
+													{
+														status = new StatusDialog("Dauer einlesen", frame, masterList, list);
+													}
+													//TODO else <5
+												}
+											}
+										});
+		
+		buttonBox2.add(getDuration);
+		buttonBox2.add(Box.createVerticalGlue());
+		topBox.add(buttonBox2);
+		topBox.add(Box.createHorizontalGlue());
+		
+		box.add(topBox);
 		
 		try
 		{
@@ -446,5 +502,67 @@ public class MasterList extends JPanel
 				JOptionPane.showMessageDialog(null, "Fehler beim durchsuchen.\n" + e1.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+
+	public boolean runStatusDialog(StatusDialog status, Object object)
+	{
+		PrintWriter pw = null;
+		try
+		{
+			pw = new PrintWriter(new FileWriter("C:\\Users\\Sam\\Desktop\\time.txt"));
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int count = 0;
+		PDJList list = null;
+		
+		if(object instanceof PDJList)
+			list = (PDJList)object;
+		
+		status.setBarMaximum(list.getSelectedValues().length);
+		
+		for(int i = 0; i < list.getSelectedValues().length; i++)
+		{
+			if(goOn)
+			{
+				
+				if(list.getSelectedValues()[i] instanceof Track)
+					track = (Track)list.getSelectedValues()[i];
+				else
+					continue;
+				
+				if(list.getSelectedValues().length > 5)
+				{
+					count++;
+					status.setLabel(track.name);
+					status.setBarPosition(count);
+				}
+
+				try
+				{
+					duration = Controller.getInstance().getPlayer().getDuration(track);
+					time += AdvancedPlayer.end - AdvancedPlayer.start;
+					pw.println("\"" + track.name + "\"; " +  Double.toString(track.duration).replace('.', ',') + "; " + (AdvancedPlayer.end - AdvancedPlayer.start));
+				}
+				catch (PlayerException pe)
+				{
+					duration = 0;
+				}
+			}
+		}
+		pw.println(time);
+		System.out.println(time);
+		pw.flush();
+		pw.close();
+		return true;
+	}
+
+	public void stopTask()
+	{
+		goOn = false;
 	}
 }

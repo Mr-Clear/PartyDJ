@@ -21,7 +21,7 @@ public class SettingWindow extends JFrame
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(1000, 600);
 		setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/Settings32.gif"));
-		
+
 		tree = new JTree(createTree());
 		tree.addMouseListener(new TreeListener());
 		tree.setMinimumSize(new Dimension(200, tree.getMinimumSize().height));

@@ -213,6 +213,7 @@ public class PDJList extends JList
 			
 			if(SwingUtilities.isRightMouseButton(e))
 			{
+				//Alle Fenster eintragen, die rechten Mausklick unterstützen sollen.
 				if(((PDJList)e.getSource()).getTopLevelAncestor() instanceof ClassicWindow)
 				{
 					synchronized(list)
