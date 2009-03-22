@@ -316,7 +316,7 @@ public class MasterList extends JPanel
 						String name = line.substring(line.lastIndexOf("\\") + 1, line.lastIndexOf("."));
 						try
 						{
-							newTrack = new Track(-1, line, name, 0, 0, Track.Problem.NONE, null);
+							newTrack = new Track(-1, line, name, 0, new File(line).length(), Track.Problem.NONE, null);
 							data.addTrack(newTrack);
 							if(newTrack.index != -1)
 								count++;
@@ -449,7 +449,7 @@ public class MasterList extends JPanel
 			String name = path.substring(path.lastIndexOf("\\") + 1, path.lastIndexOf("."));
 			try
 			{
-				Track newTrack = new Track(-1, path, name, 0, 0, Track.Problem.NONE, null);
+				Track newTrack = new Track(-1, path, name, 0, new File(path).length(), Track.Problem.NONE, null);
 				data.addTrack(newTrack);
 				if(newTrack.index != -1)
 				{
@@ -514,7 +514,7 @@ public class MasterList extends JPanel
 					controller.getPlayer().getDuration(track);
 					//pw.println("\"" + track.path + "\";" + Double.toString(track.duration).replace('.', ',') + ";" + new File(track.path).length() + ";" + (System.nanoTime() - time));
 				}
-				catch (PlayerException pe){}
+				catch (PlayerException e){}
 				
 				if(status != null)
 				{

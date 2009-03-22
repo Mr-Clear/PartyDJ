@@ -50,16 +50,9 @@ class TrackUpdateTask extends TimerTask
 					try
 					{
 						track.duration = controller.getPlayer().getDuration(track);
-						try
-						{
-							controller.getData().updateTrack(track, Track.TrackElement.DURATION);
-						}
-						catch (ListException e)
-						{}
 					}
 					catch (PlayerException e)
 					{
-						e.printStackTrace();
 						track.problem = e.problem;
 						try
 						{
@@ -69,12 +62,8 @@ class TrackUpdateTask extends TimerTask
 						{}
 					}
 				}
-				System.out.println("Controller updated duration: " + track.path);
 			}
 		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		catch (Exception e){}
 	}
 }

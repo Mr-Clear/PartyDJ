@@ -23,9 +23,9 @@ public class TrackRenderer implements ListCellRenderer
 		
 		Track track = (Track)value;
 		
-		/*// Liest Track-Dauer automatisch ein. Deaktiviert da JList so lang mit Update braucht und Player ein Speicherleck hat.
+		/// Liest Track-Dauer automatisch ein. Deaktiviert da JList so lang mit Update braucht und Player ein Speicherleck hat.
 		if(track.duration == 0 && track.problem == Track.Problem.NONE)
-			Controller.instance.pushTrackToUpdate(track); //*/
+			Controller.getInstance().pushTrackToUpdate(track); //*/
 		
 		return new TrackListCellRendererComponent(list, track, index, isSelected, cellHasFocus);
 	}

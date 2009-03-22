@@ -21,18 +21,6 @@ import javax.swing.LayoutStyle;
 import javax.swing.Timer;
 
 
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
 public class StatusDialog extends javax.swing.JDialog
 {
 	private static final long serialVersionUID = -7585629827078152783L;
@@ -47,6 +35,7 @@ public class StatusDialog extends javax.swing.JDialog
 	
 	private final long startTime = System.currentTimeMillis(); 
 	private JLabel time;
+	Timer showTimeTimer;
 
 	public StatusDialog(String title, Frame frame, ÖlaPalöma init, Object object) 
 	{
@@ -67,7 +56,7 @@ public class StatusDialog extends javax.swing.JDialog
 		initGUI();
 		new StatusThread().start();
 		
-		Timer showTimeTimer = new Timer(100, new ActionListener(){
+		showTimeTimer = new Timer(100, new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{
 				if(statusBar.getValue() > 0)
@@ -84,8 +73,7 @@ public class StatusDialog extends javax.swing.JDialog
 			}});
 		
 		showTimeTimer.start();
-		this.setVisible(true);		
-		showTimeTimer.stop();
+		this.setVisible(true);
 	}
 	
 	private void initGUI() 
@@ -183,6 +171,7 @@ public class StatusDialog extends javax.swing.JDialog
 		public void run()
 		{
 			initialiser.runStatusDialog(me, object);
+			showTimeTimer.stop();
 			dispose();
 		}
 	}
@@ -200,9 +189,12 @@ public class StatusDialog extends javax.swing.JDialog
 		{
 			initialiser.stopTask();
 		}
+		public void windowClosed(WindowEvent e)
+		{
+			initialiser.stopTask();
+		}
 		
 		public void windowActivated(WindowEvent e){}
-		public void windowClosed(WindowEvent e){}
 		public void windowDeactivated(WindowEvent e){}
 		public void windowDeiconified(WindowEvent e){}
 		public void windowIconified(WindowEvent e){}

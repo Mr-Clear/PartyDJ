@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JWindow;
 import javax.swing.border.BevelBorder;
 import players.PlayerException;
 import lists.ListException;
@@ -332,14 +331,6 @@ public class EditTrackWindow extends JDialog
 					JOptionPane.showMessageDialog(null, "Fehler bei Update:\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 				}
 			}
-		}
-	}
-	
-	class DurationSplash extends JWindow
-	{
-		public DurationSplash()
-		{
-			
 		}
 	}
 }

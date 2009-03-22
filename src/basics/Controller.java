@@ -48,6 +48,7 @@ public class Controller
 	Timer trackUpdateTimer; 
 	
 	private boolean loadFinished = false;
+	private Track predictedTrack;
 	
 	private Controller(String[] args)
 	{
@@ -347,7 +348,11 @@ public class Controller
 
 	public void closePartyDJ()
 	{
-		runtime.removeShutdownHook(closeListenTread);
+		try
+		{
+			runtime.removeShutdownHook(closeListenTread);
+		}
+		catch(java.lang.IllegalStateException e){}
 		try
 		{
 			data.writeSetting("LastPosition", Double.toString(player.getPosition()));
@@ -365,8 +370,15 @@ public class Controller
 	{
 		public Track predictNextTrack()
 		{
-			// TODO Auto-generated method stub
-			return null;
+			if(predictedTrack == null)
+			{
+				try
+				{
+					predictedTrack = listProvider.getMasterList().getElementAt((int)(Math.random() * listProvider.getMasterList().getSize()));
+				}
+				catch (ListException e){}
+			}
+			return predictedTrack;
 		}
 		
 		public Track requestNextTrack()
@@ -391,6 +403,11 @@ public class Controller
 						}
 					}
 				}
+			}
+			if(nextTrack == null)
+			{
+				nextTrack = predictNextTrack();
+				predictedTrack = null;
 			}
 			return nextTrack;
 		}
