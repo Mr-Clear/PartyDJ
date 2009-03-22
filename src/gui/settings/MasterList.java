@@ -16,11 +16,10 @@ import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -33,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import players.PlayerException;
-import players.jl.AdvancedPlayer;
 import lists.ListException;
 import lists.SearchListModel;
 import lists.TrackListModel;
@@ -42,7 +40,7 @@ import data.IData;
 import data.SortOrder;
 import basics.Controller;
 
-public class MasterList extends JPanel implements ÖlaPalöma
+public class MasterList extends JPanel
 {
 	private static final long serialVersionUID = 6101715371957303072L;
 	private PDJList list;
@@ -53,8 +51,6 @@ public class MasterList extends JPanel implements ÖlaPalöma
 	private JComboBox sortOrderBox;
 	private JComboBox listBox;
 	private JTextField searchText;
-	private double duration;
-	private MasterList masterList;
 	
 	//Für StatusDialog
 	long time = 0;
@@ -62,13 +58,11 @@ public class MasterList extends JPanel implements ÖlaPalöma
 
 	
 	private SearchListModel listModel;
-	private boolean goOn = true;
 
 	public MasterList(Frame parent)
 	{
 		super();
 		frame = parent;
-		masterList = this;
 		
 		setLayout(new BorderLayout());
 		Box box = Box.createVerticalBox();
@@ -197,15 +191,15 @@ public class MasterList extends JPanel implements ÖlaPalöma
 										{
 											public void actionPerformed(ActionEvent e)
 											{
-												StatusDialog status;
 												
 												if(list.getSelectedValues() != null)
 												{
-													if(list.getSelectedValues().length > 5)
+													if(list.getSelectedValues().length > 2)
 													{
-														status = new StatusDialog("Dauer einlesen", frame, masterList, list);
+														new StatusDialog("Dauer einlesen", frame, new ReadDuration(), list);
 													}
-													//TODO else <5
+													else
+														new ReadDuration().runStatusDialog(null, list);
 												}
 											}
 										});
@@ -480,6 +474,66 @@ public class MasterList extends JPanel implements ÖlaPalöma
 		public void windowOpened(WindowEvent arg0){}
 	}
 	
+	class ReadDuration implements ÖlaPalöma
+	{
+		private boolean goOn = true;
+		public void runStatusDialog(StatusDialog status, Object object)
+		{
+			java.io.PrintWriter pw = null;
+			try
+			{
+				 pw = new java.io.PrintWriter(new java.io.FileOutputStream("C:/Users/Eraser/Desktop/ReadDuration.csv"));
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+			pw.println("Pfad;Lieddauer;Dateigröße;Lesedauer");
+			
+			int count = 0;
+			PDJList list = null;
+			
+			if(object instanceof PDJList)
+				list = (PDJList)object;
+			
+			if(status != null)
+				status.setBarMaximum(list.getSelectedValues().length);
+			
+			for(int i = 0; i < list.getSelectedValues().length; i++)
+			{
+				if(!goOn)
+					break;
+					
+				if(list.getSelectedValues()[i] instanceof Track)
+					track = (Track)list.getSelectedValues()[i];
+				else
+					continue;
+				
+				try
+				{					
+					long time = System.nanoTime();
+					controller.getPlayer().getDuration(track);
+					pw.println("\"" + track.path + "\";" + Double.toString(track.duration).replace('.', ',') + ";" + new File(track.path).length() + ";" + (System.nanoTime() - time));
+				}
+				catch (PlayerException pe){}
+				
+				if(status != null)
+				{
+					count++;
+					status.setLabel(track.name);
+					status.setBarPosition(count);
+				}
+			}
+			pw.flush();
+			pw.close();
+		}
+	
+		public void stopTask()
+		{
+			goOn = false;
+		}
+	}
+	
 	class ListParameterActionListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
@@ -502,67 +556,5 @@ public class MasterList extends JPanel implements ÖlaPalöma
 				JOptionPane.showMessageDialog(null, "Fehler beim durchsuchen.\n" + e1.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 			}
 		}
-	}
-
-	public boolean runStatusDialog(StatusDialog status, Object object)
-	{
-		PrintWriter pw = null;
-		try
-		{
-			pw = new PrintWriter(new FileWriter("C:\\Users\\Sam\\Desktop\\time.txt"));
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		int count = 0;
-		PDJList list = null;
-		
-		if(object instanceof PDJList)
-			list = (PDJList)object;
-		
-		status.setBarMaximum(list.getSelectedValues().length);
-		
-		for(int i = 0; i < list.getSelectedValues().length; i++)
-		{
-			if(goOn)
-			{
-				
-				if(list.getSelectedValues()[i] instanceof Track)
-					track = (Track)list.getSelectedValues()[i];
-				else
-					continue;
-				
-				if(list.getSelectedValues().length > 5)
-				{
-					count++;
-					status.setLabel(track.name);
-					status.setBarPosition(count);
-				}
-
-				try
-				{
-					duration = Controller.getInstance().getPlayer().getDuration(track);
-					time += AdvancedPlayer.end - AdvancedPlayer.start;
-					pw.println("\"" + track.name + "\"; " +  Double.toString(track.duration).replace('.', ',') + "; " + (AdvancedPlayer.end - AdvancedPlayer.start));
-				}
-				catch (PlayerException pe)
-				{
-					duration = 0;
-				}
-			}
-		}
-		pw.println(time);
-		System.out.println(time);
-		pw.flush();
-		pw.close();
-		return true;
-	}
-
-	public void stopTask()
-	{
-		goOn = false;
 	}
 }

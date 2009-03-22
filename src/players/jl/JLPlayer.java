@@ -424,9 +424,18 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		{
 			if(p != null)
 			{
+				double startTime = System.currentTimeMillis();
 				p.fadeDuration = 500;
 				p.fadeOut();
-				while(status);
+				while(status && System.currentTimeMillis() < startTime + 500);
+				{
+					try
+					{
+						Thread.sleep(100);
+					}
+					catch (InterruptedException e)
+					{}
+				}
 			}			
 		}
 	}

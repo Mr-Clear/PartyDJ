@@ -171,21 +171,11 @@ public class AdvancedPlayer
 		return true;
 	}
 	
-	/**
-	 * 
-	 * @return Returns the position in seconds
-	 */
 	public double getPosition()
 	{
 		return position;
 	}
 	
-	/**
-	 * 
-	 * @param filePath	Path of the track being played
-	 * @return	The duration of the track in seconds
-	 * @throws PlayerException
-	 */
 	public static double getDuration(String filePath) throws PlayerException
 	{
 		if(durationPath != null && durationPath.equals(filePath))
@@ -327,7 +317,7 @@ public class AdvancedPlayer
 				catch (JavaLayerException e)
 				{
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				
 				position += frameDuration;
