@@ -431,13 +431,16 @@ public class DerbyDB implements IData, CloseListener
 				{
 					for(MasterListListener listener : masterListListener)
 						listener.trackAdded(track);
-				}					
+				}
+				
+				track.index = index;
+				return index;
 			}
-			else
+			else				
+			{
 				conn.commit(); //commit nach checkIndex()
-			
-			track.index = index;
-			return index;
+				return -1;
+			}
 		}
 		catch (SQLException e)
 		{

@@ -23,6 +23,7 @@ import java.awt.event.WindowStateListener;
 import lists.ListException;
 import lists.ListProvider;
 import lists.SearchListModel;
+import lists.TrackListModel;
 
 
 /**
@@ -288,7 +289,7 @@ public class ClassicWindow extends JFrame
 	 * @param Titel der Liste, Liste, DropMode
 	 * @return JPanel mit GridBagLayout, welches die Liste und Titel enthält.
 	 */
-	public Component List(String title, ListModel l, ListDropMode ldMode)
+	public Component List(String title, TrackListModel l, ListDropMode ldMode)
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		

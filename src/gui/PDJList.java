@@ -22,28 +22,29 @@ import players.PlayerException;
 import basics.Controller;
 import lists.EditableListModel;
 import lists.ListException;
+import lists.TrackListModel;
 import common.Track;
 
 public class PDJList extends JList
 {
 	private static final long serialVersionUID = -8653111853374564564L;
 	private ListDropMode ldMode;
-	private ListModel listModel;
+	private TrackListModel listModel;
 	private int count = 0;
 	
-	public PDJList(ListModel listModel)
+	public PDJList(TrackListModel listModel)
 	{
 		super(listModel);
 		initialise(listModel, ListDropMode.COPY_OR_MOVE, null);
 	}
 	
-	public PDJList(ListModel listModel, ListDropMode ldMode, String name)
+	public PDJList(TrackListModel listModel, ListDropMode ldMode, String name)
 	{
 		super(listModel);
 		initialise(listModel, ldMode, name);
 	}
 	
-	private void initialise(ListModel listModel, ListDropMode ldMode, String name)
+	private void initialise(TrackListModel listModel, ListDropMode ldMode, String name)
 	{
 		final DragDropHandler handler = new DragDropHandler();
 		
@@ -130,6 +131,32 @@ public class PDJList extends JList
 	{
 		return listModel;
 	}
+	
+    public Track[] getSelectedValues()
+    {
+        ListSelectionModel sm = getSelectionModel();
+
+        int iMin = sm.getMinSelectionIndex();
+        int iMax = sm.getMaxSelectionIndex();
+
+        if ((iMin < 0) || (iMax < 0))
+        {
+            return new Track[0];
+        }
+
+        Track[] rvTmp = new Track[1 + (iMax - iMin)];
+        int n = 0;
+        for(int i = iMin; i <= iMax; i++)
+        {
+            if (sm.isSelectedIndex(i))
+            {
+                rvTmp[n++] = listModel.getElementAt(i);
+            }
+        }
+        Track[] rv = new Track[n];
+        System.arraycopy(rvTmp, 0, rv, 0, n);
+        return rv;
+    }
 	
 	private class MyMouseMotionListener extends MouseMotionAdapter
 	{
@@ -273,7 +300,7 @@ public class PDJList extends JList
 		public void mouseReleased(MouseEvent e)
 		{
 			count = 0;
-		}		
+		}	
 	}
 }
 

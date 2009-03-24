@@ -29,19 +29,17 @@ public class StatusDialog extends javax.swing.JDialog
 	private JButton cancelButton;
 	private JProgressBar statusBar;
 	private JLabel statusInfo;
-	private ÖlaPalöma initialiser;
+	private StatusSupportetFunction initialiser;
 	private final StatusDialog me = this;
-	private final Object object;
 	
 	private final long startTime = System.currentTimeMillis(); 
 	private JLabel time;
 	Timer showTimeTimer;
 
-	public StatusDialog(String title, Frame frame, ÖlaPalöma init, Object object) 
+	public StatusDialog(String title, Frame frame, StatusSupportetFunction init) 
 	{
 		super(frame);
 		initialiser = init;
-		this.object = object;
 
 		DialogListener dialogListener = new DialogListener();
 		this.addWindowListener(dialogListener);
@@ -170,15 +168,15 @@ public class StatusDialog extends javax.swing.JDialog
 	{
 		public void run()
 		{
-			initialiser.runStatusDialog(me, object);
+			initialiser.runFunction(me);
 			showTimeTimer.stop();
 			dispose();
 		}
 	}
 		
-	public interface ÖlaPalöma
+	public interface StatusSupportetFunction
 	{
-		public void runStatusDialog(StatusDialog sd, Object object);
+		public void runFunction(StatusDialog sd);
 		public void stopTask();
 	}
 
