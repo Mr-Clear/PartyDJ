@@ -21,9 +21,9 @@ public class DerbyDB implements IData, CloseListener
 	final Map<String, Integer> listIndices = new HashMap<String, Integer>();
 	final Map<String, String> settings = new HashMap<String, String>();
 	final Set<SettingListener> settingListener = new HashSet<SettingListener>();
-	final Set<MasterListListener> masterListListener = new HashSet<MasterListListener>();
+	final Set<ListListener> listListener = new HashSet<ListListener>();
 	
-	public final String version = "0.2a";
+	public final String version = "0.2b";
 	
 	public DerbyDB(String dbName) throws OpenDbException
 	{
@@ -117,12 +117,13 @@ public class DerbyDB implements IData, CloseListener
 			s.executeUpdate("CREATE TABLE LISTS " +
 					"(INDEX INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY, " +
 					"NAME VARCHAR(32) NOT NULL, " +
-					"DESCRYPTION VARCHAR(128), " +
+					"DESCRIPTION LONG VARCHAR, " +
 					"PRIMARY KEY (INDEX), " +
 					"UNIQUE (NAME))");
+			s.executeUpdate("CREATE INDEX LIST_NAMES ON LISTS (NAME)");
 			
-			s.executeUpdate("CREATE TABLE LISTS_CONTENT (LIST INTEGER NOT NULL, INDEX INTEGER NOT NULL, POSITION INTEGER NOT NULL)");
-			s.executeUpdate("CREATE UNIQUE INDEX POSITIONS ON LISTS_CONTENT (LIST, POSITION)");
+			s.executeUpdate("CREATE TABLE LISTS_CONTENT (LIST INTEGER NOT NULL, INDEX INTEGER NOT NULL, POSITION INTEGER NOT NULL, PRIMARY KEY (LIST, POSITION))");
+			//s.executeUpdate("CREATE UNIQUE INDEX POSITIONS ON LISTS_CONTENT (LIST, POSITION)");
 			
 			s.close();
 			conn.commit();
@@ -214,7 +215,7 @@ public class DerbyDB implements IData, CloseListener
 			return null;
 	}
 	
-	public HashMap<Integer, Track> getMasterList() throws ListException
+	public HashMap<Integer, Track> readMasterList() throws ListException
 	{
 		if(masterList == null)
 		{
@@ -427,9 +428,9 @@ public class DerbyDB implements IData, CloseListener
 					masterList.put(track.index, track);
 				}
 					
-				synchronized(masterListListener)
+				synchronized(listListener)
 				{
-					for(MasterListListener listener : masterListListener)
+					for(ListListener listener : listListener)
 						listener.trackAdded(track);
 				}
 				
@@ -487,9 +488,9 @@ public class DerbyDB implements IData, CloseListener
 			masterList.put(track.index, track);
 		}
 		
-		synchronized(masterListListener)
+		synchronized(listListener)
 		{
-			for(MasterListListener listener : masterListListener)
+			for(ListListener listener : listListener)
 				listener.trackChanged(track);
 		}
 	}
@@ -558,9 +559,9 @@ public class DerbyDB implements IData, CloseListener
 			masterList.put(track.index, track);
 		}
 		
-		synchronized(masterListListener)
+		synchronized(listListener)
 		{
-			for(MasterListListener listener : masterListListener)
+			for(ListListener listener : listListener)
 				listener.trackChanged(track);
 		}
 	}
@@ -598,9 +599,9 @@ public class DerbyDB implements IData, CloseListener
 			masterList.remove(track.index);
 		}
 		
-		synchronized(masterListListener)
+		synchronized(listListener)
 		{
-			for(MasterListListener listener : masterListListener)
+			for(ListListener listener : listListener)
 				listener.trackDeleted(track);
 		}
 	}
@@ -617,22 +618,30 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
-	public void addMasterListListener(MasterListListener listener)
+	public void addMasterListListener(ListListener listener)
 	{
-		masterListListener.add(listener);
+		listListener.add(listener);
 	}
-	public void removeMasterListListener(MasterListListener listener)
+	public void removeMasterListListener(ListListener listener)
 	{
-		masterListListener.remove(listener);
+		listListener.remove(listener);
 	}
 	
 	public void addList(String listName) throws ListException
+	{
+		addList(listName, null);
+	}
+	
+	public void addList(String listName, String description) throws ListException
 	{
 		synchronized(conn)
 		{
 			try
 			{
-				executeUpdate("INSERT INTO LISTS (NAME) VALUES (?)", listName);
+				if(description != null)
+					executeUpdate("INSERT INTO LISTS (NAME, DESCRIPTION) VALUES (?, ?)", listName, description);
+				else
+					executeUpdate("INSERT INTO LISTS (NAME) VALUES (?)", listName);
 				conn.commit();
 			}
 			catch (SQLException e)
@@ -644,7 +653,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
-	int getListIndex(String listName)
+	int getListIndex(String listName) throws ListException
 	{
 		synchronized(listIndices)
 		{
@@ -664,7 +673,7 @@ public class DerbyDB implements IData, CloseListener
 				}
 				catch (SQLException e)
 				{
-					return -1;
+					throw new ListException("Liste existiert nicht: " + listName);
 				}
 			}
 		}
@@ -704,6 +713,48 @@ public class DerbyDB implements IData, CloseListener
 		// Aus temporärer Liste löschen
 		if(listIndices.containsKey(listName))
 			listIndices.remove(listName);
+	}
+	
+	public String getListDescription(String listName) throws ListException
+	{
+		try
+		{
+			String ret = queryString("SELECT DESCRIPTION FROM LISTS WHERE NAME = ?", listName);
+			conn.commit();
+			return ret;
+		}
+		catch (SQLException e)
+		{
+			throw new ListException(e);
+		}
+	}
+	
+	public void setListDescription(String listName, String description) throws ListException
+	{
+		try
+		{
+			executeUpdate("UPDATE LISTS SET DESCRIPTION = ? WHERE NAME = ?", description, listName);
+			conn.commit();
+		}
+		catch (SQLException e)
+		{
+			throw new ListException(e);
+		}
+	}
+	
+	public void renameList(String oldName, String newName) throws ListException
+	{
+		try
+		{
+			executeUpdate("UPDATE LISTS SET NAME = ? WHERE NAME = ?", newName, oldName);
+			conn.commit();
+			for(ListListener listener: listListener)
+				listener.listRenamed(oldName, newName);
+		}
+		catch (SQLException e)
+		{
+			throw new ListException(e);
+		}
 	}
 	
 	public List<String> getLists() throws ListException
@@ -920,6 +971,33 @@ public class DerbyDB implements IData, CloseListener
 					throw new ListException("Rollback fehlgeschlagen!", e1);
 				}
 				throw new ListException(e);
+			}
+		}
+	}
+	
+	public void swapTrack(String listName, int trackA, int trackB) throws ListException
+	{
+		synchronized(conn)
+		{
+			try
+			{
+				int listIndex = getListIndex(listName);
+				executeUpdate("UPDATE LISTS_CONTENT SET POSITION = -1 WHERE LIST = ? AND POSITION = ?", Integer.toString(listIndex), Integer.toString(trackA));
+				executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE LIST = ? AND POSITION = ?", Integer.toString(trackA), Integer.toString(listIndex), Integer.toString(trackB));
+				executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE LIST = ? AND POSITION = -1", Integer.toString(trackB), Integer.toString(listIndex));
+				conn.commit();
+			}
+			catch(SQLException e)
+			{
+				try
+				{
+					conn.rollback();
+				}
+				catch (SQLException e1)
+				{
+					throw new ListException("Rollback fehlgeschlagen!", e1);
+				}
+				throw new ListException(e); 
 			}
 		}
 	}

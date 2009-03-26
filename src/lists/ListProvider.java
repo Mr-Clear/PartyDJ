@@ -15,7 +15,7 @@ public class ListProvider
 	public ListProvider() throws ListException
 	{
 		assert Controller.getInstance() != null : "Controller nicht geladen!";
-		masterList = Controller.getInstance().getData().getMasterList();
+		masterList = Controller.getInstance().getData().readMasterList();
 		masterListModel = new DbMasterListModel();
 	}
 	

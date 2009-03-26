@@ -3,13 +3,14 @@ __ Primary Key
 + Identity (Automatischer Wert, schlieﬂt Not Null ein)
 | Not Null
 ! Index
+? Unique (schlieﬂt Not Null ein)
 
 SETTINGS
     |_NAME_ [String*32]
     VALUE [String]
 
 FILES
-    +_INDEX_ [Int, Auto]
+    +_INDEX_ [Int]
     |!PATH [String*1024]
     |!SEARCHNMAE [String*256]
     |NAME [String*256]
@@ -19,9 +20,9 @@ FILES
     INFO [String]
 
 LISTS
-    +_INDEX_ [Int, Auto]
-    |NAME [String*32]
-    DESCRYPTION [String*128]
+    +_INDEX_ [Int]
+    ?NAME [String*32]
+    DESCRIPTION [String]
 
 LISTS_CONTENT
     |!LIST [Int]

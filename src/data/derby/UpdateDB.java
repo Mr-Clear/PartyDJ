@@ -14,9 +14,11 @@ public class UpdateDB
 			if(!newVersion.equals(data.version))
 				return false;
 			if((oldVersion.equals("unknown") || oldVersion.equals("0.1")))
-				return to0_2a(data);
+				to0_2a(data);
 			if(oldVersion.equals("0.2"))
-				return v0_2to0_2a(data);
+				v0_2to0_2a(data);
+			if(oldVersion.equals("0.2a"))
+				return v0_2ato0_2b(data);
 			else
 				return false;
 		}
@@ -87,6 +89,19 @@ public class UpdateDB
 		
 		data.conn.commit();
 		data.writeSetting("DBVersion", "0.2a");
+		return true;
+	}
+	
+	private static boolean v0_2ato0_2b(DerbyDB data) throws SettingException, SQLException
+	{
+		Statement s = data.conn.createStatement();
+
+		s.executeUpdate("ALTER TABLE LISTS DROP COLUMN DESCRYPTION");
+		s.executeUpdate("ALTER TABLE LISTS ADD DESCRIPTION LONG VARCHAR");
+		s.executeUpdate("CREATE INDEX LIST_NAMES ON LISTS (NAME)");
+		data.conn.commit();
+		
+		data.writeSetting("DBVersion", "0.2b");
 		return true;
 	}
 }

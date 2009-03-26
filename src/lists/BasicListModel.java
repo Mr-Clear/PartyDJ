@@ -8,14 +8,14 @@ import javax.swing.event.ListDataListener;
 import players.PlayStateListener;
 import basics.Controller;
 import common.Track;
-import data.MasterListListener;
+import data.ListAdapter;
 
 /**Stellt die grundlegenden Funktion einer TrackList dar.
  * 
  * @author Eraser
  *
  */
-abstract class BasicListModel implements TrackListModel, PlayStateListener, MasterListListener
+abstract class BasicListModel extends ListAdapter implements TrackListModel, PlayStateListener
 {
 	private final Controller controller = Controller.getInstance();
 	protected final Set<ListDataListener> dataListener = new HashSet<ListDataListener>();

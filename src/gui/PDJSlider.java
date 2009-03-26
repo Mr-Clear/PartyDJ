@@ -19,7 +19,7 @@ import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 import common.Track;
 import data.IData;
-import data.MasterListAdapter;
+import data.ListAdapter;
 import players.IPlayer;
 import players.PlayStateAdapter;
 import basics.Controller;
@@ -126,7 +126,7 @@ public class PDJSlider extends JPanel
 							refreshTimer.stop();
 					}});
 		
-		data.addMasterListListener(new MasterListAdapter(){
+		data.addMasterListListener(new ListAdapter(){
 			public void trackChanged(Track track)
 			{
 				if(track == currentTrack)
