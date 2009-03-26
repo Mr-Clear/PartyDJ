@@ -2,7 +2,13 @@ package players.jl;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 import javax.sound.sampled.FloatControl;
 import common.Track;
 import common.Track.Problem;
@@ -26,7 +32,7 @@ import javazoom.jl.player.AudioDevice;
  */
 public class AdvancedPlayer
 {
-	private final AdvancedPlayer Me = this;
+	private final AdvancedPlayer me = this;
 	private FileInputStream fis;
 	private Bitstream bitStream;
 	private Decoder decoder;
@@ -42,6 +48,10 @@ public class AdvancedPlayer
 	private int audioVolume;
 	private boolean fadeOut;
 	private long fadeStartTime;
+	int fadeSpeed = 1;
+	
+	public static long start;
+	public static long end;
 	long fadeDuration = 1000;
 	/** Wenn false, sendet der Player kein playbackFinished */
 	boolean sendMessage = true;
@@ -70,6 +80,7 @@ public class AdvancedPlayer
 		jlPlayer.addPlayStateListener(listener);
 		
 		bitStream = new Bitstream(fis);
+	
 		audio = (SoundAudioDevice)FactoryRegistry.systemRegistry().createAudioDevice();
 		audio.open(decoder = new Decoder());
 		volume = vol;
@@ -178,6 +189,8 @@ public class AdvancedPlayer
 	
 	public static double getDuration(String filePath) throws PlayerException
 	{
+		start = System.currentTimeMillis();
+		
 		if(durationPath != null && durationPath.equals(filePath))
 		{
 			return staticDuration;
@@ -217,6 +230,7 @@ public class AdvancedPlayer
 		
 		durationPath = filePath;
 		staticDuration = calcDuration;
+		end = System.currentTimeMillis();
 		
 		return (staticDuration);
 	}
@@ -336,9 +350,9 @@ public class AdvancedPlayer
 			if(sendMessage)
 			{
 				if(paused)
-					jlPlayer.playbackFinished(Me, Reason.RECEIVED_STOP);
+					jlPlayer.playbackFinished(me, Reason.RECEIVED_STOP);
 				else
-					jlPlayer.playbackFinished(Me, Reason.END_OF_TRACK);
+					jlPlayer.playbackFinished(me, Reason.END_OF_TRACK);
 			}
 		}
 	}

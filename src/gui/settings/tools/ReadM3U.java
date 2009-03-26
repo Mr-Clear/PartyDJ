@@ -22,8 +22,6 @@ public class ReadM3U implements StatusSupportedFunction
 		filePath = path;
 	}
 
-
-	@Override
 	public void runFunction(StatusDialog sd) 
 	{
 		int count = 0;
