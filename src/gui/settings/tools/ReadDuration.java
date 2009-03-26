@@ -2,11 +2,11 @@ package gui.settings.tools;
 
 import basics.Controller;
 import gui.StatusDialog;
-import gui.StatusDialog.StatusSupportetFunction;
+import gui.StatusDialog.StatusSupportedFunction;
 import players.PlayerException;
 import common.Track;
 
-public class ReadDuration implements StatusSupportetFunction
+public class ReadDuration implements StatusSupportedFunction
 {
 	private boolean goOn = true;
 	private final Track[] list;

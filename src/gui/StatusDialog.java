@@ -29,14 +29,14 @@ public class StatusDialog extends javax.swing.JDialog
 	private JButton cancelButton;
 	private JProgressBar statusBar;
 	private JLabel statusInfo;
-	private StatusSupportetFunction initialiser;
+	private StatusSupportedFunction initialiser;
 	private final StatusDialog me = this;
 	
 	private final long startTime = System.currentTimeMillis(); 
 	private JLabel time;
 	Timer showTimeTimer;
 
-	public StatusDialog(String title, Frame frame, StatusSupportetFunction init) 
+	public StatusDialog(String title, Frame frame, StatusSupportedFunction init) 
 	{
 		super(frame);
 		initialiser = init;
@@ -174,7 +174,7 @@ public class StatusDialog extends javax.swing.JDialog
 		}
 	}
 		
-	public interface StatusSupportetFunction
+	public interface StatusSupportedFunction
 	{
 		public void runFunction(StatusDialog sd);
 		public void stopTask();

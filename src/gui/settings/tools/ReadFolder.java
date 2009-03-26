@@ -1,7 +1,7 @@
 package gui.settings.tools;
 
 import gui.StatusDialog;
-import gui.StatusDialog.StatusSupportetFunction;
+import gui.StatusDialog.StatusSupportedFunction;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
@@ -10,7 +10,7 @@ import basics.Controller;
 import lists.ListException;
 import common.Track;
 
-public class ReadFolder implements StatusSupportetFunction
+public class ReadFolder implements StatusSupportedFunction
 {
 	private final String folderPath;
 	private int count = 0;

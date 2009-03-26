@@ -7,12 +7,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import gui.StatusDialog;
-import gui.StatusDialog.StatusSupportetFunction;
+import gui.StatusDialog.StatusSupportedFunction;
 import lists.ListException;
 import basics.Controller;
 import common.Track;
 
-public class ReadM3U implements StatusSupportetFunction
+public class ReadM3U implements StatusSupportedFunction
 {
 	private final String filePath;
 	private boolean goOn = true;
