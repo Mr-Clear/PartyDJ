@@ -72,4 +72,11 @@ public class DbClientListModel extends LightClientListModel
 		}
 		super.remove(index);
 	}
+	
+	@Override
+	public void swap(int indexA, int indexB) throws ListException
+	{
+		super.swap(indexA, indexB);
+		data.swapTrack(listName, indexA, indexB);
+	}
 }

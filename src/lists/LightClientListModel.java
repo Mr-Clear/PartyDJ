@@ -86,6 +86,15 @@ public class LightClientListModel extends BasicListModel implements EditableList
 			remove(toRemove);
 		}
 	}
+
+	public void swap(int indexA, int indexB) throws ListException
+	{
+		Track A = list.get(indexA);
+		Track B = list.get(indexB);
+		
+		list.set(indexA, B);
+		list.set(indexB, A);
+	}
 	
 	public void trackAdded(Track track)	{} // Mir wurscht ;)
 	
@@ -112,4 +121,6 @@ public class LightClientListModel extends BasicListModel implements EditableList
 			}
 		}	
 	}
+
+
 }

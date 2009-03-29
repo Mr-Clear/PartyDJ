@@ -7,9 +7,10 @@ public interface EditableListModel extends TrackListModel
 	/**Fügt einen Track am Ende der Liste ein.
 	 * 
 	 * @param track Track der eingefügt wird.
-	 * @throws ListException
+	 * @throws ListException Wenn beim Bearbeiten der Liste ein Fehler auftritt.
+	 *                       Wird nicht von allen ListModels ausgelöst.
 	 */
-	public void add(Track track) throws ListException;
+	void add(Track track) throws ListException;
 	
 	/**Fügt einen Tack an der angegebenen Position ein.
 	 * 
@@ -18,18 +19,20 @@ public interface EditableListModel extends TrackListModel
 	 * 
 	 * @param index Position an der der Track eingefügt wird.
 	 * @param track Track der eingefügt wird.
-	 * @throws ListException
+	 * @throws ListException Wenn beim Bearbeiten der Liste ein Fehler auftritt.
+	 *                       Wird nicht von allen ListModels ausgelöst.
 	 */
-	public void add(int index, Track track) throws ListException;
+	void add(int index, Track track) throws ListException;
 	
 	/**Löscht den Track mit dem angegebenen Index aus der Liste.
 	 * 
 	 * Wenn kein Track mit dem Index existiert, wird nichts gelöscht.
 	 * 
 	 * @param index Index des zu löschenden Tracks.
-	 * @throws ListException
+	 * @throws ListException Wenn beim Bearbeiten der Liste ein Fehler auftritt.
+	 *                       Wird nicht von allen ListModels ausgelöst.
 	 */
-	public void remove(int index) throws ListException;
+	void remove(int index) throws ListException;
 	
 	/**Verschiebt den angegebenen Track an eine andere Position.
 	 * 
@@ -37,7 +40,17 @@ public interface EditableListModel extends TrackListModel
 	 * 
 	 * @param oldIndex Position des Tracks der verschoben wird.
 	 * @param newIndex Neue Position des Tracks.
-	 * @throws ListException
+	 * @throws ListException Wenn beim Bearbeiten der Liste ein Fehler auftritt.
+	 *                       Wird nicht von allen ListModels ausgelöst.
 	 */
-	public void move(int oldIndex, int newIndex) throws ListException;
+	void move(int oldIndex, int newIndex) throws ListException;
+	
+	/**Vertauscht die Tracks an den Positionan A und B.
+	 * 
+	 * @param indexA Index des einen Tracks.
+	 * @param indexB Index des anderen Tracks.
+	 * @throws ListException Wenn beim Bearbeiten der Liste ein Fehler auftritt.
+	 *                       Wird nicht von allen ListModels ausgelöst.
+	 */
+	void swap(int indexA, int indexB) throws ListException;
 }
