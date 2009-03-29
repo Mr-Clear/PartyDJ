@@ -208,9 +208,18 @@ public class MasterList extends JPanel
 			hbox.add(Box.createHorizontalStrut(8));
 			hbox.add(new JLabel("Reihenfolge:"));
 			hbox.add(Box.createHorizontalStrut(4));
+			
+			PDJScrollList scrollList = new PDJScrollList(listModel);
+			list = scrollList.getList();
+			scrollList.setPreferredSize(scrollList.getMaximumSize());
+			box.add(scrollList);
+			box.add(Box.createVerticalStrut(8));
+			
 			sortOrderBox = new JComboBox(SortOrder.getStringArray());
 			sortOrderBox.setSelectedIndex(1);
 			sortOrderBox.addActionListener(listener);
+			//TODO ComboBox Bug
+
 			hbox.add(sortOrderBox);
 			hbox.add(Box.createHorizontalStrut(8));
 			hbox.add(new JLabel("Liste:"));
@@ -229,10 +238,6 @@ public class MasterList extends JPanel
 			hbox.add(Box.createHorizontalStrut(8));
 			box.add(hbox);
 			box.add(Box.createVerticalStrut(8));
-			PDJScrollList scrollList = new PDJScrollList(listModel);
-			list = scrollList.getList();
-			scrollList.setPreferredSize(scrollList.getMaximumSize());
-			box.add(scrollList);
 		}
 		catch (ListException e)
 		{
