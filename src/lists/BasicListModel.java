@@ -26,7 +26,7 @@ abstract class BasicListModel extends ListAdapter implements TrackListModel, Pla
 		assert Controller.getInstance() != null : "Controller nicht geladen!";
 		this.list = list;
 		controller.getPlayer().addPlayStateListener(this);
-		controller.getData().addMasterListListener(this);
+		controller.getData().addListListener(this);
 	}
 	
 	public int getSize()

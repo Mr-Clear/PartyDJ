@@ -90,12 +90,12 @@ public interface IData
 	 * 
 	 * @param listener Der MasterListListener der hinzugefügt wird.
 	 */
-	void addMasterListListener(ListListener listener);
+	void addListListener(ListListener listener);
 	/**Entfernt einen MasterListListener.
 	 * 
 	 * @param listener Der MasterListListener der entfernt wird.
 	 */
-	void removeMasterListListener(ListListener listener);
+	void removeListListener(ListListener listener);
 
 	/**Fügt neue Liste ein.
 	 * 

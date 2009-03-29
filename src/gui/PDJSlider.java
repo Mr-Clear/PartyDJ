@@ -126,7 +126,7 @@ public class PDJSlider extends JPanel
 							refreshTimer.stop();
 					}});
 		
-		data.addMasterListListener(new ListAdapter(){
+		data.addListListener(new ListAdapter(){
 			public void trackChanged(Track track)
 			{
 				if(track == currentTrack)

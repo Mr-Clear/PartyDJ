@@ -618,11 +618,11 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
-	public void addMasterListListener(ListListener listener)
+	public void addListListener(ListListener listener)
 	{
 		listListener.add(listener);
 	}
-	public void removeMasterListListener(ListListener listener)
+	public void removeListListener(ListListener listener)
 	{
 		listListener.remove(listener);
 	}
@@ -650,6 +650,11 @@ public class DerbyDB implements IData, CloseListener
 					throw new ListException("Liste " + listName + " existiert bereits.", e);
 				throw new ListException(e);
 			}
+		}
+		synchronized(listListener)
+		{
+			for(ListListener listener : listListener)
+				listener.listAdded(listName);
 		}
 	}
 	
@@ -710,6 +715,12 @@ public class DerbyDB implements IData, CloseListener
 			throw new ListException(e);
 		}
 		
+		synchronized(listListener)
+		{
+			for(ListListener listener : listListener)
+				listener.listRemoved(listName);
+		}
+		
 		// Aus temporärer Liste löschen
 		if(listIndices.containsKey(listName))
 			listIndices.remove(listName);
@@ -754,6 +765,11 @@ public class DerbyDB implements IData, CloseListener
 		catch (SQLException e)
 		{
 			throw new ListException(e);
+		}
+		synchronized(listListener)
+		{
+			for(ListListener listener : listListener)
+				listener.listRenamed(oldName, newName);
 		}
 	}
 	
@@ -851,12 +867,13 @@ public class DerbyDB implements IData, CloseListener
 
 	public void insertTrack(String listName, Track track) throws ListException
 	{
+		int size;
 		synchronized(conn)
 		{
 			try
 			{
 				int listIndex = getListIndex(listName);
-				int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
+				size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
 				PreparedStatement ps = conn.prepareStatement("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)");
 				ps.setInt(1, listIndex);
 				ps.setInt(2, track.index);
@@ -877,6 +894,11 @@ public class DerbyDB implements IData, CloseListener
 				}
 				throw new ListException(e);
 			}
+		}
+		synchronized(listListener)
+		{
+			for(ListListener listener : listListener)
+				listener.trackInserted(listName, size, track);
 		}
 	}
 	
@@ -926,6 +948,12 @@ public class DerbyDB implements IData, CloseListener
 				throw new ListException(e);
 			}
 		}
+		
+		synchronized(listListener)
+		{
+			for(ListListener listener : listListener)
+				listener.trackInserted(listName, trackPosition, track);
+		}
 	}
 
 	public void removeTrack(String listName, int trackPosition) throws ListException
@@ -973,6 +1001,11 @@ public class DerbyDB implements IData, CloseListener
 				throw new ListException(e);
 			}
 		}
+		synchronized(listListener)
+		{
+			for(ListListener listener : listListener)
+				listener.trackRemoved(listName, trackPosition);
+		}
 	}
 	
 	public void swapTrack(String listName, int trackA, int trackB) throws ListException
@@ -999,6 +1032,11 @@ public class DerbyDB implements IData, CloseListener
 				}
 				throw new ListException(e); 
 			}
+		}
+		synchronized(listListener)
+		{
+			for(ListListener listener : listListener)
+				listener.tracksSwaped(listName, trackA, trackB);
 		}
 	}
 	
