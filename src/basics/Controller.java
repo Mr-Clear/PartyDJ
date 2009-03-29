@@ -11,6 +11,7 @@ import java.util.Timer;
 import java.util.Stack;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.ListModel;
 import players.IPlayer;
 import players.PlayStateListener;
 import players.PlayerException;
@@ -35,6 +36,7 @@ public class Controller
 	private IPlayer player;
 	private Track currentTrack;
 	private EditableListModel playList;
+	private ListModel favourites;
 	
 	private DbClientListModel lastPlayedList;
 	
@@ -151,8 +153,9 @@ public class Controller
 			try
 			{
 				listProvider = new ListProvider();
-				playList = listProvider.getDbList("Wunschliste");
+				playList = listProvider.getDbList("Wunschliste");				
 				lastPlayedList = listProvider.getDbList("LastPlayed");
+				favourites = listProvider.getDbList("Playlist");
 			}
 			catch (ListException e)
 			{
@@ -374,7 +377,12 @@ public class Controller
 			{
 				try
 				{
-					predictedTrack = listProvider.getMasterList().getElementAt((int)(Math.random() * listProvider.getMasterList().getSize()));
+					if(favourites.getSize() > 0 && Math.random() > 0.5)
+					{
+						favourites.getElementAt((int)(Math.random() * favourites.getSize()));
+					}
+					else
+						predictedTrack = listProvider.getMasterList().getElementAt((int)(Math.random() * listProvider.getMasterList().getSize()));
 				}
 				catch (ListException e){}
 			}
