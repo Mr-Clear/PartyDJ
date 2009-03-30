@@ -22,10 +22,7 @@ public class DragDropHandler extends TransferHandler
 			return false;
 		
 		PDJList.DropLocation dropLocation = (PDJList.DropLocation)info.getDropLocation();
-		
-        if (dropLocation.getIndex() == -1)
-        	return false;
-        
+
         return true;
 	}
 	
