@@ -678,7 +678,7 @@ public class DerbyDB implements IData, CloseListener
 				}
 				catch (SQLException e)
 				{
-					throw new ListException("Liste existiert nicht: " + listName);
+					return -1;
 				}
 			}
 		}
