@@ -21,8 +21,6 @@ public class DragDropHandler extends TransferHandler
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 			return false;
 		
-		PDJList.DropLocation dropLocation = (PDJList.DropLocation)info.getDropLocation();
-
         return true;
 	}
 	
