@@ -9,7 +9,7 @@ Autoplay.
 ClassicWindow sinnvolle Fehlermeldungen wenn die Listen nicht gehen.
 ComboBoxen von gui.settings.MasterList fixen.
 Funktion der Maustasten in PDJList wählbar
-data.derby.DerbyDB Events vervollständigen.
+?data.derby.DerbyDB Events vervollständigen.
 Error Reporter.
 
 Mal merken, System LookAndFeel:
