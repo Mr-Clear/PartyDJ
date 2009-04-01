@@ -3,6 +3,11 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Shape;
+import java.awt.Window;
+import java.awt.geom.RoundRectangle2D;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.ImageIcon;
@@ -61,6 +66,22 @@ public class SplashWindow extends JWindow
 		
 		new Timer().schedule(new UpdateTask(), 0, 40);
 
+		
+		// Ecken Abrunden
+		try 
+		{
+			Class<?> utils = Class.forName("com.sun.awt.AWTUtilities");
+
+			Method method = utils.getMethod("setWindowShape", Window.class, Shape.class);
+			Shape shape = new RoundRectangle2D.Double(0, 0, this.getWidth(), this.getHeight(), 20, 20); 
+			method.invoke(null, this, shape);
+		}
+		catch (NoSuchMethodException e){}
+		catch (ClassNotFoundException e){}
+		catch (IllegalArgumentException e){}
+		catch (IllegalAccessException e){}
+		catch (InvocationTargetException e){}
+		
 		setVisible(true);
 	}
 	
