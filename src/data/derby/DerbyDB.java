@@ -147,15 +147,35 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
-	PreparedStatement prepareStatement(String SQL, String... parameters) throws SQLException
+	PreparedStatement prepareStatement(String SQL, Object... parameters) throws SQLException
 	{
 		PreparedStatement ps = conn.prepareStatement(SQL);
 		for(int i = 0; i < parameters.length; i++)
-			ps.setString(i + 1, parameters[i]);
+		{
+			Class<?> c = parameters[i].getClass();
+			if(c == Boolean.class)
+				ps.setBoolean(i + 1, (Boolean)parameters[i]);
+			else if(c == Byte.class)
+				ps.setByte(i + 1, (Byte)parameters[i]);
+			else if(c == Double.class)
+				ps.setDouble(i + 1, (Double)parameters[i]);
+			else if(c == Float.class)
+				ps.setFloat(i + 1, (Float)parameters[i]);
+			else if(c == Integer.class)
+				ps.setInt(i + 1, (Integer)parameters[i]);
+			else if(c==Long.class)
+				ps.setLong(i + 1, (Long)parameters[i]);
+			else if(c == String.class)
+				ps.setString(i + 1, (String)parameters[i]);
+			else if(c == Short.class)
+				ps.setShort(i + 1, (Short)parameters[i]);
+			else
+				ps.setObject(i + 1, parameters[i]);
+		}
 		return ps;
 	}
 	
-	int executeUpdate(String SQL, String... parameters) throws SQLException
+	int executeUpdate(String SQL, Object... parameters) throws SQLException
 	{
 		synchronized(conn)
 		{
@@ -164,24 +184,13 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
-	int executeUpdate(String SQL, long parameter) throws SQLException
-	{
-		synchronized(conn)
-		{
-			PreparedStatement ps = conn.prepareStatement(SQL);
-			ps.setLong(1, parameter);
-			int ret = ps.executeUpdate();
-			return ret;
-		}
-	}
-	
-	ResultSet queryRS(String SQL, String... parameters) throws SQLException
+	ResultSet queryRS(String SQL, Object... parameters) throws SQLException
 	{
 		return prepareStatement(SQL, parameters).executeQuery();
 	}
 
 	
-	int queryInt(String SQL, String... parameters) throws SQLException
+	int queryInt(String SQL, Object... parameters) throws SQLException
 	{
 		synchronized(conn)
 		{
@@ -198,7 +207,7 @@ public class DerbyDB implements IData, CloseListener
 			throw new SQLException("Kein Eintag gefunden:");
 	}
 	
-	String queryString(String SQL, String... parameters) throws SQLException
+	String queryString(String SQL, Object... parameters) throws SQLException
 	{
 		synchronized(conn)
 		{
@@ -455,7 +464,7 @@ public class DerbyDB implements IData, CloseListener
 		{
 			try
 			{
-				queryInt("SELECT INDEX FROM FILES WHERE INDEX = ?", Integer.toString(track.index));
+				queryInt("SELECT INDEX FROM FILES WHERE INDEX = ?", track.index);
 			}
 			catch (SQLException e)
 			{
@@ -501,7 +510,7 @@ public class DerbyDB implements IData, CloseListener
 		{
 			try
 			{
-				queryInt("SELECT INDEX FROM FILES WHERE INDEX = ?", Integer.toString(track.index));
+				queryInt("SELECT INDEX FROM FILES WHERE INDEX = ?", track.index);
 			}
 			catch (SQLException e)
 			{
@@ -575,8 +584,8 @@ public class DerbyDB implements IData, CloseListener
 			try
 			{
 
-				executeUpdate("DELETE FROM LISTS_CONTENT WHERE INDEX = ?", Integer.toString(track.index));
-				executeUpdate("DELETE FROM FILES WHERE INDEX = ?", Integer.toString(track.index));
+				executeUpdate("DELETE FROM LISTS_CONTENT WHERE INDEX = ?", track.index);
+				executeUpdate("DELETE FROM FILES WHERE INDEX = ?", track.index);
 				conn.commit();
 			}
 			catch (SQLException e)
@@ -691,14 +700,8 @@ public class DerbyDB implements IData, CloseListener
 			synchronized(conn)
 			{
 				int listIndex = getListIndex(listName);
-				PreparedStatement ps = conn.prepareStatement("DELETE FROM LISTS WHERE NAME = ?");
-				ps.setString(1, listName);
-				ps.executeUpdate();
-				
-				ps = conn.prepareStatement("DELETE FROM LISTS_CONTENT WHERE LIST = ?");
-				ps.setInt(1, listIndex);
-				ps.executeUpdate();
-				
+				executeUpdate("DELETE FROM LISTS WHERE NAME = ?", listName);				
+				executeUpdate("DELETE FROM LISTS_CONTENT WHERE LIST = ?", listIndex);				
 				conn.commit();
 			}
 		}
@@ -873,12 +876,8 @@ public class DerbyDB implements IData, CloseListener
 			try
 			{
 				int listIndex = getListIndex(listName);
-				size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
-				PreparedStatement ps = conn.prepareStatement("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)");
-				ps.setInt(1, listIndex);
-				ps.setInt(2, track.index);
-				ps.setInt(3, size);
-				ps.executeUpdate();
+				size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", listIndex);
+				executeUpdate("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)", listIndex, track.index, size);
 				conn.commit();
 				
 			}
@@ -909,7 +908,7 @@ public class DerbyDB implements IData, CloseListener
 			try
 			{
 				int listIndex = getListIndex(listName);
-				int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
+				int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", listIndex);
 				
 				// trackPosition korrigieren.
 				if(trackPosition < 0)
@@ -919,18 +918,10 @@ public class DerbyDB implements IData, CloseListener
 				
 				for(int i = size; i >= trackPosition; i--)
 				{
-					PreparedStatement ps = conn.prepareStatement("UPDATE LISTS_CONTENT SET POSITION = ? WHERE POSITION = ? AND LIST = ?");
-					ps.setInt(1, i);
-					ps.setInt(2, i - 1);
-					ps.setInt(3, listIndex);
-					ps.executeUpdate();
+					executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE POSITION = ? AND LIST = ?", i, i - 1, listIndex);
 				}
 				
-				PreparedStatement ps = conn.prepareStatement("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)");
-				ps.setInt(1, listIndex);
-				ps.setInt(2, track.index);
-				ps.setInt(3, trackPosition);
-				ps.executeUpdate();
+				executeUpdate("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)", listIndex, track.index, trackPosition);
 				
 				conn.commit();
 			}
@@ -964,27 +955,19 @@ public class DerbyDB implements IData, CloseListener
 			{
 				int listIndex = getListIndex(listName);
 				
-				int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", Integer.toString(listIndex));
+				int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", listIndex);
 				
 				
 				// Wenn trackPosition ausserhalb der Liste, nichts löschen.
 				if(trackPosition < 0 || trackPosition >= size)
 					return;
 
-				PreparedStatement ps = conn.prepareStatement("DELETE FROM LISTS_CONTENT WHERE POSITION = ? AND LIST = ?");
-				ps.setInt(1, trackPosition);
-				ps.setInt(2, listIndex);
-				ps.executeUpdate();
+				executeUpdate("DELETE FROM LISTS_CONTENT WHERE POSITION = ? AND LIST = ?", trackPosition, listIndex);
 				
 				for(int i = trackPosition; i < size; i++)
 				{
-					ps = conn.prepareStatement("UPDATE LISTS_CONTENT SET POSITION = ? WHERE POSITION = ? AND LIST = ?");
-					ps.setInt(1, i);
-					ps.setInt(2, i + 1);
-					ps.setInt(3, listIndex);
-					ps.executeUpdate();
+					executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE POSITION = ? AND LIST = ?", i, i + 1, listIndex);
 				}
-				
 				conn.commit();
 			}
 
@@ -1015,9 +998,9 @@ public class DerbyDB implements IData, CloseListener
 			try
 			{
 				int listIndex = getListIndex(listName);
-				executeUpdate("UPDATE LISTS_CONTENT SET POSITION = -1 WHERE LIST = ? AND POSITION = ?", Integer.toString(listIndex), Integer.toString(trackA));
-				executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE LIST = ? AND POSITION = ?", Integer.toString(trackA), Integer.toString(listIndex), Integer.toString(trackB));
-				executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE LIST = ? AND POSITION = -1", Integer.toString(trackB), Integer.toString(listIndex));
+				executeUpdate("UPDATE LISTS_CONTENT SET POSITION = -1 WHERE LIST = ? AND POSITION = ?", listIndex, trackA);
+				executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE LIST = ? AND POSITION = ?", trackA, listIndex, trackB);
+				executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE LIST = ? AND POSITION = -1", trackB, listIndex);
 				conn.commit();
 			}
 			catch(SQLException e)

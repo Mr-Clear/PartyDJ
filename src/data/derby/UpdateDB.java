@@ -62,12 +62,7 @@ public class UpdateDB
 			
 			for(int i = 0; i < elementsPosition.size(); i++)
 			{
-				PreparedStatement ps = data.conn.prepareStatement("INSERT INTO LISTS_CONTENT VALUES(?, ?, ?)");
-				ps.setInt(1, list);
-				ps.setInt(2, elementsTrack.get(i));
-				ps.setInt(3, elementsPosition.get(i));
-				ps.executeUpdate();
-				ps.close();
+				data.executeUpdate("INSERT INTO LISTS_CONTENT VALUES(?, ?, ?)", list, elementsTrack.get(i), elementsPosition.get(i));
 			}
 			
 			s.executeUpdate("DROP TABLE LIST_" + list);
