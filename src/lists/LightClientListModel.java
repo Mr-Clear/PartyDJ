@@ -94,6 +94,10 @@ public class LightClientListModel extends BasicListModel implements EditableList
 		
 		list.set(indexA, B);
 		list.set(indexB, A);
+		
+		for(ListDataListener listener : dataListener)
+			listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, indexA, indexB));
+
 	}
 	
 	public void trackAdded(Track track)	{} // Mir wurscht ;)
