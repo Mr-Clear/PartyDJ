@@ -7,8 +7,6 @@ import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
-import javax.swing.WindowConstants;
-import javax.swing.JFrame;
 import javax.swing.LayoutStyle;
 import lists.ListException;
 import basics.Controller;
