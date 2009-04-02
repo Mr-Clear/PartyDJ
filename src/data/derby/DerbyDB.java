@@ -53,8 +53,6 @@ public class DerbyDB implements IData, CloseListener
 				throw new OpenDbException(e);
 			}
 			
-			//System.out.println(dbVersion + " " + version + " " + version.equals(dbVersion));
-			
 			if(!version.equals(dbVersion))
 			{
 				if(!UpdateDB.update(this, dbVersion, version))
@@ -916,13 +914,17 @@ public class DerbyDB implements IData, CloseListener
 				if(trackPosition > size)
 					trackPosition = size;
 				
-				for(int i = size; i >= trackPosition; i--)
+				//System.out.println(trackPosition);
+				//System.out.println(size);
+				
+				for(int i = size; i > trackPosition; i--)
 				{
+					//System.out.println("UPDATE LISTS_CONTENT SET POSITION = " + i + " WHERE POSITION = " + (i - 1) + " AND LIST = "+ listIndex);
 					executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE POSITION = ? AND LIST = ?", i, i - 1, listIndex);
 				}
-				
+
+				//System.out.println("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(" + listIndex + ", " + track.index + ", " + trackPosition + ")");
 				executeUpdate("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)", listIndex, track.index, trackPosition);
-				
 				conn.commit();
 			}
 			
