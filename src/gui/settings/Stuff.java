@@ -9,6 +9,8 @@ import javax.swing.JComponent;
 
 import javax.swing.WindowConstants;
 import javax.swing.JFrame;
+import javax.swing.LayoutStyle;
+import lists.ListException;
 import basics.Controller;
 
 /**
@@ -26,19 +28,8 @@ import basics.Controller;
 public class Stuff extends javax.swing.JPanel {
 	private static final long serialVersionUID = 5155888057108134828L;
 	private JButton btnDerbyDebug;
+	private JButton btsSwap;
 
-	/**
-	* Auto-generated main method to display this 
-	* JPanel inside a new JFrame.
-	*/
-	public static void main(String[] args) {
-		JFrame frame = new JFrame();
-		frame.getContentPane().add(new Stuff());
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.pack();
-		frame.setVisible(true);
-	}
-	
 	public Stuff() {
 		super();
 		initGUI();
@@ -53,21 +44,43 @@ public class Stuff extends javax.swing.JPanel {
 				btnDerbyDebug = new JButton();
 				btnDerbyDebug.setText("Datenbank Debug-Fenster ...");
 				btnDerbyDebug.addActionListener(new ActionListener(){
-
-					@Override
 					public void actionPerformed(ActionEvent e)
 					{
 						Controller.getInstance().registerWindow(new data.derby.DebugWindow());
 					}});
 			}
+			{
+				btsSwap = new JButton();
+				btsSwap.setText("Swap Test");
+				btsSwap.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e)
+					{
+						try
+						{
+							Controller.getInstance().getListProvider().getDbList("Playlist").swap(1, 4);
+						}
+						catch (ListException e1)
+						{
+							e1.printStackTrace();
+						}
+					}});
+			}
 			thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
-				.addComponent(btnDerbyDebug, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addContainerGap(258, Short.MAX_VALUE));
+				.addComponent(btnDerbyDebug, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				.addComponent(btsSwap, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addContainerGap(233, Short.MAX_VALUE));
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
-				.addComponent(btnDerbyDebug, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addContainerGap(213, Short.MAX_VALUE));
+				.addGroup(thisLayout.createParallelGroup()
+				    .addGroup(thisLayout.createSequentialGroup()
+				        .addComponent(btnDerbyDebug, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				        .addGap(0, 0, Short.MAX_VALUE))
+				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				        .addComponent(btsSwap, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+				        .addGap(0, 105, Short.MAX_VALUE)))
+				.addContainerGap(224, 224));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
