@@ -16,13 +16,8 @@ public class SettingContainer extends Panel
 			remove(toRemove);
 		}
 		
-		//component.setPreferredSize(new Dimension(400, 400));
-		
-		//component.setComponentOrientation(new )
-		
 		add(component, BorderLayout.CENTER);
 		validate();
-		//validate();
 	}
 
 }

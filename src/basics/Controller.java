@@ -1,5 +1,6 @@
 package basics;
 import gui.SplashWindow;
+import gui.settings.SettingNode;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -12,6 +13,7 @@ import java.util.Stack;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
+import javax.swing.tree.TreeNode;
 import players.IPlayer;
 import players.PlayStateListener;
 import players.PlayerException;
@@ -45,6 +47,7 @@ public class Controller
 	
 	private final Set<CloseListener> closeListener = new HashSet<CloseListener>();
 	private final Set<Frame> windows = new HashSet<Frame>();
+	private final SettingNode settingTree;
 	
 	private Stack<Track> trackUpdateStack = new Stack<Track>();
 	Timer trackUpdateTimer; 
@@ -169,6 +172,10 @@ public class Controller
 		
 		splash.setInfo("Lade Fenster");
 		{
+			settingTree = new SettingNode("Einstellungen", gui.settings.About.class);
+			addSettingNode(new SettingNode("Hauptliste", gui.settings.MasterList.class), settingTree);
+			addSettingNode(new SettingNode("Zeug", gui.settings.Stuff.class), settingTree);
+			
 			if(windows.size() == 0)
 				windows.add("gui.ClassicWindow");
 			
@@ -230,6 +237,8 @@ public class Controller
 	 */
 	public static Controller getInstance()
 	{
+		if(instance == null)
+			throw new Error("Controller nicht geladen!");
 		return instance;
 	}
 
@@ -340,6 +349,7 @@ public class Controller
 			closePartyDJ();
 	}
 	
+	/** CloseListener.closing wird aufgerufen bevor der PDJ geschlossen wird. */
 	public void addCloseListener(CloseListener listener)
 	{
 		closeListener.add(listener);
@@ -347,6 +357,27 @@ public class Controller
 	public void removeCloseListener(CloseListener listener)
 	{
 		closeListener.remove(listener);
+	}
+	
+	/**Fügt eine SettingNode im SettingWindow ein.
+	 * 
+	 * @param node Node die eingefügt wird.
+	 */
+	public void addSettingNode(SettingNode node, SettingNode parent)
+	{
+		parent.add(node);
+	}
+	public void addSettingNode(SettingNode node, String path)
+	{
+		//TODO
+	}
+	public void removeSettingNode(SettingNode node)
+	{
+		//TODO
+	}
+	public TreeNode getSerringTree()
+	{
+		return settingTree;
 	}
 
 	public void closePartyDJ()
