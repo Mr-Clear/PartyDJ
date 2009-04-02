@@ -82,6 +82,8 @@ public class SplashWindow extends JWindow
 		catch (IllegalAccessException e){}
 		catch (InvocationTargetException e){}
 		
+		setOpacity(0.7f);
+		
 		setVisible(true);
 	}
 	
@@ -89,6 +91,11 @@ public class SplashWindow extends JWindow
 	{
 		info.setText(infoString);
 		timer.setText(Double.toString(getElapsedTime() / 1000d));
+	}
+	
+	public void setOpacity(float opacity)
+	{
+		com.sun.awt.AWTUtilities.setWindowOpacity(this, opacity);
 	}
 	
 	public void close()

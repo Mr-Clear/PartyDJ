@@ -111,6 +111,7 @@ public class Controller
 			}
 		}
 		
+		splash.setOpacity(0.75f);
 		splash.setInfo("Verbinde zur Datenbank");
 		{
 			try
@@ -126,6 +127,7 @@ public class Controller
 			}
 		}
 			
+		splash.setOpacity(0.85f);
 		splash.setInfo("Lade Player");
 		{
 			PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener
@@ -151,6 +153,7 @@ public class Controller
 			player.addPlayStateListener(playerListener);
 		}
 		
+		splash.setOpacity(0.9f);
 		splash.setInfo("Lade Listen");
 		{
 			try
@@ -169,7 +172,7 @@ public class Controller
 			}
 		}
 
-		
+		splash.setOpacity(0.95f);
 		splash.setInfo("Lade Fenster");
 		{
 			settingTree = new SettingNode("Einstellungen", gui.settings.About.class);
@@ -185,6 +188,7 @@ public class Controller
 			}
 		}
 		
+		splash.setOpacity(1f);
 		splash.setInfo("Starte");
 		{
 			String firstTrackPath = null;
