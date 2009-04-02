@@ -9,7 +9,6 @@ import javax.swing.JComponent;
 
 import javax.swing.WindowConstants;
 import javax.swing.JFrame;
-import javax.swing.LayoutStyle;
 import basics.Controller;
 
 /**
@@ -25,6 +24,7 @@ import basics.Controller;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class Stuff extends javax.swing.JPanel {
+	private static final long serialVersionUID = 5155888057108134828L;
 	private JButton btnDerbyDebug;
 
 	/**
