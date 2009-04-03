@@ -114,7 +114,6 @@ public class PDJList extends JList
 		
 		this.setCellRenderer(new TrackRenderer());
 		this.setPrototypeCellValue("123-45-6789");
-
 	}
 
 	public void setListDropMode(ListDropMode ldMode)
@@ -130,6 +129,11 @@ public class PDJList extends JList
 	public ListModel getListModel()
 	{
 		return listModel;
+	}
+	
+	public Track getLastTrack()
+	{
+		return listModel.getElementAt(listModel.getSize());
 	}
 	
     public Track[] getSelectedValues()

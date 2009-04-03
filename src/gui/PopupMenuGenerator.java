@@ -23,6 +23,7 @@ import basics.Controller;
 import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
+import common.QuickSort;
 import common.Track;
 
 //TODO Mehrfachauswahl
@@ -66,6 +67,11 @@ public class PopupMenuGenerator
 			newItem = new JMenuItem("Ausschneiden [Strg + X]");
 			newItem.setActionCommand("Cut");
 			newItem.setEnabled(listEditable);
+			newItem.addActionListener(listener);
+			menu.add(newItem);
+			
+			newItem = new JMenuItem("Nach Namen sortieren");
+			newItem.setActionCommand("sort");
 			newItem.addActionListener(listener);
 			menu.add(newItem);
 		}
@@ -193,7 +199,11 @@ class PopupMenuItemListener implements ActionListener
             System.out.println(file.getPath());
             // TODO Datei in Liste laden
 		}
-		else;
+		else if(command.equals("sort"));
+		{
+			QuickSort.setSource(list);
+			QuickSort.sort(0, list.getSelectedValues().length);
+		}
 	}
 }
 
