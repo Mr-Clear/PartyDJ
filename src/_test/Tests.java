@@ -1,6 +1,6 @@
 package _test;
 
-public class Zeug
+public class Tests
 {
 
 	/**
