@@ -1,6 +1,5 @@
 package common;
 
-import java.io.FilterInputStream;
 import java.util.ArrayList;
 import lists.EditableListModel;
 import lists.ListException;
