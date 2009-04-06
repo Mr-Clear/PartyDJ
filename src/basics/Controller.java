@@ -111,7 +111,7 @@ public class Controller
 			}
 		}
 		
-		splash.setOpacity(0.75f);
+		splash.setOpacity(0.82f);
 		splash.setInfo("Verbinde zur Datenbank");
 		{
 			try
@@ -127,7 +127,7 @@ public class Controller
 			}
 		}
 			
-		splash.setOpacity(0.85f);
+		splash.setOpacity(0.88f);
 		splash.setInfo("Lade Player");
 		{
 			PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener

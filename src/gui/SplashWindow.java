@@ -3,11 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Shape;
-import java.awt.Window;
 import java.awt.geom.RoundRectangle2D;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.ImageIcon;
@@ -28,6 +24,7 @@ public class SplashWindow extends JWindow
 	public SplashWindow()
 	{
 		startTime = System.currentTimeMillis();
+
 		setLayout(new BorderLayout());
 		getContentPane().setBackground(Color.DARK_GRAY);
 		setSize(757, 321 + 32);
@@ -68,22 +65,9 @@ public class SplashWindow extends JWindow
 
 		
 		// Ecken Abrunden
-		try 
-		{
-			Class<?> utils = Class.forName("com.sun.awt.AWTUtilities");
+		com.sun.awt.AWTUtilities.setWindowShape(this, new RoundRectangle2D.Double(0, 0, this.getWidth(), this.getHeight(), 20, 20));
 
-			Method method = utils.getMethod("setWindowShape", Window.class, Shape.class);
-			Shape shape = new RoundRectangle2D.Double(0, 0, this.getWidth(), this.getHeight(), 20, 20); 
-			method.invoke(null, this, shape);
-		}
-		catch (NoSuchMethodException e){}
-		catch (ClassNotFoundException e){}
-		catch (IllegalArgumentException e){}
-		catch (IllegalAccessException e){}
-		catch (InvocationTargetException e){}
-		
-		setOpacity(0.7f);
-		
+		setOpacity(.8f);
 		setVisible(true);
 	}
 	
@@ -110,9 +94,9 @@ public class SplashWindow extends JWindow
 	
 	private class UpdateTask extends TimerTask  
 	{
-	   public void run()
-	   {
+		public void run()
+		{
 			timer.setText(Double.toString(getElapsedTime() / 1000d));
-	   }
+		}
 	}
 }
