@@ -23,7 +23,7 @@ import basics.Controller;
 import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
-import common.QuickSort;
+import common.Sort;
 import common.Track;
 
 //TODO Mehrfachauswahl
@@ -58,6 +58,12 @@ public class PopupMenuGenerator
 		}
 		else
 		{
+			
+			newItem = new JMenuItem("Nach Namen sortieren");
+			newItem.setActionCommand("sortName");
+			newItem.addActionListener(listener);
+			menu.add(newItem);
+			
 			newItem = new JMenuItem("Entfernen [Entf]");
 			newItem.setActionCommand("Delete");
 			newItem.setEnabled(listEditable);
@@ -67,11 +73,6 @@ public class PopupMenuGenerator
 			newItem = new JMenuItem("Ausschneiden [Strg + X]");
 			newItem.setActionCommand("Cut");
 			newItem.setEnabled(listEditable);
-			newItem.addActionListener(listener);
-			menu.add(newItem);
-			
-			newItem = new JMenuItem("Nach Namen sortieren");
-			newItem.setActionCommand("sort");
 			newItem.addActionListener(listener);
 			menu.add(newItem);
 		}
@@ -199,10 +200,14 @@ class PopupMenuItemListener implements ActionListener
             System.out.println(file.getPath());
             // TODO Datei in Liste laden
 		}
-		else if(command.equals("sort"));
+		else if(command.equals("sortName"));
 		{
-			QuickSort.setSource(list);
-			QuickSort.sort(0, list.getSelectedValues().length);
+			new Sort(list);
+			int selected = list.getSelectedValues().length;
+			if(selected <= 1)
+				Sort.quickSort(0, list.getListModel().getSize() - 1);
+			else
+				Sort.quickSort(list.getSelectedIndices()[0], list.getSelectedValues().length - 1 + list.getSelectedIndices()[0]);
 		}
 	}
 }
