@@ -1,5 +1,6 @@
 package common;
 
+import java.util.Random;
 import lists.EditableListModel;
 import lists.ListException;
 import gui.PDJList;
@@ -22,6 +23,38 @@ public class Sort
 							break;
 		}
 		qSort(0, list.getListModel().getSize() - 1, list, comperator);
+	}
+	
+	public static void shuffle(PDJList list)
+	{
+		if(list.getListModel() instanceof EditableListModel)
+		{
+			try
+			{
+				EditableListModel lm = (EditableListModel) list.getListModel();
+				int size = lm.getSize();
+				Random ran = new Random();
+				if(size > 3)
+					for(int i = 0; i < lm.getSize(); i++)
+						lm.swap(i, ran.nextInt(lm.getSize() - 1));
+				else
+				{
+					int a = ran.nextInt(lm.getSize() - 1);
+					int b = ran.nextInt(lm.getSize() - 1);
+					
+					while(a == b)
+						a = ran.nextInt(lm.getSize() - 1);
+					
+					lm.swap(a, b);
+				}
+					
+			}
+			catch (ListException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private static void qSort(int lo, int hi, PDJList list, TrackComperator comperator)
@@ -88,7 +121,7 @@ class CompareName implements TrackComperator
 	@Override
 	public int compare(Track a, Track b)
 	{
-		return a.name.compareTo(b.name);
+		return a.name.compareToIgnoreCase(b.name);
 	}
 }
 
