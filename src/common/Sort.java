@@ -75,12 +75,10 @@ public class Sort
 
 interface TrackComperator
 {
-	/**@return   Wenn a < b, dann kleiner 0.
+	/**@param a, b  Die zu vergleichenden Tracks.
+	 * @return   Wenn a < b, dann kleiner 0.
 	 * 			 Wenn a > b, dann größer 0.
 	 * 			 Wenn a == b, dann 0.
-	 * @param a
-	 * @param b
-	 * @return
 	 */
 	int compare(Track a, Track b);
 }
@@ -97,6 +95,10 @@ class CompareName implements TrackComperator
 class CompareDuration implements TrackComperator
 {
 	@Override
+	/**@return  Wenn Dauer a < b, dann -1.
+	 * 			Wenn Dauer a > b, dann 1.
+	 * 			Wenn Dauer a == b, dann 0.
+	 */
 	public int compare(Track a, Track b)
 	{
 		if(a.duration < b.duration)

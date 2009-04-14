@@ -77,6 +77,8 @@ public class MasterList extends JPanel
 							new StatusDialog("Lese Verzeichnisse", frame, new gui.settings.tools.ReadFolder(folderPath));
 						}});
 		buttonBox1.add(addFolder);
+		buttonBox1.add(Box.createVerticalStrut(5));
+		
 		JButton addFile = new JButton("Datei einfügen...");
 		addFile.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0)
@@ -125,8 +127,7 @@ public class MasterList extends JPanel
 						    }
 						}});
 		buttonBox1.add(addFile);
-		
-		buttonBox1.add(Box.createVerticalStrut(8));
+		buttonBox1.add(Box.createVerticalStrut(5));
 		
 		JButton removeFile = new JButton("Tracks entfernen");
 		removeFile.addActionListener(new ActionListener(){
@@ -164,7 +165,7 @@ public class MasterList extends JPanel
 		
 		Box buttonBox2 = Box.createVerticalBox();
 
-		buttonBox2.add(Box.createVerticalStrut(8));
+		buttonBox2.add(Box.createVerticalStrut(5));
 		JButton modify = new JButton("Bearbeiten");
 		modify.addActionListener(new ActionListener()
 						{
@@ -174,6 +175,7 @@ public class MasterList extends JPanel
 							}
 						});
 		buttonBox2.add(modify);
+		buttonBox2.add(Box.createVerticalStrut(5));
 		
 		JButton getDuration = new JButton("Dauer einlesen");
 		getDuration.addActionListener(new ActionListener()

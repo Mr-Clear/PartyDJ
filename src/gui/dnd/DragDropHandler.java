@@ -342,14 +342,8 @@ public class DragDropHandler extends TransferHandler
 	        	}
 	        }
         }
-        
-        
-        
     }
-	
-	
-		
-	}
+}
 	
 
 
