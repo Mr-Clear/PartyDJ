@@ -58,9 +58,13 @@ public class PopupMenuGenerator
 		}
 		else
 		{
-			
 			newItem = new JMenuItem("Nach Namen sortieren");
 			newItem.setActionCommand("sortName");
+			newItem.addActionListener(listener);
+			menu.add(newItem);
+			
+			newItem = new JMenuItem("Nach Dauer sortieren");
+			newItem.setActionCommand("sortDuration");
 			newItem.addActionListener(listener);
 			menu.add(newItem);
 			
@@ -200,15 +204,12 @@ class PopupMenuItemListener implements ActionListener
             System.out.println(file.getPath());
             // TODO Datei in Liste laden
 		}
-		else if(command.equals("sortName"));
-		{
-			new Sort(list);
-			int selected = list.getSelectedValues().length;
-			if(selected <= 1)
-				Sort.quickSort(0, list.getListModel().getSize() - 1);
-			else
-				Sort.quickSort(list.getSelectedIndices()[0], list.getSelectedValues().length - 1 + list.getSelectedIndices()[0]);
-		}
+		else if(command.equals("sortName"))
+			Sort.quickSort(list, SortMode.NAME);
+			
+		else if(command.equals("sortDuration"))
+			Sort.quickSort(list, SortMode.DURATION);
+			
 	}
 }
 

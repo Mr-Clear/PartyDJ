@@ -3,72 +3,107 @@ package common;
 import lists.EditableListModel;
 import lists.ListException;
 import gui.PDJList;
+import gui.SortMode;
 
 public class Sort
 {
-	private static PDJList list = null;
-	private static EditableListModel lm;
-	
-	public Sort(PDJList list)
+	public static void quickSort(PDJList list, SortMode sm)
 	{
-		Sort.list = list;
-	}
+		if(sm == null || list == null)
+			throw new NullPointerException();
 	
-	public static void setSource(PDJList list)
-	{
-		Sort.list = list;
-	}
-	
-	public static void quickSort(int lo, int hi)
-	{
-		if(list != null)
+		TrackComperator comperator = null;
+		
+		switch(sm)
 		{
-			if(list.getListModel() instanceof EditableListModel)
-			{
-				lm = (EditableListModel) list.getListModel();
+			case NAME:		comperator = new CompareName();
+							break;
+			case DURATION:	comperator = new CompareDuration();
+							break;
+		}
+		qSort(0, list.getListModel().getSize() - 1, list, comperator);
+	}
+	
+	private static void qSort(int lo, int hi, PDJList list, TrackComperator comperator)
+	{
+		if(list.getListModel() instanceof EditableListModel)
+		{
 				if(lo < hi)
 				{
 					try
 					{
-						int pivotPos = partition(lo, hi);
-						quickSort(lo, pivotPos - 1);
-						quickSort(pivotPos + 1, hi);
+						int pivotPos = partition(lo, hi, list, comperator);
+						qSort(lo, pivotPos - 1, list, comperator);
+						qSort(pivotPos + 1, hi, list, comperator);
 					}
 					catch (ListException e)
 					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
 				}
-			}
 		}
-		else
-			System.out.println("Sort.quickSort() kein passendes if. lo:  " + lo + "  hi:  " + hi + "  listModel:  " + list.getListModel());
 	}
 	
-	private static int partition(int lo, int hi) throws ListException
+	private static int partition(int lo, int hi, PDJList list, TrackComperator comperator) throws ListException
 	{
 		int left = lo;
 		int right = hi;
-		String pivot = lm.getElementAt(hi).name;
+		EditableListModel lm = null;
+		
+		if(list.getListModel() instanceof EditableListModel)
+			lm = (EditableListModel) list.getListModel();
+		
+		Track pivot = lm.getElementAt(hi);
 		
 		while(left < right)
 		{
-			while(left < right && pivot.compareToIgnoreCase(lm.getElementAt(left).name) > 0)
+			while(left < right && comperator.compare(pivot, lm.getElementAt(left)) > 0)
 				left++;
 			
-			while(left < right && pivot.compareToIgnoreCase(lm.getElementAt(right).name) <= 0)
+			while(left < right && comperator.compare(pivot, lm.getElementAt(right)) <= 0)
 				right--;
 			
 			if(left < right)
-			{
 				lm.swap(left, right);
-			}
 		}
-		
 		lm.swap(left, hi);
 		
 		return left;
+	}
+}
+
+interface TrackComperator
+{
+	/**@return   Wenn a < b, dann kleiner 0.
+	 * 			 Wenn a > b, dann größer 0.
+	 * 			 Wenn a == b, dann 0.
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	int compare(Track a, Track b);
+}
+
+class CompareName implements TrackComperator
+{
+	@Override
+	public int compare(Track a, Track b)
+	{
+		return a.name.compareTo(b.name);
+	}
+}
+
+class CompareDuration implements TrackComperator
+{
+	@Override
+	public int compare(Track a, Track b)
+	{
+		if(a.duration < b.duration)
+			return -1;
+		else if(a.duration > b.duration)
+			return 1;
+		else
+			return 0;
 	}
 }
