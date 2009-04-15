@@ -404,7 +404,7 @@ public class ClassicWindow extends JFrame
 	{
 		try
 		{
-		slider = new PDJSlider();
+			slider = new PDJSlider();
 		}
 		catch(Throwable e)
 		{

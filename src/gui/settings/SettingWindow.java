@@ -10,7 +10,7 @@ public class SettingWindow extends JFrame
 {
 	private static final long serialVersionUID = -6606890610202063266L;
 	private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-	private final JTree tree = new JTree(Controller.getInstance().getSerringTree());
+	private final JTree tree = new JTree(Controller.getInstance().getSetingTree());
 	private final SettingContainer panel = new SettingContainer();
 	private final Frame me = this;
 	

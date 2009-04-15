@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
 import java.util.Stack;
@@ -176,6 +177,7 @@ public class Controller
 		splash.setInfo("Lade Fenster");
 		{
 			settingTree = new SettingNode("Einstellungen", gui.settings.About.class);
+			addSettingNode(new SettingNode("Einstellungen", gui.settings.Settings.class), settingTree);
 			addSettingNode(new SettingNode("Hauptliste", gui.settings.MasterList.class), settingTree);
 			addSettingNode(new SettingNode("Zeug", gui.settings.Stuff.class), settingTree);
 			
@@ -379,7 +381,7 @@ public class Controller
 	{
 		//TODO
 	}
-	public TreeNode getSerringTree()
+	public TreeNode getSetingTree()
 	{
 		return settingTree;
 	}

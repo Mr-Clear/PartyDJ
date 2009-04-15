@@ -1,4 +1,4 @@
-package gui;
+package common;
 
 public enum SortMode
 {

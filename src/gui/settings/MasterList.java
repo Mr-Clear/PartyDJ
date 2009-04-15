@@ -41,7 +41,8 @@ public class MasterList extends JPanel
 	private JComboBox listBox;
 	private JTextField searchText;
 	
-	//Für StatusDialog
+	/**Für StatusDialog
+	 */
 	long time = 0;
 	//private Track track;
 
@@ -220,7 +221,6 @@ public class MasterList extends JPanel
 			sortOrderBox = new JComboBox(SortOrder.getStringArray());
 			sortOrderBox.setSelectedIndex(1);
 			sortOrderBox.addActionListener(listener);
-			//TODO ComboBox Bug
 
 			hbox.add(sortOrderBox);
 			hbox.add(Box.createHorizontalStrut(8));

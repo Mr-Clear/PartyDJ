@@ -4,7 +4,6 @@ import java.util.Random;
 import lists.EditableListModel;
 import lists.ListException;
 import gui.PDJList;
-import gui.SortMode;
 
 public class Sort
 {
