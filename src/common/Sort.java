@@ -33,17 +33,17 @@ public class Sort
 			{
 				EditableListModel lm = (EditableListModel) list.getListModel();
 				int size = lm.getSize();
-				Random ran = new Random();
+				Random random = new Random();
 				if(size > 3)
 					for(int i = 0; i < lm.getSize(); i++)
-						lm.swap(i, ran.nextInt(lm.getSize() - 1));
+						lm.swap(i, random.nextInt(lm.getSize() - 1));
 				else
 				{
-					int a = ran.nextInt(lm.getSize() - 1);
-					int b = ran.nextInt(lm.getSize() - 1);
+					int a = random.nextInt(lm.getSize() - 1);
+					int b = random.nextInt(lm.getSize() - 1);
 					
 					while(a == b)
-						a = ran.nextInt(lm.getSize() - 1);
+						a = random.nextInt(lm.getSize() - 1);
 					
 					lm.swap(a, b);
 				}
