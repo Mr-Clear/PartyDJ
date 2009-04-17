@@ -1,20 +1,17 @@
 package basics;
 import gui.SplashWindow;
 import gui.settings.SettingNode;
-import gui.settings.Settings;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
 import java.util.Stack;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.ListModel;
 import javax.swing.tree.TreeNode;
 import players.IPlayer;
 import players.PlayStateListener;
@@ -22,11 +19,11 @@ import players.PlayerException;
 import common.*;
 import common.Track.Problem;
 import common.Track.TrackElement;
-
 import lists.DbClientListModel;
 import lists.EditableListModel;
 import lists.ListException;
 import lists.ListProvider;
+import lists.TrackListModel;
 import data.*;
 import data.derby.DerbyDB;
 
@@ -40,7 +37,7 @@ public class Controller
 	private IPlayer player;
 	private Track currentTrack;
 	private EditableListModel playList;
-	private ListModel favourites;
+	private TrackListModel favourites;
 	
 	private DbClientListModel lastPlayedList;
 	
@@ -417,10 +414,12 @@ public class Controller
 				{
 					if(favourites.getSize() > 0 && Math.random() > 0.5)
 					{
-						favourites.getElementAt((int)(Math.random() * favourites.getSize()));
+						predictedTrack = favourites.getElementAt((int)(Math.random() * favourites.getSize()));
 					}
 					else
+					{
 						predictedTrack = listProvider.getMasterList().getElementAt((int)(Math.random() * listProvider.getMasterList().getSize()));
+					}
 				}
 				catch (ListException e){}
 			}
