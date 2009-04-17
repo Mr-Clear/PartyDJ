@@ -132,11 +132,11 @@ public class Controller
 			PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener
 			switch(whichPlayer)
 			{
-			case 0:
-			default:			
+			case 0:			
 				player = new players.jmf.JMFPlayer(playerListener);
 				break;
 			case 1:
+			default:
 				player = new players.jl.JLPlayer(playerListener);
 				break;
 			}
