@@ -1,6 +1,7 @@
 package basics;
 import gui.SplashWindow;
 import gui.settings.SettingNode;
+import gui.settings.Settings;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

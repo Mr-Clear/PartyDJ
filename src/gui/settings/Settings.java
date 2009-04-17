@@ -15,8 +15,8 @@ import javax.swing.event.ChangeListener;
 public class Settings  extends JPanel
 {
 	private static final long serialVersionUID = -6987892133947674516L;
-	JSpinner wish = new JSpinner(new SpinnerNumberModel(50, 0, 100, 1));
-	JSpinner main = new JSpinner(new SpinnerNumberModel(50, 0, 100, 1));
+	static JSpinner wish = new JSpinner(new SpinnerNumberModel(50, 0, 100, 1));
+	static JSpinner main = new JSpinner(new SpinnerNumberModel(50, 0, 100, 1));
 	
 	public Settings()
 	{
@@ -112,6 +112,20 @@ public class Settings  extends JPanel
 		shuffleSet.setBackground(null);
 				
 		return shuffleSet;
+	}
+	
+	public static int getWishPercentage()
+	{
+		if(wish.getValue() instanceof Integer)
+			return (Integer) wish.getValue();
+		return 0;
+	}
+	
+	public static int getMainPercentage()
+	{
+		if(main.getValue() instanceof Integer)
+			return (Integer) main.getValue();
+		return 0;
 	}
 	
 	class SpinnerListener implements ChangeListener
