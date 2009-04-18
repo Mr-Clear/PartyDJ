@@ -41,7 +41,7 @@ public class Controller
 	
 	private DbClientListModel lastPlayedList;
 	
-	private Thread closeListenTread;
+	private Thread closeListenThread;
 	private Runtime runtime = Runtime.getRuntime();
 	
 	private final Set<CloseListener> closeListener = new HashSet<CloseListener>();
@@ -63,12 +63,12 @@ public class Controller
 		else
 			throw new RuntimeException("Es darf nur ein Controller erstellt werden!");
 		
-		closeListenTread = new Thread(){
+		closeListenThread = new Thread(){
 					public void run()
 					{
 						closePartyDJ();
 					}};
-		runtime.addShutdownHook(closeListenTread);
+		runtime.addShutdownHook(closeListenThread);
 		
 		String dbPath = Functions.getFolder() + System.getProperty("file.separator") + "DataBase";
 		List<String> windows = new ArrayList<String>();
@@ -388,7 +388,7 @@ public class Controller
 	{
 		try
 		{
-			runtime.removeShutdownHook(closeListenTread);
+			runtime.removeShutdownHook(closeListenThread);
 		}
 		catch(java.lang.IllegalStateException e){}
 		try
