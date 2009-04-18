@@ -99,7 +99,7 @@ public class MasterList extends JPanel
 					        	new StatusDialog("Lese M3U", frame, new gui.settings.tools.ReadM3U(filePath));
 					        }
 					        else
-						        {
+						    {
 						        double duration = 0;
 						        common.Track.Problem problem = common.Track.Problem.NONE;
 						        try

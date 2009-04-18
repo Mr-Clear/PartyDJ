@@ -257,8 +257,7 @@ public class PDJList extends JList
 								{
 									list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
 								}
-									
-								
+
 								for(int i = list.getSelectedIndices().length; i > 0; i--)
 								{
 									if((int)(e.getY() / list.getFixedCellHeight()) == list.getSelectedIndices()[i-1])
@@ -270,9 +269,11 @@ public class PDJList extends JList
 										}
 									}
 								}
-									list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
-									PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
+								list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+								PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
 							}
+							else
+								PopupMenuGenerator.listPopupMenu(list, null).show(list, e.getX(), e.getY());
 						}
 						catch (IndexOutOfBoundsException ex)
 						{

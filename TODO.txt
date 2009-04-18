@@ -11,6 +11,9 @@ ComboBoxen von gui.settings.MasterList fixen.
 Funktion der Maustasten in PDJList wählbar
 ?data.derby.DerbyDB Events vervollständigen.
 Error Reporter.
+M3U in Haupliste einfügen testet Datei und setzt Problem.
+StatusDialog macht was wenn arbeitender Thread abstürzt.
+Markierung von gelöschten Dateien löschen.
 
 Mal merken, System LookAndFeel:
 	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

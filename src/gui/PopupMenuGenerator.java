@@ -36,19 +36,23 @@ public class PopupMenuGenerator
 		ActionListener listener = new PopupMenuItemListener(list, track);
 		boolean listEditable = list.getListModel() instanceof EditableListModel;
 		JPopupMenu menu = new JPopupMenu();
+		JMenuItem newItem;
 		
-		JMenuItem newItem = new JMenuItem(list.getSelectedValue().toString());
-		newItem.setForeground(new Color(0, 128, 0));
-		newItem.setActionCommand("Play");
-		newItem.addActionListener(listener);
-		menu.add(newItem);
-		
-		menu.addSeparator();
-		
-		newItem = new JMenuItem("Bearbeiten...");
-		newItem.setActionCommand("Edit");
-		newItem.addActionListener(listener);
-		menu.add(newItem);
+		if (track != null)
+		{
+			newItem = new JMenuItem(list.getSelectedValue().toString());
+			newItem.setForeground(new Color(0, 128, 0));
+			newItem.setActionCommand("Play");
+			newItem.addActionListener(listener);
+			menu.add(newItem);
+			
+			menu.addSeparator();
+			
+			newItem = new JMenuItem("Bearbeiten...");
+			newItem.setActionCommand("Edit");
+			newItem.addActionListener(listener);
+			menu.add(newItem);
+		}
 		
 		if(list.getListModel() instanceof DbMasterListModel)
 		{
@@ -57,7 +61,39 @@ public class PopupMenuGenerator
 			newItem.addActionListener(listener);
 			menu.add(newItem);
 		}
-		else
+		else if(listEditable && track != null)
+		{
+			newItem = new JMenuItem("Entfernen [Entf]");
+			newItem.setActionCommand("Delete");
+			newItem.setEnabled(listEditable);
+			newItem.addActionListener(listener);
+			menu.add(newItem);
+			
+			newItem = new JMenuItem("Ausschneiden [Strg + X]");
+			newItem.setActionCommand("Cut");
+			newItem.setEnabled(listEditable);
+			newItem.addActionListener(listener);
+			menu.add(newItem);
+		}
+		
+		if(track != null)
+		{
+			newItem = new JMenuItem("Kopieren [Strg + C]");
+			newItem.setActionCommand("Copy");
+			newItem.addActionListener(listener);
+			menu.add(newItem);
+		}
+
+		newItem = new JMenuItem("Einfügen [Strg + V]");
+		newItem.setActionCommand("Paste");
+		newItem.setEnabled(listEditable);
+		newItem.addActionListener(listener);
+		menu.add(newItem);
+		
+		menu.addSeparator();
+		
+		/* Sortieren */
+		if(listEditable)
 		{
 			newItem = new JMenuItem("Shuffle");
 			newItem.setActionCommand("shuffle");
@@ -73,32 +109,7 @@ public class PopupMenuGenerator
 			newItem.setActionCommand("sortDuration");
 			newItem.addActionListener(listener);
 			menu.add(newItem);
-			
-			newItem = new JMenuItem("Entfernen [Entf]");
-			newItem.setActionCommand("Delete");
-			newItem.setEnabled(listEditable);
-			newItem.addActionListener(listener);
-			menu.add(newItem);
-			
-			newItem = new JMenuItem("Ausschneiden [Strg + X]");
-			newItem.setActionCommand("Cut");
-			newItem.setEnabled(listEditable);
-			newItem.addActionListener(listener);
-			menu.add(newItem);
 		}
-		
-		newItem = new JMenuItem("Kopieren [Strg + C]");
-		newItem.setActionCommand("Copy");
-		newItem.addActionListener(listener);
-		menu.add(newItem);
-
-		newItem = new JMenuItem("Einfügen [Strg + V]");
-		newItem.setActionCommand("Paste");
-		newItem.setEnabled(listEditable);
-		newItem.addActionListener(listener);
-		menu.add(newItem);
-		
-		menu.addSeparator();
 		
 		JMenu fileMenu = new JMenu("Aus Datei einfügen");
 		fileMenu.setActionCommand("File");
@@ -113,8 +124,6 @@ public class PopupMenuGenerator
 		fileMenu.add(newItem);	
 		return menu;
 	}
-	
-
 }
 
 class PopupMenuItemListener implements ActionListener
@@ -210,6 +219,7 @@ class PopupMenuItemListener implements ActionListener
             System.out.println(file.getPath());
             // TODO Datei in Liste laden
 		}
+		
 		else if(command.equals("sortName"))
 			Sort.quickSort(list, SortMode.NAME);
 			

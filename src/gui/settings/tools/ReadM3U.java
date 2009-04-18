@@ -55,8 +55,9 @@ public class ReadM3U implements StatusSupportedFunction
 				break;
 			
 			bytes += line.length();
+			line = line.trim();
 			
-			if(line.charAt(0) != '#')
+			if(line.length() > 0 && line.charAt(0) != '#')
 			{
 				final String name = line.substring(line.lastIndexOf("\\") + 1, line.lastIndexOf("."));
 				sd.setLabel(count + ": " + name);
