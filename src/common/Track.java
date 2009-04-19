@@ -1,7 +1,17 @@
 package common;
 
-public class Track implements Comparable<Track>
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import players.PlayerException;
+import basics.Controller;
+
+public class Track implements Serializable, Comparable<Track>
 {
+	private static final long serialVersionUID = -4142764593365608567L;
+
+	/**Erstellt einen neuen Track mit den angegebenen Werten
+	 */
 	public Track(int index, String path, String name, double duration, long size, Problem problem, String info)
 	{
 		this.index = index;
@@ -11,6 +21,42 @@ public class Track implements Comparable<Track>
 		this.size = size;
 		this.problem = problem;
 		this.info = info;
+	}
+	
+	public Track(String filePath, boolean readDuration)
+	{
+		File file = new File(filePath);
+		try
+		{
+			filePath = file.getCanonicalPath();
+		}
+		catch (IOException ignore){}
+		
+		index = -1;
+		path = filePath;
+		name = file.getName();
+		name = name.substring(0, name.lastIndexOf('.') - 1);
+		if(file.exists())
+		{
+			if(readDuration)
+			{
+				try
+				{
+					duration = Controller.getInstance().getPlayer().getDuration(path);
+				}
+				catch (PlayerException ignore)
+				{
+					duration = 0;
+					problem = Track.Problem.CANT_PLAY;
+				}
+			}
+			size = file.length();
+		}
+		else
+		{
+			problem = Track.Problem.FILE_NOT_FOUND;
+		}
+		info = null;
 	}
 	
 	/** Index in der Hauptliste */

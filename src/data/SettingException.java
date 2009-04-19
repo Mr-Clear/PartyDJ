@@ -1,7 +1,7 @@
 package data;
 
 /**Tritt auf, wenn eine Einstellung nicht geschrieben oder gelesen werden kann.*/
-public class SettingException extends Exception
+public class SettingException extends RuntimeException
 {
 	private static final long serialVersionUID = 4289702892751764657L;
 

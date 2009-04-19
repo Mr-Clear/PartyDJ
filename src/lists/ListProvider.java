@@ -2,12 +2,12 @@ package lists;
 
 import java.util.HashMap;
 import java.util.Map;
-import basics.Controller;
 import common.Track;
+import basics.Controller;
 
 public class ListProvider
 {
-	public final Map<Integer, Track> masterList;
+	private final Map<Integer, Track> masterList;
 	
 	private DbMasterListModel masterListModel;
 	private Map<String, DbClientListModel> dbClientListModels = new HashMap<String, DbClientListModel>();
@@ -19,9 +19,14 @@ public class ListProvider
 		masterListModel = new DbMasterListModel();
 	}
 	
-	public DbMasterListModel getMasterList() throws ListException
+	public DbMasterListModel getMasterList()
 	{
 		return masterListModel;
+	}
+	
+	public Track getTrackByIndex(int index)
+	{
+		return masterList.get(index);
 	}
 	
 	public DbClientListModel getDbList(String listName) throws ListException

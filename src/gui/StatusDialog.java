@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Calendar;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -16,12 +17,13 @@ import javax.swing.JComponent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.LayoutStyle;
 import javax.swing.Timer;
 
 
-public class StatusDialog extends javax.swing.JDialog
+public class StatusDialog extends javax.swing.JDialog implements UncaughtExceptionHandler
 {
 	private static final long serialVersionUID = -7585629827078152783L;
 	private JLabel icon;
@@ -31,6 +33,7 @@ public class StatusDialog extends javax.swing.JDialog
 	private JLabel statusInfo;
 	private StatusSupportedFunction initialiser;
 	private final StatusDialog me = this;
+	private StatusThread thread;
 	
 	private final long startTime = System.currentTimeMillis(); 
 	private JLabel time;
@@ -52,7 +55,9 @@ public class StatusDialog extends javax.swing.JDialog
 		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		this.setModalityType(ModalityType.DOCUMENT_MODAL);
 		initGUI();
-		new StatusThread().start();
+		thread = new StatusThread();
+		thread.setUncaughtExceptionHandler(this);
+		thread.start();
 		
 		showTimeTimer = new Timer(100, new ActionListener(){
 			public void actionPerformed(ActionEvent e)
@@ -208,5 +213,11 @@ public class StatusDialog extends javax.swing.JDialog
 		public void componentHidden(ComponentEvent e){}
 		public void componentMoved(ComponentEvent e){}
 		public void componentShown(ComponentEvent e){}
+	}
+
+	public void uncaughtException(Thread t, Throwable e)
+	{
+		JOptionPane.showMessageDialog(me, "Fehler aufgetreten:\n" + e.getMessage(), "Status Dialog", JOptionPane.ERROR_MESSAGE);
+		dispose();
 	}
 }

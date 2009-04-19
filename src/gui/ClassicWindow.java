@@ -138,15 +138,8 @@ public class ClassicWindow extends JFrame
 		
 		mainPart.setBackground(Color.darkGray);
 
-		try
-		{
-			mainPart.add(List("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
-		}
-		catch (ListException e)
-		{
-			JOptionPane.showMessageDialog(this, "Konnte Hauptliste nicht erstellen!", "PartyDJ", JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
-		}
+		mainPart.add(List("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
+
 		
 		c.gridy = 1;
 		try

@@ -2,7 +2,6 @@ package lists;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import basics.Controller;
@@ -10,7 +9,8 @@ import common.*;
 
 public class LightClientListModel extends BasicListModel implements EditableListModel
 {
-	private final Map<Integer, Track> masterList = Controller.getInstance().getListProvider().masterList;
+	//private final Map<Integer, Track> masterList = Controller.getInstance().getListProvider().masterList;
+	ListProvider listProvider = Controller.getInstance().getListProvider();
 	
 	public LightClientListModel()
 	{
@@ -31,7 +31,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 	
 	protected void add(int trackIndex) throws ListException
 	{
-		list.add(masterList.get(trackIndex));
+		list.add(listProvider.getTrackByIndex(trackIndex));
 	}
 
 	public void add(int index, Track track) throws ListException
@@ -50,7 +50,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 	
 	protected void add(int index, int trackIndex) throws ListException
 	{
-		add(index, masterList.get(trackIndex));
+		add(index, listProvider.getTrackByIndex(trackIndex));
 	}
 
 	public void remove(int index) throws ListException

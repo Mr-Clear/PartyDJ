@@ -87,6 +87,7 @@ public class MasterList extends JPanel
 							final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
 							chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 					        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+							chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", common.Functions.getFolder())));
 					        				        
 					        if(chooser.showOpenDialog(null) == JFileChooser.CANCEL_OPTION)
 					        	return;
@@ -94,9 +95,12 @@ public class MasterList extends JPanel
 					        File file = chooser.getSelectedFile();
 					        String filePath = file.getPath();
 					        
+							data.writeSetting("FileDirectory", file.getParent());
+					        
 					        if(filePath.toLowerCase().endsWith(".m3u"))
 					        {
-					        	new StatusDialog("Lese M3U", frame, new gui.settings.tools.ReadM3U(filePath));
+								data.writeSetting("PlayListDirectory", file.getParent());
+					        	new StatusDialog("Lese M3U", frame, new gui.settings.tools.AddM3U(filePath));
 					        }
 					        else
 						    {
@@ -150,12 +154,14 @@ public class MasterList extends JPanel
 									{
 										//TODO ProgressBar o.ä.
 										data.deleteTrack(((TrackListModel)list.getListModel()).getElementAt(selected[i]));
-									}
+									}									
 								}
 								catch (ListException e)
 								{
 									JOptionPane.showMessageDialog(null, "Löschen Fehlgeschlagen:\n" + e.getMessage(), "Tracks entfernen", JOptionPane.ERROR_MESSAGE);
-								}
+								}								
+								list.setSelectedIndex(-1);
+								list.setSelectedIndices(new int[0]);
 							}
 						}});
 		

@@ -200,11 +200,7 @@ public class Controller
 			if(firstTrackPath != null)
 			{
 				Track firstTrack = null;
-				try
-				{
-					firstTrack = listProvider.getMasterList().getTrackByPath(firstTrackPath);
-				}
-				catch (ListException e){}
+				firstTrack = listProvider.getMasterList().getTrackByPath(firstTrackPath);
 				if(firstTrack != null)
 				{
 					splash.setInfo("Starte " + firstTrack.name);
@@ -410,18 +406,14 @@ public class Controller
 		{
 			if(predictedTrack == null)
 			{
-				try
+				if(favourites.getSize() > 0 && Math.random() > 0.5)
 				{
-					if(favourites.getSize() > 0 && Math.random() > 0.5)
-					{
-						predictedTrack = favourites.getElementAt((int)(Math.random() * favourites.getSize()));
-					}
-					else
-					{
-						predictedTrack = listProvider.getMasterList().getElementAt((int)(Math.random() * listProvider.getMasterList().getSize()));
-					}
+					predictedTrack = favourites.getElementAt((int)(Math.random() * favourites.getSize()));
 				}
-				catch (ListException e){}
+				else
+				{
+					predictedTrack = listProvider.getMasterList().getElementAt((int)(Math.random() * listProvider.getMasterList().getSize()));
+				}
 			}
 			return predictedTrack;
 		}

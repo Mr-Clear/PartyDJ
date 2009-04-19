@@ -44,7 +44,7 @@ public class About extends JPanel
 		box.add(lbl);
 		
 		box.add(Box.createVerticalStrut(8));
-		lbl = new JLabel("Tracks gesamt: " + Controller.getInstance().getListProvider().masterList.size());
+		lbl = new JLabel("Tracks gesamt: " + Controller.getInstance().getListProvider().getMasterList().getSize());
 		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 		box.add(lbl);
 		

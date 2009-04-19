@@ -1,6 +1,5 @@
 package lists;
 
-import java.util.Map;
 import common.Track;
 import data.IData;
 import data.SortOrder;
@@ -11,7 +10,7 @@ public class DbClientListModel extends LightClientListModel
 	private final Controller controller = Controller.getInstance();
 	private final IData data = controller.getData();
 	private String listName;
-	private final Map<Integer, Track> masterList = controller.getListProvider().masterList;
+	//private final Map<Integer, Track> masterList = controller.getListProvider().masterList;
 	
 	protected DbClientListModel(String listName) throws ListException
 	{
@@ -35,7 +34,7 @@ public class DbClientListModel extends LightClientListModel
 	
 	protected void add(int trackIndex) throws ListException
 	{
-		add(masterList.get(trackIndex));
+		add(controller.getListProvider().getTrackByIndex(trackIndex));
 	}
 
 	public void add(int index, Track track) throws ListException
