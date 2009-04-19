@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.text.Format;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +114,7 @@ public class Settings  extends JPanel
 			
 			Map<Integer, JSpinner> spinners = new HashMap<Integer, JSpinner>(4);
 			Map<String, JSpinner> namedSp = new HashMap<String, JSpinner>(4);
-			PriorityListener prListener = new PriorityListener(namedSp, listTable);
+			PriorityListener prListener = new PriorityListener(spinners, namedSp, listTable);
 			JSpinner spinner = new JSpinner(new SpinnerNumberModel(1, 0, 100, 1));
 			
 			spinner.setValue(Integer.parseInt(data.readSetting("MasterListPriority", "1")));
@@ -121,7 +122,6 @@ public class Settings  extends JPanel
 			spinners.put(0, spinner);
 			namedSp.put("MasterListPriority", spinner);
 			listTable.setValueAt("Hauptliste", 0, 0);
-			
 			data.addListListener(prListener);
 			data.addSettingListener(prListener);
 			for(int i = 1; i <= listNames.size(); i++)
@@ -136,18 +136,20 @@ public class Settings  extends JPanel
 				{
 					JSpinner sp = new JSpinner(new SpinnerNumberModel(1, 0, 100, 1));
 					sp.setValue(data.getListPriority(list));
+					sp.setName(list);
 					sp.addChangeListener(new SpinnerListener(list));
 					spinners.put(i - skipped, sp);
 					namedSp.put(list, sp);
 					listTable.setValueAt(list , i - skipped, 0);
 				}
 			}
-
 			listTable.setFillsViewportHeight(true);
 			listTable.getColumnModel().getColumn(1).setCellEditor(new SpinnerEditor(spinners));
 			listTable.getColumnModel().getColumn(1).setCellRenderer(new SpinnerRenderer(spinners));
 			JScrollPane scroll = new JScrollPane(listTable);
 			scroll.setVisible(true);
+			prListener.calcPercent();
+			
 			return scroll;
 		}
 		catch (ListException e)
@@ -178,6 +180,7 @@ public class Settings  extends JPanel
 						Controller.getInstance().getData().writeSetting("MasterListPriority", ((JSpinner)ce.getSource()).getValue().toString());
 						return;
 					}
+					System.out.println(name + "   " + (Integer)((JSpinner)ce.getSource()).getValue());
 					Controller.getInstance().getData().setListPriority(name, (Integer)((JSpinner)ce.getSource()).getValue());
 				}
 				catch (ListException e)
@@ -189,7 +192,7 @@ public class Settings  extends JPanel
 		}
 	}
 	
-	class TableListener implements ComponentListener
+	/*class TableListener implements ComponentListener
 	{
 		@Override
 		public void componentHidden(ComponentEvent e){}
@@ -208,32 +211,72 @@ public class Settings  extends JPanel
 		@Override
 		public void componentShown(ComponentEvent e){}
 		
-	}
+	}*/
 	
 	class PriorityListener extends ListAdapter implements SettingListener
 	{
-		private Map<String, JSpinner> spinners;
+		private Map<String, JSpinner> namedSp;
 		private JTable table;
+		private Map<Integer, JSpinner> spinners;
 
-		public PriorityListener(Map<String, JSpinner> spinners, JTable table)
+		public PriorityListener(Map<Integer, JSpinner> spinners, Map<String, JSpinner> namedSp, JTable table)
 		{
+			this.namedSp = namedSp;
 			this.spinners = spinners;
 			this.table = table;
 		}
 
 		public void listPriorityChanged(String listName, int newPriority)
 		{
-			spinners.get(listName).setValue(newPriority);
+			namedSp.get(listName).setValue(newPriority);
+			calcPercent();
 			table.repaint();
 		}
 
 		@Override
 		public void settingChanged(String name, String value)
 		{
-			if(spinners.get(name) != null)
+			if(namedSp.get(name) != null)
 			{
-				spinners.get(name).setValue(Integer.parseInt(value));
+				namedSp.get(name).setValue(Integer.parseInt(value));
+				calcPercent();
 				table.repaint();
+			}
+		}
+		
+		public void calcPercent()
+		{
+			try
+			{
+				IData data = Controller.getInstance().getData();
+				int sum = Integer.parseInt(data.readSetting("MasterListPriority"));
+				int val = 0;
+				for(int i = 0; i < namedSp.size(); i++)
+				{
+					String n = spinners.get(i).getName();
+					if(n != null)
+					{
+						sum += data.getListPriority(n);
+					}
+				}
+				
+				for(int i = 0; i < namedSp.size(); i++)
+				{
+					String n = spinners.get(i).getName();
+					if(n != null)
+					{
+						val = data.getListPriority(spinners.get(i).getName());
+						double percent = ((double)val / sum) * 100;
+						table.setValueAt(String.format("%2.2f", (Double)percent) + "%", i, 2);
+					}
+				}
+				double per = (Double.parseDouble(data.readSetting(("MasterListPriority"))) /sum) * 100;
+				table.setValueAt(String.format("%2.2f", per) + "%", 0, 2);
+			}
+			catch (ListException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}
