@@ -162,7 +162,7 @@ public interface IData
 	/**Fügt einen Track in eine Liste ein.
 	 * 
 	 * @param listName Name der Liste.
-	 * @param index Index des Tracks in der Hauptliste.
+	 * @param track Track der eingefügt wird.
 	 * @throws ListException
 	 */
 	void insertTrack(String listName, Track track) throws ListException;
@@ -177,8 +177,7 @@ public interface IData
 	/**Entfernt einen Track aus der Liste.
 	 * 
 	 * @param listName Name der Liste.
-	 * @param track Track der eingefügt wird.
-	 * @param position Position des Tracks in der Liste.
+	 * @param trackPosition Position des Tracks in der Liste.
 	 * @throws ListException
 	 */
 	void removeTrack(String listName, int trackPosition) throws ListException;

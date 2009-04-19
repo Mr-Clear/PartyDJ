@@ -279,7 +279,7 @@ public class ClassicWindow extends JFrame
 
 	/**
 	 * Erzeugt eine Liste mit Titel.
-	 * @param Titel der Liste, Liste, DropMode
+	 * @param title der Liste, Liste, DropMode
 	 * @return JPanel mit GridBagLayout, welches die Liste und Titel enthält.
 	 */
 	public Component List(String title, TrackListModel l, ListDropMode ldMode)
@@ -388,9 +388,7 @@ public class ClassicWindow extends JFrame
 		return panel;
 	}
 	
-	/**
-	 * Erzeugt den Fortschrittsbalken.
-	 * @param Titel des gespielten Liedes.
+	/**Erzeugt den Fortschrittsbalken.
 	 * @return JPanel mit GridBagLayout, welches den Titel und Slider beinhaltet.
 	 */
 	public Component Slider()

@@ -65,7 +65,6 @@ public interface ListListener
 	 * 
 	 * @param listName Name der Liste.
 	 * @param position Position in der Liste, an der der Track stand.
-	 * @param track Track der entfernt wurde.
 	 */
 	void trackRemoved(String listName, int position);
 	/**Zwei Tracks wurden innerhalb einer Liste vertauscht.

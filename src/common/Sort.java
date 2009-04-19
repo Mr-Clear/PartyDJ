@@ -107,7 +107,8 @@ public class Sort
 
 interface TrackComperator
 {
-	/**@param a, b  Die zu vergleichenden Tracks.
+	/**@param a Erster zu vergleichendenr Track.
+	 * @param b Zweiter zu vergleichendenr Track.
 	 * @return   Wenn a < b, dann kleiner 0.
 	 * 			 Wenn a > b, dann größer 0.
 	 * 			 Wenn a == b, dann 0.
