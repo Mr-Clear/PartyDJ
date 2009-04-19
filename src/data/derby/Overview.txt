@@ -23,6 +23,7 @@ LISTS
     +_INDEX_ [Int]
     ?NAME [String*32]
     DESCRIPTION [String]
+    PRIORITY [Short] 0
 
 LISTS_CONTENT
     |!LIST [Int]

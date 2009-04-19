@@ -116,6 +116,20 @@ public interface IData
 	 * @throws ListException
 	 */
 	void removeList(String listName) throws ListException;
+	/**Fragt die Priorität einer Liste ab.
+	 * 
+	 * @param listName Name der Liste.
+	 * @return Priorität der Liste.
+	 * @throws ListException
+	 */
+	int getListPriority(String listName) throws ListException;
+	/**Setzt die Priorität einer Liste.
+	 * 
+	 * @param listName Name der Liste.
+	 * @param priority Priorität die die Liste haben soll.
+	 * @throws ListException
+	 */
+	void setListPriority(String listName, int priority) throws ListException;
 	/**Fragt die Beschreibung einer Liste ab.
 	 * 
 	 * @param listName Name der Liste.

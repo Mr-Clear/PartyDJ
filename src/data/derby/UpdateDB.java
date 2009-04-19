@@ -7,18 +7,22 @@ import data.SettingException;
 
 public class UpdateDB
 {
+	private static String version;
 	public static boolean update(DerbyDB data, String oldVersion, String newVersion) 
 	{
+		version = oldVersion;
 		try
 		{
 			if(!newVersion.equals(data.version))
 				return false;
-			if((oldVersion.equals("unknown") || oldVersion.equals("0.1")))
+			if((version.equals("unknown") || version.equals("0.1")))
 				to0_2a(data);
-			if(oldVersion.equals("0.2"))
+			if(version.equals("0.2"))
 				v0_2to0_2a(data);
-			if(oldVersion.equals("0.2a"))
+			if(version.equals("0.2a"))
 				return v0_2ato0_2b(data);
+			if(version.equals("0.2b"))
+				return v0_2bto0_3(data);
 			else
 				return false;
 		}
@@ -30,6 +34,12 @@ public class UpdateDB
 			System.err.println("---------------------------");
 			return false;
 		}
+	}
+	
+	private static void setVersion(DerbyDB data, String newVersion)
+	{
+		version = newVersion;
+		data.writeSetting("DBVersion", newVersion);
 	}
 	
 	private static boolean to0_2a(DerbyDB data) throws SettingException, SQLException
@@ -71,7 +81,7 @@ public class UpdateDB
 		data.conn.commit();
 		
 		data.writeSetting("DBID", String.format("%8H", new java.util.Random().nextLong()).replace(' ', '0'));
-		data.writeSetting("DBVersion", "0.2a");
+		setVersion(data, "0.2a");
 		return true;
 	}
 	
@@ -83,7 +93,7 @@ public class UpdateDB
 		s.executeUpdate("CREATE INDEX POSITION ON LISTS_CONTENT (POSITION)");
 		
 		data.conn.commit();
-		data.writeSetting("DBVersion", "0.2a");
+		setVersion(data, "0.2a");
 		return true;
 	}
 	
@@ -96,7 +106,17 @@ public class UpdateDB
 		s.executeUpdate("CREATE INDEX LIST_NAMES ON LISTS (NAME)");
 		data.conn.commit();
 		
-		data.writeSetting("DBVersion", "0.2b");
+		setVersion(data, "0.2b");
+		return true;
+	}
+	
+	private static boolean v0_2bto0_3(DerbyDB data) throws SettingException, SQLException
+	{
+		Statement s = data.conn.createStatement();
+		s.executeUpdate("ALTER TABLE LISTS ADD PRIORITY SMALLINT DEFAULT 0");
+		data.conn.commit();
+		
+		setVersion(data, "0.3");
 		return true;
 	}
 }

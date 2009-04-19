@@ -274,6 +274,11 @@ public class Controller
 		return playList;
 	}
 	
+	public String getLastPlayedName()
+	{
+		return "LastPlayed";
+	}
+	
 	/** Gibt zurück ob der PartyDJ vollständig geladen ist. */
 	public boolean isLoadFinished()
 	{
@@ -452,7 +457,7 @@ public class Controller
 		public Track requestPreviousTrack()
 		{
 			if(lastPlayedList.getSize() == 0)
-				return null;
+				return currentTrack;
 			
 			Track previous = lastPlayedList.getElementAt(lastPlayedList.getSize() - 1);
 			

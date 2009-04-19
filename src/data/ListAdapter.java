@@ -13,6 +13,8 @@ public abstract class ListAdapter implements ListListener
 	public void listCommentChanged(String listName, String newComment){}
 	public void listRenamed(String oldName, String newName){}
 	
+	public void listPriorityChanged(String listName, int newPriority){}
+	
 	public void trackInserted(String listName, int position, Track track){}
 	public void trackRemoved(String listName, int position){}
 	public void tracksSwaped(String listName, int positionA, int positionB){}

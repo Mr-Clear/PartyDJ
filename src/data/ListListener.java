@@ -47,6 +47,13 @@ public interface ListListener
 	 */
 	void listRenamed(String oldName, String newName);
 	
+	/**Die Priorität einer Liste wurde geändert.
+	 * 
+	 * @param listName Name der Liste.
+	 * @param newPriority Neue Priorität der Liste.
+	 */
+	void listPriorityChanged(String listName, int newPriority);
+	
 	/**Track wurde in einer Liste eingefügt.
 	 * 
 	 * @param listName Name der Liste.

@@ -23,7 +23,7 @@ public class DerbyDB implements IData, CloseListener
 	final Set<SettingListener> settingListener = new HashSet<SettingListener>();
 	final Set<ListListener> listListener = new HashSet<ListListener>();
 	
-	public final String version = "0.2b";
+	public final String version = "0.3";
 	
 	public DerbyDB(String dbName) throws OpenDbException
 	{
@@ -116,12 +116,12 @@ public class DerbyDB implements IData, CloseListener
 					"(INDEX INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY, " +
 					"NAME VARCHAR(32) NOT NULL, " +
 					"DESCRIPTION LONG VARCHAR, " +
+					"PRIORITY SMALLINT DEFAULT 0, " +
 					"PRIMARY KEY (INDEX), " +
 					"UNIQUE (NAME))");
 			s.executeUpdate("CREATE INDEX LIST_NAMES ON LISTS (NAME)");
 			
 			s.executeUpdate("CREATE TABLE LISTS_CONTENT (LIST INTEGER NOT NULL, INDEX INTEGER NOT NULL, POSITION INTEGER NOT NULL, PRIMARY KEY (LIST, POSITION))");
-			//s.executeUpdate("CREATE UNIQUE INDEX POSITIONS ON LISTS_CONTENT (LIST, POSITION)");
 			
 			s.close();
 			conn.commit();
@@ -725,6 +725,30 @@ public class DerbyDB implements IData, CloseListener
 		// Aus temporärer Liste löschen
 		if(listIndices.containsKey(listName))
 			listIndices.remove(listName);
+	}
+	
+	public int getListPriority(String listName) throws ListException
+	{
+		try
+		{
+			return queryInt("SELECT PRIORITY FROM LISTS WHERE NAME = ?", listName);
+		}
+		catch (SQLException e)
+		{
+			throw new ListException(e);
+		}
+	}
+	
+	public void setListPriority(String listName, int priority) throws ListException
+	{
+		try
+		{
+			executeUpdate("UPDATE LISTS SET PRIORITY = ? WHERE NAME = ?", priority, listName);
+		}
+		catch (SQLException e)
+		{
+			throw new ListException(e);
+		}
 	}
 	
 	public String getListDescription(String listName) throws ListException
