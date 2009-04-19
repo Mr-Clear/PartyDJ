@@ -130,6 +130,7 @@ public class Controller
 		splash.setInfo("Lade Player");
 		{
 			PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener
+			splash.setInfo("Lade Player0");
 			switch(whichPlayer)
 			{
 			case 0:			
@@ -140,6 +141,7 @@ public class Controller
 				player = new players.jl.JLPlayer(playerListener);
 				break;
 			}
+			splash.setInfo("Lade Player 1");
 			try
 			{
 				player.setVolume(Integer.parseInt(data.readSetting("Volume", "100")));
@@ -149,7 +151,9 @@ public class Controller
 			catch (SettingException e1)
 				{player.setVolume(100);}
 			
+			splash.setInfo("Lade Player2");
 			player.addPlayStateListener(playerListener);
+			splash.setInfo("Lade Player3");
 		}
 		
 		splash.setOpacity(0.9f);
@@ -588,6 +592,8 @@ public class Controller
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des PartyDJ-Controllers:\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			getInstance().closePartyDJ();
 		}		
 	}
 }

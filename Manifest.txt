@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: libs/derby.jar lib/jl1.0.1.jar lib/jmf.jar
-Main-Class: basics.Controller
-
