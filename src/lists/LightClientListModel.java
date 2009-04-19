@@ -100,7 +100,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 
 	}
 	
-	public void trackAdded(Track track)	{} // Mir wurscht ;)
+	public void trackAdded(Track track)	{} // Erst interesant, wenn der Track in diese Liste eingefügt wird. 
 	
 	public void trackDeleted(Track track)
 	{
@@ -125,6 +125,4 @@ public class LightClientListModel extends BasicListModel implements EditableList
 			}
 		}	
 	}
-
-
 }

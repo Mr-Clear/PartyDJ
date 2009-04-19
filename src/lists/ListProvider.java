@@ -3,11 +3,13 @@ package lists;
 import java.util.HashMap;
 import java.util.Map;
 import common.Track;
+import data.IData;
 import basics.Controller;
 
 public class ListProvider
 {
 	private final Map<Integer, Track> masterList;
+	private final IData data = Controller.getInstance().getData();
 	
 	private DbMasterListModel masterListModel;
 	private Map<String, DbClientListModel> dbClientListModels = new HashMap<String, DbClientListModel>();
@@ -15,7 +17,7 @@ public class ListProvider
 	public ListProvider() throws ListException
 	{
 		assert Controller.getInstance() != null : "Controller nicht geladen!";
-		masterList = Controller.getInstance().getData().readMasterList();
+		masterList = data.readMasterList();
 		masterListModel = new DbMasterListModel();
 	}
 	
@@ -41,5 +43,25 @@ public class ListProvider
 			dbClientListModels.put(listName, lm);
 			return lm;
 		}
+	}
+	
+	public Track assignTrack(Track track)
+	{
+		if(masterList.containsKey(track) && track == masterList.get(track))
+			return track;
+		for(Track t : masterList.values())
+		{
+			if(track.equals(t))
+				return t;
+		}
+		try
+		{
+			data.addTrack(track);
+			return track;
+		}
+		catch (ListException e)
+		{
+			return null;
+		}		
 	}
 }

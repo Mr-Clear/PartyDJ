@@ -908,6 +908,8 @@ public class DerbyDB implements IData, CloseListener
 
 	public void insertTrack(String listName, Track track) throws ListException
 	{
+		if(track.index == -1)
+			throw new ListException("Track nicht in Hauptliste");
 		int size;
 		synchronized(conn)
 		{
@@ -940,7 +942,9 @@ public class DerbyDB implements IData, CloseListener
 	}
 	
 	public void insertTrackAt(String listName, Track track, int trackPosition) throws ListException
-	{
+	{		
+		if(track.index == -1)
+			throw new ListException("Track nicht in Hauptliste");
 		synchronized(conn)
 		{
 			try

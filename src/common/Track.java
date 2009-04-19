@@ -55,7 +55,7 @@ public class Track implements Serializable, Comparable<Track>
 		index = -1;
 		path = filePath;
 		name = file.getName();
-		name = name.substring(0, name.lastIndexOf('.') - 1);
+		name = name.substring(0, name.lastIndexOf('.'));
 		if(file.exists())
 		{
 			if(readDuration)

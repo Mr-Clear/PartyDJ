@@ -33,7 +33,7 @@ public class PopupMenuGenerator
 {
 	public static JPopupMenu listPopupMenu(PDJList list, Track track)
 	{
-		ActionListener listener = new PopupMenuItemListener(list, track);
+		ActionListener listener = new ListMenuItemListener(list, track);
 		boolean listEditable = list.getListModel() instanceof EditableListModel;
 		JPopupMenu menu = new JPopupMenu();
 		JMenuItem newItem;
@@ -126,12 +126,12 @@ public class PopupMenuGenerator
 	}
 }
 
-class PopupMenuItemListener implements ActionListener
+class ListMenuItemListener implements ActionListener
 {
 	private PDJList list;
 	private Track track;
 	
-	PopupMenuItemListener(PDJList list, Track track)
+	ListMenuItemListener(PDJList list, Track track)
 	{
 		this.list = list;
 		this.track = track;
@@ -209,15 +209,18 @@ class PopupMenuItemListener implements ActionListener
 			final JFileChooser fileChooser = new JFileChooser("Datei öffnen:");
 			fileChooser.setDialogType(JFileChooser.OPEN_DIALOG); 
 			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			fileChooser.setCurrentDirectory(new File("M:/Playlists"));	//TODO Besser nicht konstant
+			fileChooser.setCurrentDirectory(new File(basics.Controller.getInstance().getData().readSetting("PlayListDirectory", common.Functions.getFolder())));
 			
 			final int result = fileChooser.showOpenDialog(null);
 	        if (result == JFileChooser.CANCEL_OPTION)
 	        	return;
 	        
             File file = fileChooser.getSelectedFile();
-            System.out.println(file.getPath());
-            // TODO Datei in Liste laden
+
+    		if(list.getListModel() instanceof EditableListModel)
+    		{
+    			new StatusDialog("Lese M3U", null, new lists.InsertM3U(((EditableListModel)list.getListModel()), file.getPath()));
+    		}
 		}
 		
 		else if(command.equals("sortName"))
@@ -234,7 +237,6 @@ class PopupMenuItemListener implements ActionListener
 
 class FileMenuListener implements MenuListener
 {
-	@SuppressWarnings("unused")
 	private PDJList list;
 	FileMenuListener(PDJList list)
 	{
@@ -251,7 +253,7 @@ class FileMenuListener implements MenuListener
 		if(menu.getSubElements()[0].getSubElements().length > 1)	//Dateien nur einmal einlesen 
 			return;
 		
-		String path = "M:/Playlists";	//TODO Besser nicht konstant
+		String path = basics.Controller.getInstance().getData().readSetting("PlayListDirectory", common.Functions.getFolder());
 		File folder = new File(path);
 		
 		if(!folder.isDirectory())
@@ -266,7 +268,7 @@ class FileMenuListener implements MenuListener
 		
 		if(files.length > 0)
 		{
-			FileMenuItemListener listener = new FileMenuItemListener();
+			FileMenuItemListener listener = new FileMenuItemListener(list);
 			menu.addSeparator();
 			
 			for(String file : files)
@@ -277,16 +279,23 @@ class FileMenuListener implements MenuListener
 				menu.add(newItem);
 			}
 		}
-
 	}
 }
 
 class FileMenuItemListener implements ActionListener
 {
+	private PDJList list;
+	FileMenuItemListener(PDJList list)
+	{
+		this.list = list;
+	}
+	
 	public void actionPerformed(ActionEvent e)
 	{
-		System.out.println(e.getActionCommand());
-		// TODO Datei in Liste laden
+		if(list.getListModel() instanceof EditableListModel)
+		{
+			new StatusDialog("Lese M3U", null, new lists.InsertM3U(((EditableListModel)list.getListModel()), e.getActionCommand()));
+		}
 	}
 }
 
