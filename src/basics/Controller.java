@@ -189,8 +189,14 @@ public class Controller
 		}
 		
 		splash.setOpacity(1f);
-		splash.setInfo("Starte");
+		
+		if(listProvider.getMasterList().getSize() == 0)
 		{
+			registerWindow(new gui.SetupWindow());
+		}
+		else
+		{
+			splash.setInfo("Starte");
 			String firstTrackPath = null;
 			try
 			{
@@ -222,11 +228,7 @@ public class Controller
 		}
 
 		splash.setInfo("PartyDJ bereit :)");
-		try
-		{
-			getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
-		}
-		catch (SettingException e){}
+		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
 		splash.close();
 		loadFinished = true;
 	}
