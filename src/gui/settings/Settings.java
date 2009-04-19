@@ -1,18 +1,28 @@
 package gui.settings;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.swing.AbstractCellEditor;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import data.IData;
 import lists.ListException;
 import basics.Controller;
 
@@ -27,7 +37,6 @@ public class Settings  extends JPanel
 	
 	private void initGUI()
 	{
-		
 		GridBagLayout layout = new GridBagLayout();
 		GridBagConstraints con = new GridBagConstraints();
 		
@@ -59,8 +68,8 @@ public class Settings  extends JPanel
 		JLabel titel = new JLabel("Shuffle");
 		JLabel expl = new JLabel("Hier können Sie einstellen, wie groß die Wahrscheinlichkeit ist, dass ein Lied von einer bestimmten Liste gespielt wird.");
 		
-		titel.setFont(new Font("Serif", Font.BOLD, 18));
-		expl.setFont(new Font("Serif", Font.ITALIC, 12));
+		titel.setFont(new Font("SansSerifs", Font.BOLD, 18));
+		expl.setFont(new Font("SansSerifs", Font.ITALIC, 12));
 		
 		c.insets = new Insets(0, 5, 0, 5);
 		c.anchor = GridBagConstraints.WEST;
@@ -91,26 +100,41 @@ public class Settings  extends JPanel
 		try
 		{
 			List<String> listNames = Controller.getInstance().getData().getLists();
+			IData data = Controller.getInstance().getData();
 			String[] labels = new String[]{"Liste", "Priorität", "Spielwahrscheinlichkeit"};
-			String[][] lists = new String[listNames.size()][3];
-			JTable listTable = new JTable(lists, labels);
+			Object[][] lists = new Object[listNames.size()][3];
+			
+			JTable listTable = new JTable(new ShuffleTableModel(lists, labels));
 			int skipped = 0;
 			
-			listTable.setFillsViewportHeight(true);
-
+			Map<Integer, JSpinner> spinners = new HashMap<Integer, JSpinner>(4);
+			
+			JSpinner spinner = new JSpinner(new SpinnerNumberModel(1, 0, 100, 1));
+			spinner.setValue(Integer.parseInt(data.readSetting("MasterListPriority", "1")));
+			spinner.addChangeListener(new SpinnerListener("Hauptliste"));
+			spinners.put(0, spinner);
 			listTable.setValueAt("Hauptliste", 0, 0);
-			for(int i = 1; i < listNames.size(); i++)
+			for(int i = 1; i <= listNames.size(); i++)
 			{
-				String list = listNames.get(i);
-				if(list != "lastPlayed")
+				String list = listNames.get(i - 1);
+				
+				if(list.equalsIgnoreCase("lastplayed"))
 				{
-					listTable.setValueAt(list , i - skipped, 0);
+					skipped++;
 				}
 				else
-					skipped++;
-					
+				{
+					JSpinner sp = new JSpinner(new SpinnerNumberModel(1, 0, 100, 1));
+					sp.setValue(data.getListPriority(list));
+					sp.addChangeListener(new SpinnerListener(list));
+					spinners.put(i - skipped, sp);
+					listTable.setValueAt(list , i - skipped, 0);
+				}
 			}
 
+			listTable.setFillsViewportHeight(true);
+			listTable.getColumnModel().getColumn(1).setCellEditor(new SpinnerEditor(spinners));
+			listTable.getColumnModel().getColumn(1).setCellRenderer(new SpinnerRenderer(spinners));
 			JScrollPane scroll = new JScrollPane(listTable);
 			scroll.setVisible(true);
 			return scroll;
@@ -126,14 +150,129 @@ public class Settings  extends JPanel
 	
 	class SpinnerListener implements ChangeListener
 	{
+		private final String name;
+		public SpinnerListener(String name)
+		{
+			this.name = name;
+		}
 		@Override
 		public void stateChanged(ChangeEvent ce)
 		{
 			if(ce.getSource() instanceof JSpinner)
 			{
-				
+				try
+				{
+					if(name.equalsIgnoreCase("hauptliste"))
+					{
+						Controller.getInstance().getData().writeSetting("MasterListPriority", ((JSpinner)ce.getSource()).getValue().toString());
+						return;
+					}
+					Controller.getInstance().getData().setListPriority(name, (Integer)((JSpinner)ce.getSource()).getValue());
+				}
+				catch (ListException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
+	
+	class ShuffleTableModel extends AbstractTableModel
+	{
+		private static final long serialVersionUID = 4845502871704418973L;
+		Object[][] rowData;
+		String[] columnNames;
+		
+		public ShuffleTableModel(Object[][] rowData, String[] columnNames)
+		{
+			this.rowData = rowData;
+			this.columnNames = columnNames;
+		}
+		
+		@Override
+		public boolean isCellEditable(int row, int column)
+		{
+			switch(column)
+			{
+				case 0:				return false;
+				case 1:				return true;
+				case 2:				return false;
+				default:			return false;
+			}
+		}
+		
+		@Override
+		public String getColumnName(int column)
+		{
+			return columnNames[column];
+		}
+		
+		@Override
+		public int getColumnCount()
+		{
+			return 3;
+		}
 
+		@Override
+		public int getRowCount()
+		{
+			return rowData.length;
+		}
+
+		@Override
+		public Object getValueAt(int row, int column)
+		{
+			return rowData[row][column];
+		}
+		
+		@Override
+		public void setValueAt(Object value, int row, int col)
+		{
+            rowData[row][col] = value;
+            fireTableCellUpdated(row, col);
+		}
+	}
+	
+	class SpinnerEditor extends AbstractCellEditor implements TableCellEditor
+	{
+		private static final long serialVersionUID = -7664852358641606118L;
+		Map<Integer, JSpinner> spinners;
+		
+		public SpinnerEditor(Map<Integer, JSpinner> spinners)
+		{
+			super();
+			this.spinners = spinners;
+		}
+		
+		@Override
+		public Object getCellEditorValue()
+		{
+			return spinners.toString();
+		}
+
+		@Override
+		public JSpinner getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) 
+		{
+            return spinners.get(row);
+        }
+	}
+	
+	class SpinnerRenderer implements TableCellRenderer
+	{
+		private static final long serialVersionUID = 5606482980770475335L;
+		Map<Integer, JSpinner> spinners;
+		
+		public SpinnerRenderer(Map<Integer, JSpinner> spinners)
+		{
+			super();
+			this.spinners = spinners;
+		}
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+		{
+			return spinners.get(row);
+		}
+	}
 }
