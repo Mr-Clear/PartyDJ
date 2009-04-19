@@ -731,7 +731,10 @@ public class DerbyDB implements IData, CloseListener
 	{
 		try
 		{
-			return queryInt("SELECT PRIORITY FROM LISTS WHERE NAME = ?", listName);
+			synchronized(conn)
+			{
+				return queryInt("SELECT PRIORITY FROM LISTS WHERE NAME = ?", listName);
+			}
 		}
 		catch (SQLException e)
 		{
@@ -743,11 +746,19 @@ public class DerbyDB implements IData, CloseListener
 	{
 		try
 		{
-			executeUpdate("UPDATE LISTS SET PRIORITY = ? WHERE NAME = ?", priority, listName);
+			synchronized(conn)
+			{
+				executeUpdate("UPDATE LISTS SET PRIORITY = ? WHERE NAME = ?", priority, listName);
+			}
 		}
 		catch (SQLException e)
 		{
 			throw new ListException(e);
+		}
+		synchronized(listListener)
+		{
+			for(ListListener listener : listListener)
+				listener.listPriorityChanged(listName, priority);
 		}
 	}
 	
@@ -775,6 +786,11 @@ public class DerbyDB implements IData, CloseListener
 		catch (SQLException e)
 		{
 			throw new ListException(e);
+		}
+		synchronized(listListener)
+		{
+			for(ListListener listener : listListener)
+				listener.listCommentChanged(listName, description);
 		}
 	}
 	
