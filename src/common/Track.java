@@ -10,6 +10,24 @@ public class Track implements Serializable, Comparable<Track>
 {
 	private static final long serialVersionUID = -4142764593365608567L;
 
+	/** Index in der Hauptliste */
+	public int index;
+	/** Absoluter Pfad der Datei */
+	public String path;
+	/** Angezeigter Name */
+	public String name;
+	/** Dauer des Tracks */
+	public double duration;
+	/** Größe der Datei */
+	public long size;
+	/** Bekannte Probleme mit dem Track */
+	public Problem problem;
+	/** Beliebige Info über den Track */
+	public String info;
+	/** File-Objekt */
+	private File file;
+	
+	
 	/**Erstellt einen neuen Track mit den angegebenen Werten
 	 */
 	public Track(int index, String path, String name, double duration, long size, Problem problem, String info)
@@ -21,11 +39,13 @@ public class Track implements Serializable, Comparable<Track>
 		this.size = size;
 		this.problem = problem;
 		this.info = info;
+		
+		this.file = new File(path);
 	}
 	
 	public Track(String filePath, boolean readDuration)
 	{
-		File file = new File(filePath);
+		file = new File(filePath);
 		try
 		{
 			filePath = file.getCanonicalPath();
@@ -59,31 +79,33 @@ public class Track implements Serializable, Comparable<Track>
 		info = null;
 	}
 	
-	/** Index in der Hauptliste */
-	public int index;
-	/** Absoluter Pfad der Datei */
-	public String path;
-	/** Angezeigter Name */
-	public String name;
-	/** Dauer des Tracks */
-	public double duration;
-	/** Größe der Datei */
-	public long size;
-	/** Bekannte Probleme mit dem Track */
-	public Problem problem;
-	/** Beliebige Info über den Track */
-	public String info;
-	
+	@Override
 	public String toString()
 	{
 		return name;
 	}
-
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if(o instanceof Track)
+			return compareTo((Track)o) == 0;
+		else
+			return false;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return file.hashCode();
+	}
+	
+	@Override
 	public int compareTo(Track o)
 	{
 		if(o == null)
 			throw new NullPointerException();
-		return path.compareTo(((Track)o).path);
+		return file.compareTo(o.file);
 	}
 	
 	/**Stellt ein Problem mit einem Track dar.

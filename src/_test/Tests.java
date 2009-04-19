@@ -1,5 +1,7 @@
 package _test;
 
+import java.io.File;
+
 public class Tests
 {
 
@@ -8,10 +10,8 @@ public class Tests
 	 */
 	public static void main(String[] args)
 	{
-		for(int i = 0; i <= 100; i += 10)
-		{
-			System.out.println(i + ": " + f(i));
-		}
+		File f = new File("C:\\ding");
+		System.out.println(f.compareTo(new File("C:/Dang")));
 	}
 	
 	static double f(int i)
