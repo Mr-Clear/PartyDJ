@@ -24,9 +24,9 @@ public class Track implements Serializable, Comparable<Track>
 	public Problem problem;
 	/** Beliebige Info über den Track */
 	public String info;
+	
 	/** File-Objekt */
 	private File file;
-	
 	
 	/**Erstellt einen neuen Track mit den angegebenen Werten
 	 */
