@@ -22,13 +22,16 @@ public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 	{
 		int count;
 		
-		count = common.ReadM3U.readM3U(filePath, this, sd);
+		count = common.ReadM3U.readM3U(filePath, this, sd, false);
 
 		JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public boolean report(Track track)
 	{
+		if(track == null)
+			return false;
+		
 		int newIndex;
 		try
 		{

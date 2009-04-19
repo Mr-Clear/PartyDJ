@@ -20,7 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import players.PlayerException;
 import lists.ListException;
 import lists.SearchListModel;
 import lists.TrackListModel;
@@ -75,7 +74,7 @@ public class MasterList extends JPanel
 							File folder = chooser.getSelectedFile();
 							String folderPath = folder.getPath();
 							
-							new StatusDialog("Lese Verzeichnisse", frame, new gui.settings.tools.ReadFolder(folderPath));
+							new StatusDialog("Lese Verzeichnisse", frame, new gui.settings.tools.ReadFolder(folderPath, true));
 						}});
 		buttonBox1.add(addFolder);
 		buttonBox1.add(Box.createVerticalStrut(5));
@@ -84,7 +83,7 @@ public class MasterList extends JPanel
 		addFile.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0)
 						{
-							final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
+							final JFileChooser chooser = new JFileChooser("Datei wählen");
 							chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 					        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 							chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", common.Functions.getFolder())));
@@ -104,22 +103,7 @@ public class MasterList extends JPanel
 					        }
 					        else
 						    {
-						        double duration = 0;
-						        common.Track.Problem problem = common.Track.Problem.NONE;
-						        try
-								{
-						        	duration = controller.getPlayer().getDuration(filePath);
-								}
-								catch (PlayerException e)
-								{
-									problem = common.Track.Problem.CANT_PLAY;
-								}
-								
-								if(duration == 0)
-									if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Datei kann nicht wiedergegeben werden.\nTrotdem hinzufügen?", "Datei einfügen", JOptionPane.YES_NO_OPTION))
-										return;
-								
-								Track track = new Track(-1, filePath, null, duration, file.length(), problem, null);
+								Track track = new Track(filePath, true);
 								
 								try
 								{

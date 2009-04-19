@@ -28,7 +28,7 @@ public class SplashWindow extends JWindow
 		setLayout(new BorderLayout());
 		getContentPane().setBackground(Color.DARK_GRAY);
 		setSize(757, 321 + 32);
-		this.setLocationRelativeTo(null);
+		setLocationRelativeTo(null);
 		
 		JLabel picture = null;
 		try

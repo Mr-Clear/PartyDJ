@@ -1,12 +1,30 @@
 package gui;
+import gui.StatusDialog.StatusSupportedFunction;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import javax.swing.LayoutStyle;
 
 import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileFilter;
+import basics.Controller;
+import lists.EditableListModel;
+import lists.ListException;
+import common.Track;
+import data.IData;
 
 
 public class SetupWindow extends javax.swing.JFrame
@@ -17,19 +35,24 @@ public class SetupWindow extends javax.swing.JFrame
 	private JToggleButton addFolder;
 	private JButton close;
 	private JToggleButton importPDJ;
-
+	private final SetupWindow me = this;
 	
 	public SetupWindow() 
 	{
 		super();
 		initGUI();
+		setLocationRelativeTo(null);
+		setVisible(true);
 	}
 	
 	private void initGUI()
 	{
+		final Controller controller = Controller.getInstance();
+		final IData data = controller.getData();
+		
 		GroupLayout thisLayout = new GroupLayout((JComponent)getContentPane());
 		getContentPane().setLayout(thisLayout);
-		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.setTitle("PartyDJ Setup");
 		{
 			jLabel1 = new JLabel();
@@ -38,18 +61,96 @@ public class SetupWindow extends javax.swing.JFrame
 		{
 			addFile = new JToggleButton();
 			addFile.setText("Datei Einfügen");
+			addFile.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e)
+				{
+					final JFileChooser chooser = new JFileChooser("Datei wählen");
+					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+			        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+					chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", common.Functions.getFolder())));
+			        				        
+			        if(chooser.showOpenDialog(null) == JFileChooser.CANCEL_OPTION)
+			        	return;
+			        
+			        File file = chooser.getSelectedFile();
+			        String filePath = file.getPath();
+			        
+					data.writeSetting("FileDirectory", file.getParent());
+			        
+			        if(filePath.toLowerCase().endsWith(".m3u"))
+			        {
+						data.writeSetting("PlayListDirectory", file.getParent());
+			        	new StatusDialog("Lese M3U", me, new gui.settings.tools.AddM3U(filePath));
+			        }
+			        else
+				    {
+						Track track = new Track(filePath, true);
+						
+						try
+						{
+							data.addTrack(track);
+						}
+						catch (ListException ex)
+						{
+							JOptionPane.showMessageDialog(null, "Einfügen fehlgeschlagen:\n" + ex.getMessage(), "Datei einfügen", JOptionPane.ERROR_MESSAGE);
+						}
+				    }
+				}});
 		}
 		{
 			addFolder = new JToggleButton();
 			addFolder.setText("Verzeichnis Einfügen");
+			addFolder.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent arg0)
+				{
+					final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
+					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+					chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+									        
+					if(chooser.showOpenDialog(null) == JFileChooser.CANCEL_OPTION)
+						return;
+					
+					File folder = chooser.getSelectedFile();
+					String folderPath = folder.getPath();
+					
+					new StatusDialog("Lese Verzeichnisse", me, new gui.settings.tools.ReadFolder(folderPath, true));
+				}});
 		}
 		{
 			importPDJ = new JToggleButton();
 			importPDJ.setText("Aus altem PartyDJ importieren");
+			importPDJ.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e)
+				{
+					final JFileChooser chooser = new JFileChooser("Party DJ.exe wählen");
+					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
+			        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			        chooser.setFileFilter(new FileFilter(){
+						public boolean accept(File f)
+						{
+							return f.isFile() && f.getName().equalsIgnoreCase("PartyDJ.exe");
+						}
+						public String getDescription(){return null;}
+						});
+					chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", common.Functions.getFolder())));
+			        				        
+			        if(chooser.showOpenDialog(null) == JFileChooser.CANCEL_OPTION)
+			        	return;
+			        
+			        File file = chooser.getSelectedFile();
+			        String path = file.getParent();
+			        
+					importFromPDJ2(path);
+				}});
 		}
 		{
 			close = new JButton();
 			close.setText("Fenster Schließen");
+			close.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent arg0)
+				{
+					controller.unregisterWindow(me);
+				}});
 		}
 		thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
 			.addContainerGap()
@@ -82,5 +183,257 @@ public class SetupWindow extends javax.swing.JFrame
 			.addContainerGap(36, 36));
 		pack();
 	}
+	//E:\pdj\Party DJ.exe
+	private void importFromPDJ2(String root)
+	{
+		final IData data = Controller.getInstance().getData();
+		if(root.endsWith("\\"))
+			root = root.substring(0, root.length() - 1);
+		String quelle = root + "\\Quelle.lst";
+		BufferedReader reader;
+		try
+		{
+			reader = new BufferedReader(new FileReader(quelle));
+		}
+		catch (FileNotFoundException e)
+		{
+			JOptionPane.showMessageDialog(me, "Kann Quelle.lst nicht lesen:\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		while(true)
+		{
+			String line;
+			try
+			{
+				line = reader.readLine();
+			}
+			catch (IOException ignored)
+			{
+				break;
+			}
+			if(line == null)
+				break;
+			String [] sl = line.split("\"");
+			
+			if(sl.length == 4)
+			{
+				String path= sl[1];
+				String type = (sl[3]);
+				if(type.startsWith("0"))
+				{
+			        if(path.toLowerCase().endsWith(".m3u"))
+			        {
+						data.writeSetting("PlayListDirectory", new File(path).getParent());
+			        	new StatusDialog("Lese M3U", me, new gui.settings.tools.AddM3U(path));
+			        }
+			        else
+				    {
+						Track track = new Track(path, true);
+						
+						try
+						{
+							data.addTrack(track);
+						}
+						catch (ListException ignore){}
+				    }
+				}
+				else
+				{
+					type = type.substring(0,1);
+					boolean subFolders = false;
+					if(type.startsWith("1"))
+						subFolders = false;
+					else if(type.startsWith("2"))
+						subFolders = true;
+					else
+						break;
+					
+					new StatusDialog("Lese Verzeichnisse", null, new gui.settings.tools.ReadFolder(path, subFolders));
+				}
+			}
+		}
+		
+		new StatusDialog("Lese Playlist", me, new addPdj2List(root + "\\Playlist.lst", "Playlist"));
+		new StatusDialog("Lese Wunschliste 1/2", me, new addPdj2List(root + "\\Zurück.lst", "Wunschliste"));
+		new StatusDialog("Lese Wunschliste 2/2", me, new addPdj2List(root + "\\Wunsch.lst", "Wunschliste"));
+		
+		new StatusDialog("Lese LastPlayed", me, new addPdj2LastPlayedList(root + "\\Alt.lst", Controller.getInstance().getLastPlayedName()));
+		/*addPdj2List(root + "\\Playlist.lst", "Playlist");
+		addPdj2List(root + "\\Zurück.lst", "Wunschliste");
+		addPdj2List(root + "\\Wunsch.lst", "Wunschliste");
+		addPdj2LastPlayedList(root + "\\Alt.lst", Controller.getInstance().getLastPlayedName());*/
+		
+		JOptionPane.showMessageDialog(me, "Import beendet.", "Importieren", JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private class addPdj2List implements StatusSupportedFunction
+	{
+		private final String path;
+		private final String listName;
+		private boolean stop = false;
+		
+		public addPdj2List(String path, String listName)
+		{
+			this.path = path;
+			this.listName = listName;
+		}
 
+		public void runFunction(StatusDialog sd)
+		{
+			EditableListModel list;
+			BufferedReader reader;
+			try
+			{
+				list = Controller.getInstance().getListProvider().getDbList(listName);
+				reader = new BufferedReader(new FileReader(path));
+			}
+			catch (ListException e)
+			{
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(me, "Fehler bei öffnen der Liste " + listName + ":\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(me, "Kann Datei nicht lesen:\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			sd.setBarMaximum((int)new File(path).length());
+			int bytes = 0;
+			
+			while(true)
+			{
+				if(stop)
+					break;
+				String line;
+				try
+				{
+					line = reader.readLine();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+					return;
+				}				
+				if(line == null)
+					break;
+				
+				bytes += line.length();
+				sd.setBarPosition(bytes);
+				
+				String [] sl = line.split("\"");
+				if(sl.length >= 3)
+				{
+					String filePath = sl[1];
+					try
+					{
+						sd.setLabel(filePath);
+						list.add(basics.Controller.getInstance().getListProvider().assignTrack(new Track(filePath, false)));
+					}
+					catch (ListException ignored)
+					{
+						ignored.printStackTrace();
+						break;
+					}
+				}
+			}}
+
+		@Override
+		public void stopTask()
+		{
+			stop = true;
+		}
+	}
+	
+	private class addPdj2LastPlayedList implements StatusSupportedFunction
+	{
+		private final String path;
+		private final String listName;
+		private boolean stop = false;
+		
+		public addPdj2LastPlayedList(String path, String listName)
+		{
+			this.path = path;
+			this.listName = listName;
+		}
+		
+		public void runFunction(StatusDialog sd)
+		{
+			EditableListModel list;
+			BufferedReader reader;
+			try
+			{
+				list = Controller.getInstance().getListProvider().getDbList(listName);
+				reader = new BufferedReader(new FileReader(path));
+			}
+			catch (ListException e)
+			{
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(me, "Fehler bei öffnen der Liste " + listName + ":\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(me, "Kann Datei nicht lesen:\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			List<String> fileList = new ArrayList<String>();
+			
+			while(true)
+			{
+				if(stop)
+					break;
+				String line;
+				try
+				{
+					line = reader.readLine();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+					return;
+				}
+				if(line == null)
+					break;
+				String [] sl = line.split("\"");
+				if(sl.length >= 3)
+				{
+					String filePath = sl[1];
+					sd.setLabel(filePath);
+					fileList.add(filePath);
+				}
+			}
+			int min = fileList.size() > 100 ? fileList.size() - 100 : 0;
+			int max = fileList.size();
+			
+			sd.setBarMaximum(max - min);
+			
+			for(int i = min; i < max; i++)
+			{
+				if(stop)
+					break;
+				sd.setBarPosition(i - min);
+				sd.setLabel(fileList.get(i));
+				try
+				{
+					list.add(basics.Controller.getInstance().getListProvider().assignTrack(new Track(fileList.get(i), false)));
+				}
+				catch (ListException ignored)
+				{
+					ignored.printStackTrace();
+					break;
+				}
+			}
+		}
+
+		@Override
+		public void stopTask()
+		{
+			stop = true;
+		}
+	}
 }

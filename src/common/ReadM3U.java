@@ -19,7 +19,7 @@ public class ReadM3U
 	{
 		int count = 0;
 		int bytes = 0;
-		
+
 		BufferedReader reader;
 		try
 		{
@@ -31,6 +31,7 @@ public class ReadM3U
 			JOptionPane.showMessageDialog(sd, "Kann Datei nicht öffnen:\n" + filePath + "\n\n" + e.getMessage(), "M3U Lesen", JOptionPane.ERROR_MESSAGE);
 			return 0;
 		}
+
 		sd.setBarMaximum((int)new File(filePath).length());
 		sd.setLabel("Beginne.");
 		while (!rep.isStopped())

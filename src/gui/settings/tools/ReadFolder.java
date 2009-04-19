@@ -15,10 +15,12 @@ public class ReadFolder implements StatusSupportedFunction
 	private final String folderPath;
 	private int count = 0;
 	private boolean goOn = true;
+	private final boolean searchSubFolders;
 
-	public ReadFolder(String path)
+	public ReadFolder(String path, boolean subFolders)
 	{
 		folderPath = path;
+		searchSubFolders = subFolders;
 	}
 	
 	public void runFunction(StatusDialog sd)
@@ -26,7 +28,7 @@ public class ReadFolder implements StatusSupportedFunction
 		sd.setBarMaximum(Integer.MAX_VALUE);
 	
 		sd.setLabel("Beginne.");
-		search(new File(folderPath), 0, 1, sd);
+		search(new File(folderPath), 0, 1, sd, searchSubFolders);
 
 		sd.setLabel("Fertig.");
 
@@ -36,7 +38,7 @@ public class ReadFolder implements StatusSupportedFunction
 	/**@param progress Bisheriger Vortschritt zwischen 0 und 1
 	 * @param ratio Anteil am Vortschritt zwischen 0 und 1
 	 */
-	private void search(File folder, double progress, double ratio, StatusDialog sd)
+	private void search(File folder, double progress, double ratio, StatusDialog sd, boolean subFolders)
 	{
 		if(!goOn)
 			return;
@@ -53,24 +55,27 @@ public class ReadFolder implements StatusSupportedFunction
 			addTrack(folder + System.getProperty("file.separator") + file, sd);
 		}
 		
-		File[] folders = folder.listFiles(new FileFilter (){
-			public boolean accept(File file)
-			{
-				return file.isDirectory();
-			}});
-		int folderCount = folders.length + 1;
-		ratio /= folderCount;
-		
-		progress += ratio;
-		sd.setBarPosition((int)(Integer.MAX_VALUE * progress));
-		
-		for(File subFolder : folders)
+		if(subFolders)
 		{
-			if(!goOn)
-				return;
+			File[] folders = folder.listFiles(new FileFilter (){
+				public boolean accept(File file)
+				{
+					return file.isDirectory();
+				}});
+			int folderCount = folders.length + 1;
+			ratio /= folderCount;
 			
-			search(subFolder, progress, ratio, sd);
 			progress += ratio;
+			sd.setBarPosition((int)(Integer.MAX_VALUE * progress));
+			
+			for(File subFolder : folders)
+			{
+				if(!goOn)
+					return;
+				
+				search(subFolder, progress, ratio, sd, subFolders);
+				progress += ratio;
+			}
 		}
 	}
 	

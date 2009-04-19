@@ -56,6 +56,7 @@ public class Track implements Serializable, Comparable<Track>
 		path = filePath;
 		name = file.getName();
 		name = name.substring(0, name.lastIndexOf('.'));
+		problem = Problem.NONE;
 		if(file.exists())
 		{
 			if(readDuration)
@@ -67,14 +68,14 @@ public class Track implements Serializable, Comparable<Track>
 				catch (PlayerException ignore)
 				{
 					duration = 0;
-					problem = Track.Problem.CANT_PLAY;
+					problem = Problem.CANT_PLAY;
 				}
 			}
 			size = file.length();
 		}
 		else
 		{
-			problem = Track.Problem.FILE_NOT_FOUND;
+			problem = Problem.FILE_NOT_FOUND;
 		}
 		info = null;
 	}

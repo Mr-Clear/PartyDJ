@@ -350,6 +350,7 @@ public class Controller
 	 */
 	public void unregisterWindow(Frame window)
 	{
+		//System.out.println("unregister " + window.getTitle());
 		windows.remove(window);
 		window.dispose();
 		if(windows.isEmpty())

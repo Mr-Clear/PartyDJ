@@ -39,15 +39,15 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 	private JLabel time;
 	Timer showTimeTimer;
 
-	public StatusDialog(String title, Frame frame, StatusSupportedFunction init) 
+	public StatusDialog(String title, Frame owner, StatusSupportedFunction init) 
 	{
-		super(frame);
+		super(owner);
 		initialiser = init;
 
 		DialogListener dialogListener = new DialogListener();
 		this.addWindowListener(dialogListener);
 		this.addComponentListener(dialogListener);
-		this.setLocationRelativeTo(frame);
+		this.setLocationRelativeTo(owner);
 		this.setResizable(true);
 		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 155));
 		this.setMinimumSize(new Dimension(100, 155));
@@ -56,7 +56,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 		this.setModalityType(ModalityType.DOCUMENT_MODAL);
 		initGUI();
 		thread = new StatusThread();
-		thread.setUncaughtExceptionHandler(this);
+		//thread.setUncaughtExceptionHandler(this);
 		thread.start();
 		
 		showTimeTimer = new Timer(100, new ActionListener(){
@@ -217,7 +217,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 
 	public void uncaughtException(Thread t, Throwable e)
 	{
-		JOptionPane.showMessageDialog(me, "Fehler aufgetreten:\n" + e.getMessage(), "Status Dialog", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(me, "Fehler in " + t + " aufgetreten:\n" + e.getMessage(), "Status Dialog", JOptionPane.ERROR_MESSAGE);
 		dispose();
 	}
 }

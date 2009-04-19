@@ -1,17 +1,22 @@
 package _test;
 
-import java.io.File;
+import java.io.IOException;
+import java.util.prefs.BackingStoreException;
 
 public class Tests
 {
 
 	/**
 	 * @param args
+	 * @throws IOException 
+	 * @throws BackingStoreException 
 	 */
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException
 	{
-		File f = new File("C:\\ding");
-		System.out.println(f.compareTo(new File("C:/Dang")));
+		System.out.println(new java.io.File("C:\\Test").hashCode());
+		System.out.println(new java.io.File("C:/a/../Test").hashCode());
+		System.out.println("C:\\Test".hashCode());
+		System.out.println("C:\\TEST".hashCode());
 	}
 	
 	static double f(int i)
