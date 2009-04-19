@@ -111,7 +111,9 @@ public class DebugWindow extends javax.swing.JFrame
 								{
 									for(int i = 1; i <= cCount; i++)
 									{
-										content.append(rs.getObject(i).toString().replace("\"", "\"\""));
+										Object o = rs.getObject(i);
+										if(o != null)
+											content.append(o.toString().replace("\"", "\"\""));
 										if(i <= cCount - 1)
 											content.append(';');
 									}
