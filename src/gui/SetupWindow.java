@@ -128,7 +128,7 @@ public class SetupWindow extends javax.swing.JFrame
 			        chooser.setFileFilter(new FileFilter(){
 						public boolean accept(File f)
 						{
-							return f.isFile() && f.getName().equalsIgnoreCase("PartyDJ.exe");
+							return f.isDirectory() || (f.isFile() && f.getName().equalsIgnoreCase("Party DJ.exe"));
 						}
 						public String getDescription(){return null;}
 						});

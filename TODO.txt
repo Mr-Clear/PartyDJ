@@ -1,15 +1,15 @@
 Track-Info auslesen...
-Listen optimieren
 Andere GUI-APIs anschauen..
-PopupMenu fertig machen.
+PopupMenu verschönern
 Add Liste.
-ini-Datei.
-Autoplay.
+ini-Datei..
+Autoplay einstellbar
 ClassicWindow sinnvolle Fehlermeldungen wenn die Listen nicht gehen.
-ComboBoxen von gui.settings.MasterList fixen.
-Funktion der Maustasten in PDJList wählbar
+Funktion der Maustasten in PDJList wählbar?
 ?data.derby.DerbyDB Events vervollständigen.
 Error Reporter.
+Tasten
+EnsureVisible
 
 [Mal merken]
 System LookAndFeel:
