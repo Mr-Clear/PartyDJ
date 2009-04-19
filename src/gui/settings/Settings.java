@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import data.IData;
+import data.ListAdapter;
+import data.SettingListener;
 import lists.ListException;
 import basics.Controller;
 
@@ -108,17 +112,23 @@ public class Settings  extends JPanel
 			int skipped = 0;
 			
 			Map<Integer, JSpinner> spinners = new HashMap<Integer, JSpinner>(4);
-			
+			Map<String, JSpinner> namedSp = new HashMap<String, JSpinner>(4);
+			PriorityListener prListener = new PriorityListener(namedSp, listTable);
 			JSpinner spinner = new JSpinner(new SpinnerNumberModel(1, 0, 100, 1));
+			
 			spinner.setValue(Integer.parseInt(data.readSetting("MasterListPriority", "1")));
 			spinner.addChangeListener(new SpinnerListener("Hauptliste"));
 			spinners.put(0, spinner);
+			namedSp.put("MasterListPriority", spinner);
 			listTable.setValueAt("Hauptliste", 0, 0);
+			
+			data.addListListener(prListener);
+			data.addSettingListener(prListener);
 			for(int i = 1; i <= listNames.size(); i++)
 			{
 				String list = listNames.get(i - 1);
 				
-				if(list.equalsIgnoreCase("lastplayed"))
+				if(list.equals(basics.Controller.getInstance().getLastPlayedName()))
 				{
 					skipped++;
 				}
@@ -128,6 +138,7 @@ public class Settings  extends JPanel
 					sp.setValue(data.getListPriority(list));
 					sp.addChangeListener(new SpinnerListener(list));
 					spinners.put(i - skipped, sp);
+					namedSp.put(list, sp);
 					listTable.setValueAt(list , i - skipped, 0);
 				}
 			}
@@ -174,6 +185,55 @@ public class Settings  extends JPanel
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+		}
+	}
+	
+	class TableListener implements ComponentListener
+	{
+		@Override
+		public void componentHidden(ComponentEvent e){}
+
+		@Override
+		public void componentMoved(ComponentEvent e){}
+
+		@Override
+		public void componentResized(ComponentEvent e)
+		{
+			if(e.getSource() instanceof JTable)
+			{
+			}
+		}
+
+		@Override
+		public void componentShown(ComponentEvent e){}
+		
+	}
+	
+	class PriorityListener extends ListAdapter implements SettingListener
+	{
+		private Map<String, JSpinner> spinners;
+		private JTable table;
+
+		public PriorityListener(Map<String, JSpinner> spinners, JTable table)
+		{
+			this.spinners = spinners;
+			this.table = table;
+		}
+
+		public void listPriorityChanged(String listName, int newPriority)
+		{
+			spinners.get(listName).setValue(newPriority);
+			table.repaint();
+		}
+
+		@Override
+		public void settingChanged(String name, String value)
+		{
+			if(spinners.get(name) != null)
+			{
+				spinners.get(name).setValue(Integer.parseInt(value));
+				table.repaint();
 			}
 		}
 	}
