@@ -35,7 +35,6 @@ public class SetupWindow extends javax.swing.JFrame
 	private JToggleButton addFolder;
 	private JButton close;
 	private JToggleButton importPDJ;
-	private final SetupWindow me = this;
 	
 	public SetupWindow() 
 	{
@@ -80,7 +79,7 @@ public class SetupWindow extends javax.swing.JFrame
 			        if(filePath.toLowerCase().endsWith(".m3u"))
 			        {
 						data.writeSetting("PlayListDirectory", file.getParent());
-			        	new StatusDialog("Lese M3U", me, new gui.settings.tools.AddM3U(filePath));
+			        	new StatusDialog("Lese M3U", SetupWindow.this, new gui.settings.tools.AddM3U(filePath));
 			        }
 			        else
 				    {
@@ -113,7 +112,7 @@ public class SetupWindow extends javax.swing.JFrame
 					File folder = chooser.getSelectedFile();
 					String folderPath = folder.getPath();
 					
-					new StatusDialog("Lese Verzeichnisse", me, new gui.settings.tools.ReadFolder(folderPath, true));
+					new StatusDialog("Lese Verzeichnisse", SetupWindow.this, new gui.settings.tools.ReadFolder(folderPath, true));
 				}});
 		}
 		{
@@ -149,7 +148,7 @@ public class SetupWindow extends javax.swing.JFrame
 			close.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0)
 				{
-					controller.unregisterWindow(me);
+					controller.unregisterWindow(SetupWindow.this);
 				}});
 		}
 		thisLayout.setVerticalGroup(thisLayout.createSequentialGroup()
@@ -197,7 +196,7 @@ public class SetupWindow extends javax.swing.JFrame
 		}
 		catch (FileNotFoundException e)
 		{
-			JOptionPane.showMessageDialog(me, "Kann Quelle.lst nicht lesen:\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(SetupWindow.this, "Kann Quelle.lst nicht lesen:\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		while(true)
@@ -224,7 +223,7 @@ public class SetupWindow extends javax.swing.JFrame
 			        if(path.toLowerCase().endsWith(".m3u"))
 			        {
 						data.writeSetting("PlayListDirectory", new File(path).getParent());
-			        	new StatusDialog("Lese M3U", me, new gui.settings.tools.AddM3U(path));
+			        	new StatusDialog("Lese M3U", SetupWindow.this, new gui.settings.tools.AddM3U(path));
 			        }
 			        else
 				    {
@@ -253,17 +252,17 @@ public class SetupWindow extends javax.swing.JFrame
 			}
 		}
 		
-		new StatusDialog("Lese Playlist", me, new addPdj2List(root + "\\Playlist.lst", "Playlist"));
-		new StatusDialog("Lese Wunschliste 1/2", me, new addPdj2List(root + "\\Zurück.lst", "Wunschliste"));
-		new StatusDialog("Lese Wunschliste 2/2", me, new addPdj2List(root + "\\Wunsch.lst", "Wunschliste"));
+		new StatusDialog("Lese Playlist", SetupWindow.this, new addPdj2List(root + "\\Playlist.lst", "Playlist"));
+		new StatusDialog("Lese Wunschliste 1/2", SetupWindow.this, new addPdj2List(root + "\\Zurück.lst", "Wunschliste"));
+		new StatusDialog("Lese Wunschliste 2/2", SetupWindow.this, new addPdj2List(root + "\\Wunsch.lst", "Wunschliste"));
 		
-		new StatusDialog("Lese LastPlayed", me, new addPdj2LastPlayedList(root + "\\Alt.lst", Controller.getInstance().getLastPlayedName()));
+		new StatusDialog("Lese LastPlayed", SetupWindow.this, new addPdj2LastPlayedList(root + "\\Alt.lst", Controller.getInstance().getLastPlayedName()));
 		/*addPdj2List(root + "\\Playlist.lst", "Playlist");
 		addPdj2List(root + "\\Zurück.lst", "Wunschliste");
 		addPdj2List(root + "\\Wunsch.lst", "Wunschliste");
 		addPdj2LastPlayedList(root + "\\Alt.lst", Controller.getInstance().getLastPlayedName());*/
 		
-		JOptionPane.showMessageDialog(me, "Import beendet.", "Importieren", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(SetupWindow.this, "Import beendet.", "Importieren", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	private class addPdj2List implements StatusSupportedFunction
@@ -290,13 +289,13 @@ public class SetupWindow extends javax.swing.JFrame
 			catch (ListException e)
 			{
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(me, "Fehler bei öffnen der Liste " + listName + ":\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SetupWindow.this, "Fehler bei öffnen der Liste " + listName + ":\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			catch (FileNotFoundException e)
 			{
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(me, "Kann Datei nicht lesen:\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SetupWindow.this, "Kann Datei nicht lesen:\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			
@@ -371,13 +370,13 @@ public class SetupWindow extends javax.swing.JFrame
 			catch (ListException e)
 			{
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(me, "Fehler bei öffnen der Liste " + listName + ":\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SetupWindow.this, "Fehler bei öffnen der Liste " + listName + ":\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			catch (FileNotFoundException e)
 			{
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(me, "Kann Datei nicht lesen:\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SetupWindow.this, "Kann Datei nicht lesen:\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			

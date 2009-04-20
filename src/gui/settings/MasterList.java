@@ -241,7 +241,7 @@ public class MasterList extends JPanel
 		add(box);		
 	}
 	
-	class ListParameterActionListener implements ActionListener
+	private class ListParameterActionListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
 		{
