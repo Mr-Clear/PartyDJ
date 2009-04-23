@@ -18,7 +18,11 @@ import javax.swing.JTable;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import data.IData;
@@ -40,7 +44,7 @@ public class Settings  extends JPanel
 	{
 		GridBagLayout layout = new GridBagLayout();
 		GridBagConstraints con = new GridBagConstraints();
-		
+
 		setLayout(layout);
 		con.anchor = GridBagConstraints.NORTHWEST;
 		con.insets = new Insets(0, 0, 0, 0);
@@ -117,6 +121,12 @@ public class Settings  extends JPanel
 			spinner.addChangeListener(new SpinnerListener("Hauptliste"));
 			spinners.put(0, spinner);
 			namedSp.put("MasterListPriority", spinner);
+			
+			listTable.getColumnModel().addColumnModelListener(new ColumnListener());
+			String[] width = data.readSetting("ColumnSize", "@407@91@138").split("@");
+			for(int i = 0; i < 3; i++)
+				listTable.getColumnModel().getColumn(i).setPreferredWidth(Integer.parseInt(width[i + 1]));
+			
 			listTable.setValueAt("Hauptliste", 0, 0);
 			data.addListListener(prListener);
 			data.addSettingListener(prListener);
@@ -176,7 +186,6 @@ public class Settings  extends JPanel
 						Controller.getInstance().getData().writeSetting("MasterListPriority", ((JSpinner)ce.getSource()).getValue().toString());
 						return;
 					}
-					System.out.println(name + "   " + (Integer)((JSpinner)ce.getSource()).getValue());
 					Controller.getInstance().getData().setListPriority(name, (Integer)((JSpinner)ce.getSource()).getValue());
 				}
 				catch (ListException e)
@@ -188,26 +197,35 @@ public class Settings  extends JPanel
 		}
 	}
 	
-	/*class TableListener implements ComponentListener
+	class ColumnListener implements TableColumnModelListener
 	{
-		@Override
-		public void componentHidden(ComponentEvent e){}
+			@Override
+			public void columnAdded(TableColumnModelEvent e){}
 
-		@Override
-		public void componentMoved(ComponentEvent e){}
-
-		@Override
-		public void componentResized(ComponentEvent e)
-		{
-			if(e.getSource() instanceof JTable)
+			@Override
+			public void columnMarginChanged(ChangeEvent e)
 			{
+				if(e.getSource() instanceof DefaultTableColumnModel)
+				{
+					String val = "";
+					for(int i = 0; i < 3; i++)
+					{
+						int size = ((DefaultTableColumnModel)e.getSource()).getColumn(i).getPreferredWidth();
+						val += (char) 64 + String.valueOf(size);
+					}
+					Controller.getInstance().getData().writeSetting("ColumnSize", val);
+				}
 			}
-		}
 
-		@Override
-		public void componentShown(ComponentEvent e){}
-		
-	}*/
+			@Override
+			public void columnMoved(TableColumnModelEvent e){}
+
+			@Override
+			public void columnRemoved(TableColumnModelEvent e){}
+
+			@Override
+			public void columnSelectionChanged(ListSelectionEvent e){}
+	}
 	
 	class PriorityListener extends ListAdapter implements SettingListener
 	{
