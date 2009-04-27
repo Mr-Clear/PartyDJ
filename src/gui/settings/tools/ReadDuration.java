@@ -6,6 +6,16 @@ import gui.StatusDialog.StatusSupportedFunction;
 import players.PlayerException;
 import common.Track;
 
+/**
+ * Liest die Dauer von Tracks ein.
+ * <br>Die Tracks werden im Konstruktor in einem Array übergeben.
+ * <br>List die Dauer auch ein, wenn die Tracks bereits eine Dauer > 0 haben.
+ * 
+ * @author Eraser, Sam
+ * 
+ * @see StatusSupportedFunction
+ * @see StatusDialog
+ */
 public class ReadDuration implements StatusSupportedFunction
 {
 	private boolean goOn = true;

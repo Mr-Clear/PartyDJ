@@ -22,7 +22,14 @@ import javax.swing.JProgressBar;
 import javax.swing.LayoutStyle;
 import javax.swing.Timer;
 
-
+/**
+ * Führt eine Aufgabe vom Typ StatusSupportedFunction aus,
+ * und zeigt den Fortschritt der Aufgabe an.
+ * 
+ * @author Sam, Eraser
+ * 
+ * @see StatusSupportedFunction
+ */
 public class StatusDialog extends javax.swing.JDialog implements UncaughtExceptionHandler
 {
 	private static final long serialVersionUID = -7585629827078152783L;
@@ -178,7 +185,15 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 			dispose();
 		}
 	}
-		
+	
+	/**
+	 * Funktionen die mit StatusDialog ausgegeben werden, müssen in Klassen sein,
+	 * sie von diesem Interface abgeleitet sind.
+	 * 
+	 * @author Eraser
+	 * 
+	 * @see StatusDialog
+	 */
 	public interface StatusSupportedFunction
 	{
 		public void runFunction(StatusDialog sd);

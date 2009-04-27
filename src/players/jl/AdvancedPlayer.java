@@ -20,9 +20,9 @@ import javazoom.jl.decoder.SampleBuffer;
 import javazoom.jl.player.AudioDevice;
 
 /**
- * Simple MP3-Player with advanced Features
+ * Player zum Wiedergeben eines Tracks.
  * 
- * @author Sam
+ * @author Sam, Eraser
  */
 public class AdvancedPlayer
 {
@@ -31,7 +31,6 @@ public class AdvancedPlayer
 	private Bitstream bitStream;
 	private Decoder decoder;
 	private SoundAudioDevice audio;
-	//private PlayerThread startThread;
 	private JLPlayer jlPlayer;
 	private boolean paused = false;
 	private static String durationPath;

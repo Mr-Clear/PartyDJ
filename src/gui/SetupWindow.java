@@ -26,7 +26,13 @@ import lists.ListException;
 import common.Track;
 import data.IData;
 
-
+/**
+ * Fenster das beim ersten Start des PartyDJ angezeigt wird.
+ * <p>Ermöglicht es dem Benutzer Tracks hinzu zu fügen.
+ * 
+ * @author Eraser
+ *
+ */
 public class SetupWindow extends javax.swing.JFrame
 {
 	private static final long serialVersionUID = 8084307658077082675L;

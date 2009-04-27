@@ -7,6 +7,14 @@ import basics.Controller;
 import common.Track;
 import data.SortOrder;
 
+/**
+ * Gibt Suchergebnise aus der Hauptliste aus.
+ * <br>Die Suchparameter können im Konstruktor übergeben werden und nachträglich geändert werden.
+ * 
+ * @author Eraser
+ * 
+ * @see BasicListModel
+ */
 public class SearchListModel extends BasicListModel
 {
 	private String searchString = "";

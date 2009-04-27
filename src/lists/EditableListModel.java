@@ -2,6 +2,13 @@ package lists;
 
 import common.Track;
 
+/**
+ * Erweitert das TrackListModel um Funktionen zur Manipulation der Listen.
+ * 
+ * @author Eraser
+ *
+ * @see TrackListModel
+ */
 public interface EditableListModel extends TrackListModel 
 {
 	/**Fügt einen Track am Ende der Liste ein.

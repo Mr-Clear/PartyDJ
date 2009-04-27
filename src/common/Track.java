@@ -6,6 +6,12 @@ import java.io.Serializable;
 import players.PlayerException;
 import basics.Controller;
 
+/**
+ * Stellt einen Titel mit seinen Eigenschaften dar.
+ * <p>Die eigenschaften sind veränderlich.
+ * 
+ * @author Eraser
+ */
 public class Track implements Serializable, Comparable<Track>
 {
 	private static final long serialVersionUID = -4142764593365608567L;

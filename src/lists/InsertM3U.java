@@ -5,6 +5,15 @@ import gui.StatusDialog.StatusSupportedFunction;
 import common.Reporter;
 import common.Track;
 
+/**
+ * Fügt eine M3U-Datei in eine Liste ein.
+ * 
+ * @author Eraser
+ *
+ * @see common.ReadM3U
+ * @see StatusSupportedFunction
+ * @see Reporter
+ */
 public class InsertM3U implements StatusSupportedFunction, Reporter<Track>
 {
 	private final String path;

@@ -1,7 +1,18 @@
 package common;
 
+/**
+ * Stellt allgemeine Funktionen bereit.
+ * 
+ * @author Eraser
+ */
 public class Functions
 {
+	/**
+	 * Formatert eine Zeit im Format 00:00.
+	 * 
+	 * @param time Die zu formatierende Zeit in Sekunden.
+	 * @return Die Zeit als String formatiert.
+	 */
 	public static String formatTime(double time)
 	{
         long seconds = (long)Math.round(time);
@@ -66,7 +77,10 @@ public class Functions
 		return sb.toString(); 
 	}
 
-	
+	/**
+	 * Gibt den Ordner zurück in dem der PartyDJ arbeitet.
+	 * ISt normalerweise nicht das Verzeichnis in dem der PartyDJ selbst steht. 
+	 */
 	public static String getFolder()
 	{
 		javax.swing.JFileChooser fr = new javax.swing.JFileChooser();

@@ -1,5 +1,9 @@
 package gui.dnd;
 
+/**
+ * 
+ * @author Sam
+ */
 public enum ListDropMode
 {
 	NONE,
@@ -7,5 +11,4 @@ public enum ListDropMode
 	MOVE,
 	DELETE,
 	COPY_OR_MOVE,
-	
 }

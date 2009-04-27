@@ -22,6 +22,14 @@ import basics.Controller;
 import common.Track;
 import common.Track.Problem;
 
+/**
+ * Kleiner Dialog über den die Eigenschaften eines Tracks angezeigt
+ * und bearbeitet werden können.
+ * 
+ * @author Eraser
+ * 
+ * @see Track
+ */
 public class EditTrackWindow extends JDialog
 {
 	private static final long serialVersionUID = -2570515444243311682L;

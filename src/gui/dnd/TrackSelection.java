@@ -6,6 +6,10 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import common.Track;
 
+/**
+ * 
+ * @author Sam
+ */
 public class TrackSelection implements Transferable
 {
 	private final Object[] trackArray;

@@ -30,7 +30,6 @@ import lists.TrackListModel;
  * Grafische Benutzeroberfläche für Party DJ.
  * 
  * @author Sam
- * @version 0.0
  */
 
 

@@ -19,7 +19,8 @@ import data.IData;
 import data.SettingException;
 
 
-/**Einfacher Player.
+/**
+ * Einfacher Player.
  * 
  * Verwendet JMF.
  * Keine Lautstärkenänderung.

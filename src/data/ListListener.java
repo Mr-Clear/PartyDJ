@@ -2,7 +2,8 @@ package data;
 
 import common.Track;
 
-/**Empfängt Änderungen in den Listen.
+/**
+ * Empfängt Änderungen in den Listen.
  * 
  * @author Eraser
  */

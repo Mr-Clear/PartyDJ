@@ -6,6 +6,20 @@ import javax.swing.*;
 import javax.swing.tree.TreePath;
 import basics.Controller;
 
+/**
+ * Zeigt die Einstellungen des PartyDJ an.
+ * <p>Das Fenster wird geteit duch eine vertikales JSplitPane.
+ * <p>Auf der linken Seite ist ein JTree mit Knoten vom Typ SettingNode.
+ * <br>Die Knoten enthalten Verweise auf Komponenten die angezeigt werden,
+ * wenn auf den Knoten geklickt wird.
+ * <p>Auf der rechten Seite ist der SettingContainer, der die in den SettingNodes
+ * angegebenen Komponenten anzeigt.  
+ * 
+ * @author Eraser
+ * 
+ * @see SettingNode
+ * @see SettingContainer
+ */
 public class SettingWindow extends JFrame
 {
 	private static final long serialVersionUID = -6606890610202063266L;

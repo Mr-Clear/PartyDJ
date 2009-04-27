@@ -31,7 +31,17 @@ import data.SettingListener;
 import lists.ListException;
 import basics.Controller;
 
-public class Settings  extends JPanel
+//TODO JavaDoc
+//TODO Sinnvollen Namen für die Klasse finden.
+
+/**
+ * Einstellungen für die Listen.
+ * 
+ * @author Sam
+ * 
+ * @see SettingWindow
+ */
+public class Settings extends JPanel
 {
 	private static final long serialVersionUID = -6987892133947674516L;
 	

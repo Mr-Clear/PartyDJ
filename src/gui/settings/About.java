@@ -8,6 +8,13 @@ import javax.swing.JPanel;
 import data.SettingException;
 import basics.Controller;
 
+/**
+ * Setting-Panel das zuerst angezeit wird, wenn man die Einstellungen aufruft.
+ * 
+ * @author Eraser
+ * 
+ * @see SettingWindow
+ */
 public class About extends JPanel
 {
 	private static final long serialVersionUID = -4737289310199796273L;

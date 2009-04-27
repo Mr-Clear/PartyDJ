@@ -2,6 +2,10 @@ package gui.dnd;
 
 import java.awt.event.MouseEvent;
 
+/**
+ * 
+ * @author Sam
+ */
 public class DragEvent
 {
 	public static MouseEvent dge;

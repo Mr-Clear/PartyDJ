@@ -8,6 +8,16 @@ import gui.StatusDialog.StatusSupportedFunction;
 import lists.ListException;
 import basics.Controller;
 
+/**
+ * Liest eine M3U-Datei und fügt die Tracks der Hauptliste hinzu.
+ * 
+ * @author Eraser
+ *
+ * @see common.ReadM3U
+ * @see StatusSupportedFunction
+ * @see StatusDialog
+ * @see Reporter
+ */
 public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 {
 	private final String filePath;

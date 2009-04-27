@@ -2,6 +2,12 @@ package data;
 
 import common.Track;
 
+/**
+ * Empfängt Änderungen in den Listen.
+ * <br>Alle Funktionen sind mit leerem Rumpf implementiert.
+ * 
+ * @author Eraser
+ */
 public abstract class ListAdapter implements ListListener
 {
 	public void trackAdded(Track track){}

@@ -24,6 +24,11 @@ import players.IPlayer;
 import players.PlayStateAdapter;
 import basics.Controller;
 
+/**
+ * Zeigt den aktuelen Titel + Zeiten + Fortschrittsbalken an.
+ * 
+ * @author Eraser, Sam
+ */
 public class PDJSlider extends JPanel
 {
 	private static final long serialVersionUID = -4711501280677705114L;

@@ -8,6 +8,19 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import gui.StatusDialog;
 
+//TODO Mehrere Dateiformate.
+//TODO Geht auch ohne Status.
+
+/**
+ * Liest M3U-Dateien.
+ * <p>Die gefundenen Tracks werden an ein Objekt vom Typ Reporter<Track> gesendet.
+ * <p>Der Status wird auf einem StatusDialog ausgegeben.
+ * 
+ * @author Eraser
+ * 
+ * @see Reporter
+ * @see StatusDialog
+ */
 public class ReadM3U
 {
 	public static int readM3U(String filePath, Reporter<Track> rep, StatusDialog sd)

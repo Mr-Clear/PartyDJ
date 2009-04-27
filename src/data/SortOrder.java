@@ -1,5 +1,10 @@
 package data;
 
+/**
+ * Gibt an nach was die Datenbank ihre Ausgabe sortieren soll.
+ * 
+ * @author Eraser
+ */
 public enum SortOrder
 {
 	NONE,

@@ -14,6 +14,13 @@ import lists.ListException;
 import common.*;
 import data.*;
 
+/**
+ * Speichert Einstellungen und Listen in einer Derby-Datenbank.
+ * 
+ * @author Eraser
+ * 
+ * @see IData
+ */
 public class DerbyDB implements IData, CloseListener
 {
 	Connection conn = null;

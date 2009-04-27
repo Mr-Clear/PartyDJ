@@ -12,7 +12,12 @@ import javax.swing.JPanel;
 import javax.swing.JWindow;
 
 
-
+/**
+ * Splash-Fenster das wärend dem Start des PartyDJ angezeigt wird.
+ * 
+ * @author Eraser
+ *
+ */
 public class SplashWindow extends JWindow
 {
 	private static final long serialVersionUID = 2036905786871782351L;

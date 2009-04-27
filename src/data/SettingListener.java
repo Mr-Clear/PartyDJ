@@ -1,6 +1,7 @@
 package data;
 
-/**Der SettingListener empfängt Änderungen der Einstellungen.
+/**
+ * Der SettingListener empfängt Änderungen der Einstellungen.
  * 
  * @author Eraser
  */

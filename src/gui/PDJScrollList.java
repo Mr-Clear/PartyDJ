@@ -5,6 +5,13 @@ import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import lists.TrackListModel;
 
+/**
+ * Bettet die PLJList in ein JScollPane ein.
+ * 
+ * @author Eraser
+ * 
+ * @see PDJList
+ */
 public class PDJScrollList extends JScrollPane
 {
 	private static final long serialVersionUID = -3341295051902533709L;

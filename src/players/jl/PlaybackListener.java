@@ -1,5 +1,13 @@
 package players.jl;
 
+/**
+ * Nachrichten vom AdvancedPlayer an JLPlayer.
+ * 
+ * @author Eraser
+ * 
+ * @see JLPlayer
+ * @see AdvancedPlayer
+ */
 public interface PlaybackListener
 {
 	void playbackFinished(AdvancedPlayer source, Reason reason);

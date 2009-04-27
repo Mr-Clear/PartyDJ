@@ -10,10 +10,12 @@ import basics.Controller;
 import common.Track;
 import data.ListAdapter;
 
-/**Stellt die grundlegenden Funktion einer TrackList dar.
+/**
+ * Stellt die grundlegenden Funktion einer TrackList dar.
  * 
  * @author Eraser
  *
+ * @see TrackListModel
  */
 abstract class BasicListModel extends ListAdapter implements TrackListModel, PlayStateListener
 {

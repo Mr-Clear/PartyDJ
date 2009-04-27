@@ -25,6 +25,15 @@ import lists.ListException;
 import lists.TrackListModel;
 import common.Track;
 
+/**
+ * Von JList abgeleitete Liste, die Tracks aufnimmt.
+ * <br>Von den Tracks wird der Name und die Dauer angezeigt.
+ * <br>Unterstützt Drag and Drop.
+ * 
+ * @author Sam, Eraser
+ * 
+ * @see TrackRenderer
+ */
 public class PDJList extends JList
 {
 	private static final long serialVersionUID = -8653111853374564564L;

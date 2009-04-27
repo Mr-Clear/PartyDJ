@@ -3,6 +3,11 @@ package players;
 import common.Track;
 import basics.PlayerContact;
 
+/**
+ * Schnittstelle zu einem Player, der die Tracks wiedergibt.
+ * 
+ * @author Eraser
+ */
 public interface IPlayer
 {
 	/** Lädt den angegebenen Track, ohne ihn abzuspielen */

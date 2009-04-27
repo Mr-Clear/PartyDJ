@@ -10,6 +10,14 @@ import basics.Controller;
 import lists.ListException;
 import common.Track;
 
+/**
+ * Durchsucht einen Ordner nach MP3-Dateien und fügt sie in die Hauptliste ein.
+ * 
+ * @author Eraser
+ *
+ * @see StatusSupportedFunction
+ * @see StatusDialog
+ */
 public class ReadFolder implements StatusSupportedFunction
 {
 	private final String folderPath;
@@ -84,6 +92,7 @@ public class ReadFolder implements StatusSupportedFunction
 		String name = path.substring(path.lastIndexOf("\\") + 1, path.lastIndexOf("."));
 		try
 		{
+			//TODO New Track(String) verwenden.
 			Track newTrack = new Track(-1, path, name, 0, new File(path).length(), Track.Problem.NONE, null);
 			Controller.getInstance().getData().addTrack(newTrack);
 			if(newTrack.index != -1)

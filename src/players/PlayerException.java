@@ -1,7 +1,11 @@
 package players;
 import common.Track.Problem;
 
-/**Tritt auf, wenn der Player einen Fehler beim Abspielen auffängt.*/
+/**
+ * Tritt auf, wenn der Player einen Fehler beim Abspielen auffängt.
+ * 
+ * @author Eraser
+ */
 public class PlayerException extends Exception
 {
 	private static final long serialVersionUID = 4289702892751764657L;

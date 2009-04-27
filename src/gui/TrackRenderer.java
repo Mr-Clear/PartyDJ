@@ -12,6 +12,14 @@ import javax.swing.ListCellRenderer;
 import basics.Controller;
 import common.Track;
 
+/**
+ * Zeichnet einen Track in eine JList.
+ * <p>Es wird der Name des Tracks linksbündig, und die Dauer rechtsbündig dargestellt.
+ * 
+ * @author Eraser, Sam
+ * 
+ * @see PDJList
+ */
 public class TrackRenderer implements ListCellRenderer
 {
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)

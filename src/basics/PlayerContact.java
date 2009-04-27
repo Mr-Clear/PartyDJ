@@ -3,7 +3,8 @@ package basics;
 import players.PlayerException;
 import common.Track;
 
-/**Ermöglicht es dem Player Daten an den PartyDJ zu senden.
+/**
+ * Ermöglicht es dem Player Daten an den PartyDJ zu senden.
  * 
  * @author Eraser
  *

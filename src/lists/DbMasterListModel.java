@@ -6,6 +6,14 @@ import common.*;
 
 import basics.Controller;
 
+/**
+ * ListModel das die Hauptliste ausgibt.
+ * 
+ * @author Eraser
+ *
+ * @see BasicListModel
+ * @see data.IData
+ */
 public class DbMasterListModel extends BasicListModel
 {
 	protected DbMasterListModel() throws ListException 
@@ -36,6 +44,7 @@ public class DbMasterListModel extends BasicListModel
 		}	
 	}
 	
+	// Verschieben zum ListProvider
 	public Track getTrackByPath(String path)
 	{
 		for(Track track : list)

@@ -10,7 +10,13 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-
+/**
+ * Gibt Daten vom DebugWindow aus.
+ * 
+ * @author Eraser
+ * 
+ * @see DebugWindow
+ */
 public class DataOutputDialog extends javax.swing.JDialog
 {
 	private static final long serialVersionUID = 1528848749329252325L;

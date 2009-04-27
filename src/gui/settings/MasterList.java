@@ -28,6 +28,13 @@ import data.IData;
 import data.SortOrder;
 import basics.Controller;
 
+/**
+ * Setting-Panel über das sie die Hauptliste verwalten lässt.
+ * 
+ * @author Eraser
+ * 
+ * @see SettingWindow
+ */
 public class MasterList extends JPanel
 {
 	private static final long serialVersionUID = 6101715371957303072L;

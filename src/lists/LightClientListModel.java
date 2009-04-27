@@ -7,6 +7,15 @@ import javax.swing.event.ListDataListener;
 import basics.Controller;
 import common.*;
 
+/**
+ * Einfache konkrete Implementierung von BasicListModel.
+ * <p>Der Inhalt wird nicht persistent gespeichert. Er geht nach beenden des PartyDJ verloren. 
+ * 
+ * @author Eraser
+ *
+ * @see BasicListModel
+ * @see EditableListModel
+ */
 public class LightClientListModel extends BasicListModel implements EditableListModel
 {
 	//private final Map<Integer, Track> masterList = Controller.getInstance().getListProvider().masterList;

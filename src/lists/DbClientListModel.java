@@ -5,6 +5,19 @@ import data.IData;
 import data.SortOrder;
 import basics.Controller;
 
+/**
+ * Erweitert das LightClientListModel um dauerhafte Speicherung des Inhalts.
+ * <p>Jede Änderung wird sofort in der Datenbank gespeichert.
+ * <br>Das macht dieses ListModel deutlich langsamer als das LightClientListModel.
+ * <p>Kann nur von ListProvider erstellt werden, um sicher zu stellen dass zu jeder Liste
+ * nur eine Instanz läuft.
+ * 
+ * @author Eraser
+ *
+ * @see ListProvider
+ * @see LightClientListModel
+ * @see IData
+ */
 public class DbClientListModel extends LightClientListModel
 {
 	private final Controller controller = Controller.getInstance();

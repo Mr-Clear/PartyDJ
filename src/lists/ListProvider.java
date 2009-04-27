@@ -6,6 +6,14 @@ import common.Track;
 import data.IData;
 import basics.Controller;
 
+/**
+ * Gibt Zugriff auf die Listen des PartyDJ.
+ * 
+ * @author Eraser
+ * 
+ * @see DbMasterListModel
+ * @see DbClientListModel
+ */
 public class ListProvider
 {
 	private final Map<Integer, Track> masterList;
@@ -45,6 +53,14 @@ public class ListProvider
 		}
 	}
 	
+	/**
+	 * Synchonisiert einen Track mit der Hauptliste.
+	 * <p>Wenn der Track in der Hauptliste existiert wird der Einrag aus der Hauptliste zurück gegeben.
+	 * <p>Wenn der Track noch nicht in der Hauptliste steht, wird er hinzu gefügt.
+	 * 
+	 * @param track Track der synchronisiert werden soll.
+	 * @return Synchronisierter Track.
+	 */
 	public Track assignTrack(Track track)
 	{
 		if(masterList.containsKey(track) && track == masterList.get(track))
@@ -61,6 +77,7 @@ public class ListProvider
 		}
 		catch (ListException e)
 		{
+			//TODO null is nix gut. 
 			return null;
 		}		
 	}

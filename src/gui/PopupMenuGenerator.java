@@ -29,8 +29,22 @@ import common.Track;
 
 //TODO Mehrfachauswahl
 
+/**
+ * Erzeugt Popup-Menüs.
+ * 
+ * @author Eraser, Sam
+ */
+
 public class PopupMenuGenerator
 {
+	/**Erzeugt ein Popup-Menü zu einer PDJList
+	 * 
+	 * @param list Liste zu der das Popupmenü gehört.
+	 * @param track Track der in dem Popupmenü behandelt wird.
+	 * @return Das Menü als PopupMenu.
+	 * 
+	 * @see PDJList
+	 */
 	public static JPopupMenu listPopupMenu(PDJList list, Track track)
 	{
 		ActionListener listener = new ListMenuItemListener(list, track);

@@ -2,7 +2,8 @@ package players;
 
 import common.Track;
 
-/**Empfängt Änderungen des Abspielzustandes. 
+/**
+ * Empfängt Änderungen des Abspielzustandes. 
  * 
  * @author Eraser
  */

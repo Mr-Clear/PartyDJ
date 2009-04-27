@@ -27,8 +27,17 @@ import lists.TrackListModel;
 import data.*;
 import data.derby.DerbyDB;
 
+/**
+ * Hauptklasse vom PartyDJ.
+ * <p>Enthält die main-Funktion.
+ * <p>Bietet Zugriff auf alle anderen wichtigen Elemente des PartyDJ.
+ * 
+ * 
+ * @author Eraser, Sam
+ */
 public class Controller
 {
+	/** Verion des PartyDJ */
 	public final String version = "3.0.0a";
 	
 	private static Controller instance;

@@ -12,6 +12,10 @@ import lists.EditableListModel;
 import lists.ListException;
 import common.Track;
 
+/**
+ * 
+ * @author Sam
+ */
 public class DragDropHandler extends TransferHandler
 {
 	private static final long serialVersionUID = 6601023550058648978L;

@@ -26,6 +26,11 @@ import data.SettingException;
 import data.SettingListener;
 import basics.Controller;
 
+/**
+ * Ermöglicht es vom PartyDJ aus direkt auf die Derby Datenbank zuzugreifen.
+ * 
+ * @author Eraser
+ */
 public class DebugWindow extends javax.swing.JFrame
 {
 	private static final long serialVersionUID = 5132578068185235035L;

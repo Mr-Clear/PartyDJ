@@ -3,6 +3,16 @@ package gui.settings;
 import java.awt.Component;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+/**
+ * Knoten im Baum der Einstellungen im SettingWindow.
+ * <p>Erweitert DefaultMutableTreeNode um eine Klasse die angezeit wird,
+ * wenn auf den Knoten geklickt wird.
+ * 
+ * @author Eraser
+ * 
+ * @see DefaultMutableTreeNode
+ * @see SettingWindow
+ */
 public class SettingNode extends DefaultMutableTreeNode
 {
 	private static final long serialVersionUID = -4450841493024896674L;

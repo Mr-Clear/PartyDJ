@@ -5,6 +5,11 @@ import lists.EditableListModel;
 import lists.ListException;
 import gui.PDJList;
 
+/**
+ * Sortiert eine PDJList mit dem Quick-Sort-Verfahren.
+ * 
+ * @author Sam
+ */
 public class Sort
 {
 	public static void quickSort(PDJList list, SortMode sm)

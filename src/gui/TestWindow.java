@@ -19,6 +19,11 @@ import data.IData;
 import data.SettingException;
 import basics.Controller;
 
+/**
+ * Testfenster zum Testen neuer Funktionen.
+ * 
+ * @author Eraser
+ */
 public class TestWindow extends JFrame 
 {
 	private static final long serialVersionUID = -3880026026104218593L;

@@ -13,12 +13,15 @@ import common.Track;
 import common.Track.Problem;
 import data.SettingException;
 
+//TODO Umblenden
 
-/**Einfacher Player.
+/**
+ * Einfacher Player.
+ * <p>Größtenteils übernommen von Java Zoom JLayer.
  * 
- * Kein umblenden.
+ * @author Sam, Eraser
  * 
- * @author Sam
+ * @see IPlayer
  */
 
 public class JLPlayer implements IPlayer, PlaybackListener

@@ -5,6 +5,12 @@ import java.util.Map;
 import lists.ListException;
 import common.Track;
 
+/**
+ * Schnittstelle zur Datenbank-Anbindung.
+ * <p>Ermöglich Zugriff auf Einstellungen und Listen.
+ * 
+ * @author Eraser
+ */
 public interface IData
 {
 	/**Speichert eine Einstellung.

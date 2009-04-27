@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import data.SettingException;
 
+/**
+ *
+ * Bringt eine veraltete Datenbank auf den neusten Stand.
+ * 
+ * @author Eraser
+ */
 public class UpdateDB
 {
 	private static String version;

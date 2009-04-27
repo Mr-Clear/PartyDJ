@@ -11,6 +11,14 @@ import javax.swing.LayoutStyle;
 import lists.ListException;
 import basics.Controller;
 
+/**
+ * Debug Hilfe.
+ * Bietet Platz für verschiedene Einstellungen.
+ * 
+ * @author Eraser
+ * 
+ * @see SettingWindow
+ */
 public class Stuff extends javax.swing.JPanel {
 	private static final long serialVersionUID = 5155888057108134828L;
 	private JButton btnDerbyDebug;
