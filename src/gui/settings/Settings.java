@@ -263,7 +263,7 @@ public class Settings  extends JPanel
 			try
 			{
 				IData data = Controller.getInstance().getData();
-				int sum = Integer.parseInt(data.readSetting("MasterListPriority"));
+				int sum = Integer.parseInt(data.readSetting("MasterListPriority", "1"));
 				int val = 0;
 				for(int i = 0; i < namedSp.size(); i++)
 				{
@@ -284,7 +284,7 @@ public class Settings  extends JPanel
 						table.setValueAt(String.format("%2.2f", (Double)percent) + "%", i, 2);
 					}
 				}
-				double per = (Double.parseDouble(data.readSetting(("MasterListPriority"))) /sum) * 100;
+				double per = (Double.parseDouble(data.readSetting("MasterListPriority", "1")) /sum) * 100;
 				table.setValueAt(String.format("%2.2f", per) + "%", 0, 2);
 			}
 			catch (ListException e)
