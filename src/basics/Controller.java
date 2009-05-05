@@ -274,8 +274,6 @@ public class Controller
 	{
 		return listProvider;
 	}
-	
-
 
 	public Track getCurrentTrack()
 	{
@@ -366,7 +364,6 @@ public class Controller
 	 */
 	public void unregisterWindow(Frame window)
 	{
-		//System.out.println("unregister " + window.getTitle());
 		windows.remove(window);
 		window.dispose();
 		if(windows.isEmpty())
@@ -394,16 +391,19 @@ public class Controller
 	public void addSettingNode(SettingNode node, String path)
 	{
 		//TODO
+		throw new UnsupportedOperationException();
 	}
 	public void removeSettingNode(SettingNode node)
 	{
 		//TODO
+		throw new UnsupportedOperationException();
 	}
 	public TreeNode getSetingTree()
 	{
 		return settingTree;
 	}
-
+	
+	/** Beendet den PartyDJ komplett. */
 	public void closePartyDJ()
 	{
 		try
@@ -424,6 +424,8 @@ public class Controller
 		System.exit(0);
 	}
 
+	/** Wird Fenstern die sich registrieren übergeben.
+	 *  Damit werden sie automatisch beim Controller abgemeldet.*/
 	class ClientWindowListener extends WindowAdapter
 	{
 		Frame window;
@@ -438,6 +440,10 @@ public class Controller
 		}
 	}
 	
+	/** Main-Funktion.
+	 *  Startet den PartyDJ.
+	 *  @param args Befehlszeilenargumente des PartyDJ.
+	 */
 	public static void main(String[] args)
 	{
 		try
