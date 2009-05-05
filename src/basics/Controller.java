@@ -448,7 +448,7 @@ public class Controller
 						listMap.put(i, a);
 					}
 				}
-				for(int i = 0; i < Integer.parseInt(data.readSetting("MasterListPriority")); i++)
+				for(int i = 0; i < Integer.parseInt(data.readSetting("MasterListPriority", "1")); i++)
 					listMap.put(listMap.size(), "maschterlist");
 				
 				int choice = random.nextInt(listMap.size());
