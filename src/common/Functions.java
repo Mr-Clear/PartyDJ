@@ -41,16 +41,35 @@ public class Functions
         return output;
 	}
 	
+	/**Wandelt eine Zahl in eine Formatierte Dateigößenangabe um.
+	 * <br>Gibt Größe mit 3 Dezimalziffern aus.
+	 * 
+	 * @param size Dateigröße als Zahl.
+	 * @return Formatierte Dateigröße.
+	 */
 	public static String formatSize(long size)
 	{
 		return formatSize(size, 3, false);
 	}
 	
+	/**Wandelt eine Zahl in eine Formatierte Dateigößenangabe um.
+	 * 
+	 * @param size Dateigröße als Zahl.
+	 * @param digits Anzahl der Dezimalziffern.
+	 * @return Formatierte Dateigröße.
+	 */
 	public static String formatSize(long size, int digits)
 	{
 		return formatSize(size, digits, false);
 	}
 
+	/**Wandelt eine Zahl in eine Formatierte Dateigößenangabe um.
+	 * 
+	 * @param size Dateigröße als Zahl.
+	 * @param digits Anzahl der Dezimalziffern.
+	 * @param full true: Die Größe in Byte wird zusätzlich in Klammern angezeigt.
+	 * @return Formatierte Dateigröße.
+	 */
 	public static String formatSize(long size, int digits, boolean full)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -79,12 +98,24 @@ public class Functions
 
 	/**
 	 * Gibt den Ordner zurück in dem der PartyDJ arbeitet.
-	 * ISt normalerweise nicht das Verzeichnis in dem der PartyDJ selbst steht. 
+	 * Ist normalerweise nicht das Verzeichnis in dem der PartyDJ selbst steht. 
 	 */
 	public static String getFolder()
 	{
 		javax.swing.JFileChooser fr = new javax.swing.JFileChooser();
 		javax.swing.filechooser.FileSystemView fw = fr.getFileSystemView();
 	    return fw.getDefaultDirectory().toString() + System.getProperty("file.separator") + "PartyDJ";
+	}
+	
+	/**
+	 * Gibt einen Dateipfad zurück, der im Arbeitsverzeichnis des PartyDJ liegt.
+	 * @param fileName Name der Datei.
+	 */
+	public static String getFolder(String fileName)
+	{
+		String folder = getFolder();
+		if(!(folder.endsWith("\\") || folder.endsWith("/")))
+			folder += System.getProperty("file.separator");
+	    return folder + fileName;
 	}
 }

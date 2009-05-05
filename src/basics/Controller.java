@@ -261,7 +261,6 @@ public class Controller
 		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
 		splash.close();
 		loadFinished = true;
-		logError(UNIMPORTANT_INFO, this, null, "Load finished.");
 	}
 	
 
@@ -490,8 +489,10 @@ public class Controller
 		{
 			try
 			{
-				String logFileName = Functions.getFolder() + "/log.txt";
+				String logFileName = Functions.getFolder("log.txt");
 				logStream = new java.io.PrintWriter(new FileWriter(logFileName));
+				logStream.println("--------------");
+				logStream.println("New Session...");
 				System.out.println("Fehler werden gespeichert in " + logFileName);
 			}
 			catch (IOException e)
