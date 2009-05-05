@@ -56,6 +56,10 @@ public class ClassicUdpReceiver extends Thread
 						player.setPosition(player.getPosition() + 5);
 					if(command.equals("weiter"))
 						player.playNext();
+					if(command.equals("lauter"))
+						player.setVolume(player.getVolume() + 10);
+					if(command.equals("leiser"))
+						player.setVolume(player.getVolume() - 10);
 				}
 			}
 			catch (IOException e)
