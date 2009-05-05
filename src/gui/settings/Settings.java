@@ -29,7 +29,6 @@ import data.IData;
 import data.ListAdapter;
 import data.SettingListener;
 import lists.ListException;
-import lists.ListProvider;
 import basics.Controller;
 
 //TODO JavaDoc
@@ -312,6 +311,8 @@ public class Settings extends JPanel
 				e.printStackTrace();
 			}
 		}
+		
+		
 	}
 	
 	class ShuffleTableModel extends AbstractTableModel
