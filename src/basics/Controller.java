@@ -240,6 +240,11 @@ public class Controller
 			}
 		}
 
+		splash.setInfo("Lade Zeug");
+		{
+			new network.ClassicUdpReceiver().start();
+		}
+		
 		splash.setInfo("PartyDJ bereit :)");
 		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
 		splash.close();
