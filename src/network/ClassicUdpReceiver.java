@@ -64,8 +64,7 @@ public class ClassicUdpReceiver extends Thread
 			}
 			catch (IOException e)
 			{
-				System.err.println("ClassicUdpReceiver");
-				e.printStackTrace();
+				Controller.getInstance().logError(Controller.UNIMPORTANT_ERROR, this, e, null);
 			}
 		}
 	}

@@ -13,10 +13,7 @@ public class Tests
 	 */
 	public static void main(String[] args) throws IOException
 	{
-		System.out.println(new java.io.File("C:\\Test").hashCode());
-		System.out.println(new java.io.File("C:/a/../Test").hashCode());
-		System.out.println("C:\\Test".hashCode());
-		System.out.println("C:\\TEST".hashCode());
+		System.out.println(common.Functions.getFolder());
 	}
 	
 	static double f(int i)

@@ -3,6 +3,7 @@ package data.derby;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import basics.Controller;
 import data.SettingException;
 
 /**
@@ -34,10 +35,7 @@ public class UpdateDB
 		}
 		catch (Exception e)
 		{
-			System.err.println("---------------------------");
-			System.err.println("Fehler bei Update von Version " + oldVersion + " auf Version " + newVersion + ":");
-			e.printStackTrace();
-			System.err.println("---------------------------");
+			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, null, e, "Fehler bei Update von Version " + oldVersion + " auf Version " + newVersion);
 			return false;
 		}
 	}
