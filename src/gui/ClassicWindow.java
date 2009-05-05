@@ -16,6 +16,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
@@ -92,7 +94,7 @@ public class ClassicWindow extends JFrame
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel control = new JPanel(new GridBagLayout());
-		
+				
 		c.insets = new Insets(0, 5, 0, 5);
 		c.anchor = GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.BOTH;
@@ -128,7 +130,7 @@ public class ClassicWindow extends JFrame
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel mainPart = new JPanel(new GridBagLayout());	
-		
+				
 		c.insets = new Insets(0, 3, 3, 3);;
 		c.fill = GridBagConstraints.BOTH;
 		
@@ -176,7 +178,7 @@ public class ClassicWindow extends JFrame
 	public JPanel Buttons()
 	{
 		GridBagConstraints c = new GridBagConstraints();
-
+		
 		JPanel panel = new JPanel(new GridBagLayout());
 		panel.setBackground(Color.darkGray);
 		c.anchor = GridBagConstraints.WEST;
@@ -200,6 +202,23 @@ public class ClassicWindow extends JFrame
 			}
 		});
 
+
+	    /*InputMap pauseInput = pause.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+	    pauseInput.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "pause");
+	    ActionMap pauseAction = pause.getActionMap();
+	    pauseAction.put("pause", new AbstractAction("pause")
+	    								{
+											private static final long serialVersionUID = 7795134144645322604L;
+
+											@Override
+											public void actionPerformed(ActionEvent e)
+											{
+												System.out.println("Pause");
+												player.fadeInOut();
+										}});
+	  
+	    pause.setActionMap(pauseAction);*/
+		
 		pause.addMouseListener(new MouseAdapter()
 				{
 					public void mouseClicked(MouseEvent me) 
@@ -285,6 +304,8 @@ public class ClassicWindow extends JFrame
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		
+		this.addKeyListener(new KeyboardControl());
+		
 		PDJList list = new PDJList(l, ldMode, title);
 		JScrollPane scrollPane = new JScrollPane(list);
 		JLabel label = new JLabel(title);
@@ -323,6 +344,8 @@ public class ClassicWindow extends JFrame
 	 */
 	public Component Search()
 	{
+		this.addKeyListener(new KeyboardControl());
+		
 		final JTextField textField = new JTextField();					// final damit die innere Klasse
 		final PDJList searchList = new PDJList(new SearchListModel());	// darauf zugreifen kann.
 		JScrollPane scrollPane = new JScrollPane(searchList);
@@ -569,6 +592,14 @@ public class ClassicWindow extends JFrame
 				return;
 			
 			player.setVolume(slider.getValue());
+		}
+	}
+	
+	private class KeyboardControl extends KeyAdapter
+	{
+		public void keyTyped(KeyEvent e)
+		{
+			e.getID();
 		}
 	}
 }

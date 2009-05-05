@@ -73,7 +73,7 @@ public class AdvancedPlayer
 		jlPlayer.addPlayStateListener(listener);
 		
 		bitStream = new Bitstream(fis);
-	
+
 		audio = (SoundAudioDevice)FactoryRegistry.systemRegistry().createAudioDevice();
 		audio.open(decoder = new Decoder());
 		volume = vol;
@@ -328,7 +328,7 @@ public class AdvancedPlayer
 				}
 				
 				position += frameDuration;
-				
+				//TODO Hier manchmal Abbruch....
 			}
 			
 			if (audio != null)

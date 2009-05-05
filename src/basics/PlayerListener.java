@@ -40,12 +40,12 @@ class PlayerListener implements PlayerContact, PlayStateListener
 				}
 			}
 			for(int i = 0; i < Integer.parseInt(data.readSetting("MasterListPriority", "1")); i++)
-				listMap.put(listMap.size(), "maschterlist");
+				listMap.put(listMap.size(), "masterlist");
 			
 			int choice = random.nextInt(listMap.size());
 			String nextList = listMap.get(choice);
 			
-			if(nextList.equalsIgnoreCase("maschterlist"))
+			if(nextList.equalsIgnoreCase("masterlist"))
 				predictedTrack = controller.listProvider.getMasterList().getElementAt(random.nextInt(controller.listProvider.getMasterList().getSize()));
 			else
 			{
@@ -65,7 +65,6 @@ class PlayerListener implements PlayerContact, PlayStateListener
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return predictedTrack;
 	}
 	
@@ -103,7 +102,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 			
 			if(controller.listProvider.listPlayPossibility(minList) / 100 > 0)
 				ignoreCount = (int)(min / (controller.listProvider.listPlayPossibility(minList) / 100));
-			return ignoreCount;
+			return (int)(ignoreCount * 0.8);
 		}
 		catch(ListException le)
 		{
@@ -141,6 +140,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 			nextTrack = predictNextTrack();
 			predictedTrack = null;
 		}
+		
 		return nextTrack;
 	}
 
@@ -202,41 +202,44 @@ class PlayerListener implements PlayerContact, PlayStateListener
 	//--- PlayStateListener
 	public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 	{
-		currentTrack = playingCurrent;
-		
-		if(playingCurrent != null)
+		if(reason == Reason.RECEIVED_NEW_TRACK)
 		{
-			try
-			{
-				data.writeSetting("Playing", playingCurrent.path);
-			}
-			catch (SettingException e){}
+			currentTrack = playingCurrent;
 			
-			if(playingCurrent.duration == 0)
-				Controller.getInstance().player.getDuration();
-			
-			if(playingCurrent.duration > 0 && playingCurrent.problem != Problem.NONE)
+			if(playingCurrent != null)
 			{
-				playingCurrent.problem = Problem.NONE;
 				try
 				{
-					data.updateTrack(playingCurrent, TrackElement.PROBLEM);
+					data.writeSetting("Playing", playingCurrent.path);
 				}
-				catch (ListException e){}
+				catch (SettingException e){}
+				
+				if(playingCurrent.duration == 0)
+					Controller.getInstance().player.getDuration();
+				
+				if(playingCurrent.duration > 0 && playingCurrent.problem != Problem.NONE)
+				{
+					playingCurrent.problem = Problem.NONE;
+					try
+					{
+						data.updateTrack(playingCurrent, TrackElement.PROBLEM);
+					}
+					catch (ListException e){}
+				}
 			}
-		}
-		
-		if(playedLast != null && reason != Reason.RECEIVED_BACKWARD)
-		{
-			try
+			
+			if(playedLast != null && reason != Reason.RECEIVED_BACKWARD)
 			{
-				while(controller.lastPlayedList.getSize() > 100)
-					controller.lastPlayedList.remove(0);
-				controller.lastPlayedList.add(controller.lastPlayedList.getSize(), playedLast);
-			}
-			catch (ListException e)
-			{
-				e.printStackTrace();
+				try
+				{
+					while(controller.lastPlayedList.getSize() > 100)
+						controller.lastPlayedList.remove(0);
+					controller.lastPlayedList.add(controller.lastPlayedList.getSize(), playingCurrent);
+				}
+				catch (ListException e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}
 	}

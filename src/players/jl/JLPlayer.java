@@ -271,7 +271,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	{
 		try
 		{
-			start(currentTrack);
+			start(currentTrack, 0);
 		}
 		catch (PlayerException e)
 		{
