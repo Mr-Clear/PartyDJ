@@ -45,7 +45,7 @@ public class Controller
 	private static Controller instance;
 	private IData data;
 	private ListProvider listProvider;
-	private IPlayer player;
+	protected IPlayer player;
 	private Track currentTrack;
 	private EditableListModel playList;
 	private TrackListModel favourites;
@@ -463,7 +463,7 @@ public class Controller
 				}
 				
 				DbClientListModel lastPlayed = listProvider.getDbList("LastPlayed");
-				for(int i = lastPlayed.getSize() - 1; i > lastPlayed.getSize() - ignoreCount(listNames); i--)
+				for(int i = lastPlayed.getSize() - 1; i >= lastPlayed.getSize() - ignoreCount(listNames); i--)
 				{
 					System.out.println("i:  "  + i+ "  predictedTrack:  " + predictedTrack + "  Track:  " + lastPlayed.getElementAt(i));
 					if(lastPlayed.getElementAt(i).equals(predictedTrack))
