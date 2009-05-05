@@ -21,7 +21,6 @@ import lists.DbClientListModel;
 import lists.EditableListModel;
 import lists.ListException;
 import lists.ListProvider;
-import lists.TrackListModel;
 import data.*;
 import data.derby.DerbyDB;
 
@@ -31,34 +30,45 @@ import data.derby.DerbyDB;
  * <p>Bietet Zugriff auf alle anderen wichtigen Elemente des PartyDJ.
  * 
  * 
- * @author Eraser, Sam
+ * @author Eraser
+ * @author Sam
  */
 public class Controller
 {
 	/** Verion des PartyDJ */
 	public final String version = "3.0.0a";
 	
+	/** Statischer Verweis auf diese Instanz. */
 	private static Controller instance;
+	/** Verbindung zur Datenbank. */
 	private IData data;
-	protected ListProvider listProvider;
-	protected IPlayer player;
-	private Track currentTrack;
-	protected EditableListModel playList;
-	@SuppressWarnings("unused")
-	private TrackListModel favourites;
-	
-	protected DbClientListModel lastPlayedList;
-	
+	/** Dieser Thread überwacht ob der PartyDJ geschlossen wird. */
 	private Thread closeListenThread;
-	private Runtime runtime = Runtime.getRuntime();
-	
-	private final Set<CloseListener> closeListener = new HashSet<CloseListener>();
-	private final Set<Frame> windows = new HashSet<Frame>();
-	private final SettingNode settingTree;
 
+	/** Track der gerade gespielt wird. Kann auch null sein. */
+	private Track currentTrack;
+	/** Wunschliste aus derimmer der oberste Track gespielt und dabei gelöscht wird. */ 
+	protected EditableListModel playList;
+	/** Liste der zuletzt gespielten lieder. Hat maximal 100 Einträge */
+	protected DbClientListModel lastPlayedList;
+	/** Zugriff auf Listen */
+	protected ListProvider listProvider;
+	/** Verwendeter Player */
+	protected IPlayer player;
+
+	/** Liste aller registrierten CloseListener */ 
+	private final Set<CloseListener> closeListener = new HashSet<CloseListener>();
+	/** Liste aller registrierten Fenster.
+	 *  Wenn die Liste leer wird, schließt sich der PartyDJ. */
+	private final Set<Frame> windows = new HashSet<Frame>();
+	/** RootNode der Einstellungen. Alle Einstellungen haben einen Knoten in diesem Baum. */
+	private final SettingNode settingTree;
+	/** Stapel mit Liedern deren Dauer eingelesen werden soll. */
 	private Stack<Track> trackUpdateStack = new Stack<Track>();
+	/** Timer der im regelmäßigen Abstand die Dauer der Tracks aus trackUpdateStack einliest. */
 	Timer trackUpdateTimer; 
 	
+	/** Wird am Ende des Konstruktors auf true gesetzt. */
 	private boolean loadFinished = false;
 	
 	private Controller(String[] args)
@@ -75,7 +85,7 @@ public class Controller
 					{
 						closePartyDJ();
 					}};
-		runtime.addShutdownHook(closeListenThread);
+					Runtime.getRuntime().addShutdownHook(closeListenThread);
 		
 		String dbPath = Functions.getFolder() + System.getProperty("file.separator") + "DataBase";
 		List<String> windows = new ArrayList<String>();
@@ -171,7 +181,6 @@ public class Controller
 				listProvider = new ListProvider();
 				playList = listProvider.getDbList("Wunschliste");				
 				lastPlayedList = listProvider.getDbList("LastPlayed");
-				favourites = listProvider.getDbList("Playlist");
 			}
 			catch (ListException e)
 			{
@@ -408,7 +417,7 @@ public class Controller
 	{
 		try
 		{
-			runtime.removeShutdownHook(closeListenThread);
+			Runtime.getRuntime().removeShutdownHook(closeListenThread);
 		}
 		catch(java.lang.IllegalStateException e){}
 		try
