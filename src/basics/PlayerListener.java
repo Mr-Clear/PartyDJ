@@ -56,10 +56,8 @@ class PlayerListener implements PlayerContact, PlayStateListener
 			DbClientListModel lastPlayed = controller.listProvider.getDbList("LastPlayed");
 			for(int i = lastPlayed.getSize() - 1; i >= lastPlayed.getSize() - ignoreCount(listNames); i--)
 			{
-				System.out.println("i:  "  + i+ "  predictedTrack:  " + predictedTrack + "  Track:  " + lastPlayed.getElementAt(i));
 				if(lastPlayed.getElementAt(i).equals(predictedTrack))
 					return predictNextTrack();
-				System.out.println();
 			}
 		}
 		catch (ListException e)
@@ -76,13 +74,14 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		try
 		{
 			int min = Integer.MAX_VALUE;
+			int ignoreCount = 0;
 			String minList = "";
 			boolean allNull = true;
 			for(String a : names)
 			{
 				int prior = data.getListPriority(a);
 				int size = controller.listProvider.getDbList(a).getSize();
-				if(prior > 0)
+				if(prior > 0 || a.equalsIgnoreCase("lastPlayed"))
 				{
 					allNull = false;
 					if(size < min)
@@ -102,12 +101,40 @@ class PlayerListener implements PlayerContact, PlayStateListener
 				}
 			}
 			
-			return min * 2;
+			if(calcPercent(minList) / 100 > 0)
+				ignoreCount = (int)(min / (calcPercent(minList) / 100));
+			return ignoreCount;
 		}
 		catch(ListException le)
 		{
 			// TODO Auto-generated catch block
 			le.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public static double calcPercent(String list)
+	{
+		try
+		{
+			IData data = Controller.getInstance().getData();
+			List<String> lists = data.getLists();
+			int sum = Integer.parseInt(data.readSetting("MasterListPriority", "1"));
+			double val = 0;
+			
+			for(String name : lists)
+			{
+				sum += data.getListPriority(name);
+				if(name.equalsIgnoreCase(list))
+					val = data.getListPriority(name);
+			}
+			return (val / sum) * 100;
+			
+		}
+		catch (ListException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return 0;
 	}

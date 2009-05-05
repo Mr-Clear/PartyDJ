@@ -311,8 +311,6 @@ public class Settings extends JPanel
 				e.printStackTrace();
 			}
 		}
-		
-		
 	}
 	
 	class ShuffleTableModel extends AbstractTableModel
