@@ -1,6 +1,7 @@
 package lists;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import common.Track;
 import data.IData;
@@ -80,5 +81,36 @@ public class ListProvider
 			//TODO null is nix gut. 
 			return null;
 		}		
+	}
+	
+	/**Berechnet die Spielwahrscheinlichkeit einer Liste im Vergleich zu allen Anderen Listen.
+	 * 
+	 * @param list  Liste von der die Spielwahrscheinlichkeit berechnet werden soll.
+	 * @return		Spielwahrscheinlichkeit in Prozent
+	 */
+	public double listPlayPossibility(String list)
+	{
+		try
+		{
+			IData data = Controller.getInstance().getData();
+			List<String> lists = data.getLists();
+			int sum = Integer.parseInt(data.readSetting("MasterListPriority", "1"));
+			double val = 0;
+			
+			for(String name : lists)
+			{
+				sum += data.getListPriority(name);
+				if(name.equalsIgnoreCase(list))
+					val = data.getListPriority(name);
+			}
+			return (val / sum) * 100;
+			
+		}
+		catch (ListException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
 	}
 }

@@ -101,40 +101,14 @@ class PlayerListener implements PlayerContact, PlayStateListener
 				}
 			}
 			
-			if(calcPercent(minList) / 100 > 0)
-				ignoreCount = (int)(min / (calcPercent(minList) / 100));
+			if(controller.listProvider.listPlayPossibility(minList) / 100 > 0)
+				ignoreCount = (int)(min / (controller.listProvider.listPlayPossibility(minList) / 100));
 			return ignoreCount;
 		}
 		catch(ListException le)
 		{
 			// TODO Auto-generated catch block
 			le.printStackTrace();
-		}
-		return 0;
-	}
-	
-	public static double calcPercent(String list)
-	{
-		try
-		{
-			IData data = Controller.getInstance().getData();
-			List<String> lists = data.getLists();
-			int sum = Integer.parseInt(data.readSetting("MasterListPriority", "1"));
-			double val = 0;
-			
-			for(String name : lists)
-			{
-				sum += data.getListPriority(name);
-				if(name.equalsIgnoreCase(list))
-					val = data.getListPriority(name);
-			}
-			return (val / sum) * 100;
-			
-		}
-		catch (ListException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return 0;
 	}
