@@ -48,6 +48,7 @@ public class Controller
 	protected IPlayer player;
 	private Track currentTrack;
 	private EditableListModel playList;
+	@SuppressWarnings("unused")
 	private TrackListModel favourites;
 	
 	private DbClientListModel lastPlayedList;
