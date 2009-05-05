@@ -5,8 +5,10 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
 import java.util.Stack;
@@ -428,23 +430,94 @@ public class Controller
 
 	private class PlayerListener implements PlayerContact, PlayStateListener
 	{
-		public Track predictNextTrack()
+		public synchronized Track predictNextTrack()
 		{
-			if(predictedTrack == null)
+			try
 			{
-				if(favourites.getSize() > 0 && Math.random() > 0.5)
+				IData data = Controller.getInstance().getData();
+				List<String> listNames = Controller.getInstance().getData().getLists();
+				HashMap<Integer, String> listMap = new HashMap<Integer, String>();
+				Random random = new Random();
+				
+				for(String a : listNames)
 				{
-					predictedTrack = favourites.getElementAt((int)(Math.random() * favourites.getSize()));
+					for(int i = 0; i < data.getListPriority(a); i++)
+					{
+						if(a.equalsIgnoreCase("lastplayed"))
+							break;
+						listMap.put(i, a);
+					}
 				}
+				for(int i = 0; i < Integer.parseInt(data.readSetting("MasterListPriority")); i++)
+					listMap.put(listMap.size(), "maschterlist");
+				
+				int choice = random.nextInt(listMap.size());
+				String nextList = listMap.get(choice);
+				
+				if(nextList.equalsIgnoreCase("maschterlist"))
+					predictedTrack = listProvider.getMasterList().getElementAt(random.nextInt(listProvider.getMasterList().getSize()));
 				else
 				{
-					predictedTrack = listProvider.getMasterList().getElementAt((int)(Math.random() * listProvider.getMasterList().getSize()));
+					DbClientListModel chosenList = listProvider.getDbList(nextList);
+					predictedTrack = chosenList.getElementAt(random.nextInt(chosenList.getSize()));
+				}
+				
+				DbClientListModel lastPlayed = listProvider.getDbList("LastPlayed");
+				for(int i = lastPlayed.getSize() - 1; i > lastPlayed.getSize() - ignoreCount(listNames); i--)
+				{
+					System.out.println("i:  "  + i+ "  predictedTrack:  " + predictedTrack + "  Track:  " + lastPlayed.getElementAt(i));
+					if(lastPlayed.getElementAt(i).equals(predictedTrack))
+						return predictNextTrack();
+					System.out.println();
 				}
 			}
+			catch (ListException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			return predictedTrack;
 		}
 		
-		public Track requestNextTrack()
+		public int ignoreCount(List<String> names)
+		{
+			try
+			{
+				int min = Integer.MAX_VALUE;
+				boolean allNull = true;
+				for(String a : names)
+				{
+					int prior = data.getListPriority(a);
+					int size = listProvider.getDbList(a).getSize();
+					if(prior > 0)
+					{
+						allNull = false;
+						if(size < min)
+							min = size;
+					}
+				}
+				if(allNull)
+				{
+					for(String a : names)
+					{
+						int size = listProvider.getDbList(a).getSize();
+						if(size < min)
+							min = size;
+					}
+				}
+				
+				return min * 2;
+			}
+			catch(ListException le)
+			{
+				// TODO Auto-generated catch block
+				le.printStackTrace();
+			}
+			return 0;
+		}
+		
+		public synchronized Track requestNextTrack()
 		{
 			Track nextTrack = null;
 			if(playList != null)

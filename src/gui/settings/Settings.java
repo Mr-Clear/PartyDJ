@@ -29,6 +29,7 @@ import data.IData;
 import data.ListAdapter;
 import data.SettingListener;
 import lists.ListException;
+import lists.ListProvider;
 import basics.Controller;
 
 //TODO JavaDoc
@@ -164,7 +165,7 @@ public class Settings extends JPanel
 			listTable.getColumnModel().getColumn(1).setCellRenderer(new SpinnerRenderer(spinners));
 			JScrollPane scroll = new JScrollPane(listTable);
 			scroll.setVisible(true);
-			prListener.calcPercent();
+			prListener.calcListPercent();
 			
 			return scroll;
 		}
@@ -187,16 +188,17 @@ public class Settings extends JPanel
 		@Override
 		public void stateChanged(ChangeEvent ce)
 		{
+			IData data = Controller.getInstance().getData();
 			if(ce.getSource() instanceof JSpinner)
 			{
 				try
 				{
 					if(name.equalsIgnoreCase("hauptliste"))
 					{
-						Controller.getInstance().getData().writeSetting("MasterListPriority", ((JSpinner)ce.getSource()).getValue().toString());
+						data.writeSetting("MasterListPriority", ((JSpinner)ce.getSource()).getValue().toString());
 						return;
 					}
-					Controller.getInstance().getData().setListPriority(name, (Integer)((JSpinner)ce.getSource()).getValue());
+					data.setListPriority(name, (Integer)((JSpinner)ce.getSource()).getValue());
 				}
 				catch (ListException e)
 				{
@@ -209,32 +211,34 @@ public class Settings extends JPanel
 	
 	class ColumnListener implements TableColumnModelListener
 	{
-			@Override
-			public void columnAdded(TableColumnModelEvent e){}
+		IData data = Controller.getInstance().getData();
+		
+		@Override
+		public void columnAdded(TableColumnModelEvent e){}
 
-			@Override
-			public void columnMarginChanged(ChangeEvent e)
+		@Override
+		public void columnMarginChanged(ChangeEvent e)
+		{
+			if(e.getSource() instanceof DefaultTableColumnModel)
 			{
-				if(e.getSource() instanceof DefaultTableColumnModel)
+				String val = "";
+				for(int i = 0; i < 3; i++)
 				{
-					String val = "";
-					for(int i = 0; i < 3; i++)
-					{
-						int size = ((DefaultTableColumnModel)e.getSource()).getColumn(i).getPreferredWidth();
-						val += (char) 64 + String.valueOf(size);
-					}
-					Controller.getInstance().getData().writeSetting("ColumnSize", val);
+					int size = ((DefaultTableColumnModel)e.getSource()).getColumn(i).getPreferredWidth();
+					val += (char) 64 + String.valueOf(size);
 				}
+				data.writeSetting("ColumnSize", val);
 			}
+		}
 
-			@Override
-			public void columnMoved(TableColumnModelEvent e){}
+		@Override
+		public void columnMoved(TableColumnModelEvent e){}
 
-			@Override
-			public void columnRemoved(TableColumnModelEvent e){}
+		@Override
+		public void columnRemoved(TableColumnModelEvent e){}
 
-			@Override
-			public void columnSelectionChanged(ListSelectionEvent e){}
+		@Override
+		public void columnSelectionChanged(ListSelectionEvent e){}
 	}
 	
 	class PriorityListener extends ListAdapter implements SettingListener
@@ -253,7 +257,7 @@ public class Settings extends JPanel
 		public void listPriorityChanged(String listName, int newPriority)
 		{
 			namedSp.get(listName).setValue(newPriority);
-			calcPercent();
+			calcListPercent();
 			table.repaint();
 		}
 
@@ -263,12 +267,12 @@ public class Settings extends JPanel
 			if(namedSp.get(name) != null)
 			{
 				namedSp.get(name).setValue(Integer.parseInt(value));
-				calcPercent();
+				calcListPercent();
 				table.repaint();
 			}
 		}
 		
-		public void calcPercent()
+		public void calcListPercent()
 		{
 			try
 			{
@@ -281,6 +285,11 @@ public class Settings extends JPanel
 					if(n != null)
 					{
 						sum += data.getListPriority(n);
+					}
+					if(sum == 0)
+					{
+						table.setValueAt(String.format("%2.2f", 1d / data.getLists().size()) + "%", 0, 2);
+						return;
 					}
 				}
 				

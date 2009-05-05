@@ -304,7 +304,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_NEW_TRACK);
 	}
 	
-	private void start(Track track, double position) throws PlayerException
+	private synchronized void start(Track track, double position) throws PlayerException
 	{
 		if(track != null)
 		{
@@ -399,7 +399,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	
 	private void currentTrackChanged(Track track, players.PlayStateListener.Reason reason)
 	{
-		if(currentTrack != track)
+		//if(currentTrack != track)
 		{
 			Track oldTrack = currentTrack;
 			currentTrack = track;
