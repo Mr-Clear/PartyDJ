@@ -32,6 +32,11 @@ public class DerbyDB implements IData, CloseListener
 	
 	public final String version = "0.3";
 	
+	/** Verbindet zur Datenbank.
+	 * 
+	 * @param dbName Verzeichnispfad der Datenbank.
+	 * @throws OpenDbException Tritt auf, wenn keine Verbindung möglich ist.
+	 */
 	public DerbyDB(String dbName) throws OpenDbException
 	{
 		String driver = "org.apache.derby.jdbc.EmbeddedDriver";
@@ -80,8 +85,11 @@ public class DerbyDB implements IData, CloseListener
 			}
 		}
 	}
-
-	Connection createDb(String Name) throws OpenDbException
+	
+	/** Erstellt eine neue Datenbank.
+	 *	Wird vom Konstruktor aufgerufen, wenn Datenbank noch nicht existiert.
+	 */
+	private Connection createDb(String Name) throws OpenDbException
 	{
 		String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 		String connectionURL = "jdbc:derby:" + Name + ";create=true";
