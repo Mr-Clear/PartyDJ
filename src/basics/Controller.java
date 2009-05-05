@@ -480,6 +480,7 @@ public class Controller
 		final int minimumPrintSender = INERESTING_INFO;
 		final int minimumPrintException = UNIMPORTANT_ERROR;
 		final int minimumPrintStackTrace = REGULAR_ERROR;
+		//TODO minimumShowInfo
 		final int minimumShowMessage = NORMAL_ERROR;
 		final int minimumShowException = IMPORTANT_ERROR;
 		
