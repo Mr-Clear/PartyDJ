@@ -593,6 +593,7 @@ public class Controller
 			System.exit(FATAL_ERROR);
 		}
 	}
+	//TODO überladen
 	
 	/** Beendet den PartyDJ komplett. */
 	public void closePartyDJ()
