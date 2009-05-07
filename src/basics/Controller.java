@@ -261,6 +261,15 @@ public class Controller
 		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
 		splash.close();
 		loadFinished = true;
+		
+		/*player.addPlayStateListener(new players.PlayStateAdapter(){
+			@Override
+			public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+			{
+
+				System.out.println(playingCurrent);
+			}
+		});*///TODO currentTrackChanged wird zwei mal ausgelöst.
 	}
 	
 
