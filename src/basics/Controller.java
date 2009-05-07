@@ -615,6 +615,11 @@ public class Controller
 		}
 		System.exit(0);
 	}
+	
+	public void setCurrentTrack(Track track)
+	{
+		currentTrack = track;
+	}
 
 	/** Wird Fenstern die sich registrieren übergeben.
 	 *  Damit werden sie automatisch beim Controller abgemeldet.*/

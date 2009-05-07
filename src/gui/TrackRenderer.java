@@ -41,7 +41,7 @@ public class TrackRenderer implements ListCellRenderer
 	private class TrackListCellRendererComponent extends JPanel
 	{
 		private static final long serialVersionUID = -1441760682667191892L;
-		
+	
 		private JLabel titel = new JLabel();
 		private JLabel duration = new JLabel();
 		
@@ -77,8 +77,16 @@ public class TrackRenderer implements ListCellRenderer
 			Track currentTrack = Controller.getInstance().getCurrentTrack();
 			if(currentTrack != null && currentTrack.index == track.index)
 			{
-				titel.setForeground(new Color(64, 192, 255));
-				duration.setForeground(new Color(64, 192, 255));
+				if(isSelected)
+				{
+					titel.setForeground(Color.BLUE);
+					duration.setForeground(Color.BLUE);
+				}
+				else
+				{
+					titel.setForeground(new Color(64, 192, 255));
+					duration.setForeground(new Color(64, 192, 255));
+				}
 			}
 			if(track.problem != Track.Problem.NONE)
 			{

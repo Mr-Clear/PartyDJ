@@ -44,6 +44,16 @@ public class DbMasterListModel extends BasicListModel
 		}	
 	}
 	
+	public int getIndex(Track track)
+	{
+		for(int i = 0; i < getSize(); i++)
+		{
+			if(this.getElementAt(i).equals(track))
+				return i;
+		}
+		return -1;
+	}
+	
 	// Verschieben zum ListProvider
 	public Track getTrackByPath(String path)
 	{

@@ -16,4 +16,7 @@ public interface TrackListModel extends ListModel
 {
 	/** Gibt den Track an der angegebenen Position zurück*/
 	public Track getElementAt(int index);
+	
+	/**Gibt die Position des Tracks in der Liste zurück*/
+	public int getIndex(Track track);
 }

@@ -14,10 +14,10 @@ import javax.swing.DropMode;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import players.PlayStateAdapter;
 import players.PlayerException;
 import basics.Controller;
 import lists.EditableListModel;
@@ -63,8 +63,8 @@ public class PDJList extends JList
 		this.setTransferHandler(handler);
 		this.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		this.setDragEnabled(true);
-		this.addMouseMotionListener(new MyMouseMotionListener());
-		this.addMouseListener(new MyMouseListener());
+		this.addMouseMotionListener(new DragMotionListener());
+		this.addMouseListener(new ClickListener());
 	
 		this.getActionMap().put(TransferHandler.getCutAction().getValue(Action.NAME), TransferHandler.getCutAction());
 		this.getActionMap().put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
@@ -123,6 +123,8 @@ public class PDJList extends JList
 		
 		this.setCellRenderer(new TrackRenderer());
 		this.setPrototypeCellValue("123-45-6789");
+		
+		Controller.getInstance().getPlayer().addPlayStateListener(new PlayerListenerForLists());
 	}
 
 	public void setListDropMode(ListDropMode ldMode)
@@ -135,7 +137,7 @@ public class PDJList extends JList
 		return ldMode;
 	}
 
-	public ListModel getListModel()
+	public TrackListModel getListModel()
 	{
 		return listModel;
 	}
@@ -171,7 +173,7 @@ public class PDJList extends JList
         return rv;
     }
 	
-	private class MyMouseMotionListener extends MouseMotionAdapter
+	private class DragMotionListener extends MouseMotionAdapter
 	{
 		private int startIndex;
 		private int listSize;
@@ -244,7 +246,7 @@ public class PDJList extends JList
 		}
 	}
 	
-	class MyMouseListener extends MouseAdapter
+	private class ClickListener extends MouseAdapter
 	{
 		
 		public void mouseClicked(MouseEvent e)
@@ -315,6 +317,20 @@ public class PDJList extends JList
 		{
 			count = 0;
 		}	
+	}
+	
+	private class PlayerListenerForLists extends PlayStateAdapter
+	{
+		//TODO VisibleIndex
+		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+		{
+			if(reason == Reason.RECEIVED_NEW_TRACK)
+			{
+				int index = listModel.getIndex(playingCurrent);
+				System.out.println(index);
+				if(index != -1);
+			}
+		}
 	}
 }
 

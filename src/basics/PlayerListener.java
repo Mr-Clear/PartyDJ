@@ -19,7 +19,6 @@ class PlayerListener implements PlayerContact, PlayStateListener
 	private Track predictedTrack = null;
 	Controller controller = Controller.getInstance();
 	private IData data = controller.getData();
-	private Track currentTrack;
 	
 	public synchronized Track predictNextTrack()
 	{
@@ -147,7 +146,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 	public Track requestPreviousTrack()
 	{
 		if(controller.lastPlayedList.getSize() == 0)
-			return currentTrack;
+			return controller.getCurrentTrack();
 		
 		Track previous = controller.lastPlayedList.getElementAt(controller.lastPlayedList.getSize() - 2);
 		
@@ -155,7 +154,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		{
 			controller.lastPlayedList.remove(controller.lastPlayedList.getSize() - 1);
 			controller.lastPlayedList.remove(controller.lastPlayedList.getSize() - 1);
-			controller.playList.add(0, currentTrack);
+			controller.playList.add(0, controller.getCurrentTrack());
 		}
 		catch (ListException e)
 		{
@@ -205,7 +204,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 	{
 		if(reason == Reason.RECEIVED_NEW_TRACK)
 		{
-			currentTrack = playingCurrent;
+			controller.setCurrentTrack(playingCurrent);
 			
 			if(playingCurrent != null)
 			{
@@ -216,7 +215,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 				catch (SettingException e){}
 				
 				if(playingCurrent.duration == 0)
-					Controller.getInstance().player.getDuration();
+					controller.player.getDuration();
 				
 				if(playingCurrent.duration > 0 && playingCurrent.problem != Problem.NONE)
 				{
