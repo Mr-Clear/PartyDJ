@@ -22,6 +22,7 @@ import common.Track;
  */
 public class TrackRenderer implements ListCellRenderer
 {
+	private JList list;
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
 		if(value == null)
@@ -29,6 +30,7 @@ public class TrackRenderer implements ListCellRenderer
 		if(!(value instanceof Track))
 			return new JLabel("no Track: " + value);
 		
+		this.list = list;
 		Track track = (Track)value;
 		
 		/// Liest Track-Dauer automatisch ein. Deaktiviert da JList so lang mit Update braucht und Player ein Speicherleck hat.
@@ -81,11 +83,13 @@ public class TrackRenderer implements ListCellRenderer
 				{
 					titel.setForeground(Color.BLUE);
 					duration.setForeground(Color.BLUE);
+					list.repaint();
 				}
 				else
 				{
 					titel.setForeground(new Color(64, 192, 255));
 					duration.setForeground(new Color(64, 192, 255));
+					list.repaint();
 				}
 			}
 			if(track.problem != Track.Problem.NONE)
