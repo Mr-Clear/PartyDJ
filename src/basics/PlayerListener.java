@@ -149,10 +149,11 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		if(controller.lastPlayedList.getSize() == 0)
 			return currentTrack;
 		
-		Track previous = controller.lastPlayedList.getElementAt(controller.lastPlayedList.getSize() - 1);
+		Track previous = controller.lastPlayedList.getElementAt(controller.lastPlayedList.getSize() - 2);
 		
 		try
 		{
+			controller.lastPlayedList.remove(controller.lastPlayedList.getSize() - 1);
 			controller.lastPlayedList.remove(controller.lastPlayedList.getSize() - 1);
 			controller.playList.add(0, currentTrack);
 		}
