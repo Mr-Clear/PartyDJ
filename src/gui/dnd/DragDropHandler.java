@@ -140,6 +140,9 @@ public class DragDropHandler extends TransferHandler
 			{
 				if(DragEvent.dge.getComponent() != info.getComponent())
 				{	
+					if(((PDJList)info.getComponent()).getListDropMode() == null)
+						return false;
+					
 					switch (((PDJList)info.getComponent()).getListDropMode())
 					{
 					case NONE:					break;
