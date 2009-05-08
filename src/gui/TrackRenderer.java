@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
@@ -56,8 +57,8 @@ public class TrackRenderer implements ListCellRenderer
 			titel.setText(track.toString());
 			duration.setText(common.Functions.formatTime(track.duration));
 			
-			titel.setFont(list.getFont());
-			duration.setFont(list.getFont());
+			titel.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, 16));
+			duration.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, 16));
 					
 			if(isSelected)
 			{
@@ -115,9 +116,9 @@ public class TrackRenderer implements ListCellRenderer
 				c.weightx = 0.0;
 				add(duration, c);
 			}	
-			
-			if(list.getFixedCellHeight() == -1)
-				list.setFixedCellHeight(this.getPreferredSize().height);
+
+			//if(list.getFixedCellHeight() == -1)
+			list.setFixedCellHeight(this.getPreferredSize().height);
 			
 			/*if(Controller.instance.isLoadFinished() == true)
 				System.out.println(track.name);*/

@@ -275,7 +275,11 @@ public class PDJList extends JList
 		
 		public void mouseClicked(MouseEvent e)
 		{
-			PDJList list = (PDJList)e.getSource();
+			PDJList list;
+			if(e.getSource() instanceof PDJList)
+				list = (PDJList)e.getSource();
+			else
+				return;
 			
 			if(SwingUtilities.isRightMouseButton(e))
 			{
@@ -345,7 +349,6 @@ public class PDJList extends JList
 	
 	private class PlayerListenerForLists extends PlayStateAdapter
 	{
-		//TODO VisibleIndex
 		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
 			if(reason == Reason.RECEIVED_NEW_TRACK)

@@ -58,7 +58,7 @@ public class PDJSlider extends JPanel
 
 		titel.setBackground(Color.darkGray);
 		titel.setForeground(Color.green);
-		titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, 18));
+		titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, 26));
 		
 		slider.setBackground(Color.darkGray);
 		

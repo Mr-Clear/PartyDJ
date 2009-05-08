@@ -119,6 +119,11 @@ public class Settings extends JPanel
 			String[] labels = new String[]{"Liste", "Priorität", "Spielwahrscheinlichkeit"};
 			Object[][] lists = new Object[listNames.size()][3];
 			
+			for(int i = 0; i < listNames.size(); i++)
+			{
+				lists[i][0] = listNames.get(i);
+			}
+			
 			JTable listTable = new JTable(new ShuffleTableModel(lists, labels));
 			int skipped = 0;
 			
@@ -331,7 +336,10 @@ public class Settings extends JPanel
 			switch(column)
 			{
 				case 0:				return false;
-				case 1:				return true;
+				//TODO Wunschliste ohne Priorität mit check Box o.ä.
+				case 1:				if(rowData[row][0].equals("Wunschliste"))
+										return false;
+									return true;
 				case 2:				return false;
 				default:			return false;
 			}

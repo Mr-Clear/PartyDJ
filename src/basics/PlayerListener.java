@@ -145,7 +145,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		return nextTrack;
 	}
 
-	public Track requestPreviousTrack()
+	public synchronized Track requestPreviousTrack()
 	{
 		if(controller.lastPlayedList.getSize() == 0)
 			return controller.getCurrentTrack();
