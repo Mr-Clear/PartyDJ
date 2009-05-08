@@ -27,7 +27,8 @@ import basics.Controller;
 /**
  * Zeigt den aktuelen Titel + Zeiten + Fortschrittsbalken an.
  * 
- * @author Eraser, Sam
+ * @author Eraser
+ * @author Sam
  */
 public class PDJSlider extends JPanel
 {
@@ -167,6 +168,8 @@ public class PDJSlider extends JPanel
 		end.setText("-" + common.Functions.formatTime(duration - position));
 	}
 	
+	/**Der eigendliche Fortschrittsbalken
+	 */
 	class Slider extends JComponent implements MouseListener
 	{
 		private static final long serialVersionUID = -1283733626056623005L;
@@ -186,7 +189,14 @@ public class PDJSlider extends JPanel
 		protected void paintComponent( Graphics g ) 
 		{ 
 			super.paintComponent(g);
-			g.fillRect(1, 1, (int) ((getSize().width - 3) / duration * position), getSize().height - 3);
+			
+			g.setColor(new Color(33, 32, 32));
+			g.fillRect(0, 0, getSize().width, getSize().height);
+			g.setColor(new Color(0, 240 /* TODO 230 */, 0));
+			int mid = (int)((getSize().width - 4) / duration * position);
+			g.fill3DRect(2, 2, mid, getSize().height - 4, true);
+			g.setColor(new Color(0, 128, 0));
+			g.fill3DRect(mid - 2, 1, 4, getSize().height - 3, true);
 		}
 		
 		public void setMaximum(double max)
@@ -199,7 +209,8 @@ public class PDJSlider extends JPanel
 			position = val;
 			repaint();
 		}
-
+		
+		@Override 
 		public void mouseClicked(MouseEvent e)
 		{
 			if(duration > position)
@@ -208,28 +219,9 @@ public class PDJSlider extends JPanel
 			}			
 		}
 
-		public void mouseEntered(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-
-		public void mouseExited(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-
-		public void mousePressed(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
-
-		public void mouseReleased(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
+		public void mouseEntered(MouseEvent e){}
+		public void mouseExited(MouseEvent e){}
+		public void mousePressed(MouseEvent e){}
+		public void mouseReleased(MouseEvent e){}
 	}
 }
