@@ -22,7 +22,6 @@ import common.Track;
  */
 public class TrackRenderer implements ListCellRenderer
 {
-	private JList list;
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
 		if(value == null)
@@ -30,7 +29,6 @@ public class TrackRenderer implements ListCellRenderer
 		if(!(value instanceof Track))
 			return new JLabel("no Track: " + value);
 		
-		this.list = list;
 		Track track = (Track)value;
 		
 		/// Liest Track-Dauer automatisch ein. Deaktiviert da JList so lang mit Update braucht und Player ein Speicherleck hat.
