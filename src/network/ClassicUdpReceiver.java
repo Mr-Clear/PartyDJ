@@ -24,7 +24,7 @@ public class ClassicUdpReceiver extends Thread
 		}
 		catch (SocketException e)
 		{
-			e.printStackTrace();
+			Controller.getInstance().logError(Controller.UNIMPORTANT_ERROR, this, e, "Kann UDP-Port 19997 nicht öffnen.");
 			return;
 		}
 		
@@ -64,7 +64,7 @@ public class ClassicUdpReceiver extends Thread
 			}
 			catch (IOException e)
 			{
-				Controller.getInstance().logError(Controller.UNIMPORTANT_ERROR, this, e, null);
+				Controller.getInstance().logError(Controller.UNIMPORTANT_ERROR, this, e, "Empfangen von Daten aus dem Netzwerk fehlgeschlagen.");
 			}
 		}
 	}
