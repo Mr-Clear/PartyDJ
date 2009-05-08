@@ -35,7 +35,7 @@ public class TrackRenderer implements ListCellRenderer
 		/// Liest Track-Dauer automatisch ein. Deaktiviert da JList so lang mit Update braucht und Player ein Speicherleck hat.
 		if(track.duration == 0 && track.problem == Track.Problem.NONE)
 			Controller.getInstance().pushTrackToUpdate(track); //*/
-		
+	
 		return new TrackListCellRendererComponent(list, track, index, isSelected, cellHasFocus);
 	}
 
@@ -44,10 +44,12 @@ public class TrackRenderer implements ListCellRenderer
 		private static final long serialVersionUID = -1441760682667191892L;
 	
 		private JLabel titel = new JLabel();
-		private JLabel duration = new JLabel();
+		private JLabel duration = new JLabel();	
+		private int fontSize;
 		
 		public TrackListCellRendererComponent(JList list, Track track, int index, boolean isSelected, boolean cellHasFocus)
 		{
+			fontSize = 22;
 			this.setBackground(list.getBackground());
 			GridBagConstraints c = new GridBagConstraints();
 			
@@ -57,8 +59,8 @@ public class TrackRenderer implements ListCellRenderer
 			titel.setText(track.toString());
 			duration.setText(common.Functions.formatTime(track.duration));
 			
-			titel.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, 16));
-			duration.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, 16));
+			titel.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, fontSize));
+			duration.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, fontSize));
 					
 			if(isSelected)
 			{
@@ -118,7 +120,8 @@ public class TrackRenderer implements ListCellRenderer
 			}	
 
 			//if(list.getFixedCellHeight() == -1)
-			list.setFixedCellHeight(this.getPreferredSize().height);
+			//TODO Größe abhängig von fontSize
+			list.setFixedCellHeight((int)(fontSize * 1.3));
 			
 			/*if(Controller.instance.isLoadFinished() == true)
 				System.out.println(track.name);*/
