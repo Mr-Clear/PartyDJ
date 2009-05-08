@@ -138,128 +138,126 @@ public class DragDropHandler extends TransferHandler
 			PDJList.DropLocation dropLocation = (PDJList.DropLocation)info.getDropLocation();
 			if(info.getComponent() instanceof PDJList)
 			{
-				{
-					if(DragEvent.dge.getComponent() != info.getComponent())
-					{	
-						switch (((PDJList)info.getComponent()).getListDropMode())
-						{
-						case NONE:					break;
-						
-						case COPY:					if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
-													{
-														try
-														
-														{
-															for(int i = data.length; i > 0; i--)
-															{
-																((EditableListModel)listModel).add(dropLocation.getIndex(), (Track)data[i-1]);
-															}	
-														}
-														catch (ListException e)
-														{
-															// TODO Auto-generated catch block
-															e.printStackTrace();
-														}
-													}
-													break;
-									
-						case MOVE:					System.out.println("MOVE not supported");
-													break;
-													
-						case DELETE:				if(((PDJList)DragEvent.dge.getComponent()).getListModel() instanceof EditableListModel)
-													{
-														try
-														{
-															for(int i = data.length; i > 0; i--)
-															{
-																((EditableListModel)((PDJList)DragEvent.dge.getComponent()).getListModel()).remove(((PDJList)DragEvent.dge.getComponent()).getSelectedIndices()[i-1]);
-															}
-														}
-														catch (Exception e)
-														{
-															// TODO Auto-generated catch block
-															e.printStackTrace();
-														}
-													}
-													break;
-													
-						case COPY_OR_MOVE:			if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
-													{
-														try
-														{
-															for(int i = data.length; i > 0; i--)
-															{
-																((EditableListModel)listModel).add(dropLocation.getIndex(), (Track)data[i-1]);
-															}	
-														}
-														catch (ListException e)
-														{
-															// TODO Auto-generated catch block
-															e.printStackTrace();
-														}
-													}
-													break;
-						}
-					}
-					
-					if(DragEvent.dge.getComponent() == info.getComponent())
+				if(DragEvent.dge.getComponent() != info.getComponent())
+				{	
+					switch (((PDJList)info.getComponent()).getListDropMode())
 					{
-						if(pdjList.getSelectedValues().length >= pdjList.getModel().getSize())
-							return false;
-						
-						switch (((PDJList)info.getComponent()).getListDropMode())
-						{
-						case NONE:					break;
-						
-						case COPY:					if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+					case NONE:					break;
+					
+					case COPY:					if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+												{
+													try
+													
 													{
-														try
+														for(int i = data.length; i > 0; i--)
 														{
-															for(int i = data.length; i > 0; i--)
-															{
-																((EditableListModel)listModel).add(dropLocation.getIndex(), (Track)data[i-1]);
-															}	
-														}
-														catch (ListException e)
-														{
-															// TODO Auto-generated catch block
-															e.printStackTrace();
-														}
+															((EditableListModel)listModel).add(dropLocation.getIndex(), (Track)data[i-1]);
+														}	
 													}
-													break;
-									
-						case MOVE:					System.out.println("MOVE not supported");
-													break;
-													
-						case DELETE:				break;
-													
-						case COPY_OR_MOVE:			if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+													catch (ListException e)
 													{
-														try
-														{
-															int addIndex = dropLocation.getIndex();
-															PDJList list = ((PDJList)DragEvent.dge.getComponent());
-															EditableListModel model = (EditableListModel)list.getListModel();
-															for(int i = list.getSelectedIndices().length; i > 0; i--)
-															{
-																if(list.getSelectedIndices()[i-1] < addIndex)
-																	addIndex--;
-																model.remove(list.getSelectedIndices()[i-1]);
-															}
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}
+												}
+												break;
 								
-															for(int i = data.length; i > 0; i--)
-															{
-																model.add(addIndex ,(Track)data[i - 1]);
-															}
-														}
-														catch (Exception e)
+					case MOVE:					System.out.println("MOVE not supported");
+												break;
+												
+					case DELETE:				if(((PDJList)DragEvent.dge.getComponent()).getListModel() instanceof EditableListModel)
+												{
+													try
+													{
+														for(int i = data.length; i > 0; i--)
 														{
-															// TODO Auto-generated catch block
-															e.printStackTrace();
+															((EditableListModel)((PDJList)DragEvent.dge.getComponent()).getListModel()).remove(((PDJList)DragEvent.dge.getComponent()).getSelectedIndices()[i-1]);
 														}
 													}
-														break;
-						}
+													catch (Exception e)
+													{
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}
+												}
+												break;
+												
+					case COPY_OR_MOVE:			if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+												{
+													try
+													{
+														for(int i = data.length; i > 0; i--)
+														{
+															((EditableListModel)listModel).add(dropLocation.getIndex(), (Track)data[i-1]);
+														}	
+													}
+													catch (ListException e)
+													{
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}
+												}
+												break;
+					}
+				}
+				
+				if(DragEvent.dge.getComponent() == info.getComponent())
+				{
+					if(pdjList.getSelectedValues().length >= pdjList.getModel().getSize())
+						return false;
+					
+					switch (((PDJList)info.getComponent()).getListDropMode())
+					{
+					case NONE:					break;
+					
+					case COPY:					if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+												{
+													try
+													{
+														for(int i = data.length; i > 0; i--)
+														{
+															((EditableListModel)listModel).add(dropLocation.getIndex(), (Track)data[i-1]);
+														}	
+													}
+													catch (ListException e)
+													{
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}
+												}
+												break;
+								
+					case MOVE:					System.out.println("MOVE not supported");
+												break;
+												
+					case DELETE:				break;
+												
+					case COPY_OR_MOVE:			if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
+												{
+													try
+													{
+														int addIndex = dropLocation.getIndex();
+														PDJList list = ((PDJList)DragEvent.dge.getComponent());
+														EditableListModel model = (EditableListModel)list.getListModel();
+														for(int i = list.getSelectedIndices().length; i > 0; i--)
+														{
+															if(list.getSelectedIndices()[i-1] < addIndex)
+																addIndex--;
+															model.remove(list.getSelectedIndices()[i-1]);
+														}
+							
+														for(int i = data.length; i > 0; i--)
+														{
+															model.add(addIndex ,(Track)data[i - 1]);
+														}
+													}
+													catch (Exception e)
+													{
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}
+												}
+													break;
 					}
 				}
 			}

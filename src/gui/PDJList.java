@@ -48,17 +48,17 @@ public class PDJList extends JList
 	{
 		super(listModel);
 		this.listModel = listModel;
-		initialise(null);
+		initialise(ldMode, null);
 	}
 	
 	public PDJList(TrackListModel listModel, ListDropMode ldMode, String name)
 	{
 		super(listModel);
 		this.listModel = listModel;
-		initialise(name);
+		initialise(ldMode, name);
 	}
 	
-	private void initialise(String name)
+	private void initialise(ListDropMode ldMode, String name)
 	{
 		final DragDropHandler handler = new DragDropHandler();
 		
