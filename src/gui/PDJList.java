@@ -3,6 +3,7 @@ package gui;
 import gui.dnd.DragDropHandler;
 import gui.dnd.DragEvent;
 import gui.dnd.ListDropMode;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -40,6 +41,7 @@ public class PDJList extends JList
 	private ListDropMode ldMode;
 	private TrackListModel listModel;
 	private int count = 0;
+	JList list = this;
 	
 	public PDJList(TrackListModel listModel)
 	{
@@ -327,8 +329,13 @@ public class PDJList extends JList
 			if(reason == Reason.RECEIVED_NEW_TRACK)
 			{
 				int index = listModel.getIndex(playingCurrent);
-				System.out.println(index);
-				if(index != -1);
+				if(index != -1)
+				{
+					int span = list.getLastVisibleIndex() - list.getFirstVisibleIndex();
+					Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize()));
+				        if (cellBound != null) 
+				            scrollRectToVisible(cellBound);
+				}
 			}
 		}
 	}
