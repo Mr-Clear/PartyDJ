@@ -35,15 +35,12 @@ class PlayerListener implements PlayerContact, PlayStateListener
 				{
 					if(a.equalsIgnoreCase("lastplayed"))
 						break;
-					System.out.println(a);
 					listMap.put(i, a);
 				}
 			}
 			for(int i = 0; i < Integer.parseInt(data.readSetting("MasterListPriority", "1")); i++)
-			{
-				System.out.println("masterlist");
 				listMap.put(listMap.size(), "masterlist");
-			}
+			
 			System.out.println();
 			
 			int choice = random.nextInt(listMap.size());

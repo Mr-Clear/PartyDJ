@@ -21,6 +21,7 @@ import javax.swing.TransferHandler;
 import players.PlayStateAdapter;
 import players.PlayerException;
 import basics.Controller;
+import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
 import lists.TrackListModel;
@@ -39,28 +40,29 @@ public class PDJList extends JList
 {
 	private static final long serialVersionUID = -8653111853374564564L;
 	private ListDropMode ldMode;
-	private TrackListModel listModel;
+	private final TrackListModel listModel;
 	private int count = 0;
-	JList list = this;
+	private JList list = this;
 	
 	public PDJList(TrackListModel listModel)
 	{
 		super(listModel);
-		initialise(listModel, ListDropMode.COPY_OR_MOVE, null);
+		this.listModel = listModel;
+		initialise(null);
 	}
 	
 	public PDJList(TrackListModel listModel, ListDropMode ldMode, String name)
 	{
 		super(listModel);
-		initialise(listModel, ldMode, name);
+		this.listModel = listModel;
+		initialise(name);
 	}
 	
-	private void initialise(TrackListModel listModel, ListDropMode ldMode, String name)
+	private void initialise(String name)
 	{
 		final DragDropHandler handler = new DragDropHandler();
 		
 		this.setName(name);
-		this.listModel = listModel;
 		this.setListDropMode(ldMode);
 		this.setTransferHandler(handler);
 		this.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -84,17 +86,37 @@ public class PDJList extends JList
 												public void actionPerformed(ActionEvent evt) 
             									{
             										PDJList pdjList = (PDJList)evt.getSource();
-            								        EditableListModel listModel = (EditableListModel)pdjList.getModel();
-            								        int[] indices = pdjList.getSelectedIndices();
-            								 
-            								        	for(int i = indices.length; i > 0; i--)
-            											{
-            												try
-            												{
-            													listModel.remove(indices[i-1]);
-            												}
-            												catch (ListException e){}
-            											}
+													if(evt.getSource() instanceof PDJList)
+													{
+														if(pdjList.getModel() instanceof EditableListModel)
+														{
+		            								        EditableListModel listModel = (EditableListModel)pdjList.getModel();
+		            								        int[] indices = pdjList.getSelectedIndices();
+		            								 
+		            								        	for(int i = indices.length; i > 0; i--)
+		            											{
+		            												try
+		            												{
+		            													listModel.remove(indices[i-1]);
+		            												}
+		            												catch (ListException e){}
+		            											}
+														}
+														
+														else if(pdjList.getModel() instanceof DbMasterListModel)
+														{
+															int[] indices = pdjList.getSelectedIndices();
+															for(int i = indices.length; i > 0; i--)
+	            											{
+	            												try
+	            												{
+	            													Controller.getInstance().getData().deleteTrack(listModel.getElementAt(indices[i-1]));
+	            												}
+	            												catch (ListException e){}
+	            											}
+															
+														}
+													}
             									}
 											});
 		
