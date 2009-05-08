@@ -269,7 +269,6 @@ public class DragDropHandler extends TransferHandler
 				{
 					try
 					{
-						System.out.println((Track)data[i-1]);
 						((EditableListModel)listModel).add((Track)data[i-1]);
 					}
 					catch (ListException e)
