@@ -69,7 +69,7 @@ public class PDJList extends JList
 		this.setDragEnabled(true);
 		this.addMouseMotionListener(new DragMotionListener());
 		this.addMouseListener(new ClickListener());
-	
+		
 		this.getActionMap().put(TransferHandler.getCutAction().getValue(Action.NAME), TransferHandler.getCutAction());
 		this.getActionMap().put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
 		this.getActionMap().put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
@@ -149,6 +149,9 @@ public class PDJList extends JList
 		this.setPrototypeCellValue("123-45-6789");
 		
 		Controller.getInstance().getPlayer().addPlayStateListener(new PlayerListenerForLists());
+		
+		//----Forein Drop
+		//new DropTarget(this, new ForeignDrop());
 	}
 
 	public void setListDropMode(ListDropMode ldMode)

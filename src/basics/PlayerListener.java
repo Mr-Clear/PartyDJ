@@ -51,7 +51,10 @@ class PlayerListener implements PlayerContact, PlayStateListener
 			else
 			{
 				DbClientListModel chosenList = controller.listProvider.getDbList(nextList);
-				predictedTrack = chosenList.getElementAt(random.nextInt(chosenList.getSize()));
+				if(chosenList.getSize() > 0)
+					predictedTrack = chosenList.getElementAt(random.nextInt(chosenList.getSize()));
+				else
+					return predictNextTrack();
 			}
 			
 			DbClientListModel lastPlayed = controller.listProvider.getDbList("LastPlayed");
