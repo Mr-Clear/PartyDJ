@@ -44,7 +44,10 @@ public class ForeignDrop extends DropTargetAdapter {
 		    					String filePath = ((File)data.get(i)).getAbsolutePath();
 		    					if(filePath.toLowerCase().endsWith(".m3u"))
 						        {
+		    						//TODO Welche Liste? readM3u statt add
 						        	new StatusDialog("Lese M3U", null, new gui.settings.tools.AddM3U(filePath));
+						        	e.dropComplete(true);
+						        	return;
 						        }
 						        else
 							    {
@@ -56,6 +59,12 @@ public class ForeignDrop extends DropTargetAdapter {
 											ListProvider listProvider = new ListProvider();
 											Track added = listProvider.assignTrack(new Track(filePath, true));
 											
+											if(list.getListDropMode() == null)
+											{
+												e.dropComplete(false);
+												return;
+											}
+											
 											switch(list.getListDropMode())
 											{
 												case NONE:			e.rejectDrop();
@@ -66,12 +75,18 @@ public class ForeignDrop extends DropTargetAdapter {
 											{
 												((EditableListModel)list.getListModel()).add(added);
 											}
-											
+											e.dropComplete(true);
 						        		}
 						        	}
-									
+						        	else
+						        	{
+						        		e.dropComplete(false);
+						        		return;
+						        	}
 							    }
 		    				}
+				        	else
+				        		e.dropComplete(false);
 		    			}
 		    		}
 				} 

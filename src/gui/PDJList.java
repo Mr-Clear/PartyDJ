@@ -151,7 +151,7 @@ public class PDJList extends JList
 		Controller.getInstance().getPlayer().addPlayStateListener(new PlayerListenerForLists());
 		
 		//----Forein Drop
-		//new DropTarget(this, new ForeignDrop());
+		//new java.awt.dnd.DropTarget(this, new gui.dnd.ForeignDrop());
 	}
 
 	public void setListDropMode(ListDropMode ldMode)
