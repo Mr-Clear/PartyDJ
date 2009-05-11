@@ -318,7 +318,7 @@ class TrackTransfer implements ClipboardOwner
 
 	public void lostOwnership(Clipboard clipboard, Transferable contents){}
 	
-	public void setClipboardContents(Object[] track)
+	public void setClipboardContents(Track[] track)
 	{
 		TrackSelection trackSelection = new TrackSelection(track);
 	    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
