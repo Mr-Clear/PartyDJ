@@ -1,5 +1,6 @@
 package gui.dnd;
 
+import gui.DragGestureList;
 import gui.PDJList;
 import gui.StatusDialog;
 
@@ -18,8 +19,8 @@ import lists.ListProvider;
 
 import common.Track;
 
-public class ForeignDrop extends DropTargetAdapter {
-
+public class ForeignDrop extends DropTargetAdapter 
+{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void drop(DropTargetDropEvent e) 
@@ -28,7 +29,7 @@ public class ForeignDrop extends DropTargetAdapter {
 	    DataFlavor[] flavors = tr.getTransferDataFlavors();
 	    for(DataFlavor flav : flavors)
 	    {
-	    	if(flav.isFlavorJavaFileListType());
+	    	if(flav.isFlavorJavaFileListType())
 		    {
 		    	try 
 		    	{
@@ -53,9 +54,9 @@ public class ForeignDrop extends DropTargetAdapter {
 							    {
 						        	if(e.getSource() instanceof DropTarget)
 						        	{
-						        		if(((DropTarget)e.getSource()).getComponent() instanceof PDJList)
+						        		if(e.getDropTargetContext().getComponent() instanceof PDJList)
 						        		{
-						        			PDJList list = (PDJList) ((DropTarget)e.getSource()).getComponent();
+						        			PDJList list = (PDJList) e.getDropTargetContext().getComponent();
 											ListProvider listProvider = new ListProvider();
 											Track added = listProvider.assignTrack(new Track(filePath, true));
 											
@@ -106,8 +107,125 @@ public class ForeignDrop extends DropTargetAdapter {
 					e1.printStackTrace();
 				}
 		    }
+	    	else if(flav.equals(new DataFlavor(Track.class, "Track flavor")))
+	    	{
+    			e.acceptDrop(e.getDropAction());
+    			Transferable transfer = e.getTransferable();
+				Track[] tracks = null;
+				try
+				{
+	    			if(transfer.getTransferData(flav) instanceof Track[])
+	    			{
+						tracks = (Track[]) transfer.getTransferData(flav);
+	    			}
+				}
+				catch (UnsupportedFlavorException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				catch (IOException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				if(tracks == null)
+					return;
+				
+				if(!(e.getDropTargetContext().getComponent() instanceof PDJList))
+					return;
+				
+				PDJList list = (PDJList) e.getDropTargetContext().getComponent();
+				
+				if(list.getListDropMode() == null)
+					return;
+				
+				switch(list.getListDropMode())
+				{
+				case NONE:			break;
+				case MOVE:			System.out.println("MOVE not supported!"); //TODO Dialog
+				case DELETE:		if(DragGestureList.getList().getListModel() instanceof EditableListModel)
+									{
+										try
+										{
+											EditableListModel elm = (EditableListModel)DragGestureList.getList().getListModel();
+											if(tracks.length == 1)
+												elm.remove(DragGestureList.getList().getSelectedIndex());
+											else
+											{
+												for(int i = 0; i < tracks.length; i++)
+												{
+													elm.remove(DragGestureList.getList().getSelectedIndices()[0]);
+												}
+											}
+											e.dropComplete(true);
+										}
+										catch (ListException e1)
+										{
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+									}
+									break;
+				case COPY_OR_MOVE:	if(list.getListModel() instanceof EditableListModel)
+									{
+										if(!list.equals(DragGestureList.getList()))
+										{
+											EditableListModel elm = (EditableListModel)list.getListModel();
+											try
+											{
+												if(tracks.length == 1)
+												{
+													elm.add(DragGestureList.getList().getListModel().getElementAt(DragGestureList.getList().getSelectedIndex()));
+												}
+												else
+												{
+													for(int i = 0; i < tracks.length; i++)
+													{
+														elm.add(DragGestureList.getList().getListModel().getElementAt(DragGestureList.getList().getSelectedIndices()[i]));
+													}
+												}
+												e.dropComplete(true);
+											}
+											catch (ListException e1)
+											{
+												// TODO Auto-generated catch block
+												e1.printStackTrace();
+											}
+										}
+										else
+										{
+											EditableListModel elm = (EditableListModel)list.getListModel();
+											try
+											{
+												int addIndex = e.getLocation().y / list.getFixedCellHeight() + list.getFirstVisibleIndex();
+												for(int i = list.getSelectedIndices().length; i > 0; i--)
+												{
+													if(list.getSelectedIndices()[i-1] < addIndex)
+														addIndex--;
+													elm.remove(list.getSelectedIndices()[i-1]);
+												}
+					
+												for(int i = tracks.length; i > 0; i--)
+												{
+													elm.add(addIndex, tracks[i - 1]);
+												}
+												e.dropComplete(true);
+											}
+											catch (ListException e1)
+											{
+												// TODO Auto-generated catch block
+												e1.printStackTrace();
+											}
+										}
+										
+									}
+									break;
+				}
+				e.dropComplete(false);
+	    	}
 	    }
-		
 	}
 
 }

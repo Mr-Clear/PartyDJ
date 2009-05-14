@@ -1,9 +1,12 @@
 package gui;
 
 import gui.dnd.DragDropHandler;
-import gui.dnd.DragEvent;
+import gui.dnd.ForeignDrop;
 import gui.dnd.ListDropMode;
 import java.awt.Rectangle;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -18,6 +21,8 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import players.PlayStateAdapter;
 import players.PlayerException;
 import basics.Controller;
@@ -60,10 +65,12 @@ public class PDJList extends JList
 	
 	private void initialise(ListDropMode ldMode, String name)
 	{
+		//------DragDrop via TransferHandler
 		final DragDropHandler handler = new DragDropHandler();
 		
 		this.setName(name);
 		this.setListDropMode(ldMode);
+		//---DragDrop via TransferHandler
 		this.setTransferHandler(handler);
 		this.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		this.setDragEnabled(true);
@@ -150,8 +157,27 @@ public class PDJList extends JList
 		
 		Controller.getInstance().getPlayer().addPlayStateListener(new PlayerListenerForLists());
 		
-		//----Forein Drop
-		//new java.awt.dnd.DropTarget(this, new gui.dnd.ForeignDrop());
+		//----DragDrop awt
+				DragGestureList dgl = new DragGestureList();
+
+		new DropTarget(this, new ForeignDrop());
+		DragSource dragSource = new DragSource();
+		dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, dgl);
+		
+		this.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+
+															@Override
+															public void valueChanged(ListSelectionEvent e)
+															{
+																if(!e.getValueIsAdjusting())
+																{
+																	if(e.getLastIndex() - e.getFirstIndex() > 0)
+																	{
+																		
+																	}
+																}
+															}});
+		//----Ende
 	}
 
 	public void setListDropMode(ListDropMode ldMode)
@@ -199,7 +225,7 @@ public class PDJList extends JList
         System.arraycopy(rvTmp, 0, rv, 0, n);
         return rv;
     }
-	
+    	
 	private class DragMotionListener extends MouseMotionAdapter
 	{
 		private int startIndex;
@@ -211,7 +237,7 @@ public class PDJList extends JList
 		{
 			if(SwingUtilities.isLeftMouseButton(dge))
 			{
-				new DragEvent(dge);
+				//new DragEvent(dge);
 			}
 			
 			if(SwingUtilities.isMiddleMouseButton(dge))

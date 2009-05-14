@@ -3,13 +3,8 @@ package gui.dnd;
 import gui.PDJList;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import javax.swing.JComponent;
-import javax.swing.ListModel;
 import javax.swing.TransferHandler;
-import lists.EditableListModel;
-import lists.ListException;
 import common.Track;
 
 /**
@@ -30,7 +25,7 @@ public class DragDropHandler extends TransferHandler
 	
 	public synchronized boolean importData(PDJList list, Transferable transferable)
 	{
-		if (!transferable.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
+		/*if (!transferable.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 		{
 			System.out.println("Unsupported Flavor");
 			return false;
@@ -92,7 +87,7 @@ public class DragDropHandler extends TransferHandler
 										e.printStackTrace();
 									}
 									break;
-		}
+		}*/
 		return true;
 	}
 	
@@ -103,7 +98,7 @@ public class DragDropHandler extends TransferHandler
 	
 	public synchronized boolean importData(TransferHandler.TransferSupport info)
 	{
-		Object[] data = null;
+		/*Object[] data = null;
 					
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 		{
@@ -280,15 +275,15 @@ public class DragDropHandler extends TransferHandler
 					}
 				} 
 				return true;
-        }
-		return false;
+        }*/
+		return true;
 			
 	}
 	
 	public Transferable createTransferable(JComponent c)
 	{
 		PDJList pdjList = (PDJList)c;
-		Object[] values = pdjList.getSelectedValues();
+		Track[] values = pdjList.getSelectedValues();
 
 		return new TrackSelection(values);
 	}
@@ -322,7 +317,7 @@ public class DragDropHandler extends TransferHandler
 		transfer.setClipboardContents(export);*/
 
        
-        if(action == MOVE)
+       /* if(action == MOVE)
         {
         	if(component instanceof PDJList)
 	        {
@@ -345,7 +340,7 @@ public class DragDropHandler extends TransferHandler
 					}
 	        	}
 	        }
-        }
+        }*/
     }
 }
 	

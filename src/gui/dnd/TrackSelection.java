@@ -12,16 +12,16 @@ import common.Track;
  */
 public class TrackSelection implements Transferable
 {
-	private final Object[] trackArray;
+	private final Track[] trackArray;
 	private final DataFlavor trackFlavor = new DataFlavor(Track.class, "Track flavor");
 	private final DataFlavor flavors[] = {trackFlavor};
 
-	public TrackSelection(Object[] trackArray)
+	public TrackSelection(Track[] trackArray)
 	{
 		this.trackArray = trackArray;
 	}
 	
-	public synchronized Object[] getTransferData(DataFlavor dataFlavor) throws UnsupportedFlavorException, IOException
+	public synchronized Track[] getTransferData(DataFlavor dataFlavor) throws UnsupportedFlavorException, IOException
 	{
 		return trackArray;
 	}
