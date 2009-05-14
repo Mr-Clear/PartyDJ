@@ -21,8 +21,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import players.PlayStateAdapter;
 import players.PlayerException;
 import basics.Controller;
@@ -65,12 +63,10 @@ public class PDJList extends JList
 	
 	private void initialise(ListDropMode ldMode, String name)
 	{
-		//------DragDrop via TransferHandler
 		final DragDropHandler handler = new DragDropHandler();
 		
 		this.setName(name);
 		this.setListDropMode(ldMode);
-		//---DragDrop via TransferHandler
 		this.setTransferHandler(handler);
 		this.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		this.setDragEnabled(true);
@@ -147,7 +143,7 @@ public class PDJList extends JList
 								});
 		
 		if(ldMode != ListDropMode.NONE && ldMode != ListDropMode.DELETE)
-			this.setDropMode(DropMode.INSERT);		
+			this.setDropMode(DropMode.INSERT);
 		else
 			this.setDropMode(DropMode.ON);
 		
@@ -157,27 +153,11 @@ public class PDJList extends JList
 		
 		Controller.getInstance().getPlayer().addPlayStateListener(new PlayerListenerForLists());
 		
-		//----DragDrop awt
-				DragGestureList dgl = new DragGestureList();
+		DragGestureList dgl = new DragGestureList();
 
 		new DropTarget(this, new ForeignDrop());
 		DragSource dragSource = new DragSource();
 		dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, dgl);
-		
-		this.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-
-															@Override
-															public void valueChanged(ListSelectionEvent e)
-															{
-																if(!e.getValueIsAdjusting())
-																{
-																	if(e.getLastIndex() - e.getFirstIndex() > 0)
-																	{
-																		
-																	}
-																}
-															}});
-		//----Ende
 	}
 
 	public void setListDropMode(ListDropMode ldMode)

@@ -1,5 +1,6 @@
 package gui;
 
+import gui.dnd.ForeignDrop;
 import gui.dnd.ListDropMode;
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -12,6 +13,7 @@ import data.IData;
 import data.SettingException;
 import basics.Controller;
 import java.awt.*;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -337,11 +339,15 @@ public class ClassicWindow extends JFrame
 	{
 		this.addKeyListener(new KeyboardControl());
 		
-		final JTextField textField = new JTextField();					// final damit die innere Klasse
-		final PDJList searchList = new PDJList(new SearchListModel());	// darauf zugreifen kann.
+		final JTextField textField = new JTextField();												// final damit die innere Klasse
+		final PDJList searchList = new PDJList(new SearchListModel(), ListDropMode.NONE, "Search");	// darauf zugreifen kann.
 		JScrollPane scrollPane = new JScrollPane(searchList);
 		JPanel panel = new JPanel(new GridBagLayout());
 		JLabel label = new JLabel("Suche");
+		
+		//DnD
+		textField.setDropMode(DropMode.INSERT);
+		new DropTarget(textField, new ForeignDrop());
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(8, 0, 0, 0);

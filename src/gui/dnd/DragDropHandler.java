@@ -290,7 +290,7 @@ public class DragDropHandler extends TransferHandler
 	
 	public int getSourceActions(JComponent c)
 	{
-		 return COPY_OR_MOVE;
+		 return COPY;
 	}
 	
 	public void exportDone(JComponent component, Transferable data, int action) 

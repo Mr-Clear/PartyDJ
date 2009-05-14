@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 
 public class DragGestureList implements DragGestureListener
 {
-	public static PDJList list;
+	public static PDJList list = null;
 
 	@Override
 	public void dragGestureRecognized(DragGestureEvent dge)
