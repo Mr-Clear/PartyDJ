@@ -205,9 +205,9 @@ public class PDJList extends JList
 		private int listSize;
 		private int index;
 		
-		
+		@Override
 		public void mouseDragged(MouseEvent dge)
-		{			
+		{	
 			if(SwingUtilities.isMiddleMouseButton(dge))
 			{
 				if(dge.getComponent() instanceof PDJList)
@@ -269,7 +269,7 @@ public class PDJList extends JList
 	
 	private class ClickListener extends MouseAdapter
 	{
-		
+		@Override
 		public void mouseClicked(MouseEvent e)
 		{
 			PDJList list;

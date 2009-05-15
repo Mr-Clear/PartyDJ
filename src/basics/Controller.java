@@ -269,7 +269,7 @@ public class Controller
 
 				System.out.println(playingCurrent);
 			}
-		});*///TODO currentTrackChanged wird zwei mal ausgelöst.
+		});*/
 	}
 	
 

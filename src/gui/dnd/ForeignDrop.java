@@ -24,7 +24,7 @@ import lists.TrackListModel;
 
 import common.Track;
 
-public class ForeignDrop extends DropTargetAdapter 
+public class ForeignDrop extends DropTargetAdapter
 {
 	@SuppressWarnings("unchecked")
 	@Override
@@ -205,7 +205,7 @@ public class ForeignDrop extends DropTargetAdapter
 												EditableListModel elm = (EditableListModel)list.getListModel();
 												try
 												{
-													int addIndex = e.getLocation().y / list.getFixedCellHeight() + list.getFirstVisibleIndex();
+													int addIndex = e.getLocation().y / list.getFixedCellHeight();
 													for(int i = list.getSelectedIndices().length; i > 0; i--)
 													{
 														if(list.getSelectedIndices()[i-1] < addIndex)
@@ -249,10 +249,11 @@ public class ForeignDrop extends DropTargetAdapter
 	    if(e.getDropTargetContext().getComponent() instanceof PDJList)
 		{
 			PDJList list = (PDJList) e.getDropTargetContext().getComponent();
-			list.ensureIndexIsVisible(e.getLocation().y / list.getFixedCellHeight() + list.getFirstVisibleIndex());
+			list.ensureIndexIsVisible(e.getLocation().y / list.getFixedCellHeight());
 		}
 	}
 	
+	@Override
 	public void dragEnter(DropTargetDragEvent dtde)
 	{
 		if(dtde.getDropTargetContext().getComponent() instanceof PDJList)
@@ -282,7 +283,22 @@ public class ForeignDrop extends DropTargetAdapter
 				dtde.acceptDrag(DnDConstants.ACTION_COPY);
 		}
 		else
-			dtde.acceptDrag(DnDConstants.ACTION_COPY);
+			dtde.rejectDrag();
+	}
+	
+	@Override
+	public void dragOver(DropTargetDragEvent dtde)
+	{
+		/*if(dtde.getDropTargetContext().getComponent() instanceof PDJList)
+		{
+			PDJList list = (PDJList) dtde.getDropTargetContext().getComponent();
+			if(count % 500 == 0)
+				list.repaint();
+			Graphics g = list.getGraphics();
+			g.setColor(Color.RED);
+			g.fillRect(0, dtde.getLocation().y, list.getWidth(), 5);
+			list.paintComponents(g);
+		}*/
 	}
 
 }
