@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import lists.EditableListModel;
 import lists.ListException;
 import lists.ListProvider;
+import lists.TrackListModel;
 
 import common.Track;
 
@@ -27,13 +28,13 @@ public class ForeignDrop extends DropTargetAdapter
 {
 	@SuppressWarnings("unchecked")
 	@Override
-	public void drop(DropTargetDropEvent e) 
+	public synchronized void drop(DropTargetDropEvent e) 
 	{
 		Transferable tr = e.getTransferable();
 	    DataFlavor[] flavors = tr.getTransferDataFlavors();
 	    for(DataFlavor flav : flavors)
 	    {
-	    	if(flav.isFlavorJavaFileListType() && DragGestureList.getList() == null)
+	    	if(flav.isFlavorJavaFileListType() && !e.isLocalTransfer())
 		    {
 		    	try 
 		    	{
@@ -175,18 +176,20 @@ public class ForeignDrop extends DropTargetAdapter
 										{
 											if(!list.equals(DragGestureList.getList()))
 											{
+												int addIndex = e.getLocation().y / list.getFixedCellHeight() + list.getFirstVisibleIndex();
 												EditableListModel elm = (EditableListModel)list.getListModel();
+												TrackListModel dragLM = DragGestureList.getList().getListModel();
 												try
 												{
 													if(tracks.length == 1)
 													{
-														elm.add(DragGestureList.getList().getListModel().getElementAt(DragGestureList.getList().getSelectedIndex()));
+														elm.add(addIndex, dragLM.getElementAt(DragGestureList.getList().getSelectedIndex()));
 													}
 													else
 													{
 														for(int i = 0; i < tracks.length; i++)
 														{
-															elm.add(DragGestureList.getList().getListModel().getElementAt(DragGestureList.getList().getSelectedIndices()[i]));
+															elm.add(addIndex, dragLM.getElementAt(DragGestureList.getList().getSelectedIndices()[i]));
 														}
 													}
 													e.dropComplete(true);
@@ -242,6 +245,12 @@ public class ForeignDrop extends DropTargetAdapter
 	    	}
 	    	e.dropComplete(false);
 	    }
+	    
+	    if(e.getDropTargetContext().getComponent() instanceof PDJList)
+		{
+			PDJList list = (PDJList) e.getDropTargetContext().getComponent();
+			list.ensureIndexIsVisible(e.getLocation().y / list.getFixedCellHeight() + list.getFirstVisibleIndex());
+		}
 	}
 	
 	public void dragEnter(DropTargetDragEvent dtde)
@@ -250,7 +259,7 @@ public class ForeignDrop extends DropTargetAdapter
 		{
 			PDJList dropList = (PDJList) dtde.getDropTargetContext().getComponent(); 
 			PDJList dragList = DragGestureList.getList();
-				
+						
 			if(dropList.getListDropMode() == null || dropList.getListDropMode() == ListDropMode.NONE)
 			{
 				dtde.rejectDrag();

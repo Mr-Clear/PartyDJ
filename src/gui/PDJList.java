@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.DropMode;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
@@ -142,12 +141,6 @@ public class PDJList extends JList
 									}
 								});
 		
-		if(ldMode != ListDropMode.NONE && ldMode != ListDropMode.DELETE)
-			this.setDropMode(DropMode.INSERT);
-		else
-			this.setDropMode(DropMode.ON);
-		
-		
 		this.setCellRenderer(new TrackRenderer());
 		this.setPrototypeCellValue("123-45-6789");
 		
@@ -214,12 +207,7 @@ public class PDJList extends JList
 		
 		
 		public void mouseDragged(MouseEvent dge)
-		{
-			if(SwingUtilities.isLeftMouseButton(dge))
-			{
-				//new DragEvent(dge);
-			}
-			
+		{			
 			if(SwingUtilities.isMiddleMouseButton(dge))
 			{
 				if(dge.getComponent() instanceof PDJList)
@@ -285,10 +273,9 @@ public class PDJList extends JList
 		public void mouseClicked(MouseEvent e)
 		{
 			PDJList list;
-			if(e.getSource() instanceof PDJList)
-				list = (PDJList)e.getSource();
-			else
+			if(!(e.getSource() instanceof PDJList))
 				return;
+			list = (PDJList)e.getSource();
 			
 			if(SwingUtilities.isRightMouseButton(e))
 			{
@@ -331,12 +318,19 @@ public class PDJList extends JList
 				}
 				
 			}
-			
+
 			if(SwingUtilities.isLeftMouseButton(e))
 			{
 				if(e.getClickCount() == 2)
 				{
-					Track track = ((Track)((PDJList)e.getSource()).getSelectedValue());
+					int clickIndex = e.getY() / list.getFixedCellHeight();
+					
+					if(list.getSelectedIndex() != clickIndex)
+						return;
+					if(!(list.getSelectedValue() instanceof Track))
+						return;
+					
+					Track track = (Track) list.getSelectedValue();
 					try
 					{
 						Controller.getInstance().getPlayer().start(track);

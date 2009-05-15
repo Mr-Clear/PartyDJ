@@ -187,6 +187,8 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		catch (PlayerException e)
 		{
 			contact.reportProblem(e, track);
+			playNext();
+			return;
 		}
 		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_FORWARD);
 	}
@@ -253,7 +255,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		p = null;
 		tempPosition = seconds;
 		fadeIn();
-		p.fadeDuration = 300;
 	}
 
 	public void setVolume(int volume)
@@ -288,7 +289,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		
 		p = getPlayer(track.path);
 
-		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_NEW_TRACK);
+		currentTrackChanged(track, players.PlayStateListener.Reason.TRACK_LOADED);
 	}
 
 	public void start(Track track) throws PlayerException
@@ -299,9 +300,9 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		}
 		catch (PlayerException e)
 		{
+			contact.reportProblem(e, track);
 			return;
 		}
-		currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_NEW_TRACK);
 	}
 	
 	private synchronized void start(Track track, double position) throws PlayerException
@@ -311,7 +312,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 			try
 			{
 				load(track);
-				
 				try
 				{
 					p.play(position);
@@ -320,13 +320,13 @@ public class JLPlayer implements IPlayer, PlaybackListener
 				{
 					contact.reportProblem(new PlayerException(Problem.CANT_PLAY, e), track);
 				}
-				
 				changeState(true);
 			}
 			catch (PlayerException e1)
 			{
 				throw e1;
 			}
+			currentTrackChanged(track, players.PlayStateListener.Reason.RECEIVED_NEW_TRACK);
 		}
 	}
 

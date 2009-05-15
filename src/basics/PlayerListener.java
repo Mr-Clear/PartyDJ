@@ -16,12 +16,12 @@ import data.SettingException;
 
 class PlayerListener implements PlayerContact, PlayStateListener
 {
-	private Track predictedTrack = null;
 	Controller controller = Controller.getInstance();
 	private IData data = controller.getData();
 	
 	public synchronized Track predictNextTrack()
 	{
+		Track predictedTrack = null;
 		try
 		{
 			IData data = controller.getData();
@@ -41,8 +41,6 @@ class PlayerListener implements PlayerContact, PlayStateListener
 			for(int i = 0; i < Integer.parseInt(data.readSetting("MasterListPriority", "1")); i++)
 				listMap.put(listMap.size(), "masterlist");
 			
-			System.out.println();
-			
 			int choice = random.nextInt(listMap.size());
 			String nextList = listMap.get(choice);
 			
@@ -60,6 +58,8 @@ class PlayerListener implements PlayerContact, PlayStateListener
 			DbClientListModel lastPlayed = controller.listProvider.getDbList("LastPlayed");
 			for(int i = lastPlayed.getSize() - 1; i >= lastPlayed.getSize() - ignoreCount(listNames); i--)
 			{
+				if(i == -1)
+					break;
 				if(lastPlayed.getElementAt(i).equals(predictedTrack))
 					return predictNextTrack();
 			}
@@ -123,7 +123,6 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		{
 			synchronized(controller.playList)
 			{
-
 				if(controller.playList.getSize() > 0)
 				{
 					nextTrack = controller.playList.getElementAt(0);
@@ -142,7 +141,6 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		if(nextTrack == null)
 		{
 			nextTrack = predictNextTrack();
-			predictedTrack = null;
 		}
 		
 		return nextTrack;
@@ -174,10 +172,16 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		// TODO Auto-generated method stub
 	}
 	
-	public void reportProblem(PlayerException e, Track track)
+	public void reportProblem(final PlayerException e, final Track track)
 	{
 		track.problem = e.problem;
-		JOptionPane.showMessageDialog(null, "Fehler beim Abspielen:\n" + track.name + "\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+		Thread t = new Thread(){
+			public void run()
+			{
+				JOptionPane.showMessageDialog(null, "Fehler beim Abspielen:\n" + track.name + "\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			}
+		};
+		t.start();
 	}
 
 	public void trackDurationCalculated(Track track, double duration)
