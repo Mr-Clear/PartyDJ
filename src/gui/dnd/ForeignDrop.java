@@ -1,6 +1,5 @@
 package gui.dnd;
 
-import gui.DragGestureList;
 import gui.PDJList;
 import gui.StatusDialog;
 
@@ -24,6 +23,12 @@ import lists.TrackListModel;
 
 import common.Track;
 
+/**ForeignDrop kümmert sich um alle Drop-Importe.
+ * Innerhalb der VM, sowie auch von außerhalb.
+ * 
+ * @author Sam
+ * @date   15.05.09
+ */
 public class ForeignDrop extends DropTargetAdapter
 {
 	@SuppressWarnings("unchecked")

@@ -1,11 +1,14 @@
-package gui;
+package gui.dnd;
 
+import gui.PDJList;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSourceAdapter;
+import java.awt.dnd.DragSourceDropEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
-public class DragGestureList implements DragGestureListener
+public class DragGestureList extends DragSourceAdapter implements DragGestureListener
 {
 	private static PDJList list = null;
 
@@ -20,13 +23,17 @@ public class DragGestureList implements DragGestureListener
 		}
 	}
 	
+	/**
+	 * @return	Gibt die PDJList zurück, aus der gerade gedragt wurde.
+	 */
 	public static PDJList getList()
 	{
 		return list;
 	}
-	
-	public static void setList(PDJList list)
+
+	@Override
+	public void dragDropEnd(DragSourceDropEvent dsde)
 	{
-		DragGestureList.list = list;
+		list = null;
 	}
 }

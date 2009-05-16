@@ -11,6 +11,11 @@ import javax.swing.InputMap;
 import javax.swing.KeyStroke;
 import com.melloware.jintellitype.JIntellitype;
 
+/**KeyStrokeManager kümmert sich um globale und VM spezifische KeyEvents, unabhängig von Komponenten.
+ * 
+ * @author Sam
+ * @date   16.05.09
+ */
 public class KeyStrokeManager extends EventQueue
 {
 	private static final KeyStrokeManager instance = new KeyStrokeManager();
@@ -22,16 +27,25 @@ public class KeyStrokeManager extends EventQueue
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(instance);
 	}
 	
+	/**
+	 * @return Gibt eine KeyStrokeManager Instanz zurück.
+	 */
 	public static KeyStrokeManager getInstance() 
 	{
 		return instance;
 	}
 
+	/**Für VM-weite KeyStrokes
+	 * @return Die verwendete InputMap
+	 */
 	public InputMap getInputMap()
 	{
 		return keys;
 	}
 	
+	/**Für VM-weite KeyStrokes
+	 * @return Die ActionMap mit den in der InputMap gesetzten KeyStrokes
+	 */
 	public ActionMap getActionMap()
 	{
 		return actions;
@@ -57,6 +71,11 @@ public class KeyStrokeManager extends EventQueue
 		super.dispatchEvent(event);
 	}
 	
+	/**Gibt den RawCode eines KeyEvents zurück
+	 * 
+	 * @param ke KeyEvent, von dem der RawCode ausgegeben werden soll
+	 * @return
+	 */
 	@SuppressWarnings("unused")
 	private int getRawCode(KeyEvent ke)
 	{
@@ -65,11 +84,21 @@ public class KeyStrokeManager extends EventQueue
 		return Integer.parseInt(s.substring(p, s.indexOf(",", p)));
 	}
 	
+	/**Setzt einen globalen HotKey
+	 * 
+	 * @param id		Einmalige ID zur Identifizierung des HotKeys
+	 * @param modifier	Wie z.B. alt, strg oder Windows-Taste abzurufen unter JIntellitype.MOD_(was auch immer)
+	 * @param keyCode	Code der Taste
+	 */
 	public void enableHotKey(int id, int modifier, int keyCode)
 	{
 		JIntellitype.getInstance().registerHotKey(id, modifier, keyCode);
 	}
 	
+	/**Löscht einen globalen HotKey
+	 * 
+	 * @param id	ID des HotKeys, der gelöscht werden soll
+	 */
 	public void disableHotKey(int id)
 	{
 		JIntellitype.getInstance().unregisterHotKey(id);

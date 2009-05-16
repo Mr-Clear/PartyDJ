@@ -1,6 +1,7 @@
 package gui;
 
 import gui.dnd.DragDropHandler;
+import gui.dnd.DragGestureList;
 import gui.dnd.ForeignDrop;
 import gui.dnd.ListDropMode;
 import java.awt.Rectangle;
@@ -150,6 +151,7 @@ public class PDJList extends JList
 
 		new DropTarget(this, new ForeignDrop());
 		DragSource dragSource = new DragSource();
+		dragSource.addDragSourceListener(dgl);
 		dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, dgl);
 	}
 
