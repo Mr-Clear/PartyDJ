@@ -365,7 +365,7 @@ public class Controller
 		}
 		catch (Exception e)
 		{
-			JOptionPane.showMessageDialog(null, "Fenster kann nicht geladen werden: " + className + "\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			logError(IMPORTANT_ERROR, this, e, "Fenster kann nicht geladen werden: " + className);
 			return false;
 		}
 	}

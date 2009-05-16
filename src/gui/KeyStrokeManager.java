@@ -43,7 +43,10 @@ public class KeyStrokeManager extends EventQueue
 		if(event instanceof KeyEvent)
 		{
 			KeyStroke key = KeyStroke.getKeyStrokeForEvent((KeyEvent)event);
-			System.out.println(key.getKeyCode());
+			
+			if(key.getKeyCode() == 0)
+				return;
+			
 			Action action = actions.get(keys.get(key));
 			if(action != null && action.isEnabled())
 			{
@@ -54,20 +57,22 @@ public class KeyStrokeManager extends EventQueue
 		super.dispatchEvent(event);
 	}
 	
+	@SuppressWarnings("unused")
 	private int getRawCode(KeyEvent ke)
 	{
-		return 0;
+		String s = ke.toString();
+		int p = s.indexOf("rawCode=") + 8;
+		return Integer.parseInt(s.substring(p, s.indexOf(",", p)));
 	}
 	
-	public boolean enableHotKeys()
+	public void enableHotKey(int id, int modifier, int keyCode)
 	{
-		
-		return true;
+		JIntellitype.getInstance().registerHotKey(id, modifier, keyCode);
 	}
 	
-	public boolean disableHotKeys()
+	public void disableHotKey(int id)
 	{
-		return false;
+		JIntellitype.getInstance().unregisterHotKey(id);
 	}
 
 }

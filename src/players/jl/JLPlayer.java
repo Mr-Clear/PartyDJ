@@ -260,12 +260,22 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public void setVolume(int volume)
 	{
-		this.volume = volume;
+		/*this.volume = (volume < 0) ? 0 : volume;
+		this.volume = (volume > 100) ? 100 : volume;*/
+		
+		if(volume > 100)
+			volume = 100;
+		if(volume < 0)
+			volume = 0;
+		else
+			this.volume = volume;
 		
 		synchronized(playStateListener)
 		{
 			for(PlayStateListener listener : playStateListener)
+			{
 				listener.volumeChanged(this.volume);
+			}
 		}
 	}
 

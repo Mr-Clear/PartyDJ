@@ -6,8 +6,11 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import com.melloware.jintellitype.IntellitypeListener;
+import com.melloware.jintellitype.JIntellitype;
 import players.IPlayer;
 import players.PlayStateAdapter;
+import players.PlayStateListener;
 import common.Track;
 import data.IData;
 import data.SettingException;
@@ -18,8 +21,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
@@ -58,8 +59,7 @@ public class ClassicWindow extends JFrame
 		classicWindow = this;
 		assert Controller.getInstance() != null : "Controller nicht geladen!";
 		player.addPlayStateListener(new PlayState());
-		initHotKeys();
-		
+
 		GridBagConstraints con = new GridBagConstraints();
 		GridBagLayout layout = new GridBagLayout();
 		
@@ -85,12 +85,14 @@ public class ClassicWindow extends JFrame
 		con.weightx = 1.0;
 		con.weighty = 1.0;
 		add(MainPart(), con);
-		
+
+		initKeyStrokes();
 		setVisible(true);
 	}
 	
-	private void initHotKeys()
+	private void initKeyStrokes()
 	{
+		controller.getPlayer().addPlayStateListener(new VolumeListener());
 		KeyStrokeManager ghk = KeyStrokeManager.getInstance();
 		ghk.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "Pause");
 		ghk.getActionMap().put("Pause", new AbstractAction(){
@@ -100,6 +102,29 @@ public class ClassicWindow extends JFrame
 										public void actionPerformed(ActionEvent e)
 										{
 											player.fadeInOut();
+										}});
+		
+		//---HotKeys
+		//ghk.enableHotKey();
+		JIntellitype.getInstance().addIntellitypeListener(new IntellitypeListener(){
+
+										@Override
+										public void onIntellitype(int id)
+										{
+											switch(id)
+											{
+											case JIntellitype.APPCOMMAND_VOLUME_UP:				player.setVolume(player.getVolume() + 10);
+																								break;
+											case JIntellitype.APPCOMMAND_VOLUME_DOWN:			player.setVolume(player.getVolume() - 10);
+																								break;
+											case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:		player.playNext();
+																								break;
+											case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:	player.playPrevious();
+																								break;
+											case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:		player.fadeInOut();
+																								break;
+											}
+											
 										}});
 	}
 
@@ -312,8 +337,6 @@ public class ClassicWindow extends JFrame
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		
-		this.addKeyListener(new KeyboardControl());
-		
 		PDJList list = new PDJList(l, ldMode, title);
 		JScrollPane scrollPane = new JScrollPane(list);
 		JLabel label = new JLabel(title);
@@ -352,8 +375,6 @@ public class ClassicWindow extends JFrame
 	 */
 	private Component Search()
 	{
-		this.addKeyListener(new KeyboardControl());
-		
 		final JTextField textField = new JTextField();												// final damit die innere Klasse
 		final PDJList searchList = new PDJList(new SearchListModel(), ListDropMode.NONE, "Search");	// darauf zugreifen kann.
 		JScrollPane scrollPane = new JScrollPane(searchList);
@@ -592,7 +613,7 @@ public class ClassicWindow extends JFrame
 		}
 	}
 	
-	class VolumeListener implements ChangeListener
+	class VolumeListener implements ChangeListener, PlayStateListener
 	{
 		public void stateChanged(ChangeEvent e)
 		{
@@ -605,13 +626,23 @@ public class ClassicWindow extends JFrame
 			
 			player.setVolume(slider.getValue());
 		}
-	}
-	
-	private class KeyboardControl extends KeyAdapter
-	{
-		public void keyTyped(KeyEvent e)
+
+		@Override
+		public void volumeChanged(int volume)
 		{
-			e.getID();
+			classicWindow.volume.setValue(volume);
+		}
+
+		@Override
+		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+		{
+			//System.out.println(reason);
+		}
+
+		@Override
+		public void playStateChanged(boolean playState)
+		{
+			//System.out.println(playState);
 		}
 	}
 }

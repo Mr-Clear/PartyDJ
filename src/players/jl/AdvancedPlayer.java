@@ -286,7 +286,7 @@ public class AdvancedPlayer
 		Track track;
 		double start;
 		
-		public void run()
+		public synchronized void run()
 		{
 			paused = false;
 			boolean ftd = true;
@@ -295,7 +295,7 @@ public class AdvancedPlayer
 			while (ftd)
 			{
 				double fadeElapsed = System.currentTimeMillis() - fadeStartTime;
-				//System.out.println(fadeElapsed);
+				//System.out.println("FadeElapsed:  " + fadeElapsed + "  FadeDuration:  " + fadeDuration);
 				if(fadeElapsed < fadeDuration)
 				{
 					double progress = fadeElapsed / fadeDuration;
