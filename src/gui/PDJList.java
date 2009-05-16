@@ -348,6 +348,17 @@ public class PDJList extends JList
 		{
 			count = 0;
 		}	
+		
+		@Override
+		public void mousePressed(MouseEvent e)
+		{
+			if(e.getComponent() instanceof PDJList)
+			{
+				PDJList list = (PDJList) e.getComponent();
+				if(list.getSelectedIndices().length == 0)
+					list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+			}
+		}
 	}
 	
 	private class PlayerListenerForLists extends PlayStateAdapter

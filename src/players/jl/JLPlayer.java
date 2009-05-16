@@ -104,6 +104,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		{
 			p.fadeDuration = 1000;
 			p.fadeOut();
+			changeState(false);
 		}
 	}
 
@@ -379,22 +380,22 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	public void playbackFinished(AdvancedPlayer source, Reason reason)
 	{
 		if(source == p)
-		if(reason == Reason.END_OF_TRACK)
-		{
-			Track track = contact.requestNextTrack();
-			if(track != null)
-				try
-				{
-					start(track, 0);
-				}
-				catch (PlayerException e)
-				{
-					contact.reportProblem(e, track);
-				}
-			currentTrackChanged(track, players.PlayStateListener.Reason.END_OF_TRACK);
-		}
-		else
-			changeState(false);
+			if(reason == Reason.END_OF_TRACK)
+			{
+				Track track = contact.requestNextTrack();
+				if(track != null)
+					try
+					{
+						start(track, 0);
+					}
+					catch (PlayerException e)
+					{
+						contact.reportProblem(e, track);
+					}
+				currentTrackChanged(track, players.PlayStateListener.Reason.END_OF_TRACK);
+			}
+			else
+				changeState(false);
 	}
 	
 	private void currentTrackChanged(Track track, players.PlayStateListener.Reason reason)

@@ -58,6 +58,7 @@ public class ClassicWindow extends JFrame
 		classicWindow = this;
 		assert Controller.getInstance() != null : "Controller nicht geladen!";
 		player.addPlayStateListener(new PlayState());
+		initHotKeys();
 		
 		GridBagConstraints con = new GridBagConstraints();
 		GridBagLayout layout = new GridBagLayout();
@@ -88,11 +89,25 @@ public class ClassicWindow extends JFrame
 		setVisible(true);
 	}
 	
+	private void initHotKeys()
+	{
+		KeyStrokeManager ghk = KeyStrokeManager.getInstance();
+		ghk.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "Pause");
+		ghk.getActionMap().put("Pause", new AbstractAction(){
+										private static final long serialVersionUID = 4607893203556916986L;
+
+										@Override
+										public void actionPerformed(ActionEvent e)
+										{
+											player.fadeInOut();
+										}});
+	}
+
 	/**
 	 * Lautstärkeregler, Fortschrittsbalken und Buttons werden zu einer Kontrolleinheit zusammengefügt.
 	 * @return JPanel mit GridBagLayout, welches alle Steuerungen enthält.
 	 */
-	public Component Control()
+	private Component Control()
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel control = new JPanel(new GridBagLayout());
@@ -128,7 +143,7 @@ public class ClassicWindow extends JFrame
 	 * Alle Listen und die Suche werden zu einer Einheit zusammengefügt.
 	 * @return JPanel mit GridBagLayout, welches alle Listen und die Suche enthält.
 	 */
-	public Component MainPart()
+	private Component MainPart()
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel mainPart = new JPanel(new GridBagLayout());	
@@ -177,7 +192,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt die Buttons und ordnet sie mit einem GridBagLayout an.
 	 * @return JPanel mit GridBagLayout, welches alle Buttons enthält.
 	 */
-	public JPanel Buttons()
+	private JPanel Buttons()
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -293,7 +308,7 @@ public class ClassicWindow extends JFrame
 	 * @param title der Liste, Liste, DropMode
 	 * @return JPanel mit GridBagLayout, welches die Liste und Titel enthält.
 	 */
-	public Component List(String title, TrackListModel l, ListDropMode ldMode)
+	private Component List(String title, TrackListModel l, ListDropMode ldMode)
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -335,7 +350,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt eine Suchfunktion mit Ergebnisausgabe.
 	 * @return	JPanel mit GridBagLayout, welches das Suchfeld und die Ergebnisliste beinhaltet.
 	 */
-	public Component Search()
+	private Component Search()
 	{
 		this.addKeyListener(new KeyboardControl());
 		
@@ -410,7 +425,7 @@ public class ClassicWindow extends JFrame
 	/**Erzeugt den Fortschrittsbalken.
 	 * @return JPanel mit GridBagLayout, welches den Titel und Slider beinhaltet.
 	 */
-	public Component Slider()
+	private Component Slider()
 	{
 		try
 		{
@@ -439,7 +454,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt den Lautstärkeregler.
 	 * @return	JPanel mit GridBagLayout, welches den Lautstärkeregler beinhaltet.
 	 */
-	public Component Volume()
+	private Component Volume()
 	{
 		volume = new JSlider(JSlider.VERTICAL, 0, 100, player.getVolume());
 		JPanel panel = new JPanel(new GridBagLayout());
