@@ -124,7 +124,6 @@ public class ClassicWindow extends JFrame
 											case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:		player.fadeInOut();
 																								break;
 											}
-											
 										}});
 	}
 
