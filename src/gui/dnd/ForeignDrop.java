@@ -3,6 +3,8 @@ package gui.dnd;
 import gui.PDJList;
 import gui.StatusDialog;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -29,8 +31,11 @@ import common.Track;
  * @author Sam
  * @date   15.05.09
  */
+@SuppressWarnings("unused")
 public class ForeignDrop extends DropTargetAdapter
 {
+	private int count;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized void drop(DropTargetDropEvent e) 
@@ -154,18 +159,18 @@ public class ForeignDrop extends DropTargetAdapter
 					{
 					case NONE:			break;
 					case MOVE:			System.out.println("MOVE not supported!"); //TODO Dialog
-					case DELETE:		if(DragGestureList.getList().getListModel() instanceof EditableListModel)
+					case DELETE:		if(DragListener.getList().getListModel() instanceof EditableListModel)
 										{
 											try
 											{
-												EditableListModel elm = (EditableListModel)DragGestureList.getList().getListModel();
+												EditableListModel elm = (EditableListModel)DragListener.getList().getListModel();
 												if(tracks.length == 1)
-													elm.remove(DragGestureList.getList().getSelectedIndex());
+													elm.remove(DragListener.getList().getSelectedIndex());
 												else
 												{
 													for(int i = 0; i < tracks.length; i++)
 													{
-														elm.remove(DragGestureList.getList().getSelectedIndices()[0]);
+														elm.remove(DragListener.getList().getSelectedIndices()[0]);
 													}
 												}
 												e.dropComplete(true);
@@ -179,22 +184,22 @@ public class ForeignDrop extends DropTargetAdapter
 										break;
 					case COPY_OR_MOVE:	if(list.getListModel() instanceof EditableListModel)
 										{
-											if(!list.equals(DragGestureList.getList()))
+											if(!list.equals(DragListener.getList()))
 											{
 												int addIndex = e.getLocation().y / list.getFixedCellHeight() + list.getFirstVisibleIndex();
 												EditableListModel elm = (EditableListModel)list.getListModel();
-												TrackListModel dragLM = DragGestureList.getList().getListModel();
+												TrackListModel dragLM = DragListener.getList().getListModel();
 												try
 												{
 													if(tracks.length == 1)
 													{
-														elm.add(addIndex, dragLM.getElementAt(DragGestureList.getList().getSelectedIndex()));
+														elm.add(addIndex, dragLM.getElementAt(DragListener.getList().getSelectedIndex()));
 													}
 													else
 													{
 														for(int i = 0; i < tracks.length; i++)
 														{
-															elm.add(addIndex, dragLM.getElementAt(DragGestureList.getList().getSelectedIndices()[i]));
+															elm.add(addIndex, dragLM.getElementAt(DragListener.getList().getSelectedIndices()[i]));
 														}
 													}
 													e.dropComplete(true);
@@ -237,7 +242,7 @@ public class ForeignDrop extends DropTargetAdapter
 				}
 				else if(e.getDropTargetContext().getComponent() instanceof JTextField)
 				{
-	    			if(DragGestureList.getList().getSelectedIndices().length == 1)
+	    			if(DragListener.getList().getSelectedIndices().length == 1)
 	    			{
 	    				JTextField txtField = (JTextField) e.getDropTargetContext().getComponent();
 	    			
@@ -264,7 +269,7 @@ public class ForeignDrop extends DropTargetAdapter
 		if(dtde.getDropTargetContext().getComponent() instanceof PDJList)
 		{
 			PDJList dropList = (PDJList) dtde.getDropTargetContext().getComponent(); 
-			PDJList dragList = DragGestureList.getList();
+			PDJList dragList = DragListener.getList();
 						
 			if(dropList.getListDropMode() == null || dropList.getListDropMode() == ListDropMode.NONE)
 			{
@@ -296,13 +301,27 @@ public class ForeignDrop extends DropTargetAdapter
 	{
 		/*if(dtde.getDropTargetContext().getComponent() instanceof PDJList)
 		{
+			count++;
 			PDJList list = (PDJList) dtde.getDropTargetContext().getComponent();
-			if(count % 500 == 0)
-				list.repaint();
 			Graphics g = list.getGraphics();
-			g.setColor(Color.RED);
-			g.fillRect(0, dtde.getLocation().y, list.getWidth(), 5);
-			list.paintComponents(g);
+			int loc = dtde.getLocation().y;
+			int index = loc / list.getFixedCellHeight();
+			int delta = loc - (index * list.getFixedCellHeight());
+			if(delta > 21 || delta < 9 && index > list.getListModel().getSize())
+			{
+				g.setColor(Color.RED);
+				g.fillRect(0, loc, list.getWidth(), 3);
+				if(count > 6)
+				{
+					count = 0;
+					list.repaint();
+				}
+			}
+			else if(count > 6)
+			{
+				count = 0;
+				list.repaint();
+			}
 		}*/
 	}
 

@@ -8,7 +8,12 @@ import java.awt.dnd.DragSourceDropEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
-public class DragGestureList extends DragSourceAdapter implements DragGestureListener
+/**DragListener abgeleitet von DragSourceAdapter und implementiert DragGestureListener
+ * 
+ * @author Sam
+ * @date   15.05.09
+ */
+public class DragListener extends DragSourceAdapter implements DragGestureListener
 {
 	private static PDJList list = null;
 

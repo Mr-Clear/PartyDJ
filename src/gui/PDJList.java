@@ -1,7 +1,7 @@
 package gui;
 
 import gui.dnd.DragDropHandler;
-import gui.dnd.DragGestureList;
+import gui.dnd.DragListener;
 import gui.dnd.ForeignDrop;
 import gui.dnd.ListDropMode;
 import java.awt.Rectangle;
@@ -147,7 +147,7 @@ public class PDJList extends JList
 		
 		Controller.getInstance().getPlayer().addPlayStateListener(new PlayerListenerForLists());
 		
-		DragGestureList dgl = new DragGestureList();
+		DragListener dgl = new DragListener();
 
 		new DropTarget(this, new ForeignDrop());
 		DragSource dragSource = new DragSource();
