@@ -89,13 +89,13 @@ public class KeyStrokeManager extends EventQueue
 	
 	/**Setzt einen globalen HotKey
 	 * 
-	 * @param id		Einmalige ID zur Identifizierung des HotKeys
 	 * @param modifier	Wie z.B. alt, strg oder Windows-Taste abzurufen unter JIntellitype.MOD_(was auch immer)
 	 * @param keyCode	Code der Taste
 	 */
 	public synchronized void enableHotKey(int modifier, int keyCode)
 	{
 		int id = (String.valueOf(keyCode) + (char)0 + modifier).hashCode();
+
 		JIntellitype.getInstance().registerHotKey(id, modifier, keyCode);
 		regKeys.add(id);
 	}
@@ -106,6 +106,7 @@ public class KeyStrokeManager extends EventQueue
 	 */
 	public synchronized void disableHotKey(int id)
 	{
+		System.err.println("disabled");
 		JIntellitype.getInstance().unregisterHotKey(id);
 		regKeys.remove((Integer)id);
 	}

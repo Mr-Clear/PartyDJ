@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitype;
 import players.IPlayer;
 import players.PlayStateAdapter;
@@ -104,27 +103,8 @@ public class ClassicWindow extends JFrame
 											player.fadeInOut();
 										}});
 		
-		//---HotKeys
-		//ghk.enableHotKey();
-		JIntellitype.getInstance().addIntellitypeListener(new IntellitypeListener(){
-
-										@Override
-										public void onIntellitype(int id)
-										{
-											switch(id)
-											{
-											case JIntellitype.APPCOMMAND_VOLUME_UP:				player.setVolume(player.getVolume() + 10);
-																								break;
-											case JIntellitype.APPCOMMAND_VOLUME_DOWN:			player.setVolume(player.getVolume() - 10);
-																								break;
-											case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:		player.playNext();
-																								break;
-											case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:	player.playPrevious();
-																								break;
-											case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:		player.fadeInOut();
-																								break;
-											}
-										}});
+		JIntellitype.getInstance().addHotKeyListener(GlobalHotKeys.getInstance());
+		JIntellitype.getInstance().addIntellitypeListener(GlobalHotKeys.getInstance());
 	}
 
 	/**
