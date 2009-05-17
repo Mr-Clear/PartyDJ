@@ -5,6 +5,8 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -21,6 +23,7 @@ public class KeyStrokeManager extends EventQueue
 	private static final KeyStrokeManager instance = new KeyStrokeManager();
 	private final InputMap keys = new InputMap();
 	private final ActionMap actions = new ActionMap();
+	private List<Integer> regKeys = new ArrayList<Integer>();
 
 	static
 	{
@@ -90,18 +93,28 @@ public class KeyStrokeManager extends EventQueue
 	 * @param modifier	Wie z.B. alt, strg oder Windows-Taste abzurufen unter JIntellitype.MOD_(was auch immer)
 	 * @param keyCode	Code der Taste
 	 */
-	public void enableHotKey(int id, int modifier, int keyCode)
+	public synchronized void enableHotKey(int modifier, int keyCode)
 	{
+		int id = (String.valueOf(keyCode) + (char)0 + modifier).hashCode();
 		JIntellitype.getInstance().registerHotKey(id, modifier, keyCode);
+		regKeys.add(id);
 	}
 	
 	/**Löscht einen globalen HotKey
 	 * 
 	 * @param id	ID des HotKeys, der gelöscht werden soll
 	 */
-	public void disableHotKey(int id)
+	public synchronized void disableHotKey(int id)
 	{
 		JIntellitype.getInstance().unregisterHotKey(id);
+		regKeys.remove((Integer)id);
 	}
 
+	/**
+	 * @return	Liste aller global gesetzten HotKeys
+	 */
+	public List<Integer> getHotKeys()
+	{
+		return new ArrayList<Integer>(regKeys);
+	}
 }

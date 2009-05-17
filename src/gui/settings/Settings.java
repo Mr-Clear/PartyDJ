@@ -1,20 +1,27 @@
 package gui.settings;
 
+import gui.KeyStrokeManager;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractCellEditor;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -50,35 +57,44 @@ public class Settings extends JPanel
 		initGUI();
 	}
 	
-	private void initGUI()
+	protected void initGUI()
 	{
 		GridBagLayout layout = new GridBagLayout();
 		GridBagConstraints con = new GridBagConstraints();
 
 		setLayout(layout);
 		con.anchor = GridBagConstraints.NORTHWEST;
-		con.insets = new Insets(0, 0, 0, 0);
+		con.insets = new Insets(0, 10, 0, 0);
 		con.fill = GridBagConstraints.BOTH;
 		
-		con.gridx = 0;
-		con.gridy = 0;
 		con.weightx = 0.0;
 		con.weighty = 0.0;
-		con.ipadx = GridBagConstraints.REMAINDER;
+		con.gridx = 0;
 		con.ipady = 22;
-		add(shuffleSetting(), con);
+		add(listExplanation(), con);
 		
 		con.gridy = 1;
-		con.ipadx = GridBagConstraints.REMAINDER;
-		add(listShuffler(), con);
+		con.ipady = 100;
+		add(listTable(), con);
+		
+		con.insets = new Insets(30, 10, 0, 0);
+		con.gridy = 2;
+		con.ipady = 0;
+		con.ipadx = 35;
+		add(shortCutExpl(), con);
+
+		con.gridy = 3;
+		con.ipadx = 35;
+		con.anchor = GridBagConstraints.WEST;
+		add(shortCuts(), con);
 		
 		this.setVisible(true);
 	}
 	
-	private JPanel shuffleSetting()
+	protected JPanel listExplanation()
 	{
 		GridBagConstraints c = new GridBagConstraints();
-		JPanel shuffleSet = new JPanel(new GridBagLayout());
+		JPanel listExpl = new JPanel(new GridBagLayout());
 		
 		JLabel titel = new JLabel("Shuffle");
 		JLabel expl = new JLabel("Hier können Sie einstellen, wie groß die Wahrscheinlichkeit ist, dass ein Lied von einer bestimmten Liste gespielt wird.");
@@ -89,28 +105,63 @@ public class Settings extends JPanel
 		c.insets = new Insets(0, 5, 0, 5);
 		c.anchor = GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.BOTH;
-		shuffleSet.setBackground(Color.darkGray);	
+		listExpl.setBackground(Color.darkGray);	
 		
 		c.weightx = 0.0;
 		c.weighty = 0.0;
 		//c.ipadx = 10;
 		c.gridx = 0;
 		c.gridy = 0;
-		shuffleSet.add(titel, c);
+		listExpl.add(titel, c);
 		
 		c.insets = new Insets(5, 5, 10, 5);
 		c.weightx = 0.0;
 		c.weighty = 0.0;
 		//c.ipadx = 50;
 		c.gridy = 1;
-		shuffleSet.add(expl, c);
+		listExpl.add(expl, c);
 		
-		shuffleSet.setBackground(null);
+		listExpl.setBackground(null);
 				
-		return shuffleSet;
+		return listExpl;
 	}
 	
-	private JScrollPane listShuffler()
+	protected JPanel shortCutExpl()
+	{
+		GridBagConstraints c = new GridBagConstraints();
+		JPanel shortCutExpl = new JPanel(new GridBagLayout());
+		
+		JLabel titel = new JLabel("ShortCuts");
+		JLabel expl = new JLabel("Hier können Sie einstellen, mit welchen Tasten Sie zusätzlich zu den Media-Tasten den PartyDJ steuern wollen.");
+		
+		titel.setFont(new Font("SansSerifs", Font.BOLD, 18));
+		expl.setFont(new Font("SansSerifs", Font.ITALIC, 12));
+		
+		c.insets = new Insets(0, 5, 0, 5);
+		c.anchor = GridBagConstraints.WEST;
+		c.fill = GridBagConstraints.BOTH;
+		shortCutExpl.setBackground(Color.darkGray);	
+		
+		c.weightx = 0.0;
+		c.weighty = 0.0;
+		//c.ipadx = 10;
+		c.gridx = 0;
+		c.gridy = 0;
+		shortCutExpl.add(titel, c);
+		
+		c.insets = new Insets(5, 5, 10, 5);
+		c.weightx = 0.0;
+		c.weighty = 0.0;
+		//c.ipadx = 50;
+		c.gridy = 1;
+		shortCutExpl.add(expl, c);
+		
+		shortCutExpl.setBackground(null);
+				
+		return shortCutExpl;
+	}
+	
+	protected JScrollPane listTable()
 	{
 		try
 		{
@@ -182,7 +233,112 @@ public class Settings extends JPanel
 		return new JScrollPane();
 	}
 	
-	class SpinnerListener implements ChangeListener
+	protected JPanel shortCuts()
+	{
+		JPanel p = new JPanel();
+		GridBagConstraints c = new GridBagConstraints();
+		p.setLayout(new GridBagLayout());
+		
+		c.insets = new Insets(5, 5, 10, 10);
+		c.anchor = GridBagConstraints.WEST;
+		c.weightx = 0.0;
+		c.weighty = 0.0;
+		c.gridx = 0;
+		c.gridy = 0;
+		p.add(makeLabel("Play / Pause:"), c);
+		
+		final JTextField play = new JTextField("Num 5");
+		play.setBackground(Color.WHITE);
+		play.setEditable(false);
+		c.gridx = 1;
+		p.add(play, c);
+		
+		c.gridy = 1;
+		c.gridx = 0;
+		p.add(makeLabel("Stop:"), c);
+		
+		final JTextField stop = new JTextField("Num 0");
+		stop.setBackground(Color.WHITE);
+		stop.setEditable(false);
+		c.gridx = 1;
+		p.add(stop, c);
+		
+		c.gridy = 0;
+		c.gridx = 2;
+		p.add(makeLabel("Nächstes Lied:"), c);
+		
+		final JTextField next = new JTextField("Num 6");
+		next.setBackground(Color.WHITE);
+		next.setEditable(false);
+		c.gridx = 3;
+		p.add(next, c);
+		
+		c.gridy = 1;
+		c.gridx = 2;
+		p.add(makeLabel("Vorheriges Lied:"), c);
+		
+		final JTextField prev = new JTextField("Num 4");
+		prev.setBackground(Color.WHITE);
+		prev.setEditable(false);
+		c.gridx = 3;
+		p.add(prev, c);
+		
+		c.gridy = 0;
+		c.gridx = 4;
+		p.add(makeLabel("Lauter:"), c);
+		
+		final JTextField volUp = new JTextField("Num 8");
+		volUp.setBackground(Color.WHITE);
+		volUp.setEditable(false);
+		c.gridx = 5;
+		p.add(volUp, c);
+		
+		c.gridy = 1;
+		c.gridx = 4;
+		p.add(makeLabel("Leiser:"), c);
+		
+		final JTextField volDown = new JTextField("Num 2");
+		volDown.setBackground(Color.WHITE);
+		volDown.setEditable(false);
+		c.gridx = 5;
+		p.add(volDown, c);
+		
+		JButton clear = new JButton("<html><p style=\"text-align:center\"><b>Alle globalen</font></b><br>HotKeys löschen!</p></html>");
+		c.gridx = 0;
+		c.gridy = 2;
+		p.add(clear, c);
+
+		GlobalHotKeySetter listener = new GlobalHotKeySetter(play, stop, volDown, volUp, next, prev);
+		play.addKeyListener(listener);
+		stop.addKeyListener(listener);
+		volDown.addKeyListener(listener);
+		volUp.addKeyListener(listener);
+		next.addKeyListener(listener);
+		prev.addKeyListener(listener);
+		
+		clear.addActionListener(new ActionListener(){
+								@Override
+								public void actionPerformed(ActionEvent e)
+								{
+									for(Integer id : KeyStrokeManager.getInstance().getHotKeys())
+										KeyStrokeManager.getInstance().disableHotKey(id);
+									play.setText("");
+									stop.setText("");
+									volDown.setText("");
+									volUp.setText("");
+									next.setText("");
+									prev.setText("");
+								}});
+		
+		return p;
+	}
+	
+	protected JLabel makeLabel(String text)
+	{
+		return new JLabel(text);
+	}
+	
+	protected class SpinnerListener implements ChangeListener
 	{
 		private final String name;
 		public SpinnerListener(String name)
@@ -213,7 +369,7 @@ public class Settings extends JPanel
 		}
 	}
 	
-	class ColumnListener implements TableColumnModelListener
+	protected class ColumnListener implements TableColumnModelListener
 	{
 		IData data = Controller.getInstance().getData();
 		
@@ -245,7 +401,7 @@ public class Settings extends JPanel
 		public void columnSelectionChanged(ListSelectionEvent e){}
 	}
 	
-	class PriorityListener extends ListAdapter implements SettingListener
+	protected class PriorityListener extends ListAdapter implements SettingListener
 	{
 		private Map<String, JSpinner> namedSp;
 		private JTable table;
@@ -318,7 +474,7 @@ public class Settings extends JPanel
 		}
 	}
 	
-	class ShuffleTableModel extends AbstractTableModel
+	protected class ShuffleTableModel extends AbstractTableModel
 	{
 		private static final long serialVersionUID = 4845502871704418973L;
 		Object[][] rowData;
@@ -377,7 +533,7 @@ public class Settings extends JPanel
 		}
 	}
 	
-	class SpinnerEditor extends AbstractCellEditor implements TableCellEditor
+	protected class SpinnerEditor extends AbstractCellEditor implements TableCellEditor
 	{
 		private static final long serialVersionUID = -7664852358641606118L;
 		Map<Integer, JSpinner> spinners;
@@ -401,7 +557,78 @@ public class Settings extends JPanel
         }
 	}
 	
-	class SpinnerRenderer implements TableCellRenderer
+	protected class GlobalHotKeySetter implements KeyListener
+	{
+		JTextField[] fields;
+		KeyStrokeManager manager = KeyStrokeManager.getInstance();
+		
+		public GlobalHotKeySetter(JTextField...txts)
+		{
+			fields = txts;
+		}
+		
+		@Override
+		public void keyPressed(KeyEvent e)
+		{
+			boolean register = false;
+			System.out.println("KeyTyped:  " + e.getKeyCode());
+			
+			for(Integer id : manager.getHotKeys())
+			{
+				System.out.println("Registered:  " + id);
+				
+				if(id == (String.valueOf(e.getKeyCode()) + (char)0 + e.getModifiers()).hashCode())
+				{
+					System.out.println("Char:  " + e.getKeyChar() + "  Code:  " + e.getKeyCode() + "  Mod:  " + e.getModifiers());
+					for(JTextField txtField : fields)
+						if(String.valueOf(e.getKeyChar()).equals(txtField.getText()))
+							txtField.setText("");
+					if(e.getComponent() instanceof JTextField)
+					{
+						((JTextField)e.getComponent()).setText(id.toString());
+					}
+				}
+				else
+					register = true;
+			}
+			if(manager.getHotKeys().size() == 0 || register)
+			{
+				System.out.println("EnableHotKey");
+				manager.enableHotKey(e.getModifiers(), e.getKeyCode());
+				if(e.getComponent() instanceof JTextField)
+				{
+					((JTextField)e.getComponent()).setText("" + e.getKeyCode());
+					((JTextField)e.getComponent()).repaint();
+				}
+				register = false;
+			}
+			System.out.println();
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e){}
+
+		@Override
+		public void keyTyped(KeyEvent e){}
+	}
+	
+	protected class LokalHotKeySetter implements KeyListener
+	{
+
+		@Override
+		public void keyPressed(KeyEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e){}
+		@Override
+		public void keyTyped(KeyEvent e){}
+	}
+	
+	protected class SpinnerRenderer implements TableCellRenderer
 	{
 		private static final long serialVersionUID = 5606482980770475335L;
 		Map<Integer, JSpinner> spinners;
