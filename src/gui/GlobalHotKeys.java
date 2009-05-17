@@ -38,15 +38,13 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 		IPlayer player = Controller.getInstance().getPlayer();
 		switch(id)
 		{
-		case JIntellitype.APPCOMMAND_VOLUME_UP:				player.setVolume(player.getVolume() + 10);
-															break;
-		case JIntellitype.APPCOMMAND_VOLUME_DOWN:			player.setVolume(player.getVolume() - 10);
-															break;
 		case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:		player.playNext();
 															break;
 		case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:	player.playPrevious();
 															break;
 		case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:		player.fadeInOut();
+															break;
+		case JIntellitype.APPCOMMAND_MEDIA_STOP:			player.stop();
 															break;
 		}
 	}
