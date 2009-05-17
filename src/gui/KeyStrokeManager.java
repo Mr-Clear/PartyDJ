@@ -74,7 +74,6 @@ public class KeyStrokeManager extends EventQueue
 			}
 				
 			KeyStroke key = KeyStroke.getKeyStrokeForEvent((KeyEvent)event);
-			
 			if(key.getKeyCode() == 0)
 				return;
 			
@@ -119,7 +118,6 @@ public class KeyStrokeManager extends EventQueue
 	 */
 	public synchronized void disableHotKey(int id)
 	{
-		System.err.println("disabled");
 		JIntellitype.getInstance().unregisterHotKey(id);
 		regKeys.remove((Integer)id);
 	}

@@ -269,7 +269,7 @@ public class Settings extends JPanel
 		p.add(makeLabel("Play / Pause:"), c);
 
 		c.gridx = 2 + startX;
-		final JTextField play = new JTextField("NONE");
+		final JTextField play = new JTextField("NONE          ");
 		play.setName("play");
 		play.setToolTipText("Globaler HotKey für PLAY");
 		play.setBackground(Color.WHITE);
@@ -277,7 +277,7 @@ public class Settings extends JPanel
 		p.add(play, c);
 
 		c.gridx = 1 + startX;
-		final JTextField localPlay = new JTextField("NONE");
+		final JTextField localPlay = new JTextField("NONE          ");
 		localPlay.setName("play");
 		play.setToolTipText("Lokaler HotKey für PLAY");
 		localPlay.setBackground(Color.WHITE);
@@ -288,7 +288,7 @@ public class Settings extends JPanel
 		p.add(makeLabel("Stop:"), c);
 
 		c.gridx = 5 + startX;
-		final JTextField stop = new JTextField("NONE");
+		final JTextField stop = new JTextField("NONE          ");
 		stop.setName("stop");
 		play.setToolTipText("Globaler HotKey für STOP");
 		stop.setBackground(Color.WHITE);
@@ -296,7 +296,7 @@ public class Settings extends JPanel
 		p.add(stop, c);
 
 		c.gridx = 4 + startX;
-		final JTextField localStop = new JTextField("NONE");
+		final JTextField localStop = new JTextField("NONE          ");
 		localStop.setName("stop");
 		play.setToolTipText("Lokaler HotKey für STOP");
 		localStop.setBackground(Color.WHITE);
@@ -308,7 +308,7 @@ public class Settings extends JPanel
 		p.add(makeLabel("Nächstes Lied:"), c);
 
 		c.gridx = 2 + startX;
-		final JTextField next = new JTextField("NONE");
+		final JTextField next = new JTextField("NONE          ");
 		next.setName("next");
 		play.setToolTipText("Globaler HotKey für NÄCHSTES LIED");
 		next.setBackground(Color.WHITE);
@@ -316,7 +316,7 @@ public class Settings extends JPanel
 		p.add(next, c);
 
 		c.gridx = 1 + startX;
-		final JTextField localNext = new JTextField("NONE");
+		final JTextField localNext = new JTextField("NONE          ");
 		localNext.setName("next");
 		play.setToolTipText("Lokaler HotKey für NÄCHSTES LIED");
 		localNext.setBackground(Color.WHITE);
@@ -328,7 +328,7 @@ public class Settings extends JPanel
 		p.add(makeLabel("Vorheriges Lied:"), c);
 
 		c.gridx = 5 + startX;
-		final JTextField prev = new JTextField("NONE");
+		final JTextField prev = new JTextField("NONE          ");
 		prev.setName("prev");
 		play.setToolTipText("Globaler HotKey für VORHERIGES LIED");
 		prev.setBackground(Color.WHITE);
@@ -336,7 +336,7 @@ public class Settings extends JPanel
 		p.add(prev, c);
 
 		c.gridx = 4 + startX;
-		final JTextField localPrev = new JTextField("NONE");
+		final JTextField localPrev = new JTextField("NONE          ");
 		localPrev.setName("prev");
 		play.setToolTipText("Lokaler HotKey für VORHERIGES LIED");
 		localPrev.setBackground(Color.WHITE);
@@ -348,7 +348,7 @@ public class Settings extends JPanel
 		p.add(makeLabel("Lauter:"), c);
 		
 		c.gridx = 2 + startX;
-		final JTextField volUp = new JTextField("NONE");
+		final JTextField volUp = new JTextField("NONE          ");
 		volUp.setName("volup");
 		volUp.setToolTipText("Globaler HotKey für LAUTER");
 		volUp.setBackground(Color.WHITE);
@@ -356,7 +356,7 @@ public class Settings extends JPanel
 		p.add(volUp, c);
 
 		c.gridx = 1 + startX;
-		final JTextField localVolUp = new JTextField("NONE");
+		final JTextField localVolUp = new JTextField("NONE          ");
 		localVolUp.setName("volup");
 		localVolUp.setToolTipText("Lokaler HotKey für LAUTER");
 		localVolUp.setBackground(Color.WHITE);
@@ -368,7 +368,7 @@ public class Settings extends JPanel
 		p.add(makeLabel("Leiser:"), c);
 
 		c.gridx = 5 + startX;
-		final JTextField volDown = new JTextField("NONE");
+		final JTextField volDown = new JTextField("NONE          ");
 		volDown.setName("voldown");
 		volDown.setToolTipText("Globaler HotKey für LEISER");
 		volDown.setBackground(Color.WHITE);
@@ -376,7 +376,7 @@ public class Settings extends JPanel
 		p.add(volDown, c);
 
 		c.gridx = 4 + startX;
-		final JTextField localVolDown = new JTextField("NONE");
+		final JTextField localVolDown = new JTextField("NONE          ");
 		localVolDown.setName("voldown");
 		localVolDown.setToolTipText("Lokaler HotKey für LEISER");
 		localVolDown.setBackground(Color.WHITE);
@@ -685,7 +685,7 @@ public class Settings extends JPanel
 				manager.enableHotKey(e.getModifiers(), e.getKeyCode());
 				int id = (String.valueOf(e.getKeyCode()) + (char)0 + e.getModifiers()).hashCode();
 				GlobalHotKeys.getInstance().setKeyAction(id, actual.getName());
-				actual.setText("" + e.getKeyCode());
+				actual.setText(KeyEvent.getKeyText(e.getKeyCode()));
 				actual.repaint();
 			}
 		}
@@ -752,7 +752,7 @@ public class Settings extends JPanel
 											p.playPrevious();
 											
 									}});
-			txtField.setText("" + e.getKeyCode());
+			txtField.setText(KeyEvent.getKeyText(e.getKeyCode()));
 			txtField.repaint();
 		}
 
