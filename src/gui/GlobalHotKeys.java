@@ -52,7 +52,6 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 	@Override
 	public void onHotKey(int id)
 	{
-		System.out.println(id);
 		IPlayer player = Controller.getInstance().getPlayer();
 		
 		String action = actionKeys.get(id);
