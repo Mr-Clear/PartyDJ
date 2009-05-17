@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import com.melloware.jintellitype.JIntellitype;
 import players.IPlayer;
 import players.PlayStateAdapter;
 import players.PlayStateListener;
@@ -85,26 +84,7 @@ public class ClassicWindow extends JFrame
 		con.weighty = 1.0;
 		add(MainPart(), con);
 
-		initKeyStrokes();
 		setVisible(true);
-	}
-	
-	private void initKeyStrokes()
-	{
-		controller.getPlayer().addPlayStateListener(new VolumeListener());
-		KeyStrokeManager ghk = KeyStrokeManager.getInstance();
-		ghk.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "Pause");
-		ghk.getActionMap().put("Pause", new AbstractAction(){
-										private static final long serialVersionUID = 4607893203556916986L;
-
-										@Override
-										public void actionPerformed(ActionEvent e)
-										{
-											player.fadeInOut();
-										}});
-		
-		JIntellitype.getInstance().addHotKeyListener(GlobalHotKeys.getInstance());
-		JIntellitype.getInstance().addIntellitypeListener(GlobalHotKeys.getInstance());
 	}
 
 	/**

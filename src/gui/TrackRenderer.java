@@ -77,7 +77,7 @@ public class TrackRenderer implements ListCellRenderer
 				duration.setForeground(list.getForeground());
 			}
 			
-			Track currentTrack = Controller.getInstance().getCurrentTrack();
+			Track currentTrack = Controller.getInstance().getPlayer().getCurrentTrack();
 			if(currentTrack != null && currentTrack.index == track.index)
 			{
 				if(isSelected)

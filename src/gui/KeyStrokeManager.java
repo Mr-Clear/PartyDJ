@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import com.melloware.jintellitype.JIntellitype;
 
@@ -28,6 +29,12 @@ public class KeyStrokeManager extends EventQueue
 	static
 	{
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(instance);
+	}
+	
+	public void initHotKeys()
+	{
+		JIntellitype.getInstance().addHotKeyListener(GlobalHotKeys.getInstance());
+		JIntellitype.getInstance().addIntellitypeListener(GlobalHotKeys.getInstance());
 	}
 	
 	/**
@@ -57,8 +64,15 @@ public class KeyStrokeManager extends EventQueue
 	@Override
 	protected void dispatchEvent(AWTEvent event)
 	{
+		super.dispatchEvent(event);
 		if(event instanceof KeyEvent)
 		{
+			if(event.getSource() instanceof JTextField)
+			{
+				super.dispatchEvent(event);
+				return;
+			}
+				
 			KeyStroke key = KeyStroke.getKeyStrokeForEvent((KeyEvent)event);
 			
 			if(key.getKeyCode() == 0)
@@ -70,8 +84,7 @@ public class KeyStrokeManager extends EventQueue
 				if(keys.get(key) instanceof String)
 					action.actionPerformed(new ActionEvent(event.getSource(), event.getID(), (String) keys.get(key), ((KeyEvent)event).getModifiers()));
 			}
-		}  
-		super.dispatchEvent(event);
+		} 
 	}
 	
 	/**Gibt den RawCode eines KeyEvents zurück

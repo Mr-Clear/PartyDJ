@@ -153,6 +153,8 @@ public class PDJList extends JList
 		DragSource dragSource = new DragSource();
 		dragSource.addDragSourceListener(dgl);
 		dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, dgl);
+		
+		scrollToPlayed(Controller.getInstance().getPlayer().getCurrentTrack());
 	}
 
 	public void setListDropMode(ListDropMode ldMode)
@@ -199,6 +201,18 @@ public class PDJList extends JList
         Track[] rv = new Track[n];
         System.arraycopy(rvTmp, 0, rv, 0, n);
         return rv;
+    }
+    
+    protected void scrollToPlayed(Track playingCurrent)
+    {
+		int index = listModel.getIndex(playingCurrent);
+		if(index != -1)
+		{
+			int span = list.getLastVisibleIndex() - list.getFirstVisibleIndex();
+			Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize()));
+		        if (cellBound != null) 
+		            scrollRectToVisible(cellBound);
+		}
     }
     	
 	private class DragMotionListener extends MouseMotionAdapter
@@ -367,17 +381,7 @@ public class PDJList extends JList
 	{
 		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
-			if(reason == Reason.RECEIVED_NEW_TRACK)
-			{
-				int index = listModel.getIndex(playingCurrent);
-				if(index != -1)
-				{
-					int span = list.getLastVisibleIndex() - list.getFirstVisibleIndex();
-					Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize()));
-				        if (cellBound != null) 
-				            scrollRectToVisible(cellBound);
-				}
-			}
+			scrollToPlayed(playingCurrent);
 		}
 	}
 }

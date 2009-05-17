@@ -149,7 +149,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 	public synchronized Track requestPreviousTrack()
 	{
 		if(controller.lastPlayedList.getSize() == 0)
-			return controller.getCurrentTrack();
+			return controller.getPlayer().getCurrentTrack();
 		
 		Track previous = controller.lastPlayedList.getElementAt(controller.lastPlayedList.getSize() - 2);
 		
@@ -157,7 +157,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		{
 			controller.lastPlayedList.remove(controller.lastPlayedList.getSize() - 1);
 			controller.lastPlayedList.remove(controller.lastPlayedList.getSize() - 1);
-			controller.playList.add(0, controller.getCurrentTrack());
+			controller.playList.add(0, controller.getPlayer().getCurrentTrack());
 		}
 		catch (ListException e)
 		{
@@ -212,9 +212,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 	public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 	{
 		if(reason == Reason.RECEIVED_NEW_TRACK)
-		{
-			controller.setCurrentTrack(playingCurrent);
-			
+		{			
 			if(playingCurrent != null)
 			{
 				try

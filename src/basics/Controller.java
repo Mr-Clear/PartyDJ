@@ -1,5 +1,6 @@
 package basics;
 
+import gui.KeyStrokeManager;
 import gui.SplashWindow;
 import gui.settings.SettingNode;
 import java.awt.Frame;
@@ -47,8 +48,6 @@ public class Controller
 	/** Dieser Thread überwacht ob der PartyDJ geschlossen wird. */
 	private Thread closeListenThread;
 
-	/** Track der gerade gespielt wird. Kann auch null sein. */
-	private Track currentTrack;
 	/** Wunschliste aus derimmer der oberste Track gespielt und dabei gelöscht wird. */ 
 	protected EditableListModel playList;
 	/** Liste der zuletzt gespielten lieder. Hat maximal 100 Einträge */
@@ -258,6 +257,17 @@ public class Controller
 		}
 		
 		splash.setInfo("PartyDJ bereit :)");
+		try
+		{
+			if(System.getenv().get("OS").equalsIgnoreCase("windows_NT"))
+				KeyStrokeManager.getInstance().initHotKeys();
+		}
+		catch(Throwable t)
+		{
+			logError(REGULAR_ERROR, this, t, "Fehler beim Laden von Intellitype!");
+		}
+		
+		
 		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
 		splash.close();
 		loadFinished = true;
@@ -296,11 +306,6 @@ public class Controller
 	public ListProvider getListProvider()
 	{
 		return listProvider;
-	}
-
-	public Track getCurrentTrack()
-	{
-		return currentTrack;
 	}
 	
 	public void setPlayList(EditableListModel list)
@@ -623,11 +628,6 @@ public class Controller
 				listener.closing();
 		}
 		System.exit(0);
-	}
-	
-	public void setCurrentTrack(Track track)
-	{
-		currentTrack = track;
 	}
 
 	/** Wird Fenstern die sich registrieren übergeben.
