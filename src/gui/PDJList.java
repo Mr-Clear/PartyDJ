@@ -129,15 +129,18 @@ public class PDJList extends JList
 									private static final long serialVersionUID = -2342506838333821595L;
 									public void actionPerformed(ActionEvent evt) 
 									{
-										Track track = ((Track)((PDJList)evt.getSource()).getSelectedValues()[0]);
-										try
+										Track track = ((Track)((PDJList)evt.getSource()).getSelectedValue());
+										if(track != null)
 										{
-											Controller.getInstance().getPlayer().start(track);
-										}
-										catch (PlayerException e)
-										{
-											e.printStackTrace();
-											JOptionPane.showMessageDialog(null, "Track kann nicht wiedergegeben werden:\n" + track, "PartyDJ", JOptionPane.ERROR_MESSAGE);
+											try
+											{
+												Controller.getInstance().getPlayer().start(track);
+											}
+											catch (PlayerException e)
+											{
+												e.printStackTrace();
+												JOptionPane.showMessageDialog(null, "Track kann nicht wiedergegeben werden:\n" + track, "PartyDJ", JOptionPane.ERROR_MESSAGE);
+											}
 										}
 									}
 								});
