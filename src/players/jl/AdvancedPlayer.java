@@ -19,7 +19,6 @@ import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.Header;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.SampleBuffer;
-import javazoom.jl.player.AudioDevice;
 
 /**
  * Player zum Wiedergeben eines Tracks.
@@ -32,7 +31,7 @@ public class AdvancedPlayer
 	private FileInputStream fis;
 	private Bitstream bitStream;
 	private Decoder decoder;
-	private SoundAudioDevice audio;
+	private final SoundAudioDevice audio;
 	private JLPlayer jlPlayer;
 	private boolean paused = false;
 	private static String durationPath;
@@ -127,11 +126,9 @@ public class AdvancedPlayer
 			fis.close();
 		}
 		catch (IOException e){}
-		AudioDevice out = audio;
-		if (out != null)
+		if (audio != null)
 		{
-			audio = null;
-			out.close();
+			audio.close();
 			try
 			{
 				bitStream.close();
@@ -147,53 +144,31 @@ public class AdvancedPlayer
 	 */
 	protected boolean decodeFrame() throws JavaLayerException
 	{
-		try
+		if (audio == null) 
 		{
-			AudioDevice out = audio;
-			if (out == null) 
-			{
-				try
-				{
-					osw.write("AUDIO DEVICE NULL" + "\n");
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-				return false;
-			}
-
-			Header h = bitStream.readFrame();
-			if (h == null) 
-			{
-				try
-				{
-					osw.write("BITSTREAM READ FRAME ENDE/FAILED" + "\n");
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-				return false;
-			}
-			
-			SampleBuffer output = (SampleBuffer)decoder.decodeFrame(h, bitStream);
-
-			synchronized (this)
-			{
-				out = audio;
-				if(out != null)
-				{
-					out.write(output.getBuffer(), 0, output.getBufferLength());
-				}
-			}
-
-			bitStream.closeFrame();
+			pdi("AUDIO DEVICE NULL");
+			return false;
 		}
-		catch (RuntimeException ex)
+
+		Header h = bitStream.readFrame();
+		if (h == null) 
 		{
-			throw new JavaLayerException("Exception decoding audio frame", ex);
+			pdi("BITSTREAM READ FRAME ENDE/FAILED" );
+			return false;
 		}
+		
+		SampleBuffer output = (SampleBuffer)decoder.decodeFrame(h, bitStream);
+
+		synchronized (this)
+		{
+			if(audio != null)
+			{
+				audio.write(output.getBuffer(), 0, output.getBufferLength());
+			}
+		}
+
+		bitStream.closeFrame();
+
 		return true;
 	}
 
@@ -322,16 +297,9 @@ public class AdvancedPlayer
 			paused = false;
 			boolean ftd = true;
 			
-			try
-			{
-				osw.write("Track:  " + path + "\n");
-				osw.write("StaticDuration:  " + staticDuration + "    SavedDuration:  " + Controller.getInstance().getPlayer().getDuration() + "\n");
-				osw.flush();
-			}
-			catch (IOException e1)
-			{
-				e1.printStackTrace();
-			}
+			pdi("Track:  " + new java.io.File(path).getName());
+			if(Math.abs(staticDuration - Controller.getInstance().getPlayer().getDuration()) > 0.001)
+				pdi("StaticDuration:  " + staticDuration + "    SavedDuration:  " + Controller.getInstance().getPlayer().getDuration());
 			
 			
 			while (ftd)
@@ -339,14 +307,6 @@ public class AdvancedPlayer
 				double fadeElapsed = System.currentTimeMillis() - fadeStartTime;
 				if(fadeElapsed < fadeDuration)
 				{
-					try
-					{
-						osw.write("Fading!!!   ");
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-					}
 					double progress = fadeElapsed / fadeDuration;
 					if(fadeOut)
 						setAudioVolume(volume * (1 - progress));
@@ -363,14 +323,8 @@ public class AdvancedPlayer
 				
 				if(paused)
 				{
-					try
-					{
-						osw.write("\n" + "Paused!!!" + "\n");
-					}
-					catch (IOException e)
-					{
-						e.printStackTrace();
-					}
+
+					pdi("\n" + "Paused!!!");
 					break;
 				}
 				
@@ -385,29 +339,15 @@ public class AdvancedPlayer
 				}
 				
 				position += frameDuration;
-				try
-				{
-					if(!ftd)
-						osw.write("Position:   " + position + "\n");
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
+				if(!ftd)
+					pdi("Position:   " + position );
+
 			}
 			
 			if (audio != null)
 			{
-				try
-				{
-					osw.write("Track end after:  " + position + "\n");
-					osw.write("Successfull playback?   " + (position >= Controller.getInstance().getPlayer().getDuration()) + "\n\n");
-					osw.flush();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
+				pdi("Track end after:  " + position);
+				pdi("Successfull playback?   " + (position >= Controller.getInstance().getPlayer().getDuration()) + "\n");
 				audio.flush();
 				audio.close();
 				close();
@@ -422,6 +362,20 @@ public class AdvancedPlayer
 				else
 					jlPlayer.playbackFinished(me, Reason.END_OF_TRACK);
 			}
+		}
+	}
+	
+	/** Prints Debug-Info */
+	void pdi(String text)
+	{
+		try
+		{
+			osw.write(text + "\n");
+			osw.flush();
+		}
+		catch (IOException e1)
+		{
+			e1.printStackTrace();
 		}
 	}
 }
