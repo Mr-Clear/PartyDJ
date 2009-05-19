@@ -41,7 +41,7 @@ public class ReadM3U
 		catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(sd, "Kann Datei nicht öffnen:\n" + filePath + "\n\n" + e.getMessage(), "M3U Lesen", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(sd, "Kann Datei nicht Ã¶ffnen:\n" + filePath + "\n\n" + e.getMessage(), "M3U Lesen", JOptionPane.ERROR_MESSAGE);
 			return 0;
 		}
 

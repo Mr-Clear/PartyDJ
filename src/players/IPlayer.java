@@ -10,7 +10,7 @@ import basics.PlayerContact;
  */
 public interface IPlayer
 {
-	/** Lädt den angegebenen Track, ohne ihn abzuspielen */
+	/** LÃ¤dt den angegebenen Track, ohne ihn abzuspielen */
 	void load(Track track) throws PlayerException;
 	/** Spielt das aktuelle Lied von Anfang an.*/
 	void start();
@@ -20,52 +20,52 @@ public interface IPlayer
 	void stop();
 	/** Startet den player an der aktuellen Position.*/
 	void play();
-	/** Spielt den nächsten Track.*/
+	/** Spielt den nÃ¤chsten Track.*/
 	void playNext();
 	/** Spielt den vorherigen Track.*/
 	void playPrevious();
 	/** Stopt den Player.*/
 	void pause();
-	/** Führt je nach Zustand Stop() oder Play() aus.*/
+	/** FÃ¼hrt je nach Zustand Stop() oder Play() aus.*/
 	void playPause();
 	/** Blendet an der aktuellen Position langsam ein.*/
 	void fadeIn();
 	/** Blendet an der aktuellen Position langsam aus.*/
 	void fadeOut();
-	/** Führt je nach Zustand FadeIn() oder FadeOut() aus.*/
+	/** FÃ¼hrt je nach Zustand FadeIn() oder FadeOut() aus.*/
 	void fadeInOut();
-	/** Gibt sämtliche Ressourcen frei */
+	/** Gibt sÃ¤mtliche Ressourcen frei */
 	void dispose();
 	
-	/** Gibt die Dauer des aktuellen Tracks in Sekunden zurück.*/
+	/** Gibt die Dauer des aktuellen Tracks in Sekunden zurÃ¼ck.*/
 	double getDuration();
-	/** Gibt die Dauer des angegebenen Tracks in Sekunden zurück.
+	/** Gibt die Dauer des angegebenen Tracks in Sekunden zurÃ¼ck.
 	 * @throws PlayerException */
 	double getDuration(Track track) throws PlayerException;
-	/** Gibt die Dauer des Tracks in der angegebenen Datei in Sekunden zurück.
+	/** Gibt die Dauer des Tracks in der angegebenen Datei in Sekunden zurÃ¼ck.
 	 * @throws PlayerException */
 	double getDuration(String filePath) throws PlayerException;
-	/** Gibt den aktuellen Track zurück.*/
+	/** Gibt den aktuellen Track zurÃ¼ck.*/
 	Track getCurrentTrack();
-	/** Gibt die aktuelle Position im Track in Sekunden zurück.*/
+	/** Gibt die aktuelle Position im Track in Sekunden zurÃ¼ck.*/
 	double getPosition();
-	/** Gibt true zurück wenn der Player läuft.*/
+	/** Gibt true zurÃ¼ck wenn der Player lÃ¤uft.*/
 	boolean getPlayState();
-	/** Gibt die Lautstärke in Prozent zurück.*/
+	/** Gibt die LautstÃ¤rke in Prozent zurÃ¼ck.*/
 	int getVolume();
 	
 	/** Setzt die Position im Track suf die angegebene Position.
 	 * @param Seconds Neue Position in Sekunden.
 	 */
 	void setPosition(double Seconds);
-	/** Setzt die Lautstärke des Players.
-	 *  @param Volume Lautstärke in Prozent.
+	/** Setzt die LautstÃ¤rke des Players.
+	 *  @param Volume LautstÃ¤rke in Prozent.
 	 */
 	void setVolume(int Volume);
 	
 	/** Setzt den Contact.
 	 * 
-	 *  Der Contact empfängt die Ereignisse, die der Player auslöst. 
+	 *  Der Contact empfÃ¤ngt die Ereignisse, die der Player auslÃ¶st. 
 	 * 
 	 *  @param Contact Ansprechpartner
 	 */

@@ -25,8 +25,8 @@ import lists.TrackListModel;
 
 import common.Track;
 
-/**ForeignDrop k¸mmert sich um alle Drop-Importe.
- * Innerhalb der VM, sowie auch von auﬂerhalb.
+/**ForeignDrop k√ºmmert sich um alle Drop-Importe.
+ * Innerhalb der VM, sowie auch von au√üerhalb.
  * 
  * @author Sam
  * @date   15.05.09

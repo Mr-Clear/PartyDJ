@@ -35,7 +35,7 @@ public class DerbyDB implements IData, CloseListener
 	/** Verbindet zur Datenbank.
 	 * 
 	 * @param dbName Verzeichnispfad der Datenbank.
-	 * @throws OpenDbException Tritt auf, wenn keine Verbindung möglich ist.
+	 * @throws OpenDbException Tritt auf, wenn keine Verbindung mÃ¶glich ist.
 	 */
 	public DerbyDB(String dbName) throws OpenDbException
 	{
@@ -323,7 +323,7 @@ public class DerbyDB implements IData, CloseListener
 						statement += " ORDER BY SIZE";
 						break;
 					case POSITION:
-						throw new ListException("SortOrder.POSITION wird von der Hauptliste nicht unterstützt.");
+						throw new ListException("SortOrder.POSITION wird von der Hauptliste nicht unterstÃ¼tzt.");
 					}
 					
 					ps = conn.prepareStatement(statement);
@@ -591,7 +591,7 @@ public class DerbyDB implements IData, CloseListener
 	public void deleteTrack(Track track) throws ListException
 	{
 		if(track == null)
-			throw new NullPointerException("Kein Track übergeben.");
+			throw new NullPointerException("Kein Track Ã¼bergeben.");
 		synchronized(conn)
 		{
 			try
@@ -684,7 +684,7 @@ public class DerbyDB implements IData, CloseListener
 	{
 		synchronized(listIndices)
 		{
-			//Wenn möglich aus temporärer Liste lesen
+			//Wenn mÃ¶glich aus temporÃ¤rer Liste lesen
 			if(listIndices.containsKey(listName))
 			{
 				return listIndices.get(listName);
@@ -737,7 +737,7 @@ public class DerbyDB implements IData, CloseListener
 				listener.listRemoved(listName);
 		}
 		
-		// Aus temporärer Liste löschen
+		// Aus temporÃ¤rer Liste lÃ¶schen
 		if(listIndices.containsKey(listName))
 			listIndices.remove(listName);
 	}
@@ -849,7 +849,7 @@ public class DerbyDB implements IData, CloseListener
 	{
 		synchronized(settings)
 		{
-			if(!value.equals(readSetting(name)))	// Prüfen ob Einstellung tatsächlich verändert wurde
+			if(!value.equals(readSetting(name)))	// PrÃ¼fen ob Einstellung tatsÃ¤chlich verÃ¤ndert wurde
 			{
 				// In Datenbank speichern
 				try
@@ -865,7 +865,7 @@ public class DerbyDB implements IData, CloseListener
 					throw new SettingException(e);
 				}
 				
-				// In temporäre Liste schreiben
+				// In temporÃ¤re Liste schreiben
 				settings.put(name, value);
 				
 				synchronized(settingListener)
@@ -885,7 +885,7 @@ public class DerbyDB implements IData, CloseListener
 	{
 		synchronized(settings)
 		{
-			//Wenn möglich aus temporärer Liste lesen
+			//Wenn mÃ¶glich aus temporÃ¤rer Liste lesen
 			if(settings.containsKey(name))
 			{
 				return settings.get(name);
@@ -1019,7 +1019,7 @@ public class DerbyDB implements IData, CloseListener
 				int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", listIndex);
 				
 				
-				// Wenn trackPosition ausserhalb der Liste, nichts löschen.
+				// Wenn trackPosition ausserhalb der Liste, nichts lÃ¶schen.
 				if(trackPosition < 0 || trackPosition >= size)
 					return;
 
@@ -1086,7 +1086,7 @@ public class DerbyDB implements IData, CloseListener
 	
 	String makeSearchString(String original)
 	{
-		return original.toLowerCase(Locale.ENGLISH).replace('ä', 'a').replace('ö', 'o').replace('ü', 'u').replace('ß', 's');
+		return original.toLowerCase(Locale.ENGLISH).replace('Ã¤', 'a').replace('Ã¶', 'o').replace('Ã¼', 'u').replace('ÃŸ', 's');
 	}
 	
 	short problemToShort(Track.Problem problem)
@@ -1143,7 +1143,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 		catch (ListException e)
 		{
-			System.err.println("Fehler beim Schließen der Datenbank.");
+			System.err.println("Fehler beim SchlieÃŸen der Datenbank.");
 			e.printStackTrace();
 		}
 	}

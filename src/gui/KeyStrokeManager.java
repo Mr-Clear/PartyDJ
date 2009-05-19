@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import com.melloware.jintellitype.JIntellitype;
 
-/**KeyStrokeManager kümmert sich um globale und VM spezifische KeyEvents, unabhängig von Komponenten.
+/**KeyStrokeManager kÃ¼mmert sich um globale und VM spezifische KeyEvents, unabhÃ¤ngig von Komponenten.
  * 
  * @author Sam
  * @date   16.05.09
@@ -38,14 +38,14 @@ public class KeyStrokeManager extends EventQueue
 	}
 	
 	/**
-	 * @return Gibt eine KeyStrokeManager Instanz zurück.
+	 * @return Gibt eine KeyStrokeManager Instanz zurÃ¼ck.
 	 */
 	public static KeyStrokeManager getInstance() 
 	{
 		return instance;
 	}
 
-	/**Für VM-weite KeyStrokes
+	/**FÃ¼r VM-weite KeyStrokes
 	 * @return Die verwendete InputMap
 	 */
 	public InputMap getInputMap()
@@ -53,7 +53,7 @@ public class KeyStrokeManager extends EventQueue
 		return keys;
 	}
 	
-	/**Für VM-weite KeyStrokes
+	/**FÃ¼r VM-weite KeyStrokes
 	 * @return Die ActionMap mit den in der InputMap gesetzten KeyStrokes
 	 */
 	public ActionMap getActionMap()
@@ -86,7 +86,7 @@ public class KeyStrokeManager extends EventQueue
 		} 
 	}
 	
-	/**Gibt den RawCode eines KeyEvents zurück
+	/**Gibt den RawCode eines KeyEvents zurÃ¼ck
 	 * 
 	 * @param ke KeyEvent, von dem der RawCode ausgegeben werden soll
 	 * @return
@@ -112,9 +112,9 @@ public class KeyStrokeManager extends EventQueue
 		regKeys.add(id);
 	}
 	
-	/**Löscht einen globalen HotKey
+	/**LÃ¶scht einen globalen HotKey
 	 * 
-	 * @param id	ID des HotKeys, der gelöscht werden soll
+	 * @param id	ID des HotKeys, der gelÃ¶scht werden soll
 	 */
 	public synchronized void disableHotKey(int id)
 	{

@@ -8,7 +8,7 @@ import basics.Controller;
 
 /**
  * Stellt einen Titel mit seinen Eigenschaften dar.
- * <p>Die eigenschaften sind veränderlich.
+ * <p>Die eigenschaften sind verÃ¤nderlich.
  * 
  * @author Eraser
  */
@@ -24,11 +24,11 @@ public class Track implements Serializable, Comparable<Track>
 	public String name;
 	/** Dauer des Tracks */
 	public double duration;
-	/** Größe der Datei */
+	/** GrÃ¶ÃŸe der Datei */
 	public long size;
 	/** Bekannte Probleme mit dem Track */
 	public Problem problem;
-	/** Beliebige Info über den Track */
+	/** Beliebige Info Ã¼ber den Track */
 	public String info;
 	
 	/** File-Objekt */
@@ -167,7 +167,7 @@ public class Track implements Serializable, Comparable<Track>
 		}
 	}
 	
-	/**Wählt ein Element aus dem Track aus.
+	/**WÃ¤hlt ein Element aus dem Track aus.
 	 * 
 	 * @author Eraser
 	 */

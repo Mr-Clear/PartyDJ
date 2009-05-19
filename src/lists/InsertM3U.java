@@ -6,7 +6,7 @@ import common.Reporter;
 import common.Track;
 
 /**
- * Fügt eine M3U-Datei in eine Liste ein.
+ * FÃ¼gt eine M3U-Datei in eine Liste ein.
  * 
  * @author Eraser
  *

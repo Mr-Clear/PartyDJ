@@ -2,7 +2,7 @@ package common;
 
 /**
  * Bekommt Daten von einer Funktion.
- * <p> Üblicherweise ruft der Reporter eine Funktion auf, und übergibt sich selbst,
+ * <p> Ãœblicherweise ruft der Reporter eine Funktion auf, und Ã¼bergibt sich selbst,
  * um die Daten zu bekommen.
  * 
  * @author Eraser
@@ -12,13 +12,13 @@ package common;
 public interface Reporter<T>
 {
 	/**
-	 * Übergibt Daten an den Reporter.
+	 * Ãœbergibt Daten an den Reporter.
 	 * 
-	 * @param content Übergebene Daten.
-	 * @return Ob die Daten gezählt werden.
+	 * @param content Ãœbergebene Daten.
+	 * @return Ob die Daten gezÃ¤hlt werden.
 	 */
 	boolean report(T content);
-	/** @return Gibt true zurück, wenn die arbeitende Funktion abbrechen soll.
+	/** @return Gibt true zurÃ¼ck, wenn die arbeitende Funktion abbrechen soll.
 	 */
 	boolean isStopped();
 }

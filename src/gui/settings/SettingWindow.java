@@ -77,7 +77,7 @@ public class SettingWindow extends JFrame
 					catch (Exception e2)
 					{
 						e2.printStackTrace();
-						throw new RuntimeException("Kein Kostruktor für Eintrag gefunden.", e2);
+						throw new RuntimeException("Kein Kostruktor fÃ¼r Eintrag gefunden.", e2);
 					}
 				}				
 			}

@@ -7,7 +7,7 @@ import common.Track;
 
 /**
  * Schnittstelle zur Datenbank-Anbindung.
- * <p>Ermöglich Zugriff auf Einstellungen und Listen.
+ * <p>ErmÃ¶glich Zugriff auf Einstellungen und Listen.
  * 
  * @author Eraser
  */
@@ -21,7 +21,7 @@ public interface IData
 	 */
 	void writeSetting(String name, String value) throws SettingException;
 	/**Liest eine Einstellung.
-	 * Gibt null zurück, wenn die Einstellung nicht vorhanden ist.
+	 * Gibt null zurÃ¼ck, wenn die Einstellung nicht vorhanden ist.
 	 * 
 	 * @param name Name der Einstellung.
 	 * @return Wert der Einstellung.
@@ -31,15 +31,15 @@ public interface IData
 	/**Liest eine Einstellung.
 	 * 
 	 * @param name Name der Einstellung.
-	 * @param defaultValue Standardwert, der zurückgegeben wird, wenn Einstellung nicht vorhanden ist.
+	 * @param defaultValue Standardwert, der zurÃ¼ckgegeben wird, wenn Einstellung nicht vorhanden ist.
 	 * @return Wert der Einstellung.
 	 * @throws ListException
 	 */
 	String readSetting(String name, String defaultValue) throws SettingException;
 	
-	/**Fügt einen SettingListener hinzu, der Änderungen an den Einstellungen empfängt.
+	/**FÃ¼gt einen SettingListener hinzu, der Ã„nderungen an den Einstellungen empfÃ¤ngt.
 	 * 
-	 * @param listener Der SettingListener der hinzugefügt wird.
+	 * @param listener Der SettingListener der hinzugefÃ¼gt wird.
 	 */
 	void addSettingListener(SettingListener listener);
 	/**Entfernt einen Settinglistener.
@@ -48,7 +48,7 @@ public interface IData
 	 */
 	void removeSettingListener(SettingListener listener);
 	
-	/**Gibt die Hauptliste aus der Datenbank zurück.
+	/**Gibt die Hauptliste aus der Datenbank zurÃ¼ck.
 	 * 
 	 * @return Die Liste vom Typ java.util.Map<Integer, Track>.
 	 * @throws ListException
@@ -58,43 +58,43 @@ public interface IData
 	/**Liest eine in der Datenbank gespeicherte Liste ein.
 	 * 
 	 * @param listName Name der Liste. null: Liest die Hauptliste.
-	 * @param searchString Suchbedingung. null: Keine Einschränkung.
+	 * @param searchString Suchbedingung. null: Keine EinschrÃ¤nkung.
 	 * @param order Sortierreihenfolge.
 	 * @return Die Liste vom Typ List<Track>.
 	 * @throws ListException
 	 */
 	List<Track> readList(String listName, String searchString, data.SortOrder order) throws ListException;
 	
-	/**Fügt einen Track zur Hauptliste hinzu.
+	/**FÃ¼gt einen Track zur Hauptliste hinzu.
 	 * 
-	 * @param track Der einzufügende Track.
+	 * @param track Der einzufÃ¼gende Track.
 	 * @return Der Index des Tracks.
 	 * @throws ListException
 	 */
 	int addTrack(Track track) throws ListException;
-	/**Speichert die Änderungen im Track in der Datenbank
+	/**Speichert die Ã„nderungen im Track in der Datenbank
 	 * 
 	 * @param track Der Track der geupdated werden soll.
 	 * @throws ListException
 	 */
 	void updateTrack(Track track) throws ListException;
-	/**Speichert die Änderung an einem Bestimten Wert im Track in der Datenbank
+	/**Speichert die Ã„nderung an einem Bestimten Wert im Track in der Datenbank
 	 * 
 	 * @param track Der Track der geupdated werden soll.
 	 * @param element Das Element das geupdatet werden soll.
 	 * @throws ListException
 	 */
 	void updateTrack(Track track, Track.TrackElement element) throws ListException;
-	/**Löscht einen Track aus der Hauptliste.
+	/**LÃ¶scht einen Track aus der Hauptliste.
 	 * 
-	 * @param track Der zu löschende Track.
+	 * @param track Der zu lÃ¶schende Track.
 	 * @throws ListException
 	 */
 	void deleteTrack(Track track) throws ListException;
 	
-	/**Fügt einen MasterListListener hinzu, der Änderungen an der Hauptliste empfängt.
+	/**FÃ¼gt einen MasterListListener hinzu, der Ã„nderungen an der Hauptliste empfÃ¤ngt.
 	 * 
-	 * @param listener Der MasterListListener der hinzugefügt wird.
+	 * @param listener Der MasterListListener der hinzugefÃ¼gt wird.
 	 */
 	void addListListener(ListListener listener);
 	/**Entfernt einen MasterListListener.
@@ -103,36 +103,36 @@ public interface IData
 	 */
 	void removeListListener(ListListener listener);
 
-	/**Fügt neue Liste ein.
+	/**FÃ¼gt neue Liste ein.
 	 * 
 	 * @param listName Name der Liste.
 	 * @throws ListException
 	 */
 	void addList(String listName) throws ListException;
-	/**Fügt neue Liste ein.
+	/**FÃ¼gt neue Liste ein.
 	 * 
 	 * @param listName Name der Liste.
 	 * @param description Beschreibung der Liste.
 	 * @throws ListException
 	 */
 	void addList(String listName, String description) throws ListException;
-	/**Löscht eine bestehende Liste.
+	/**LÃ¶scht eine bestehende Liste.
 	 * 
 	 * @param listName Name der Liste.
 	 * @throws ListException
 	 */
 	void removeList(String listName) throws ListException;
-	/**Fragt die Priorität einer Liste ab.
+	/**Fragt die PrioritÃ¤t einer Liste ab.
 	 * 
 	 * @param listName Name der Liste.
-	 * @return Priorität der Liste.
+	 * @return PrioritÃ¤t der Liste.
 	 * @throws ListException
 	 */
 	int getListPriority(String listName) throws ListException;
-	/**Setzt die Priorität einer Liste.
+	/**Setzt die PrioritÃ¤t einer Liste.
 	 * 
 	 * @param listName Name der Liste.
-	 * @param priority Priorität die die Liste haben soll.
+	 * @param priority PrioritÃ¤t die die Liste haben soll.
 	 * @throws ListException
 	 */
 	void setListPriority(String listName, int priority) throws ListException;
@@ -150,7 +150,7 @@ public interface IData
 	 * @throws ListException
 	 */
 	void setListDescription(String listName, String description) throws ListException;
-	/**Ändert den Namen einer Liste.
+	/**Ã„ndert den Namen einer Liste.
 	 * 
 	 * @param oldName Bisheriger Name der Liste. 
 	 * @param newName Neuer Name der Liste.
@@ -158,24 +158,24 @@ public interface IData
 	 */
 	void renameList(String oldName, String newName) throws ListException;
 	
-	/**Gibt alle Client-Listen in der Datenbank zurück.
+	/**Gibt alle Client-Listen in der Datenbank zurÃ¼ck.
 	 * 
 	 * @return Ein String-Array mit den Namen der Listen.
 	 * @throws ListException
 	 */
 	List<String> getLists() throws ListException;
 	
-	/**Fügt einen Track in eine Liste ein.
+	/**FÃ¼gt einen Track in eine Liste ein.
 	 * 
 	 * @param listName Name der Liste.
-	 * @param track Track der eingefügt wird.
+	 * @param track Track der eingefÃ¼gt wird.
 	 * @throws ListException
 	 */
 	void insertTrack(String listName, Track track) throws ListException;
-	/**Fügt einen Track in eine Liste an der angegebenen Stelle ein.
+	/**FÃ¼gt einen Track in eine Liste an der angegebenen Stelle ein.
 	 * 
 	 * @param listName Name der Liste.
-	 * @param track Track der eingefügt wird.
+	 * @param track Track der eingefÃ¼gt wird.
 	 * @param trackPosition Position des Tracks.
 	 * @throws ListException
 	 */
@@ -197,7 +197,7 @@ public interface IData
 	 */
 	void swapTrack(String listName, int positionA, int positionB) throws ListException;
 	
-	/**Speichert ungesicherte Daten und schließt alle Verbindungen.
+	/**Speichert ungesicherte Daten und schlieÃŸt alle Verbindungen.
 	 */
 	void close() throws ListException;
 }

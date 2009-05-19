@@ -45,10 +45,10 @@ import lists.ListException;
 import basics.Controller;
 
 //TODO JavaDoc
-//TODO Sinnvollen Namen für die Klasse finden.
+//TODO Sinnvollen Namen fÃ¼r die Klasse finden.
 
 /**
- * Einstellungen für die Listen.
+ * Einstellungen fÃ¼r die Listen.
  * 
  * @author Sam
  * 
@@ -103,7 +103,7 @@ public class Settings extends JPanel
 		JPanel listExpl = new JPanel(new GridBagLayout());
 		
 		JLabel titel = new JLabel("Shuffle");
-		JLabel expl = new JLabel("Hier können Sie einstellen, wie groß die Wahrscheinlichkeit ist, dass ein Lied von einer bestimmten Liste gespielt wird.");
+		JLabel expl = new JLabel("Hier kÃ¶nnen Sie einstellen, wie groÃŸ die Wahrscheinlichkeit ist, dass ein Lied von einer bestimmten Liste gespielt wird.");
 		
 		titel.setFont(new Font("SansSerifs", Font.BOLD, 18));
 		expl.setFont(new Font("SansSerifs", Font.ITALIC, 12));
@@ -138,7 +138,7 @@ public class Settings extends JPanel
 		JPanel shortCutExpl = new JPanel(new GridBagLayout());
 		
 		JLabel titel = new JLabel("ShortCuts");
-		JLabel expl = new JLabel("<html>Hier können Sie einstellen, mit welchen Tasten Sie zusätzlich zu den Media-Tasten den PartyDJ steuern wollen.<br>Im linken Textfeld befinden sich die lokalen, im rechten die globalen HotKeys.</html>");
+		JLabel expl = new JLabel("<html>Hier kÃ¶nnen Sie einstellen, mit welchen Tasten Sie zusÃ¤tzlich zu den Media-Tasten den PartyDJ steuern wollen.<br>Im linken Textfeld befinden sich die lokalen, im rechten die globalen HotKeys.</html>");
 		
 		titel.setFont(new Font("SansSerifs", Font.BOLD, 18));
 		expl.setFont(new Font("SansSerifs", Font.ITALIC, 12));
@@ -173,7 +173,7 @@ public class Settings extends JPanel
 		{
 			List<String> listNames = Controller.getInstance().getData().getLists();
 			IData data = Controller.getInstance().getData();
-			String[] labels = new String[]{"Liste", "Priorität", "Spielwahrscheinlichkeit"};
+			String[] labels = new String[]{"Liste", "PrioritÃ¤t", "Spielwahrscheinlichkeit"};
 			Object[][] lists = new Object[listNames.size()][3];
 			
 			for(int i = 0; i < listNames.size(); i++)
@@ -271,7 +271,7 @@ public class Settings extends JPanel
 		c.gridx = 2 + startX;
 		final JTextField play = new JTextField("NONE          ");
 		play.setName("play");
-		play.setToolTipText("Globaler HotKey für PLAY");
+		play.setToolTipText("Globaler HotKey fÃ¼r PLAY");
 		play.setBackground(Color.WHITE);
 		play.setEditable(false);
 		p.add(play, c);
@@ -279,7 +279,7 @@ public class Settings extends JPanel
 		c.gridx = 1 + startX;
 		final JTextField localPlay = new JTextField("NONE          ");
 		localPlay.setName("play");
-		play.setToolTipText("Lokaler HotKey für PLAY");
+		play.setToolTipText("Lokaler HotKey fÃ¼r PLAY");
 		localPlay.setBackground(Color.WHITE);
 		localPlay.setEditable(false);
 		p.add(localPlay, c);
@@ -290,7 +290,7 @@ public class Settings extends JPanel
 		c.gridx = 5 + startX;
 		final JTextField stop = new JTextField("NONE          ");
 		stop.setName("stop");
-		play.setToolTipText("Globaler HotKey für STOP");
+		play.setToolTipText("Globaler HotKey fÃ¼r STOP");
 		stop.setBackground(Color.WHITE);
 		stop.setEditable(false);
 		p.add(stop, c);
@@ -298,19 +298,19 @@ public class Settings extends JPanel
 		c.gridx = 4 + startX;
 		final JTextField localStop = new JTextField("NONE          ");
 		localStop.setName("stop");
-		play.setToolTipText("Lokaler HotKey für STOP");
+		play.setToolTipText("Lokaler HotKey fÃ¼r STOP");
 		localStop.setBackground(Color.WHITE);
 		localStop.setEditable(false);
 		p.add(localStop, c);
 
 		c.gridx = 0 + startX;
 		c.gridy = 1 + startY;
-		p.add(makeLabel("Nächstes Lied:"), c);
+		p.add(makeLabel("NÃ¤chstes Lied:"), c);
 
 		c.gridx = 2 + startX;
 		final JTextField next = new JTextField("NONE          ");
 		next.setName("next");
-		play.setToolTipText("Globaler HotKey für NÄCHSTES LIED");
+		play.setToolTipText("Globaler HotKey fÃ¼r NÃ„CHSTES LIED");
 		next.setBackground(Color.WHITE);
 		next.setEditable(false);
 		p.add(next, c);
@@ -318,7 +318,7 @@ public class Settings extends JPanel
 		c.gridx = 1 + startX;
 		final JTextField localNext = new JTextField("NONE          ");
 		localNext.setName("next");
-		play.setToolTipText("Lokaler HotKey für NÄCHSTES LIED");
+		play.setToolTipText("Lokaler HotKey fÃ¼r NÃ„CHSTES LIED");
 		localNext.setBackground(Color.WHITE);
 		localNext.setEditable(false);
 		p.add(localNext, c);
@@ -330,7 +330,7 @@ public class Settings extends JPanel
 		c.gridx = 5 + startX;
 		final JTextField prev = new JTextField("NONE          ");
 		prev.setName("prev");
-		play.setToolTipText("Globaler HotKey für VORHERIGES LIED");
+		play.setToolTipText("Globaler HotKey fÃ¼r VORHERIGES LIED");
 		prev.setBackground(Color.WHITE);
 		prev.setEditable(false);
 		p.add(prev, c);
@@ -338,7 +338,7 @@ public class Settings extends JPanel
 		c.gridx = 4 + startX;
 		final JTextField localPrev = new JTextField("NONE          ");
 		localPrev.setName("prev");
-		play.setToolTipText("Lokaler HotKey für VORHERIGES LIED");
+		play.setToolTipText("Lokaler HotKey fÃ¼r VORHERIGES LIED");
 		localPrev.setBackground(Color.WHITE);
 		localPrev.setEditable(false);
 		p.add(localPrev, c);
@@ -350,7 +350,7 @@ public class Settings extends JPanel
 		c.gridx = 2 + startX;
 		final JTextField volUp = new JTextField("NONE          ");
 		volUp.setName("volup");
-		volUp.setToolTipText("Globaler HotKey für LAUTER");
+		volUp.setToolTipText("Globaler HotKey fÃ¼r LAUTER");
 		volUp.setBackground(Color.WHITE);
 		volUp.setEditable(false);
 		p.add(volUp, c);
@@ -358,7 +358,7 @@ public class Settings extends JPanel
 		c.gridx = 1 + startX;
 		final JTextField localVolUp = new JTextField("NONE          ");
 		localVolUp.setName("volup");
-		localVolUp.setToolTipText("Lokaler HotKey für LAUTER");
+		localVolUp.setToolTipText("Lokaler HotKey fÃ¼r LAUTER");
 		localVolUp.setBackground(Color.WHITE);
 		localVolUp.setEditable(false);
 		p.add(localVolUp, c);
@@ -370,7 +370,7 @@ public class Settings extends JPanel
 		c.gridx = 5 + startX;
 		final JTextField volDown = new JTextField("NONE          ");
 		volDown.setName("voldown");
-		volDown.setToolTipText("Globaler HotKey für LEISER");
+		volDown.setToolTipText("Globaler HotKey fÃ¼r LEISER");
 		volDown.setBackground(Color.WHITE);
 		volDown.setEditable(false);
 		p.add(volDown, c);
@@ -378,7 +378,7 @@ public class Settings extends JPanel
 		c.gridx = 4 + startX;
 		final JTextField localVolDown = new JTextField("NONE          ");
 		localVolDown.setName("voldown");
-		localVolDown.setToolTipText("Lokaler HotKey für LEISER");
+		localVolDown.setToolTipText("Lokaler HotKey fÃ¼r LEISER");
 		localVolDown.setBackground(Color.WHITE);
 		localVolDown.setEditable(false);
 		p.add(localVolDown, c);
@@ -386,11 +386,11 @@ public class Settings extends JPanel
 		c.gridy = 3 + startY;
 		c.gridx = 2 + startX;
 		c.gridwidth = 2;
-		JButton clear = new JButton("<html><p style=\"text-align:center\"><b>Alle globalen</font></b><br>HotKeys löschen!</p></html>");
+		JButton clear = new JButton("<html><p style=\"text-align:center\"><b>Alle globalen</font></b><br>HotKeys lÃ¶schen!</p></html>");
 		p.add(clear, c);
 		
 		c.gridx = 0 + startX;
-		JButton clearLocal = new JButton("<html><p style=\"text-align:center\"><b>Alle lokalen</font></b><br>HotKeys löschen!</p></html>");
+		JButton clearLocal = new JButton("<html><p style=\"text-align:center\"><b>Alle lokalen</font></b><br>HotKeys lÃ¶schen!</p></html>");
 		p.add(clearLocal, c);
 
 		KeyListener listener = new GlobalHotKeySetter(play, stop, volDown, volUp, next, prev);
@@ -599,7 +599,7 @@ public class Settings extends JPanel
 			switch(column)
 			{
 				case 0:				return false;
-				//TODO Wunschliste ohne Priorität mit check Box o.ä.
+				//TODO Wunschliste ohne PrioritÃ¤t mit check Box o.Ã¤.
 				case 1:				if(rowData[row][0].equals("Wunschliste"))
 										return false;
 									return true;

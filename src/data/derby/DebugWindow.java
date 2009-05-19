@@ -27,7 +27,7 @@ import data.SettingListener;
 import basics.Controller;
 
 /**
- * Ermöglicht es vom PartyDJ aus direkt auf die Derby Datenbank zuzugreifen.
+ * ErmÃ¶glicht es vom PartyDJ aus direkt auf die Derby Datenbank zuzugreifen.
  * 
  * @author Eraser
  */

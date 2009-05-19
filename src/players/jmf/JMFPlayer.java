@@ -23,7 +23,7 @@ import data.SettingException;
  * Einfacher Player.
  * 
  * Verwendet JMF.
- * Keine Lautstärkenänderung.
+ * Keine LautstÃ¤rkenÃ¤nderung.
  * Kein umblenden.
  * 
  * @author Eraser
@@ -296,7 +296,7 @@ public class JMFPlayer implements IPlayer
 		}
 		catch (NoPlayerException e)
 		{
-			throw new PlayerException(Problem.CANT_PLAY, "Dateityp nicht unterstützt.", e);
+			throw new PlayerException(Problem.CANT_PLAY, "Dateityp nicht unterstÃ¼tzt.", e);
 		}
 		catch (CannotRealizeException e)
 		{
@@ -304,7 +304,7 @@ public class JMFPlayer implements IPlayer
 		}
 		catch (MalformedURLException e)
 		{
-			throw new PlayerException(Problem.FILE_NOT_FOUND, "Ungültiger Dateiname.", e);
+			throw new PlayerException(Problem.FILE_NOT_FOUND, "UngÃ¼ltiger Dateiname.", e);
 		}
 		catch (IOException e)
 		{

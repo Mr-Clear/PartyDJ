@@ -49,7 +49,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 			index = 0;
 		if(index >= getSize())
 		{
-			add(track);	//Wenn der Index ausserhalb der Liste ist, Track am Ende einfügen.
+			add(track);	//Wenn der Index ausserhalb der Liste ist, Track am Ende einfÃ¼gen.
 			return;
 		}
 		list.add(index, track);
@@ -65,7 +65,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 	public void remove(int index) throws ListException
 	{
 		if(index < 0 || index >= getSize())
-			return;		////Wenn der Index außerhalb der Liste ist, nichts machen.
+			return;		////Wenn der Index auÃŸerhalb der Liste ist, nichts machen.
 		list.remove(index);
 		for(ListDataListener listener : dataListener)
 			listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index, index));
@@ -74,7 +74,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 	public void move(int oldIndex, int newIndex) throws ListException
 	{
 		if(oldIndex < 0 || oldIndex >= getSize() || newIndex < 0 || newIndex > getSize() || oldIndex == newIndex)
-			return;		//Wenn der Index außerhalb der Liste ist, oder Indices gleich, nichts machen.
+			return;		//Wenn der Index auÃŸerhalb der Liste ist, oder Indices gleich, nichts machen.
 		
 		int toAdd;
 		int toRemove;
@@ -109,7 +109,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 
 	}
 	
-	public void trackAdded(Track track)	{} // Erst interesant, wenn der Track in diese Liste eingefügt wird. 
+	public void trackAdded(Track track)	{} // Erst interesant, wenn der Track in diese Liste eingefÃ¼gt wird. 
 	
 	public void trackDeleted(Track track)
 	{
@@ -121,7 +121,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 				{
 					try
 					{
-						this.remove(i--); // Gelöschten Index zurück gehen.
+						this.remove(i--); // GelÃ¶schten Index zurÃ¼ck gehen.
 						for(ListDataListener listener : dataListener)
 							listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, track.index, track.index));
 					}

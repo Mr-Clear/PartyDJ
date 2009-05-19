@@ -29,7 +29,7 @@ import data.SortOrder;
 import basics.Controller;
 
 /**
- * Setting-Panel über das sie die Hauptliste verwalten lässt.
+ * Setting-Panel Ã¼ber das sie die Hauptliste verwalten lÃ¤sst.
  * 
  * @author Eraser
  * 
@@ -47,7 +47,7 @@ public class MasterList extends JPanel
 	private JComboBox listBox;
 	private JTextField searchText;
 	
-	/**Für StatusDialog
+	/**FÃ¼r StatusDialog
 	 */
 	long time = 0;
 	//private Track track;
@@ -67,11 +67,11 @@ public class MasterList extends JPanel
 		
 		buttonBox1.add(Box.createVerticalStrut(8));
 		
-		JButton addFolder = new JButton("Verzeichnis einfügen...");
+		JButton addFolder = new JButton("Verzeichnis einfÃ¼gen...");
 		addFolder.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0)
 						{
-							final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
+							final JFileChooser chooser = new JFileChooser("Verzeichnis wÃ¤hlen");
 							chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 							chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 											        
@@ -86,11 +86,11 @@ public class MasterList extends JPanel
 		buttonBox1.add(addFolder);
 		buttonBox1.add(Box.createVerticalStrut(5));
 		
-		JButton addFile = new JButton("Datei einfügen...");
+		JButton addFile = new JButton("Datei einfÃ¼gen...");
 		addFile.addActionListener(new ActionListener(){
 						public void actionPerformed(ActionEvent arg0)
 						{
-							final JFileChooser chooser = new JFileChooser("Datei wählen");
+							final JFileChooser chooser = new JFileChooser("Datei wÃ¤hlen");
 							chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 					        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 							chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", common.Functions.getFolder())));
@@ -118,7 +118,7 @@ public class MasterList extends JPanel
 								}
 								catch (ListException e)
 								{
-									JOptionPane.showMessageDialog(null, "Einfügen fehlgeschlagen:\n" + e.getMessage(), "Datei einfügen", JOptionPane.ERROR_MESSAGE);
+									JOptionPane.showMessageDialog(null, "EinfÃ¼gen fehlgeschlagen:\n" + e.getMessage(), "Datei einfÃ¼gen", JOptionPane.ERROR_MESSAGE);
 								}
 						    }
 						}});
@@ -140,16 +140,16 @@ public class MasterList extends JPanel
 	
 								try
 								{
-									//Absteigend löschen, damit keine Indexfehler auftreten
+									//Absteigend lÃ¶schen, damit keine Indexfehler auftreten
 									for(int i = selected.length - 1; i >= 0; i--)
 									{
-										//TODO ProgressBar o.ä.
+										//TODO ProgressBar o.Ã¤.
 										data.deleteTrack(((TrackListModel)list.getListModel()).getElementAt(selected[i]));
 									}									
 								}
 								catch (ListException e)
 								{
-									JOptionPane.showMessageDialog(null, "Löschen Fehlgeschlagen:\n" + e.getMessage(), "Tracks entfernen", JOptionPane.ERROR_MESSAGE);
+									JOptionPane.showMessageDialog(null, "LÃ¶schen Fehlgeschlagen:\n" + e.getMessage(), "Tracks entfernen", JOptionPane.ERROR_MESSAGE);
 								}								
 								list.setSelectedIndex(-1);
 								list.setSelectedIndices(new int[0]);

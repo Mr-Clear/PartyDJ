@@ -2,7 +2,7 @@ package players;
 import common.Track.Problem;
 
 /**
- * Tritt auf, wenn der Player einen Fehler beim Abspielen auff‰ngt.
+ * Tritt auf, wenn der Player einen Fehler beim Abspielen auff√§ngt.
  * 
  * @author Eraser
  */

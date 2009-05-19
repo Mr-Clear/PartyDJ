@@ -13,7 +13,7 @@ import javax.swing.JWindow;
 
 
 /**
- * Splash-Fenster das w‰rend dem Start des PartyDJ angezeigt wird.
+ * Splash-Fenster das w√§rend dem Start des PartyDJ angezeigt wird.
  * 
  * @author Eraser
  *

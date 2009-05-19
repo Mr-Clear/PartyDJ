@@ -11,33 +11,33 @@ import common.Track;
  */
 public interface EditableListModel extends TrackListModel 
 {
-	/**Fügt einen Track am Ende der Liste ein.
+	/**FÃ¼gt einen Track am Ende der Liste ein.
 	 * 
-	 * @param track Track der eingefügt wird.
+	 * @param track Track der eingefÃ¼gt wird.
 	 * @throws ListException Wenn beim Bearbeiten der Liste ein Fehler auftritt.
-	 *                       Wird nicht von allen ListModels ausgelöst.
+	 *                       Wird nicht von allen ListModels ausgelÃ¶st.
 	 */
 	void add(Track track) throws ListException;
 	
-	/**Fügt einen Tack an der angegebenen Position ein.
+	/**FÃ¼gt einen Tack an der angegebenen Position ein.
 	 * 
 	 * Nachfolgende Tracks werden nach unten verschoben.
-	 * Wenn der Index größer ist, als die Liste, wird der Track am Ende der Liste eingefügt.
+	 * Wenn der Index grÃ¶ÃŸer ist, als die Liste, wird der Track am Ende der Liste eingefÃ¼gt.
 	 * 
-	 * @param index Position an der der Track eingefügt wird.
-	 * @param track Track der eingefügt wird.
+	 * @param index Position an der der Track eingefÃ¼gt wird.
+	 * @param track Track der eingefÃ¼gt wird.
 	 * @throws ListException Wenn beim Bearbeiten der Liste ein Fehler auftritt.
-	 *                       Wird nicht von allen ListModels ausgelöst.
+	 *                       Wird nicht von allen ListModels ausgelÃ¶st.
 	 */
 	void add(int index, Track track) throws ListException;
 	
-	/**Löscht den Track mit dem angegebenen Index aus der Liste.
+	/**LÃ¶scht den Track mit dem angegebenen Index aus der Liste.
 	 * 
-	 * Wenn kein Track mit dem Index existiert, wird nichts gelöscht.
+	 * Wenn kein Track mit dem Index existiert, wird nichts gelÃ¶scht.
 	 * 
-	 * @param index Index des zu löschenden Tracks.
+	 * @param index Index des zu lÃ¶schenden Tracks.
 	 * @throws ListException Wenn beim Bearbeiten der Liste ein Fehler auftritt.
-	 *                       Wird nicht von allen ListModels ausgelöst.
+	 *                       Wird nicht von allen ListModels ausgelÃ¶st.
 	 */
 	void remove(int index) throws ListException;
 	
@@ -48,7 +48,7 @@ public interface EditableListModel extends TrackListModel
 	 * @param oldIndex Position des Tracks der verschoben wird.
 	 * @param newIndex Neue Position des Tracks.
 	 * @throws ListException Wenn beim Bearbeiten der Liste ein Fehler auftritt.
-	 *                       Wird nicht von allen ListModels ausgelöst.
+	 *                       Wird nicht von allen ListModels ausgelÃ¶st.
 	 */
 	void move(int oldIndex, int newIndex) throws ListException;
 	
@@ -57,7 +57,7 @@ public interface EditableListModel extends TrackListModel
 	 * @param indexA Index des einen Tracks.
 	 * @param indexB Index des anderen Tracks.
 	 * @throws ListException Wenn beim Bearbeiten der Liste ein Fehler auftritt.
-	 *                       Wird nicht von allen ListModels ausgelöst.
+	 *                       Wird nicht von allen ListModels ausgelÃ¶st.
 	 */
 	void swap(int indexA, int indexB) throws ListException;
 }

@@ -4,23 +4,23 @@ import players.PlayerException;
 import common.Track;
 
 /**
- * Ermˆglicht es dem Player Daten an den PartyDJ zu senden.
+ * Erm√∂glicht es dem Player Daten an den PartyDJ zu senden.
  * 
  * @author Eraser
  *
  */
 public interface PlayerContact
 {
-	/**Der Player ist am Ende eines Tracks, oder bekommt den next-Befehl und will den n‰chsten Track spielen.
-	 * Der Aufruf teilt dem Contact auch mit, dass der n‰chste Track gespielt wird.
+	/**Der Player ist am Ende eines Tracks, oder bekommt den next-Befehl und will den n√§chsten Track spielen.
+	 * Der Aufruf teilt dem Contact auch mit, dass der n√§chste Track gespielt wird.
 	 * 
-	 * @return n‰chster Track.
+	 * @return n√§chster Track.
 	 */
 	Track requestNextTrack();
 	
-	/**Der Player mˆchte wissen welchen Track er als n‰chstes spielen soll, um ihn im vorraus zu laden.
+	/**Der Player m√∂chte wissen welchen Track er als n√§chstes spielen soll, um ihn im vorraus zu laden.
 	 * 
-	 * @return n‰chster Track.
+	 * @return n√§chster Track.
 	 */
 	Track predictNextTrack();
 	
@@ -37,7 +37,7 @@ public interface PlayerContact
 	
 	/**Der Player kann einen Track nicht abspielen.
 	 * 
-	 * @param e Auslˆsende Exception.
+	 * @param e Ausl√∂sende Exception.
 	 * @param track Betreffender Track.
 	 */
 	void reportProblem(PlayerException e, Track track);

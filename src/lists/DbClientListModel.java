@@ -7,10 +7,10 @@ import basics.Controller;
 
 /**
  * Erweitert das LightClientListModel um dauerhafte Speicherung des Inhalts.
- * <p>Jede Änderung wird sofort in der Datenbank gespeichert.
+ * <p>Jede Ã„nderung wird sofort in der Datenbank gespeichert.
  * <br>Das macht dieses ListModel deutlich langsamer als das LightClientListModel.
  * <p>Kann nur von ListProvider erstellt werden, um sicher zu stellen dass zu jeder Liste
- * nur eine Instanz läuft.
+ * nur eine Instanz lÃ¤uft.
  * 
  * @author Eraser
  *
@@ -56,7 +56,7 @@ public class DbClientListModel extends LightClientListModel
 			index = 0;
 		if(index >= getSize())
 		{
-			add(track);	//Wenn der Index ausserhalb der Liste ist, Track am Ende einfügen.
+			add(track);	//Wenn der Index ausserhalb der Liste ist, Track am Ende einfÃ¼gen.
 			return;
 		}
 		try

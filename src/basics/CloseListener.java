@@ -2,7 +2,7 @@ package basics;
 
 /**
  * Klassen die von diesem Interface abgeleitet sind
- * und beim Controller über addCloseListener registriert sind
+ * und beim Controller Ã¼ber addCloseListener registriert sind
  * bekommen eine Nachricht bevor der PartyDJ geschlossen wird.
  * 
  * @author Eraser

@@ -33,7 +33,7 @@ import common.Track;
 /**
  * Von JList abgeleitete Liste, die Tracks aufnimmt.
  * <br>Von den Tracks wird der Name und die Dauer angezeigt.
- * <br>Unterstützt Drag and Drop.
+ * <br>UnterstÃ¼tzt Drag and Drop.
  * 
  * @author Sam, Eraser
  * 
@@ -298,7 +298,7 @@ public class PDJList extends JList
 			
 			if(SwingUtilities.isRightMouseButton(e))
 			{
-				//Alle Fenster eintragen, die rechten Mausklick unterstützen sollen.
+				//Alle Fenster eintragen, die rechten Mausklick unterstÃ¼tzen sollen.
 				if(((PDJList)e.getSource()).getTopLevelAncestor() instanceof ClassicWindow)
 				{
 					synchronized(list)

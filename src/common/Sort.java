@@ -115,7 +115,7 @@ interface TrackComperator
 	/**@param a Erster zu vergleichendenr Track.
 	 * @param b Zweiter zu vergleichendenr Track.
 	 * @return   Wenn a < b, dann kleiner 0.
-	 * 			 Wenn a > b, dann grˆﬂer 0.
+	 * 			 Wenn a > b, dann gr√∂√üer 0.
 	 * 			 Wenn a == b, dann 0.
 	 */
 	int compare(Track a, Track b);

@@ -56,8 +56,8 @@ public class ListProvider
 	
 	/**
 	 * Synchonisiert einen Track mit der Hauptliste.
-	 * <p>Wenn der Track in der Hauptliste existiert wird der Einrag aus der Hauptliste zurück gegeben.
-	 * <p>Wenn der Track noch nicht in der Hauptliste steht, wird er hinzu gefügt.
+	 * <p>Wenn der Track in der Hauptliste existiert wird der Einrag aus der Hauptliste zurÃ¼ck gegeben.
+	 * <p>Wenn der Track noch nicht in der Hauptliste steht, wird er hinzu gefÃ¼gt.
 	 * 
 	 * @param track Track der synchronisiert werden soll.
 	 * @return Synchronisierter Track.

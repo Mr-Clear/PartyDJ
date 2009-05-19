@@ -41,34 +41,34 @@ public class Functions
         return output;
 	}
 	
-	/**Wandelt eine Zahl in eine Formatierte Dateigößenangabe um.
-	 * <br>Gibt Größe mit 3 Dezimalziffern aus.
+	/**Wandelt eine Zahl in eine Formatierte DateigÃ¶ÃŸenangabe um.
+	 * <br>Gibt GrÃ¶ÃŸe mit 3 Dezimalziffern aus.
 	 * 
-	 * @param size Dateigröße als Zahl.
-	 * @return Formatierte Dateigröße.
+	 * @param size DateigrÃ¶ÃŸe als Zahl.
+	 * @return Formatierte DateigrÃ¶ÃŸe.
 	 */
 	public static String formatSize(long size)
 	{
 		return formatSize(size, 3, false);
 	}
 	
-	/**Wandelt eine Zahl in eine Formatierte Dateigößenangabe um.
+	/**Wandelt eine Zahl in eine Formatierte DateigÃ¶ÃŸenangabe um.
 	 * 
-	 * @param size Dateigröße als Zahl.
+	 * @param size DateigrÃ¶ÃŸe als Zahl.
 	 * @param digits Anzahl der Dezimalziffern.
-	 * @return Formatierte Dateigröße.
+	 * @return Formatierte DateigrÃ¶ÃŸe.
 	 */
 	public static String formatSize(long size, int digits)
 	{
 		return formatSize(size, digits, false);
 	}
 
-	/**Wandelt eine Zahl in eine Formatierte Dateigößenangabe um.
+	/**Wandelt eine Zahl in eine Formatierte DateigÃ¶ÃŸenangabe um.
 	 * 
-	 * @param size Dateigröße als Zahl.
+	 * @param size DateigrÃ¶ÃŸe als Zahl.
 	 * @param digits Anzahl der Dezimalziffern.
-	 * @param full true: Die Größe in Byte wird zusätzlich in Klammern angezeigt.
-	 * @return Formatierte Dateigröße.
+	 * @param full true: Die GrÃ¶ÃŸe in Byte wird zusÃ¤tzlich in Klammern angezeigt.
+	 * @return Formatierte DateigrÃ¶ÃŸe.
 	 */
 	public static String formatSize(long size, int digits, boolean full)
 	{
@@ -97,7 +97,7 @@ public class Functions
 	}
 
 	/**
-	 * Gibt den Ordner zurück in dem der PartyDJ arbeitet.
+	 * Gibt den Ordner zurÃ¼ck in dem der PartyDJ arbeitet.
 	 * Ist normalerweise nicht das Verzeichnis in dem der PartyDJ selbst steht. 
 	 */
 	public static String getFolder()
@@ -108,7 +108,7 @@ public class Functions
 	}
 	
 	/**
-	 * Gibt einen Dateipfad zurück, der im Arbeitsverzeichnis des PartyDJ liegt.
+	 * Gibt einen Dateipfad zurÃ¼ck, der im Arbeitsverzeichnis des PartyDJ liegt.
 	 * @param fileName Name der Datei.
 	 */
 	public static String getFolder(String fileName)

@@ -23,8 +23,8 @@ import common.Track;
 import common.Track.Problem;
 
 /**
- * Kleiner Dialog über den die Eigenschaften eines Tracks angezeigt
- * und bearbeitet werden können.
+ * Kleiner Dialog Ã¼ber den die Eigenschaften eines Tracks angezeigt
+ * und bearbeitet werden kÃ¶nnen.
  * 
  * @author Eraser
  * 
@@ -166,8 +166,8 @@ public class EditTrackWindow extends JDialog
 				txtDuration.setText(common.Functions.formatTime(duration));
 			}});
 		
-		//---Größe---
-		JLabel lblSize = new JLabel("Größe:");
+		//---GrÃ¶ÃŸe---
+		JLabel lblSize = new JLabel("GrÃ¶ÃŸe:");
 		c = new GridBagConstraints();
 		c.insets = insets;
 		c.gridx = 0;
@@ -190,7 +190,7 @@ public class EditTrackWindow extends JDialog
 		
 		duration = track.duration;
 		
-		JButton btnSize = new JButton("Größe einlesen");
+		JButton btnSize = new JButton("GrÃ¶ÃŸe einlesen");
 		c = new GridBagConstraints();
 		c.insets = insets;
 		c.gridx = 2;
@@ -213,7 +213,7 @@ public class EditTrackWindow extends JDialog
 			}});
 		
 		//---Info---
-		JLabel lblInfo = new JLabel("Zusätzliche Info:");
+		JLabel lblInfo = new JLabel("ZusÃ¤tzliche Info:");
 		c = new GridBagConstraints();
 		c.insets = insets;
 		c.gridx = 0;
@@ -235,7 +235,7 @@ public class EditTrackWindow extends JDialog
 		add(txtarInfo, c);
 		
 		//---Buttons---
-		JButton btnCancel = new JButton("Schließen");
+		JButton btnCancel = new JButton("SchlieÃŸen");
 		c = new GridBagConstraints();
 		c.insets = insets;
 		c.gridx = 1;
@@ -249,7 +249,7 @@ public class EditTrackWindow extends JDialog
 				dispose();
 			}});
 		
-		JButton btnOk = new JButton("Übernehmen");
+		JButton btnOk = new JButton("Ãœbernehmen");
 		c = new GridBagConstraints();
 		c.insets = insets;
 		c.gridx = 2;
@@ -277,7 +277,7 @@ public class EditTrackWindow extends JDialog
 			{
 				if(!new File(txtPath.getText()).exists())
 				{
-					if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Angegebene Datei existiert nicht.\nTrotzdem ändern?", "PartyDJ", JOptionPane.YES_NO_OPTION))
+					if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Angegebene Datei existiert nicht.\nTrotzdem Ã¤ndern?", "PartyDJ", JOptionPane.YES_NO_OPTION))
 						return;
 				}
 				changeCount++;

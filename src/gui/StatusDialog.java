@@ -23,7 +23,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.Timer;
 
 /**
- * Führt eine Aufgabe vom Typ StatusSupportedFunction aus,
+ * FÃ¼hrt eine Aufgabe vom Typ StatusSupportedFunction aus,
  * und zeigt den Fortschritt der Aufgabe an.
  * 
  * @author Sam, Eraser
@@ -187,7 +187,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 	}
 	
 	/**
-	 * Funktionen die mit StatusDialog ausgegeben werden, müssen in Klassen sein,
+	 * Funktionen die mit StatusDialog ausgegeben werden, mÃ¼ssen in Klassen sein,
 	 * sie von diesem Interface abgeleitet sind.
 	 * 
 	 * @author Eraser

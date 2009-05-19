@@ -1,7 +1,7 @@
 package gui.settings;
 
 /**
- * Wird von Setting-Panels vererbt, die explizit geschlossen werden müssen.
+ * Wird von Setting-Panels vererbt, die explizit geschlossen werden mÃ¼ssen.
  * 
  * @author Eraser
  */

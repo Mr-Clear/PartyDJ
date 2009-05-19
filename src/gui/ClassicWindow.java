@@ -30,7 +30,7 @@ import lists.TrackListModel;
 
 
 /**
- * Grafische Benutzeroberfl‰che f¸r Party DJ.
+ * Grafische Benutzeroberfl√§che f√ºr Party DJ.
  * 
  * @author Sam
  */
@@ -88,8 +88,8 @@ public class ClassicWindow extends JFrame
 	}
 
 	/**
-	 * Lautst‰rkeregler, Fortschrittsbalken und Buttons werden zu einer Kontrolleinheit zusammengef¸gt.
-	 * @return JPanel mit GridBagLayout, welches alle Steuerungen enth‰lt.
+	 * Lautst√§rkeregler, Fortschrittsbalken und Buttons werden zu einer Kontrolleinheit zusammengef√ºgt.
+	 * @return JPanel mit GridBagLayout, welches alle Steuerungen enth√§lt.
 	 */
 	private Component Control()
 	{
@@ -124,8 +124,8 @@ public class ClassicWindow extends JFrame
 	}
 	
 	/**
-	 * Alle Listen und die Suche werden zu einer Einheit zusammengef¸gt.
-	 * @return JPanel mit GridBagLayout, welches alle Listen und die Suche enth‰lt.
+	 * Alle Listen und die Suche werden zu einer Einheit zusammengef√ºgt.
+	 * @return JPanel mit GridBagLayout, welches alle Listen und die Suche enth√§lt.
 	 */
 	private Component MainPart()
 	{
@@ -174,7 +174,7 @@ public class ClassicWindow extends JFrame
 	
 	/**
 	 * Erzeugt die Buttons und ordnet sie mit einem GridBagLayout an.
-	 * @return JPanel mit GridBagLayout, welches alle Buttons enth‰lt.
+	 * @return JPanel mit GridBagLayout, welches alle Buttons enth√§lt.
 	 */
 	private JPanel Buttons()
 	{
@@ -190,9 +190,9 @@ public class ClassicWindow extends JFrame
 		JButton pause = customizeButton("Resources/Pause.png");
 		JButton stop = customizeButton("Resources/Stop.png");
 		JButton fwd = customizeButton("Resources/Vorspulen.png");
-		JButton bwd = customizeButton("Resources/Zur¸ckspulen.png");
+		JButton bwd = customizeButton("Resources/Zur√ºckspulen.png");
 		JButton skipFWD = customizeButton("Resources/Vor.png");
-		JButton skipBWD = customizeButton("Resources/Zur¸ck.png");
+		JButton skipBWD = customizeButton("Resources/Zur√ºck.png");
 		JButton setting = customizeButton("Resources/Einstellungen.png");
 	
 	    /*InputMap pauseInput = pause.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -290,7 +290,7 @@ public class ClassicWindow extends JFrame
 	/**
 	 * Erzeugt eine Liste mit Titel.
 	 * @param title der Liste, Liste, DropMode
-	 * @return JPanel mit GridBagLayout, welches die Liste und Titel enth‰lt.
+	 * @return JPanel mit GridBagLayout, welches die Liste und Titel enth√§lt.
 	 */
 	private Component List(String title, TrackListModel l, ListDropMode ldMode)
 	{
@@ -431,8 +431,8 @@ public class ClassicWindow extends JFrame
 	}
 	
 	/**
-	 * Erzeugt den Lautst‰rkeregler.
-	 * @return	JPanel mit GridBagLayout, welches den Lautst‰rkeregler beinhaltet.
+	 * Erzeugt den Lautst√§rkeregler.
+	 * @return	JPanel mit GridBagLayout, welches den Lautst√§rkeregler beinhaltet.
 	 */
 	private Component Volume()
 	{
@@ -527,7 +527,7 @@ public class ClassicWindow extends JFrame
 		resize();
 	}
 	
-	/** Wird aufgerufen wenn sich die Grˆﬂe des Fensters ‰ndert.*/
+	/** Wird aufgerufen wenn sich die Gr√∂√üe des Fensters √§ndert.*/
 	private void resize()
 	{
         try

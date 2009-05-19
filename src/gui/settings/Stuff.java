@@ -13,7 +13,7 @@ import basics.Controller;
 
 /**
  * Debug Hilfe.
- * Bietet Platz für verschiedene Einstellungen.
+ * Bietet Platz fÃ¼r verschiedene Einstellungen.
  * 
  * @author Eraser
  * 

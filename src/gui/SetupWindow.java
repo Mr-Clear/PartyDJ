@@ -28,7 +28,7 @@ import data.IData;
 
 /**
  * Fenster das beim ersten Start des PartyDJ angezeigt wird.
- * <p>Ermöglicht es dem Benutzer Tracks hinzu zu fügen.
+ * <p>ErmÃ¶glicht es dem Benutzer Tracks hinzu zu fÃ¼gen.
  * 
  * @author Eraser
  *
@@ -61,15 +61,15 @@ public class SetupWindow extends javax.swing.JFrame
 		this.setTitle("PartyDJ Setup");
 		{
 			jLabel1 = new JLabel();
-			jLabel1.setText("In PartyDJ wurden noch keine Lieder eingefügt.");
+			jLabel1.setText("In PartyDJ wurden noch keine Lieder eingefÃ¼gt.");
 		}
 		{
 			addFile = new JToggleButton();
-			addFile.setText("Datei Einfügen");
+			addFile.setText("Datei EinfÃ¼gen");
 			addFile.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e)
 				{
-					final JFileChooser chooser = new JFileChooser("Datei wählen");
+					final JFileChooser chooser = new JFileChooser("Datei wÃ¤hlen");
 					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 			        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 					chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", common.Functions.getFolder())));
@@ -97,18 +97,18 @@ public class SetupWindow extends javax.swing.JFrame
 						}
 						catch (ListException ex)
 						{
-							JOptionPane.showMessageDialog(null, "Einfügen fehlgeschlagen:\n" + ex.getMessage(), "Datei einfügen", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, "EinfÃ¼gen fehlgeschlagen:\n" + ex.getMessage(), "Datei einfÃ¼gen", JOptionPane.ERROR_MESSAGE);
 						}
 				    }
 				}});
 		}
 		{
 			addFolder = new JToggleButton();
-			addFolder.setText("Verzeichnis Einfügen");
+			addFolder.setText("Verzeichnis EinfÃ¼gen");
 			addFolder.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0)
 				{
-					final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
+					final JFileChooser chooser = new JFileChooser("Verzeichnis wÃ¤hlen");
 					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 					chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 									        
@@ -127,7 +127,7 @@ public class SetupWindow extends javax.swing.JFrame
 			importPDJ.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e)
 				{
-					final JFileChooser chooser = new JFileChooser("Party DJ.exe wählen");
+					final JFileChooser chooser = new JFileChooser("Party DJ.exe wÃ¤hlen");
 					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 			        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			        chooser.setFileFilter(new FileFilter(){
@@ -150,7 +150,7 @@ public class SetupWindow extends javax.swing.JFrame
 		}
 		{
 			close = new JButton();
-			close.setText("Fenster Schließen");
+			close.setText("Fenster SchlieÃŸen");
 			close.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0)
 				{
@@ -259,12 +259,12 @@ public class SetupWindow extends javax.swing.JFrame
 		}
 		
 		new StatusDialog("Lese Playlist", SetupWindow.this, new addPdj2List(root + "\\Playlist.lst", "Playlist"));
-		new StatusDialog("Lese Wunschliste 1/2", SetupWindow.this, new addPdj2List(root + "\\Zurück.lst", "Wunschliste"));
+		new StatusDialog("Lese Wunschliste 1/2", SetupWindow.this, new addPdj2List(root + "\\ZurÃ¼ck.lst", "Wunschliste"));
 		new StatusDialog("Lese Wunschliste 2/2", SetupWindow.this, new addPdj2List(root + "\\Wunsch.lst", "Wunschliste"));
 		
 		new StatusDialog("Lese LastPlayed", SetupWindow.this, new addPdj2LastPlayedList(root + "\\Alt.lst", Controller.getInstance().getLastPlayedName()));
 		/*addPdj2List(root + "\\Playlist.lst", "Playlist");
-		addPdj2List(root + "\\Zurück.lst", "Wunschliste");
+		addPdj2List(root + "\\ZurÃ¼ck.lst", "Wunschliste");
 		addPdj2List(root + "\\Wunsch.lst", "Wunschliste");
 		addPdj2LastPlayedList(root + "\\Alt.lst", Controller.getInstance().getLastPlayedName());*/
 		
@@ -295,7 +295,7 @@ public class SetupWindow extends javax.swing.JFrame
 			catch (ListException e)
 			{
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(SetupWindow.this, "Fehler bei öffnen der Liste " + listName + ":\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SetupWindow.this, "Fehler bei Ã¶ffnen der Liste " + listName + ":\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			catch (FileNotFoundException e)
@@ -376,7 +376,7 @@ public class SetupWindow extends javax.swing.JFrame
 			catch (ListException e)
 			{
 				e.printStackTrace();
-				JOptionPane.showMessageDialog(SetupWindow.this, "Fehler bei öffnen der Liste " + listName + ":\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(SetupWindow.this, "Fehler bei Ã¶ffnen der Liste " + listName + ":\n" + e.getMessage(), "Importieren", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			catch (FileNotFoundException e)

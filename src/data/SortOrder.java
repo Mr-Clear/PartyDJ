@@ -25,7 +25,7 @@ public enum SortOrder
 							"Nach Name",
 							"Nach Pfad",
 							"Nach Dauer",
-							"Nach Dateigröße"};
+							"Nach DateigrÃ¶ÃŸe"};
 	}
 	
 	public static int sortOrderToArrayIndex(SortOrder sortOrder)

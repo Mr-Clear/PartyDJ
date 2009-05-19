@@ -11,7 +11,7 @@ import lists.ListException;
 import common.Track;
 
 /**
- * Durchsucht einen Ordner nach MP3-Dateien und fügt sie in die Hauptliste ein.
+ * Durchsucht einen Ordner nach MP3-Dateien und fÃ¼gt sie in die Hauptliste ein.
  * 
  * @author Eraser
  *
@@ -40,7 +40,7 @@ public class ReadFolder implements StatusSupportedFunction
 
 		sd.setLabel("Fertig.");
 
-		JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(sd, count + " Tracks eingefÃ¼gt.", "Datei einfÃ¼gen", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	/**@param progress Bisheriger Vortschritt zwischen 0 und 1

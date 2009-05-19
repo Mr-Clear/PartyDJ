@@ -14,9 +14,9 @@ import common.Track;
  */
 public interface TrackListModel extends ListModel
 {
-	/** Gibt den Track an der angegebenen Position zurück*/
+	/** Gibt den Track an der angegebenen Position zurÃ¼ck*/
 	public Track getElementAt(int index);
 	
-	/**Gibt die Position des Tracks in der Liste zurück*/
+	/**Gibt die Position des Tracks in der Liste zurÃ¼ck*/
 	public int getIndex(Track track);
 }

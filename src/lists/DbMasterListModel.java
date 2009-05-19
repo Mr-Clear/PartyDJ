@@ -36,7 +36,7 @@ public class DbMasterListModel extends BasicListModel
 			{
 				if(list.get(i) == track)
 				{
-					list.remove(i--); // Gelöschten Index zurück gehen.
+					list.remove(i--); // GelÃ¶schten Index zurÃ¼ck gehen.
 					for(ListDataListener listener : dataListener)
 						listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, track.index, track.index));
 				}

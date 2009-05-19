@@ -15,7 +15,7 @@ import common.Track;
 
 /**
  * Zeichnet einen Track in eine JList.
- * <p>Es wird der Name des Tracks linksbündig, und die Dauer rechtsbündig dargestellt.
+ * <p>Es wird der Name des Tracks linksbÃ¼ndig, und die Dauer rechtsbÃ¼ndig dargestellt.
  * 
  * @author Eraser, Sam
  * 
@@ -120,7 +120,7 @@ public class TrackRenderer implements ListCellRenderer
 			}	
 
 			//if(list.getFixedCellHeight() == -1)
-			//TODO Größe abhängig von fontSize
+			//TODO GrÃ¶ÃŸe abhÃ¤ngig von fontSize
 			list.setFixedCellHeight((int)(fontSize * 1.3));
 			
 			/*if(Controller.instance.isLoadFinished() == true)

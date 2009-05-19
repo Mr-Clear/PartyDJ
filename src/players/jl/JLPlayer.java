@@ -17,7 +17,7 @@ import data.SettingException;
 
 /**
  * Einfacher Player.
- * <p>Größtenteils übernommen von Java Zoom JLayer.
+ * <p>GrÃ¶ÃŸtenteils Ã¼bernommen von Java Zoom JLayer.
  * 
  * @author Sam, Eraser
  * 

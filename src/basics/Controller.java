@@ -29,7 +29,7 @@ import data.derby.DerbyDB;
 
 /**
  * Hauptklasse vom PartyDJ.
- * <p>Enth‰lt die main-Funktion.
+ * <p>Enth√§lt die main-Funktion.
  * <p>Bietet Zugriff auf alle anderen wichtigen Elemente des PartyDJ.
  * 
  * 
@@ -45,24 +45,24 @@ public class Controller
 	private static Controller instance;
 	/** Verbindung zur Datenbank. */
 	private IData data;
-	/** Dieser Thread ¸berwacht ob der PartyDJ geschlossen wird. */
+	/** Dieser Thread √ºberwacht ob der PartyDJ geschlossen wird. */
 	private Thread closeListenThread;
 
-	/** Wunschliste aus derimmer der oberste Track gespielt und dabei gelˆscht wird. */ 
+	/** Wunschliste aus derimmer der oberste Track gespielt und dabei gel√∂scht wird. */ 
 	protected EditableListModel playList;
-	/** Liste der zuletzt gespielten lieder. Hat maximal 100 Eintr‰ge */
+	/** Liste der zuletzt gespielten lieder. Hat maximal 100 Eintr√§ge */
 	protected DbClientListModel lastPlayedList;
 	/** Zugriff auf Listen */
 	protected ListProvider listProvider;
 	/** Verwendeter Player */
 	protected IPlayer player;
-	/** Timer der im regelm‰ﬂigen Abstand die Dauer der Tracks aus trackUpdateStack einliest. */
+	/** Timer der im regelm√§√üigen Abstand die Dauer der Tracks aus trackUpdateStack einliest. */
 	protected Timer trackUpdateTimer; 
 
 	/** Liste aller registrierten CloseListener */ 
 	private final Set<CloseListener> closeListener = new HashSet<CloseListener>();
 	/** Liste aller registrierten Fenster.
-	 *  Wenn die Liste leer wird, schlieﬂt sich der PartyDJ. */
+	 *  Wenn die Liste leer wird, schlie√üt sich der PartyDJ. */
 	private final Set<Frame> windows = new HashSet<Frame>();
 	/** RootNode der Einstellungen. Alle Einstellungen haben einen Knoten in diesem Baum. */
 	private final SettingNode settingTree;
@@ -144,7 +144,7 @@ public class Controller
 			}
 			catch (OpenDbException e)
 			{
-				logError(IMPORTANT_ERROR, this, e, "Keine Verbindung zur Datenbank mˆglich");
+				logError(IMPORTANT_ERROR, this, e, "Keine Verbindung zur Datenbank m√∂glich");
 				System.exit(1);
 			}
 		}
@@ -323,14 +323,14 @@ public class Controller
 		return "LastPlayed";
 	}
 	
-	/** Gibt zur¸ck ob der PartyDJ vollst‰ndig geladen ist. */
+	/** Gibt zur√ºck ob der PartyDJ vollst√§ndig geladen ist. */
 	public boolean isLoadFinished()
 	{
 		return loadFinished;
 	}
 	
 	/**Schiebt einen Track auf den Duration-Update-Stapel.
-	 * Damit wird die l‰nge des Tracks eingelesen, sobald er an der Reihe ist.
+	 * Damit wird die l√§nge des Tracks eingelesen, sobald er an der Reihe ist.
 	 */
 	public void pushTrackToUpdate(Track track)
 	{
@@ -343,7 +343,7 @@ public class Controller
 		}
 	}
 	
-	/**L‰dt das Fenster mit dem angegebenen Namen und registriert es.
+	/**L√§dt das Fenster mit dem angegebenen Namen und registriert es.
 	 * Wenn ein Fehler auftritt, wird eine Menldung ausgegeben. 
 	 * 
 	 * @param className Name des Fensters.
@@ -376,7 +376,7 @@ public class Controller
 	}
 	
 	/**Registriert ein Fenster.
-	 * Erstellt einen WindowsListener f¸r das Fenster der bei windowColsing das Fenster schlieﬂt.
+	 * Erstellt einen WindowsListener f√ºr das Fenster der bei windowColsing das Fenster schlie√üt.
 	 * Wenn das letzte registrierte Fenster geschlossen wird, beendet sich der PartyDJ.
 	 */
 	public void registerWindow(JFrame window)
@@ -385,7 +385,7 @@ public class Controller
 		window.addWindowListener(new ClientWindowListener(window));
 	}
 	
-	/**Schlieﬂt das angegebene Fenster.
+	/**Schlie√üt das angegebene Fenster.
 	 * Wenn es das letzte registrierte Fenster ist, wird der PartyDJ beendet.
 	 * 
 	 * @param window
@@ -408,9 +408,9 @@ public class Controller
 		closeListener.remove(listener);
 	}
 	
-	/**F¸gt eine SettingNode im SettingWindow ein.
+	/**F√ºgt eine SettingNode im SettingWindow ein.
 	 * 
-	 * @param node Node die eingef¸gt wird.
+	 * @param node Node die eingef√ºgt wird.
 	 */
 	public void addSettingNode(SettingNode node, SettingNode parent)
 	{
@@ -436,7 +436,7 @@ public class Controller
 	 * <p><b>Used By:</b><ul>
 	 * <li><code>Controller.reportError</code></li> */
 	public static final int UNIMPORTANT_INFO = 1;
-	/**Information, die interessant f¸r Debugging o.‰. sein kˆnnte.
+	/**Information, die interessant f√ºr Debugging o.√§. sein k√∂nnte.
 	 * <p><code>message</code> und <code>sender</code> werden in Log-Datei und <code>System.err</code> geschrieben.
 	 * <p><b>Used By:</b><ul>
 	 * <li><code>Controller.reportError</code></li> */
@@ -453,36 +453,36 @@ public class Controller
 	 * <p><b>Used By:</b><ul>
 	 * <li><code>Controller.reportError</code></li> */
 	public static final int REGULAR_ERROR = 4;
-	/**Fehler, der nicht auftreten sollte, aber den Programmablauf nicht stˆrt.
+	/**Fehler, der nicht auftreten sollte, aber den Programmablauf nicht st√∂rt.
 	 * <p><code>message</code>, <code>sender</code> und <code>exception</code> mit Stack-Trace
 	 * werden in Log-Datei und <code>System.err</code> geschrieben.
 	 * <br>Fehlermeldung mit <code>message</code> und <code>exception</code> wird ausgegeben.
 	 * <p><b>Used By:</b><ul>
 	 * <li><code>Controller.reportError</code></li> */
 	public static final int NORMAL_ERROR = 5;
-	/**Schwerwiegender Fehler, der den Programmablauf beeintr‰chtigt.
+	/**Schwerwiegender Fehler, der den Programmablauf beeintr√§chtigt.
 	 * <p><code>message</code>, <code>sender</code> und <code>exception</code> mit Stack-Trace
 	 * werden in Log-Datei und <code>System.err</code> geschrieben.
 	 * <br>Fehlermeldung mit <code>message</code> und <code>exception</code> incl. Stack-Trace wird ausgegeben.
 	 * <p><b>Used By:</b><ul>
 	 * <li><code>Controller.reportError</code></li> */
 	public static final int IMPORTANT_ERROR = 6;
-	/**Schwerwiegender Fehler, die Stabilit‰t der Daten gef‰hrden kann.
+	/**Schwerwiegender Fehler, die Stabilit√§t der Daten gef√§hrden kann.
 	 * <p><code>message</code>, <code>sender</code> und <code>exception</code> mit Stack-Trace
 	 * werden in Log-Datei und <code>System.err</code> geschrieben.
 	 * <br>Fehlermeldung mit <code>message</code> und <code>exception</code> incl. Stack-Trace wird ausgegeben.
-	 * <p>PartyDJ wird getˆtet.
+	 * <p>PartyDJ wird get√∂tet.
 	 * <br>Nicht gespeicherte Einsellungen gehen verloren!
 	 * <p><b>Used By:</b><ul>
 	 * <li><code>Controller.reportError</code></li> */
 	public static final int FATAL_ERROR = 7;
 	/**Verarbeitet eine Fehlermeldung.
-	 * <p>Abh‰ngig von der Priorit‰t werden unterschiedliche Aktionen ausgef¸hrt.
+	 * <p>Abh√§ngig von der Priorit√§t werden unterschiedliche Aktionen ausgef√ºhrt.
 	 * 
-	 * @param priority Priorit‰t der Meldung.
-	 * @param sender Objekt das die Meldung schickt. ‹blicherweise this.
+	 * @param priority Priorit√§t der Meldung.
+	 * @param sender Objekt das die Meldung schickt. √úblicherweise this.
 	 * @param exception Wenn vorhanden, eine Exception die mit der Meldung verbunden ist.
-	 * @param message Zus‰tzliche Nachricht zur Meldung.
+	 * @param message Zus√§tzliche Nachricht zur Meldung.
 	 */
 	public void logError(int priority, Object sender, Throwable exception, String message)
 	{
@@ -538,7 +538,7 @@ public class Controller
 				logStream.println();
 				logStream.println(dateFormater.format(new java.util.Date()));
 				if(!loadFinished)
-					logStream.println("PartyDJ noch nicht vollst‰ndig geladen.");
+					logStream.println("PartyDJ noch nicht vollst√§ndig geladen.");
 				if(message != null)
 					logStream.println(message);
 			}
@@ -560,7 +560,7 @@ public class Controller
 				System.err.println();
 				System.err.println(dateFormater.format(new java.util.Date()));
 				if(!loadFinished)
-					System.err.println("PartyDJ noch nicht vollst‰ndig geladen.");
+					System.err.println("PartyDJ noch nicht vollst√§ndig geladen.");
 				if(message != null)
 					System.err.println(message);
 			}
@@ -591,7 +591,7 @@ public class Controller
 			if(message != null)
 				toShow += message + "\n";
 			if(!loadFinished)
-				toShow += "PartyDJ noch nicht vollst‰ndig geladen.\n";
+				toShow += "PartyDJ noch nicht vollst√§ndig geladen.\n";
 			if(sender != null)
 				toShow += senderClassString + "\n" + sender + "\n";
 			if(exception != null)
@@ -607,7 +607,7 @@ public class Controller
 			System.exit(FATAL_ERROR);
 		}
 	}
-	//TODO ¸berladen
+	//TODO √ºberladen
 	
 	/** Beendet den PartyDJ komplett. */
 	public void closePartyDJ()
@@ -630,7 +630,7 @@ public class Controller
 		System.exit(0);
 	}
 
-	/** Wird Fenstern die sich registrieren ¸bergeben.
+	/** Wird Fenstern die sich registrieren √ºbergeben.
 	 *  Damit werden sie automatisch beim Controller abgemeldet.*/
 	class ClientWindowListener extends WindowAdapter
 	{

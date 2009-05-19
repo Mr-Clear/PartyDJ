@@ -3,17 +3,17 @@ package players;
 import common.Track;
 
 /**
- * Empfängt Änderungen des Abspielzustandes. 
+ * EmpfÃ¤ngt Ã„nderungen des Abspielzustandes. 
  * 
  * @author Eraser
  */
 public interface PlayStateListener
 {
-	/**Der aktuell gespielte Track wurde geändert.
+	/**Der aktuell gespielte Track wurde geÃ¤ndert.
 	 * 
 	 * @param playedLast Zuletzt gespielter Track.
 	 * @param playingCurrent Track der jetzt gespielt wird.
-	 * @param reason Grund für den wechsel.
+	 * @param reason Grund fÃ¼r den wechsel.
 	 */
 	void currentTrackChanged (Track playedLast, Track playingCurrent, Reason reason);
 	
@@ -24,9 +24,9 @@ public interface PlayStateListener
 	 */
 	void playStateChanged (boolean playState);
 	
-	/**Die Lautstärke wurde geändert.
+	/**Die LautstÃ¤rke wurde geÃ¤ndert.
 	 * 
-	 * @param volume Neue Lautstärke zwischen 0 und 100.
+	 * @param volume Neue LautstÃ¤rke zwischen 0 und 100.
 	 */
 	void volumeChanged (int volume);
 	

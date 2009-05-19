@@ -3,7 +3,7 @@ package data;
 import common.Track;
 
 /**
- * Empfängt Änderungen in den Listen.
+ * EmpfÃ¤ngt Ã„nderungen in den Listen.
  * <br>Alle Funktionen sind mit leerem Rumpf implementiert.
  * 
  * @author Eraser

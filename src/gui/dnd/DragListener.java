@@ -29,7 +29,7 @@ public class DragListener extends DragSourceAdapter implements DragGestureListen
 	}
 	
 	/**
-	 * @return	Gibt die PDJList zurück, aus der gerade gedragt wurde.
+	 * @return	Gibt die PDJList zurÃ¼ck, aus der gerade gedragt wurde.
 	 */
 	public static PDJList getList()
 	{

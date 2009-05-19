@@ -9,7 +9,7 @@ import lists.ListException;
 import basics.Controller;
 
 /**
- * Liest eine M3U-Datei und fügt die Tracks der Hauptliste hinzu.
+ * Liest eine M3U-Datei und fÃ¼gt die Tracks der Hauptliste hinzu.
  * 
  * @author Eraser
  *
@@ -34,7 +34,7 @@ public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 		
 		count = common.ReadM3U.readM3U(filePath, this, sd, false);
 
-		JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(sd, count + " Tracks eingefÃ¼gt.", "Datei einfÃ¼gen", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	public boolean report(Track track)

@@ -24,7 +24,7 @@ public class ClassicUdpReceiver extends Thread
 		}
 		catch (SocketException e)
 		{
-			Controller.getInstance().logError(Controller.UNIMPORTANT_ERROR, this, e, "Kann UDP-Port 19997 nicht öffnen.");
+			Controller.getInstance().logError(Controller.UNIMPORTANT_ERROR, this, e, "Kann UDP-Port 19997 nicht Ã¶ffnen.");
 			return;
 		}
 		
@@ -48,9 +48,9 @@ public class ClassicUdpReceiver extends Thread
 						player.fadeInOut();
 					if(command.equals("stop"))
 						player.stop();
-					if(command.equals("zurück"))
+					if(command.equals("zurÃ¼ck"))
 						player.playPrevious();
-					if(command.equals("szurück"))
+					if(command.equals("szurÃ¼ck"))
 						player.setPosition(player.getPosition() - 5);
 					if(command.equals("sweiter"))
 						player.setPosition(player.getPosition() + 5);

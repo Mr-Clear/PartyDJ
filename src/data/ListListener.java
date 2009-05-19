@@ -3,15 +3,15 @@ package data;
 import common.Track;
 
 /**
- * Empfängt Änderungen in den Listen.
+ * EmpfÃ¤ngt Ã„nderungen in den Listen.
  * 
  * @author Eraser
  */
 public interface ListListener
 {
-	/**Ein Track wurde der Hauptliste hinzugefügt.
+	/**Ein Track wurde der Hauptliste hinzugefÃ¼gt.
 	 * 
-	 * @param track Hinzugefügter Track.
+	 * @param track HinzugefÃ¼gter Track.
 	 */
 	void trackAdded (Track track);
 	/**Ein Track wurde bearbeitet.
@@ -19,9 +19,9 @@ public interface ListListener
 	 * @param track Bearbeiteter Track.
 	 */
 	void trackChanged (Track track);
-	/**Ein Track wurde aus der Hauptliste gelöscht.
+	/**Ein Track wurde aus der Hauptliste gelÃ¶scht.
 	 * 
-	 * @param track Gelöschter Track.
+	 * @param track GelÃ¶schter Track.
 	 */
 	void trackDeleted (Track track);
 	
@@ -30,12 +30,12 @@ public interface ListListener
 	 * @param listName Name der erstellten Liste.
 	 */
 	void listAdded(String listName);
-	/**Eine Liste wurde gelöscht.
+	/**Eine Liste wurde gelÃ¶scht.
 	 * 
-	 * @param listName Name der gelöschten Liste.
+	 * @param listName Name der gelÃ¶schten Liste.
 	 */
 	void listRemoved(String listName);
-	/**Die Beschreibung einer Liste wurde geändert. 
+	/**Die Beschreibung einer Liste wurde geÃ¤ndert. 
 	 * 
 	 * @param listName Name der Liste.
 	 * @param newComment Neue Beschreibung der Liste.
@@ -48,18 +48,18 @@ public interface ListListener
 	 */
 	void listRenamed(String oldName, String newName);
 	
-	/**Die Priorität einer Liste wurde geändert.
+	/**Die PrioritÃ¤t einer Liste wurde geÃ¤ndert.
 	 * 
 	 * @param listName Name der Liste.
-	 * @param newPriority Neue Priorität der Liste.
+	 * @param newPriority Neue PrioritÃ¤t der Liste.
 	 */
 	void listPriorityChanged(String listName, int newPriority);
 	
-	/**Track wurde in einer Liste eingefügt.
+	/**Track wurde in einer Liste eingefÃ¼gt.
 	 * 
 	 * @param listName Name der Liste.
-	 * @param position Position in der Liste, an der der Track eingefügt wurde.
-	 * @param track Track der eingefügt wurde.
+	 * @param position Position in der Liste, an der der Track eingefÃ¼gt wurde.
+	 * @param track Track der eingefÃ¼gt wurde.
 	 */
 	void trackInserted(String listName, int position, Track track);
 	/**Ein Track wurde aus einer Liste entfernt.

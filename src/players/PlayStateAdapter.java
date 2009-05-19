@@ -3,8 +3,8 @@ package players;
 import common.Track;
 
 /**
- * Empfängt Änderungen des Abspielzustandes.
- * <br>Alle Funktionen sind mit leeren Rümpfen implementiert.
+ * EmpfÃ¤ngt Ã„nderungen des Abspielzustandes.
+ * <br>Alle Funktionen sind mit leeren RÃ¼mpfen implementiert.
  * 
  * @author Eraser
  */

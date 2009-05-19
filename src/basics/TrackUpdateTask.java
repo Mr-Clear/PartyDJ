@@ -10,7 +10,7 @@ import common.Track;
  * Liest die Dauer der Tracks ein.
  * <p>Tracks die eingelesen werden sollen werden im Controller per pushTrackToUpdate
  * auf einen Stack geschrieben. Dieser Stack wird von dieser Klasse abgearbeitet.
- * <p>Tracks die bereits eine Dauer != 0 haben, werden übersprungen.
+ * <p>Tracks die bereits eine Dauer != 0 haben, werden Ã¼bersprungen.
  * 
  * @author Eraser
  */

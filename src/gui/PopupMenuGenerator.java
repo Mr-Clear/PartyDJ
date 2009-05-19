@@ -30,18 +30,18 @@ import common.Track;
 //TODO Mehrfachauswahl
 
 /**
- * Erzeugt Popup-Menüs.
+ * Erzeugt Popup-MenÃ¼s.
  * 
  * @author Eraser, Sam
  */
 
 public class PopupMenuGenerator
 {
-	/**Erzeugt ein Popup-Menü zu einer PDJList
+	/**Erzeugt ein Popup-MenÃ¼ zu einer PDJList
 	 * 
-	 * @param list Liste zu der das Popupmenü gehört.
-	 * @param track Track der in dem Popupmenü behandelt wird.
-	 * @return Das Menü als PopupMenu.
+	 * @param list Liste zu der das PopupmenÃ¼ gehÃ¶rt.
+	 * @param track Track der in dem PopupmenÃ¼ behandelt wird.
+	 * @return Das MenÃ¼ als PopupMenu.
 	 * 
 	 * @see PDJList
 	 */
@@ -98,7 +98,7 @@ public class PopupMenuGenerator
 			menu.add(newItem);
 		}
 
-		newItem = new JMenuItem("Einfügen [Strg + V]");
+		newItem = new JMenuItem("EinfÃ¼gen [Strg + V]");
 		newItem.setActionCommand("Paste");
 		newItem.setEnabled(listEditable);
 		newItem.addActionListener(listener);
@@ -125,14 +125,14 @@ public class PopupMenuGenerator
 			menu.add(newItem);
 		}
 		
-		JMenu fileMenu = new JMenu("Aus Datei einfügen");
+		JMenu fileMenu = new JMenu("Aus Datei einfÃ¼gen");
 		fileMenu.setActionCommand("File");
 		fileMenu.setEnabled(listEditable);
 		fileMenu.addActionListener(listener);
 		fileMenu.addMenuListener(new FileMenuListener(list));
 		menu.add(fileMenu);
 		
-		newItem = new JMenuItem("Datei öffnen...");
+		newItem = new JMenuItem("Datei Ã¶ffnen...");
 		newItem.setActionCommand("OpenFile");
 		newItem.addActionListener(listener);
 		fileMenu.add(newItem);	
@@ -170,7 +170,7 @@ class ListMenuItemListener implements ActionListener
 		
 		else if(command.equals("DeleteFromMasterList"))
 		{
-			if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Track wirklich vollständig aus PartyDJ entfernen?", "PartyDJ", JOptionPane.YES_NO_OPTION))
+			if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Track wirklich vollstÃ¤ndig aus PartyDJ entfernen?", "PartyDJ", JOptionPane.YES_NO_OPTION))
 				return;
 			try
 			{
@@ -220,7 +220,7 @@ class ListMenuItemListener implements ActionListener
 			
 		else if(command.equals("OpenFile"))
 		{
-			final JFileChooser fileChooser = new JFileChooser("Datei öffnen:");
+			final JFileChooser fileChooser = new JFileChooser("Datei Ã¶ffnen:");
 			fileChooser.setDialogType(JFileChooser.OPEN_DIALOG); 
 			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			fileChooser.setCurrentDirectory(new File(basics.Controller.getInstance().getData().readSetting("PlayListDirectory", common.Functions.getFolder())));

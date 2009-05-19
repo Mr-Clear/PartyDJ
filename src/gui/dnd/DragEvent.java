@@ -2,7 +2,7 @@ package gui.dnd;
 
 import java.awt.event.MouseEvent;
 
-/**Wird nur noch für die alte SwingVersion des DragDropHandlers benötigt.
+/**Wird nur noch fÃ¼r die alte SwingVersion des DragDropHandlers benÃ¶tigt.
  * 
  * @author Sam
  */

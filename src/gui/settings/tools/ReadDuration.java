@@ -8,7 +8,7 @@ import common.Track;
 
 /**
  * Liest die Dauer von Tracks ein.
- * <br>Die Tracks werden im Konstruktor in einem Array übergeben.
+ * <br>Die Tracks werden im Konstruktor in einem Array Ã¼bergeben.
  * <br>List die Dauer auch ein, wenn die Tracks bereits eine Dauer > 0 haben.
  * 
  * @author Eraser, Sam
@@ -37,7 +37,7 @@ public class ReadDuration implements StatusSupportedFunction
 		{
 			e.printStackTrace();
 		}
-		pw.println("Pfad;Lieddauer;Dateigröße;Lesedauer");*/
+		pw.println("Pfad;Lieddauer;DateigrÃ¶ÃŸe;Lesedauer");*/
 		
 		int count = 0;
 	

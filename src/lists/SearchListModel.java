@@ -9,7 +9,7 @@ import data.SortOrder;
 
 /**
  * Gibt Suchergebnise aus der Hauptliste aus.
- * <br>Die Suchparameter können im Konstruktor übergeben werden und nachträglich geändert werden.
+ * <br>Die Suchparameter kÃ¶nnen im Konstruktor Ã¼bergeben werden und nachtrÃ¤glich geÃ¤ndert werden.
  * 
  * @author Eraser
  * 
@@ -27,7 +27,7 @@ public class SearchListModel extends BasicListModel
 		super(new ArrayList<Track>());
 	}
 	
-	/**Liste ist bereits gefüllt
+	/**Liste ist bereits gefÃ¼llt
 	 * 
 	 * @param searchString String nach dem gesucht wird.
 	 * @param sortOrder Sortierreihenfolge in der das Ergebnis ausgegeben wird.
