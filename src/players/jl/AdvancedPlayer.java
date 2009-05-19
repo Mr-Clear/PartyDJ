@@ -23,7 +23,8 @@ import javazoom.jl.decoder.SampleBuffer;
 /**
  * Player zum Wiedergeben eines Tracks.
  * 
- * @author Sam, Eraser
+ * @author Sam
+ * @author Eraser
  */
 public class AdvancedPlayer
 {
@@ -31,7 +32,7 @@ public class AdvancedPlayer
 	private FileInputStream fis;
 	private Bitstream bitStream;
 	private Decoder decoder;
-	private final SoundAudioDevice audio;
+	private SoundAudioDevice audio;
 	private JLPlayer jlPlayer;
 	private boolean paused = false;
 	private static String durationPath;
@@ -129,11 +130,15 @@ public class AdvancedPlayer
 		if (audio != null)
 		{
 			audio.close();
+			//audio = null;
+		}
+		if(bitStream != null)
+		{
 			try
 			{
 				bitStream.close();
 			}
-			catch (BitstreamException ex){}
+			catch (BitstreamException ex){ex.printStackTrace();}
 		}
 	}
 
@@ -149,8 +154,17 @@ public class AdvancedPlayer
 			pdi("AUDIO DEVICE NULL");
 			return false;
 		}
-
-		Header h = bitStream.readFrame();
+		
+		Header h = null;
+		try
+		{
+			h = bitStream.readFrame();
+		}
+		catch(BitstreamException e)
+		{
+			return false;
+		}
+		
 		if (h == null) 
 		{
 			pdi("BITSTREAM READ FRAME ENDE/FAILED" );
@@ -293,7 +307,8 @@ public class AdvancedPlayer
 	class PlayerThread extends Thread
 	{		
 		public synchronized void run()
-		{ 
+		{
+			this.setName("AdvancedPlayer Thread");
 			paused = false;
 			boolean ftd = true;
 			
@@ -301,9 +316,11 @@ public class AdvancedPlayer
 			if(Math.abs(staticDuration - Controller.getInstance().getPlayer().getDuration()) > 0.001)
 				pdi("StaticDuration:  " + staticDuration + "    SavedDuration:  " + Controller.getInstance().getPlayer().getDuration());
 			
-			
 			while (ftd)
 			{
+				if(audio == null || !audio.isOpen())
+					break;
+				
 				double fadeElapsed = System.currentTimeMillis() - fadeStartTime;
 				if(fadeElapsed < fadeDuration)
 				{
@@ -335,13 +352,13 @@ public class AdvancedPlayer
 				catch (JavaLayerException e)
 				{
 					// TODO Auto-generated catch block
-					//e.printStackTrace();
+					Controller.getInstance().logError(Controller.REGULAR_ERROR, AdvancedPlayer.this, e, "Fehler bei 'ftd = decodeFrame();'");
+					e.printStackTrace();
 				}
 				
 				position += frameDuration;
 				if(!ftd)
 					pdi("Position:   " + position );
-
 			}
 			
 			if (audio != null)
