@@ -1,9 +1,9 @@
 Spaltenname [Datentyp] Defaultwert
 __ Primary Key
-+ Identity (Automatischer Wert, schlieﬂt Not Null ein)
++ Identity (Automatischer Wert, schlie√üt Not Null ein)
 | Not Null
 ! Index
-? Unique (schlieﬂt Not Null ein)
+? Unique (schlie√üt Not Null ein)
 
 SETTINGS
     |_NAME_ [String*32]
