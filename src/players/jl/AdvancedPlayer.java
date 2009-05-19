@@ -2,9 +2,11 @@ package players.jl;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import javax.sound.sampled.FloatControl;
-import common.Track;
+import basics.Controller;
 import common.Track.Problem;
 import players.PlayStateAdapter;
 import players.PlayStateListener;
@@ -43,8 +45,6 @@ public class AdvancedPlayer
 	private long fadeStartTime;
 	int fadeSpeed = 1;
 	
-	public static long start;
-	public static long end;
 	long fadeDuration = 1000;
 	/** Wenn false, sendet der Player kein playbackFinished */
 	boolean sendMessage = true;
@@ -53,6 +53,10 @@ public class AdvancedPlayer
 		{
 			volume = vol;
 		}};
+		
+	//---Debug übersprigen!
+	private OutputStreamWriter osw;
+	private String path;
 
 	/**
 	 * Creates a new Player instance.
@@ -60,6 +64,7 @@ public class AdvancedPlayer
 	 */
 	AdvancedPlayer(String path, int vol, JLPlayer jlPlayer) throws JavaLayerException, PlayerException
 	{
+		this.path = path;
 		this.jlPlayer = jlPlayer;
 		try
 		{
@@ -77,6 +82,18 @@ public class AdvancedPlayer
 		audio = (SoundAudioDevice)FactoryRegistry.systemRegistry().createAudioDevice();
 		audio.open(decoder = new Decoder());
 		volume = vol;
+		
+
+		//---Debug
+		try
+		{
+			osw = new OutputStreamWriter(new FileOutputStream(System.getProperty("user.home") + "\\Desktop" + "\\debugRAW.txt", true));
+		}
+		catch (FileNotFoundException e1)
+		{
+			e1.printStackTrace();
+		}
+		//---Debug Ende
 	}
 	
 	public boolean play(double start) throws JavaLayerException
@@ -126,7 +143,7 @@ public class AdvancedPlayer
 	/**
 	 * Decodes a single frame.
 	 *
-	 * @return true if there are no more frames to decode, false otherwise.
+	 * @return false if there are no more frames to decode, true otherwise.
 	 */
 	protected boolean decodeFrame() throws JavaLayerException
 	{
@@ -134,11 +151,31 @@ public class AdvancedPlayer
 		{
 			AudioDevice out = audio;
 			if (out == null) 
+			{
+				try
+				{
+					osw.write("AUDIO DEVICE NULL" + "\n");
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 				return false;
+			}
 
 			Header h = bitStream.readFrame();
 			if (h == null) 
+			{
+				try
+				{
+					osw.write("BITSTREAM READ FRAME ENDE/FAILED" + "\n");
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 				return false;
+			}
 			
 			SampleBuffer output = (SampleBuffer)decoder.decodeFrame(h, bitStream);
 
@@ -182,8 +219,6 @@ public class AdvancedPlayer
 	
 	public static double getDuration(String filePath) throws PlayerException
 	{
-		start = System.currentTimeMillis();
-		
 		if(durationPath != null && durationPath.equals(filePath))
 		{
 			return staticDuration;
@@ -223,9 +258,8 @@ public class AdvancedPlayer
 		
 		durationPath = filePath;
 		staticDuration = calcDuration;
-		end = System.currentTimeMillis();
 		
-		return (staticDuration);
+		return staticDuration;
 	}
 	
 	//TODO JEDE MENGE
@@ -282,22 +316,37 @@ public class AdvancedPlayer
 	}
 	
 	class PlayerThread extends Thread
-	{
-		Track track;
-		double start;
-		
+	{		
 		public synchronized void run()
-		{
+		{ 
 			paused = false;
 			boolean ftd = true;
+			
+			try
+			{
+				osw.write("Track:  " + path + "\n");
+				osw.write("StaticDuration:  " + staticDuration + "    SavedDuration:  " + Controller.getInstance().getPlayer().getDuration() + "\n");
+				osw.flush();
+			}
+			catch (IOException e1)
+			{
+				e1.printStackTrace();
+			}
 			
 			
 			while (ftd)
 			{
 				double fadeElapsed = System.currentTimeMillis() - fadeStartTime;
-				//System.out.println("FadeElapsed:  " + fadeElapsed + "  FadeDuration:  " + fadeDuration);
 				if(fadeElapsed < fadeDuration)
 				{
+					try
+					{
+						osw.write("Fading!!!   ");
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
 					double progress = fadeElapsed / fadeDuration;
 					if(fadeOut)
 						setAudioVolume(volume * (1 - progress));
@@ -314,6 +363,14 @@ public class AdvancedPlayer
 				
 				if(paused)
 				{
+					try
+					{
+						osw.write("\n" + "Paused!!!" + "\n");
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
 					break;
 				}
 				
@@ -328,11 +385,29 @@ public class AdvancedPlayer
 				}
 				
 				position += frameDuration;
-				//TODO Hier manchmal Abbruch....
+				try
+				{
+					if(!ftd)
+						osw.write("Position:   " + position + "\n");
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 			}
 			
 			if (audio != null)
 			{
+				try
+				{
+					osw.write("Track end after:  " + position + "\n");
+					osw.write("Successfull playback?   " + (position >= Controller.getInstance().getPlayer().getDuration()) + "\n\n");
+					osw.flush();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 				audio.flush();
 				audio.close();
 				close();
