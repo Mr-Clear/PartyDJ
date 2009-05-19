@@ -223,9 +223,12 @@ public class PDJList extends JList
 		if(index != -1)
 		{
 			int span = list.getLastVisibleIndex() - list.getFirstVisibleIndex();
-			Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize()));
-		        if (cellBound != null) 
-		            scrollRectToVisible(cellBound);
+			final Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize()));
+	        if (cellBound != null)
+	        {
+	        	System.out.println(SwingUtilities.isEventDispatchThread());
+	        	scrollRectToVisible(cellBound);
+	        }
 		}
     }
     	
@@ -393,9 +396,14 @@ public class PDJList extends JList
 	
 	private class PlayerListenerForLists extends PlayStateAdapter
 	{
-		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+		public void currentTrackChanged(Track playedLast, final Track playingCurrent, Reason reason)
 		{
-			scrollToPlayed(playingCurrent);
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					scrollToPlayed(playingCurrent);
+				}});
 		}
 	}
 }
