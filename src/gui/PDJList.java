@@ -225,10 +225,7 @@ public class PDJList extends JList
 			int span = list.getLastVisibleIndex() - list.getFirstVisibleIndex();
 			final Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize()));
 	        if (cellBound != null)
-	        {
-	        	System.out.println(SwingUtilities.isEventDispatchThread());
 	        	scrollRectToVisible(cellBound);
-	        }
 		}
     }
     	
