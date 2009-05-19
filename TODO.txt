@@ -1,12 +1,12 @@
 Track-Info auslesen...
 Andere GUI-APIs anschauen..
-PopupMenu verschönern
+PopupMenu verschÃ¶nern
 Add Liste.
 ini-Datei..
 Autoplay einstellbar
 ClassicWindow sinnvolle Fehlermeldungen wenn die Listen nicht gehen.
-Funktion der Maustasten in PDJList wählbar?
-?data.derby.DerbyDB Events vervollständigen.
+Funktion der Maustasten in PDJList wÃ¤hlbar?
+?data.derby.DerbyDB Events vervollstÃ¤ndigen.
 Error Reporter.
 Tasten
 EnsureVisible
