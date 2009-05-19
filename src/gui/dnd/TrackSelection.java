@@ -19,7 +19,7 @@ public class TrackSelection implements Transferable
 	private final List<File> files = new ArrayList<File>();
 	private final List<String> names = new ArrayList<String>();
 	private final DataFlavor trackFlavor = new DataFlavor(Track.class, "Track flavor");
-	private final DataFlavor flavors[] = {trackFlavor, DataFlavor.javaFileListFlavor, DataFlavor.stringFlavor};
+	private final DataFlavor flavors[] = {trackFlavor, DataFlavor.javaFileListFlavor};
 
 	public TrackSelection(Track[] trackArray)
 	{

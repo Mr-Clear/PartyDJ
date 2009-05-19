@@ -4,6 +4,7 @@ import gui.dnd.DragDropHandler;
 import gui.dnd.DragListener;
 import gui.dnd.ForeignDrop;
 import gui.dnd.ListDropMode;
+import gui.dnd.TrackSelection;
 import java.awt.Rectangle;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragSource;
@@ -45,7 +46,7 @@ public class PDJList extends JList
 	private ListDropMode ldMode;
 	private final TrackListModel listModel;
 	private int count = 0;
-	private JList list = this;
+	private PDJList list = this;
 	
 	public PDJList(TrackListModel listModel)
 	{
@@ -72,14 +73,24 @@ public class PDJList extends JList
 		this.setDragEnabled(true);
 		this.addMouseMotionListener(new DragMotionListener());
 		this.addMouseListener(new ClickListener());
-		
-		this.getActionMap().put(TransferHandler.getCutAction().getValue(Action.NAME), TransferHandler.getCutAction());
-		this.getActionMap().put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
-		this.getActionMap().put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
+
 		
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl X"),TransferHandler.getCutAction().getValue(Action.NAME));
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl C"),TransferHandler.getCopyAction().getValue(Action.NAME));
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl V"),TransferHandler.getPasteAction().getValue(Action.NAME));
+		
+		this.getActionMap().put(TransferHandler.getCutAction().getValue(Action.NAME), new AbstractAction(){
+																	private static final long serialVersionUID = -3363943247433508388L;
+																	@Override
+																	public void actionPerformed(ActionEvent e)
+																	{
+																		TrackTransfer transfer = new TrackTransfer();
+																		transfer.setClipboardContents(list.getSelectedValues());
+																		
+																		new DragDropHandler().exportDone(list, new TrackSelection(list.getSelectedValues()),  javax.swing.TransferHandler.MOVE );
+																	}});
+		this.getActionMap().put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
+		this.getActionMap().put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
 
 		this.getInputMap().put(KeyStroke.getKeyStroke("DELETE"), "Delete");
 		this.getActionMap().put("Delete", new AbstractAction("Delete") 

@@ -78,7 +78,8 @@ public class ListProvider
 		}
 		catch (ListException e)
 		{
-			//TODO null is nix gut. 
+			//TODO null is nix gut.
+			e.printStackTrace();
 			return null;
 		}		
 	}

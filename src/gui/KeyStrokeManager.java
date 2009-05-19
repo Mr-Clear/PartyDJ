@@ -83,7 +83,7 @@ public class KeyStrokeManager extends EventQueue
 				if(keys.get(key) instanceof String)
 					action.actionPerformed(new ActionEvent(event.getSource(), event.getID(), (String) keys.get(key), ((KeyEvent)event).getModifiers()));
 			}
-		} 
+		}
 	}
 	
 	/**Gibt den RawCode eines KeyEvents zurück
