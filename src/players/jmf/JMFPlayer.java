@@ -113,14 +113,14 @@ public class JMFPlayer implements IPlayer
 			play();
 	}
 
-	public void setPosition(double Seconds)
+	public void setPosition(double seconds)
 	{
-		if(Seconds < 0)
-			Seconds = 0;
-		else if(Seconds > getDuration())
-			Seconds = getDuration();
+		if(seconds < 0)
+			seconds = 0;
+		else if(seconds > getDuration())
+			seconds = getDuration();
 		
-		p.setMediaTime(new Time(Seconds));
+		p.setMediaTime(new Time(seconds));
 	}
 
 	public void setVolume(int volume)
@@ -336,6 +336,15 @@ public class JMFPlayer implements IPlayer
 
 	public void load(Track track)
 	{
-		// TODO Auto-generated method stub
+		try
+		{
+			currentTrack = track;
+			p = getPlayer(track.path);
+		}
+		catch (PlayerException e)
+		{
+			e.printStackTrace();
+			return;
+		}
 	}
 }
