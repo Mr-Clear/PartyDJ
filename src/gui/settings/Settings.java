@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -60,7 +62,28 @@ public class Settings extends JPanel
 	
 	public Settings()
 	{
+		if(SwingUtilities.isEventDispatchThread())
 		initGUI();
+		else
+			try
+			{
+				SwingUtilities.invokeAndWait(new Runnable(){
+					@Override
+					public void run()
+					{
+						initGUI();
+					}});
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (InvocationTargetException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	protected void initGUI()
@@ -522,63 +545,80 @@ public class Settings extends JPanel
 			this.table = table;
 		}
 
-		public void listPriorityChanged(String listName, int newPriority)
+		public void listPriorityChanged(final String listName, final int newPriority)
 		{
-			namedSp.get(listName).setValue(newPriority);
-			calcListPercent();
-			table.repaint();
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					namedSp.get(listName).setValue(newPriority);
+					calcListPercent();
+					table.repaint();
+				}});
+			
 		}
 
 		@Override
-		public void settingChanged(String name, String value)
+		public void settingChanged(final String name, final String value)
 		{
 			if(namedSp.get(name) != null)
 			{
-				namedSp.get(name).setValue(Integer.parseInt(value));
-				calcListPercent();
-				table.repaint();
+				SwingUtilities.invokeLater(new Runnable(){
+					@Override
+					public void run()
+					{
+						namedSp.get(name).setValue(Integer.parseInt(value));
+						calcListPercent();
+						table.repaint();
+					}});
+				
 			}
 		}
 		
 		public void calcListPercent()
 		{
-			try
-			{
-				IData data = Controller.getInstance().getData();
-				int sum = Integer.parseInt(data.readSetting("MasterListPriority", "1"));
-				int val = 0;
-				for(int i = 0; i < namedSp.size(); i++)
-				{
-					String n = spinners.get(i).getName();
-					if(n != null)
+			SwingUtilities.invokeLater(new Runnable(){
+					@Override
+					public void run()
 					{
-						sum += data.getListPriority(n);
-					}
-					if(sum == 0)
-					{
-						table.setValueAt(String.format("%2.2f", 1d / data.getLists().size()) + "%", 0, 2);
-						return;
-					}
-				}
-				
-				for(int i = 0; i < namedSp.size(); i++)
-				{
-					String n = spinners.get(i).getName();
-					if(n != null)
-					{
-						val = data.getListPriority(spinners.get(i).getName());
-						double percent = ((double)val / sum) * 100;
-						table.setValueAt(String.format("%2.2f", (Double)percent) + "%", i, 2);
-					}
-				}
-				double per = (Double.parseDouble(data.readSetting("MasterListPriority", "1")) /sum) * 100;
-				table.setValueAt(String.format("%2.2f", per) + "%", 0, 2);
-			}
-			catch (ListException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+						try
+						{
+							IData data = Controller.getInstance().getData();
+							int sum = Integer.parseInt(data.readSetting("MasterListPriority", "1"));
+							int val = 0;
+							for(int i = 0; i < namedSp.size(); i++)
+							{
+								String n = spinners.get(i).getName();
+								if(n != null)
+								{
+									sum += data.getListPriority(n);
+								}
+								if(sum == 0)
+								{
+									table.setValueAt(String.format("%2.2f", 1d / data.getLists().size()) + "%", 0, 2);
+									return;
+								}
+							}
+							
+							for(int i = 0; i < namedSp.size(); i++)
+							{
+								String n = spinners.get(i).getName();
+								if(n != null)
+								{
+									val = data.getListPriority(spinners.get(i).getName());
+									double percent = ((double)val / sum) * 100;
+									table.setValueAt(String.format("%2.2f", (Double)percent) + "%", i, 2);
+								}
+							}
+							double per = (Double.parseDouble(data.readSetting("MasterListPriority", "1")) /sum) * 100;
+							table.setValueAt(String.format("%2.2f", per) + "%", 0, 2);
+						}
+						catch (ListException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}});
 		}
 	}
 	
@@ -634,10 +674,16 @@ public class Settings extends JPanel
 		}
 		
 		@Override
-		public void setValueAt(Object value, int row, int col)
+		public void setValueAt(final Object value, final int row, final int col)
 		{
-            rowData[row][col] = value;
-            fireTableCellUpdated(row, col);
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					 rowData[row][col] = value;
+					 fireTableCellUpdated(row, col);
+				}});
+           
 		}
 	}
 	
@@ -676,19 +722,24 @@ public class Settings extends JPanel
 		}
 		
 		@Override
-		public void keyPressed(KeyEvent e)
+		public void keyPressed(final KeyEvent e)
 		{
 			if(!(e.getComponent() instanceof JTextField))
 				return;
 			
-			JTextField actual = (JTextField) e.getComponent();
-			{
-				manager.enableHotKey(e.getModifiers(), e.getKeyCode());
-				int id = (String.valueOf(e.getKeyCode()) + (char)0 + e.getModifiers()).hashCode();
-				GlobalHotKeys.getInstance().setKeyAction(id, actual.getName());
-				actual.setText(KeyEvent.getKeyText(e.getKeyCode()));
-				actual.repaint();
-			}
+			final JTextField actual = (JTextField) e.getComponent();
+			
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					manager.enableHotKey(e.getModifiers(), e.getKeyCode());
+					int id = (String.valueOf(e.getKeyCode()) + (char)0 + e.getModifiers()).hashCode();
+					GlobalHotKeys.getInstance().setKeyAction(id, actual.getName());
+					actual.setText(KeyEvent.getKeyText(e.getKeyCode()));
+					actual.repaint();
+				}});
+			
 		}
 
 		@Override
@@ -708,7 +759,7 @@ public class Settings extends JPanel
 		}
 		
 		@Override
-		public void keyPressed(KeyEvent e)
+		public void keyPressed(final KeyEvent e)
 		{
 			InputMap iMap = manager.getInputMap();
 			ActionMap aMap = manager.getActionMap();
@@ -720,12 +771,18 @@ public class Settings extends JPanel
 			
 			if(iMap.get(keyStroke) != null)
 			{
-				for(JTextField field : fields)
+				for(final JTextField field : fields)
 				{
 					if(iMap.get(keyStroke).toString().equalsIgnoreCase(field.getName()))
-					{						
-						field.setText("");
-						field.repaint();
+					{		
+						SwingUtilities.invokeLater(new Runnable(){
+							@Override
+							public void run()
+							{
+								field.setText("");
+								field.repaint();
+							}});
+						
 					}
 				}
 			}
@@ -753,8 +810,14 @@ public class Settings extends JPanel
 											p.playPrevious();
 											
 									}});
-			txtField.setText(KeyEvent.getKeyText(e.getKeyCode()));
-			txtField.repaint();
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					txtField.setText(KeyEvent.getKeyText(e.getKeyCode()));
+					txtField.repaint();
+				}});
+			
 		}
 
 		@Override

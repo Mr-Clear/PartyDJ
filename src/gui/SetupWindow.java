@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 import javax.swing.LayoutStyle;
+import javax.swing.SwingUtilities;
 
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
@@ -45,9 +46,15 @@ public class SetupWindow extends javax.swing.JFrame
 	public SetupWindow() 
 	{
 		super();
-		initGUI();
-		setLocationRelativeTo(null);
-		setVisible(true);
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				initGUI();
+				setLocationRelativeTo(null);
+				setVisible(true);
+			}});
+		
 	}
 	
 	private void initGUI()

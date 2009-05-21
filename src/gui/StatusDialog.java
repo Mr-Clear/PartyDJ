@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.LayoutStyle;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 /**
@@ -46,44 +47,49 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 	private JLabel time;
 	Timer showTimeTimer;
 
-	public StatusDialog(String title, Frame owner, StatusSupportedFunction init) 
+	public StatusDialog(final String title, final Frame owner, final StatusSupportedFunction init) 
 	{
 		super(owner);
-		initialiser = init;
-
-		DialogListener dialogListener = new DialogListener();
-		this.addWindowListener(dialogListener);
-		this.addComponentListener(dialogListener);
-		this.setLocationRelativeTo(owner);
-		this.setResizable(true);
-		this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 155));
-		this.setMinimumSize(new Dimension(100, 155));
-		this.setTitle(title);
-		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		this.setModalityType(ModalityType.DOCUMENT_MODAL);
-		initGUI();
-		thread = new StatusThread();
-		//thread.setUncaughtExceptionHandler(this);
-		thread.start();
-		
-		showTimeTimer = new Timer(100, new ActionListener(){
-			public void actionPerformed(ActionEvent e)
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
 			{
-				if(statusBar.getValue() > 0)
-				{
-					long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
-					long remainingTime = elapsedTime * (statusBar.getMaximum() - statusBar.getValue()) / statusBar.getValue();
-					Calendar cal = Calendar.getInstance();
-					cal.add(Calendar.SECOND, (int)remainingTime);
-					time.setText("Vergangen: " + common.Functions.formatTime(elapsedTime) + 
-							"   Verbleibend: " + common.Functions.formatTime(remainingTime) +
-							"   Fertig: " + String.format("%tT%n", cal));
-							//" Fertig: " + common.Functions.formatTime((System.currentTimeMillis() / 1000 + remainingTime) % 86400));
-				}
+				initialiser = init;
+
+				DialogListener dialogListener = new DialogListener();
+				me.addWindowListener(dialogListener);
+				me.addComponentListener(dialogListener);
+				me.setLocationRelativeTo(owner);
+				me.setResizable(true);
+				me.setMaximumSize(new Dimension(Integer.MAX_VALUE, 155));
+				me.setMinimumSize(new Dimension(100, 155));
+				me.setTitle(title);
+				me.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+				me.setModalityType(ModalityType.DOCUMENT_MODAL);
+				initGUI();
+				thread = new StatusThread();
+				//thread.setUncaughtExceptionHandler(this);
+				thread.start();
+				
+				showTimeTimer = new Timer(100, new ActionListener(){
+					public void actionPerformed(ActionEvent e)
+					{
+						if(statusBar.getValue() > 0)
+						{
+							long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
+							long remainingTime = elapsedTime * (statusBar.getMaximum() - statusBar.getValue()) / statusBar.getValue();
+							Calendar cal = Calendar.getInstance();
+							cal.add(Calendar.SECOND, (int)remainingTime);
+							time.setText("Vergangen: " + common.Functions.formatTime(elapsedTime) + 
+									"   Verbleibend: " + common.Functions.formatTime(remainingTime) +
+									"   Fertig: " + String.format("%tT%n", cal));
+									//" Fertig: " + common.Functions.formatTime((System.currentTimeMillis() / 1000 + remainingTime) % 86400));
+						}
+					}});
+				
+				showTimeTimer.start();
+				me.setVisible(true);
 			}});
-		
-		showTimeTimer.start();
-		this.setVisible(true);
 	}
 	
 	private void initGUI() 
@@ -160,20 +166,49 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 		this.setSize(626, 155);
 	}
 	
-	public void setLabel(String text)
+	/**ThreadSafe
+	 * 
+	 * @param text
+	 */
+	public void setLabel(final String text)
 	{
-		statusInfo.setText(text);
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				statusInfo.setText(text);
+			}});
+		
 	}
 	
-	public void setBarMaximum(int max)
+	/**ThreadSafe
+	 * 
+	 * @param max
+	 */
+	public void setBarMaximum(final int max)
 	{
-		statusBar.setMaximum(max);
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				statusBar.setMaximum(max);
+			}});
+		
 	}
 	
-	public void setBarPosition(int position)
+	/**
+	 * ThreadSafe
+	 */
+	public void setBarPosition(final int position)
 	{
-		statusBar.setValue(position);
-		progress.setText((Math.round(statusBar.getPercentComplete() * 10000) / 100d) + " %");
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				statusBar.setValue(position);
+				progress.setText((Math.round(statusBar.getPercentComplete() * 10000) / 100d) + " %");
+			}});
+		
 	}
 	
 	class StatusThread extends Thread
@@ -182,7 +217,12 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 		{
 			initialiser.runFunction(me);
 			showTimeTimer.stop();
-			dispose();
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					dispose();
+				}});
 		}
 	}
 	
@@ -219,10 +259,16 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 		public void windowOpened(WindowEvent e){}
 
 		//ComponentListener
-		public void componentResized(ComponentEvent e)
+		public void componentResized(final ComponentEvent e)
 		{
-			StatusDialog dialog = (StatusDialog)e.getSource();
-			dialog.setSize(dialog.getSize().width, dialog.getMaximumSize().height);
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					StatusDialog dialog = (StatusDialog)e.getSource();
+					dialog.setSize(dialog.getSize().width, dialog.getMaximumSize().height);
+				}});
+			
 		}
 		
 		public void componentHidden(ComponentEvent e){}

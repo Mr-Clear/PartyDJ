@@ -15,6 +15,7 @@ import javax.swing.Box;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 import common.Track;
@@ -39,6 +40,7 @@ public class PDJSlider extends JPanel
 	private JLabel end = new JLabel(" ");
 	private JLabel middle = new JLabel(" ");
 	private Slider slider = new Slider();
+	private PDJSlider me = this;
 	
 	private Track currentTrack;
 	private double duration = 0;
@@ -51,121 +53,139 @@ public class PDJSlider extends JPanel
 	
 	public PDJSlider()
 	{
-		GridBagConstraints c = new GridBagConstraints();
-		this.setLayout(new GridBagLayout());
-		Box vBox = Box.createVerticalBox();
-		
-		this.setBackground(Color.darkGray);
 
-		titel.setBackground(Color.darkGray);
-		titel.setForeground(Color.green);
-		titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, 26));
-		
-		slider.setBackground(Color.darkGray);
-		
-		start.setForeground(Color.green);
-		middle.setForeground(Color.green);
-		end.setForeground(Color.green);
-		start.setFont(new Font(start.getFont().getName(), Font.BOLD, 12)); 
-		middle.setFont(new Font(middle.getFont().getName(), Font.BOLD, 12)); 
-		end.setFont(new Font(end.getFont().getName(), Font.BOLD, 12)); 
-		
-		middle.setVisible(true);
-		end.setVisible(true);
-		start.setVisible(true);
-		
-		Box hBox = Box.createHorizontalBox();
-		hBox.add(titel);
-		hBox.add(Box.createHorizontalGlue());
-		vBox.add(hBox);
-		vBox.add(Box.createVerticalStrut(8));
-		vBox.add(slider);
-		vBox.add(Box.createVerticalStrut(4));
-		hBox = Box.createHorizontalBox();
-		hBox.add(start);
-		hBox.add(Box.createHorizontalGlue());
-		hBox.add(middle);
-		hBox.add(Box.createHorizontalGlue());
-		hBox.add(end);
-		vBox.add(hBox);
-		
-		c.fill = GridBagConstraints.BOTH;
-		c.weightx = 1.0;
-		this.add(vBox, c);
-		
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				GridBagConstraints c = new GridBagConstraints();
+				me.setLayout(new GridBagLayout());
+				Box vBox = Box.createVerticalBox();
+				
+				me.setBackground(Color.darkGray);
 
-		refreshTimer = new Timer(0, new ActionListener()
-		{
-			public void actionPerformed(ActionEvent evt)
-			{
-				setPosition(player.getPosition());
-			}
-		});
-		
-		refreshTimer.setDelay(40);
-		
-		player.addPlayStateListener(new PlayStateAdapter(){
-					public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
-					{
-						if(playingCurrent != null)
-						{
-							if(currentTrack != playingCurrent)
-							{
-								currentTrack = playingCurrent;
-								titel.setText(playingCurrent.name);
-								setDuration(playingCurrent.duration);
-							}
-						}
-						else
-						{
-							currentTrack = null;
-							titel.setText("Party DJ");
-							setPosition(0);
-							setDuration(0);
-						}
-					}
-					public void playStateChanged(boolean playState)
-					{
-						if(playState)
-							refreshTimer.start();
-						else
-							refreshTimer.stop();
-					}});
-		
-		data.addListListener(new ListAdapter(){
-			public void trackChanged(Track track)
-			{
-				if(track == currentTrack)
+				titel.setBackground(Color.darkGray);
+				titel.setForeground(Color.green);
+				titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, 26));
+				
+				slider.setBackground(Color.darkGray);
+				
+				start.setForeground(Color.green);
+				middle.setForeground(Color.green);
+				end.setForeground(Color.green);
+				start.setFont(new Font(start.getFont().getName(), Font.BOLD, 12)); 
+				middle.setFont(new Font(middle.getFont().getName(), Font.BOLD, 12)); 
+				end.setFont(new Font(end.getFont().getName(), Font.BOLD, 12)); 
+				
+				middle.setVisible(true);
+				end.setVisible(true);
+				start.setVisible(true);
+				
+				Box hBox = Box.createHorizontalBox();
+				hBox.add(titel);
+				hBox.add(Box.createHorizontalGlue());
+				vBox.add(hBox);
+				vBox.add(Box.createVerticalStrut(8));
+				vBox.add(slider);
+				vBox.add(Box.createVerticalStrut(4));
+				hBox = Box.createHorizontalBox();
+				hBox.add(start);
+				hBox.add(Box.createHorizontalGlue());
+				hBox.add(middle);
+				hBox.add(Box.createHorizontalGlue());
+				hBox.add(end);
+				vBox.add(hBox);
+				
+				c.fill = GridBagConstraints.BOTH;
+				c.weightx = 1.0;
+				me.add(vBox, c);
+				
+
+				refreshTimer = new Timer(0, new ActionListener()
 				{
-					if(duration != track.duration)
+					public void actionPerformed(ActionEvent evt)
 					{
-						setDuration(track.duration);
+						setPosition(player.getPosition());
 					}
-					titel.setText(track.name);
-				}			
+				});
+				
+				refreshTimer.setDelay(40);
+				
+				player.addPlayStateListener(new PlayStateAdapter(){
+							public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+							{
+								if(playingCurrent != null)
+								{
+									if(currentTrack != playingCurrent)
+									{
+										currentTrack = playingCurrent;
+										titel.setText(playingCurrent.name);
+										setDuration(playingCurrent.duration);
+									}
+								}
+								else
+								{
+									currentTrack = null;
+									titel.setText("Party DJ");
+									setPosition(0);
+									setDuration(0);
+								}
+							}
+							public void playStateChanged(boolean playState)
+							{
+								if(playState)
+									refreshTimer.start();
+								else
+									refreshTimer.stop();
+							}});
+				
+				data.addListListener(new ListAdapter(){
+					public void trackChanged(Track track)
+					{
+						if(track == currentTrack)
+						{
+							if(duration != track.duration)
+							{
+								setDuration(track.duration);
+							}
+							titel.setText(track.name);
+						}			
+					}});
+				
+				currentTrack = player.getCurrentTrack();
+				if(currentTrack != null)
+					titel.setText(currentTrack.name);
+				setDuration(player.getDuration());
+				setPosition(player.getPosition());
+			}});
+	}
+	
+	public void setDuration(final double duration)
+	{
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				me.duration = duration;
+				slider.setMaximum(duration);
+				middle.setText(common.Functions.formatTime(duration));
+				end.setText("-" + common.Functions.formatTime(duration - position));
 			}});
 		
-		currentTrack = player.getCurrentTrack();
-		if(currentTrack != null)
-			titel.setText(currentTrack.name);
-		setDuration(player.getDuration());
-		setPosition(player.getPosition());
 	}
 	
-	public void setDuration(double duration)
+	public void setPosition(final double position)
 	{
-		this.duration = duration;
-		slider.setMaximum(duration);
-		middle.setText(common.Functions.formatTime(duration));
-		end.setText("-" + common.Functions.formatTime(duration - position));
-	}
-	
-	public void setPosition(double position)
-	{
-		this.position = position;
-		slider.setValue(position);
-		start.setText(common.Functions.formatTime(position));
-		end.setText("-" + common.Functions.formatTime(duration - position));
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				me.position = position;
+				slider.setValue(position);
+				start.setText(common.Functions.formatTime(position));
+				end.setText("-" + common.Functions.formatTime(duration - position));
+			}});
+		
 	}
 	
 	/**Der eigendliche Fortschrittsbalken
@@ -173,16 +193,22 @@ public class PDJSlider extends JPanel
 	class Slider extends JComponent implements MouseListener
 	{
 		private static final long serialVersionUID = -1283733626056623005L;
+		private Slider me = this;
 		double duration;
 		double position;
 		
 		public Slider()
 		{
 			super();
-			this.setMinimumSize(new Dimension(100, 20));
-			this.setPreferredSize(new Dimension(500, 20));
-			this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-			this.addMouseListener(this);
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					me.setMinimumSize(new Dimension(100, 20));
+					me.setPreferredSize(new Dimension(500, 20));
+					me.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+					me.addMouseListener(me);
+				}});
 		}
 		
 		@Override 
@@ -204,10 +230,15 @@ public class PDJSlider extends JPanel
 			duration = max;
 		}
 		
-		public void setValue(double val)
+		public void setValue(final double val)
 		{
-			position = val;
-			repaint();
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					position = val;
+					repaint();
+				}});
 		}
 		
 		@Override 

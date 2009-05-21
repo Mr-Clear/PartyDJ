@@ -5,11 +5,13 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import basics.Controller;
 import common.Track;
 
@@ -47,12 +49,41 @@ public class TrackRenderer extends DefaultListCellRenderer
 	
 		private JLabel titel = new JLabel();
 		private JLabel duration = new JLabel();	
+		private JPanel me = this;
 		private int fontSize;
 		
-		public TrackListCellRendererComponent(JList list, Track track, int index, boolean isSelected, boolean cellHasFocus)
+		public TrackListCellRendererComponent(final JList list, final Track track, final int index, final boolean isSelected, final boolean cellHasFocus)
+		{
+			if(SwingUtilities.isEventDispatchThread())
+				init(list, track, index, isSelected, cellHasFocus);
+			else
+			{
+				try
+				{
+					SwingUtilities.invokeAndWait(new Runnable(){
+						@Override
+						public void run()
+						{
+							init(list, track, index, isSelected, cellHasFocus);
+						}});
+				}
+				catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch (InvocationTargetException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		protected void init(final JList list, final Track track, int index, final boolean isSelected, final boolean cellHasFocus)
 		{
 			fontSize = 22;
-			this.setBackground(list.getBackground());
+			me.setBackground(list.getBackground());
 			GridBagConstraints c = new GridBagConstraints();
 			
 			titel.setOpaque(true);

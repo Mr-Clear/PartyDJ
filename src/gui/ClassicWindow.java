@@ -23,6 +23,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.lang.reflect.InvocationTargetException;
 import lists.ListException;
 import lists.ListProvider;
 import lists.SearchListModel;
@@ -52,45 +53,67 @@ public class ClassicWindow extends JFrame
 	public ClassicWindow()
 	{
 		super("Party DJ");
-		SwingUtilities.invokeLater(new Runnable(){
-			@Override
-			public void run()
+		if(SwingUtilities.isEventDispatchThread())
+		{
+			initGUI();
+		}
+		else
+			try
 			{
-				setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-				setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/p32.gif"));
-				assert Controller.getInstance() != null : "Controller nicht geladen!";
-				player.addPlayStateListener(new PlayState());
-
-				GridBagConstraints con = new GridBagConstraints();
-				GridBagLayout layout = new GridBagLayout();
-				
-				setLayout(layout);
-				con.anchor = GridBagConstraints.NORTHWEST;
-				con.insets = new Insets(0, 0, 0, 0);
-				con.fill = GridBagConstraints.BOTH;
-				
-				manageSize();
-				
-				gcp.setBackground(Color.darkGray);
-				
-				con.gridx = 0;
-				con.gridy = 0;
-				con.weightx = 0.0;
-				con.weighty = 0.0;
-				con.ipadx = GridBagConstraints.REMAINDER;
-				con.ipady = 22;
-				add(control(), con);
-
-				con.gridx = 0;
-				con.gridy = 1;
-				con.weightx = 1.0;
-				con.weighty = 1.0;
-				add(mainPart(), con);
-
-				setVisible(true);
-			}});
+				SwingUtilities.invokeAndWait(new Runnable(){
+					@Override
+					public void run()
+					{
+						initGUI();
+					}});
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (InvocationTargetException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 
+	protected void initGUI()
+	{
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/p32.gif"));
+		assert Controller.getInstance() != null : "Controller nicht geladen!";
+		player.addPlayStateListener(new PlayState());
+
+		GridBagConstraints con = new GridBagConstraints();
+		GridBagLayout layout = new GridBagLayout();
+		
+		setLayout(layout);
+		con.anchor = GridBagConstraints.NORTHWEST;
+		con.insets = new Insets(0, 0, 0, 0);
+		con.fill = GridBagConstraints.BOTH;
+		
+		manageSize();
+		
+		gcp.setBackground(Color.darkGray);
+		
+		con.gridx = 0;
+		con.gridy = 0;
+		con.weightx = 0.0;
+		con.weighty = 0.0;
+		con.ipadx = GridBagConstraints.REMAINDER;
+		con.ipady = 22;
+		add(control(), con);
+
+		con.gridx = 0;
+		con.gridy = 1;
+		con.weightx = 1.0;
+		con.weighty = 1.0;
+		add(mainPart(), con);
+
+		setVisible(true);
+	}
 	/**
 	 * Lautstärkeregler, Fortschrittsbalken und Buttons werden zu einer Kontrolleinheit zusammengefügt.
 	 * @return JPanel mit GridBagLayout, welches alle Steuerungen enthält.
@@ -494,53 +517,111 @@ public class ClassicWindow extends JFrame
 	
 	private void manageSize()
 	{
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run()
+		if(SwingUtilities.isEventDispatchThread())
+		{
+			try
 			{
-				try
-				{
-					setSize(Integer.parseInt(data.readSetting("ClassicWindowWidth", "800")), Integer.parseInt(data.readSetting("ClassicWindowHeight", "600")));
-				}
-				catch (NumberFormatException e1)
-				{
-					setSize(800, 600);
-				}
-				catch (SettingException e1)
-				{
-					setSize(800, 600);
-				}
-				
-				try
-				{
-					setExtendedState(Integer.parseInt(data.readSetting("ClassicWindowState", Integer.toString(MAXIMIZED_BOTH))));
-				}
-				catch (NumberFormatException e)
-				{
-					setExtendedState(MAXIMIZED_BOTH);
-				}
-				catch (SettingException e)
-				{
-					setExtendedState(MAXIMIZED_BOTH);
-				}
-				
-				classicWindow.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
-				
-				addWindowStateListener(new WindowStateListener(){
-					public void windowStateChanged(WindowEvent evt)
-			        {
-			            resize();
-			        }});
-				
-				getContentPane().addComponentListener(new ComponentAdapter(){  
-			        public void componentResized(ComponentEvent evt) 
-			        {
-			            resize();
-			        }});
+				setSize(Integer.parseInt(data.readSetting("ClassicWindowWidth", "800")), Integer.parseInt(data.readSetting("ClassicWindowHeight", "600")));
+			}
+			catch (NumberFormatException e1)
+			{
+				setSize(800, 600);
+			}
+			catch (SettingException e1)
+			{
+				setSize(800, 600);
+			}
 			
-				resize();
-			}});
+			try
+			{
+				setExtendedState(Integer.parseInt(data.readSetting("ClassicWindowState", Integer.toString(MAXIMIZED_BOTH))));
+			}
+			catch (NumberFormatException e)
+			{
+				setExtendedState(MAXIMIZED_BOTH);
+			}
+			catch (SettingException e)
+			{
+				setExtendedState(MAXIMIZED_BOTH);
+			}
+			
+			classicWindow.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
+			
+			addWindowStateListener(new WindowStateListener(){
+				public void windowStateChanged(WindowEvent evt)
+		        {
+		            resize();
+		        }});
+			
+			getContentPane().addComponentListener(new ComponentAdapter(){  
+		        public void componentResized(ComponentEvent evt) 
+		        {
+		            resize();
+		        }});
+		
+			resize();
+		}
+		else
+			try
+			{
+				SwingUtilities.invokeAndWait(new Runnable(){
+
+					@Override
+					public void run()
+					{
+						try
+						{
+							setSize(Integer.parseInt(data.readSetting("ClassicWindowWidth", "800")), Integer.parseInt(data.readSetting("ClassicWindowHeight", "600")));
+						}
+						catch (NumberFormatException e1)
+						{
+							setSize(800, 600);
+						}
+						catch (SettingException e1)
+						{
+							setSize(800, 600);
+						}
+						
+						try
+						{
+							setExtendedState(Integer.parseInt(data.readSetting("ClassicWindowState", Integer.toString(MAXIMIZED_BOTH))));
+						}
+						catch (NumberFormatException e)
+						{
+							setExtendedState(MAXIMIZED_BOTH);
+						}
+						catch (SettingException e)
+						{
+							setExtendedState(MAXIMIZED_BOTH);
+						}
+						
+						classicWindow.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
+						
+						addWindowStateListener(new WindowStateListener(){
+							public void windowStateChanged(WindowEvent evt)
+					        {
+					            resize();
+					        }});
+						
+						getContentPane().addComponentListener(new ComponentAdapter(){  
+					        public void componentResized(ComponentEvent evt) 
+					        {
+					            resize();
+					        }});
+					
+						resize();
+					}});
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (InvocationTargetException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	/** Wird aufgerufen wenn sich die Größe des Fensters ändert.*/

@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 
 import javax.swing.LayoutStyle;
 import lists.ListException;
@@ -26,7 +27,14 @@ public class Stuff extends javax.swing.JPanel {
 
 	public Stuff() {
 		super();
-		initGUI();
+
+	SwingUtilities.invokeLater(new Runnable(){
+		@Override
+		public void run()
+		{
+			initGUI();
+		}});
+		
 	}
 	
 	private void initGUI() {

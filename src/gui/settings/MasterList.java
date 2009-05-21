@@ -11,6 +11,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -20,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import lists.ListException;
 import lists.SearchListModel;
 import lists.TrackListModel;
@@ -55,11 +57,36 @@ public class MasterList extends JPanel
 	
 	private SearchListModel listModel;
 
-	public MasterList(Frame parent)
+	public MasterList(final Frame parent)
 	{
 		super();
 		frame = parent;
-		
+		if(SwingUtilities.isEventDispatchThread())
+			init();
+		else
+			try
+			{
+				SwingUtilities.invokeAndWait(new Runnable(){
+					@Override
+					public void run()
+					{
+						init();
+					}});
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (InvocationTargetException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	
+	protected void init()
+	{
 		setLayout(new BorderLayout());
 		Box box = Box.createVerticalBox();
 		Box topBox = Box.createHorizontalBox();
@@ -245,7 +272,7 @@ public class MasterList extends JPanel
 			box.add(list);
 		}
 		
-		add(box);		
+		add(box);	
 	}
 	
 	private class ListParameterActionListener implements ActionListener

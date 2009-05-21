@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import javax.swing.DropMode;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import lists.EditableListModel;
 import lists.ListException;
 import lists.ListProvider;
@@ -38,7 +39,7 @@ public class ForeignDrop extends DropTargetAdapter
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public synchronized void drop(DropTargetDropEvent e) 
+	public synchronized void drop(final DropTargetDropEvent e) 
 	{
 		Transferable tr = e.getTransferable();
 	    DataFlavor[] flavors = tr.getTransferDataFlavors();
@@ -244,10 +245,16 @@ public class ForeignDrop extends DropTargetAdapter
 				{
 	    			if(DragListener.getList().getSelectedIndices().length == 1)
 	    			{
-	    				JTextField txtField = (JTextField) e.getDropTargetContext().getComponent();
-	    			
-						txtField.setText(tracks[0].name);
-						e.dropComplete(true);
+	    				final Track firstTrack = tracks[0];
+	    				final JTextField txtField = (JTextField) e.getDropTargetContext().getComponent();
+	    				SwingUtilities.invokeLater(new Runnable(){
+							@Override
+							public void run()
+							{
+								txtField.setText(firstTrack.name);
+								e.dropComplete(true);
+							}});
+						
 	    			}
 	    			else
 	    				e.dropComplete(false);
@@ -258,8 +265,14 @@ public class ForeignDrop extends DropTargetAdapter
 	    
 	    if(e.getDropTargetContext().getComponent() instanceof PDJList)
 		{
-			PDJList list = (PDJList) e.getDropTargetContext().getComponent();
-			list.ensureIndexIsVisible(e.getLocation().y / list.getFixedCellHeight());
+	    	SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					PDJList list = (PDJList) e.getDropTargetContext().getComponent();
+					list.ensureIndexIsVisible(e.getLocation().y / list.getFixedCellHeight());
+				}});
+			
 		}
 	}
 	

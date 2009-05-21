@@ -2,6 +2,7 @@ package gui.settings;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.*;
 import javax.swing.tree.TreePath;
 import basics.Controller;
@@ -31,24 +32,29 @@ public class SettingWindow extends JFrame
 	public SettingWindow()
 	{
 		super("Party DJ Einstellungen");
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setSize(1000, 600);
-		setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/Settings32.gif"));
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+				setSize(1000, 600);
+				setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/Settings32.gif"));
+				
+				tree.addMouseListener(new TreeListener());
+				tree.setMinimumSize(new Dimension(200, tree.getMinimumSize().height));
+				
+				panel.setLayout(new BorderLayout());
+				
+				splitPane.add(tree);
+				splitPane.add(panel);
+				me.add(splitPane);
+				
+				tree.setSelectionRow(0);
+				
+				new TreeListener().mouseClicked(new MouseEvent(tree, 0, 0, 0, 0, 0, 0, false));
 		
-		tree.addMouseListener(new TreeListener());
-		tree.setMinimumSize(new Dimension(200, tree.getMinimumSize().height));
-		
-		panel.setLayout(new BorderLayout());
-		
-		splitPane.add(tree);
-		splitPane.add(panel);
-		this.add(splitPane);
-		
-		tree.setSelectionRow(0);
-		
-		new TreeListener().mouseClicked(new MouseEvent(tree, 0, 0, 0, 0, 0, 0, false));
-
-		setVisible(true);
+				setVisible(true);
+			}});
 	}
 	
 	class TreeListener extends MouseAdapter
@@ -56,31 +62,76 @@ public class SettingWindow extends JFrame
 		TreePath lastPath;
 		public void mouseClicked(MouseEvent e)
 		{
-			
-			TreePath path = tree.getSelectionPath();
-			Object o = path.getLastPathComponent();
-			if(o instanceof SettingNode)
+			if(SwingUtilities.isEventDispatchThread())
 			{
-				SettingNode node = (SettingNode)o;
-				Class<? extends Component> compClass = node.getComponent();
-				
-				try
+				TreePath path = tree.getSelectionPath();
+				Object o = path.getLastPathComponent();
+				if(o instanceof SettingNode)
 				{
-					panel.setSettingComponent(compClass.getConstructor(Frame.class).newInstance(me));
-				}
-				catch (Exception e1)
-				{
+					SettingNode node = (SettingNode)o;
+					Class<? extends Component> compClass = node.getComponent();
+					
 					try
 					{
-						panel.setSettingComponent(compClass.getConstructor().newInstance());
+						panel.setSettingComponent(compClass.getConstructor(Frame.class).newInstance(me));
 					}
-					catch (Exception e2)
+					catch (Exception e1)
 					{
-						e2.printStackTrace();
-						throw new RuntimeException("Kein Kostruktor für Eintrag gefunden.", e2);
-					}
-				}				
+						try
+						{
+							panel.setSettingComponent(compClass.getConstructor().newInstance());
+						}
+						catch (Exception e2)
+						{
+							e2.printStackTrace();
+							throw new RuntimeException("Kein Kostruktor für Eintrag gefunden.", e2);
+						}
+					}				
+				}
 			}
+			else
+				try
+				{
+					SwingUtilities.invokeAndWait(new Runnable(){
+						@Override
+						public void run()
+						{
+							TreePath path = tree.getSelectionPath();
+							Object o = path.getLastPathComponent();
+							if(o instanceof SettingNode)
+							{
+								SettingNode node = (SettingNode)o;
+								Class<? extends Component> compClass = node.getComponent();
+								
+								try
+								{
+									panel.setSettingComponent(compClass.getConstructor(Frame.class).newInstance(me));
+								}
+								catch (Exception e1)
+								{
+									try
+									{
+										panel.setSettingComponent(compClass.getConstructor().newInstance());
+									}
+									catch (Exception e2)
+									{
+										e2.printStackTrace();
+										throw new RuntimeException("Kein Kostruktor für Eintrag gefunden.", e2);
+									}
+								}				
+							}
+						}});
+				}
+				catch (InterruptedException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				catch (InvocationTargetException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 		}		
 	}
 }

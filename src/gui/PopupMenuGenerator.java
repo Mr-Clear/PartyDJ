@@ -38,6 +38,7 @@ import common.Track;
 public class PopupMenuGenerator
 {
 	/**Erzeugt ein Popup-Menü zu einer PDJList
+	 * Beim Aufrufen in invokeLater packen!
 	 * 
 	 * @param list Liste zu der das Popupmenü gehört.
 	 * @param track Track der in dem Popupmenü behandelt wird.
