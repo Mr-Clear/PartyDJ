@@ -238,7 +238,7 @@ public class PDJList extends JList
 				if(index != -1)
 				{
 					int span = list.getLastVisibleIndex() - list.getFirstVisibleIndex();
-					final Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize()));
+					final Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize() - 1));
 			        if (cellBound != null)
 			        	scrollRectToVisible(cellBound);
 				}
@@ -434,6 +434,7 @@ public class PDJList extends JList
 		{
 			if(reason == Reason.RECEIVED_NEW_TRACK || reason == Reason.TRACK_LOADED)
 				scrollToPlayed(playingCurrent);
+			renderer.enableRepaint();
 		}
 	}
 	

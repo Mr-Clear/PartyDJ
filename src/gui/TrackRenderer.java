@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
@@ -29,12 +27,12 @@ public class TrackRenderer extends DefaultListCellRenderer
 {
 	private static final long serialVersionUID = 1791058448796268655L;
 	
-	Map<Track, TrackRenderer.TrackListCellRendererComponent> lastUpdated = new HashMap<Track, TrackRenderer.TrackListCellRendererComponent>();
+//	Map<Track, TrackRenderer.TrackListCellRendererComponent> lastUpdated = new HashMap<Track, TrackRenderer.TrackListCellRendererComponent>();
 	
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
-		if(lastUpdated.containsKey(value))
-			return lastUpdated.get(value);
+//		if(lastUpdated.containsKey(value))
+//			return lastUpdated.get(value);
 		
 		if(value == null)
 			return new JLabel("null"); 
@@ -48,21 +46,19 @@ public class TrackRenderer extends DefaultListCellRenderer
 			Controller.getInstance().pushTrackToUpdate(track); //*/
 		
 		TrackRenderer.TrackListCellRendererComponent cell = new TrackListCellRendererComponent(list, track, index, isSelected, cellHasFocus);
-		lastUpdated.put(track, cell);
+//		lastUpdated.put(track, cell);
 		return cell;
 	}
 	
 	public void enableRepaint()
 	{
-		lastUpdated.clear();
+//		lastUpdated.clear();
 	}
 
 	private class TrackListCellRendererComponent extends JPanel
 	{
 		private static final long serialVersionUID = -1441760682667191892L;
 	
-		private JLabel titel = new JLabel();
-		private JLabel duration = new JLabel();	
 		private JPanel me = this;
 		private int fontSize;
 		
@@ -96,6 +92,9 @@ public class TrackRenderer extends DefaultListCellRenderer
 		
 		protected void init(final JList list, final Track track, int index, final boolean isSelected, final boolean cellHasFocus)
 		{
+			JLabel titel = new JLabel();
+			JLabel duration = new JLabel();	
+			
 			fontSize = 22;
 			me.setBackground(list.getBackground());
 			GridBagConstraints c = new GridBagConstraints();
@@ -131,13 +130,11 @@ public class TrackRenderer extends DefaultListCellRenderer
 				{
 					titel.setForeground(Color.BLUE);
 					duration.setForeground(Color.BLUE);
-					list.repaint();
 				}
 				else
 				{
 					titel.setForeground(new Color(64, 192, 255));
 					duration.setForeground(new Color(64, 192, 255));
-					list.repaint();
 				}
 			}
 			if(track.problem != Track.Problem.NONE)
