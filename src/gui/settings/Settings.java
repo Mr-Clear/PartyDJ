@@ -138,7 +138,8 @@ public class Settings extends JPanel
 		JPanel shortCutExpl = new JPanel(new GridBagLayout());
 		
 		JLabel titel = new JLabel("ShortCuts");
-		JLabel expl = new JLabel("<html>Hier können Sie einstellen, mit welchen Tasten Sie zusätzlich zu den Media-Tasten den PartyDJ steuern wollen.<br>Im linken Textfeld befinden sich die lokalen, im rechten die globalen HotKeys.</html>");
+		JLabel expl = new JLabel("<html>Hier können Sie einstellen, mit welchen Tasten Sie zusätzlich zu den Media-Tasten den PartyDJ steuern wollen." +
+								 "<br>Im linken Textfeld befinden sich die lokalen, im rechten die globalen HotKeys.</html>");
 		
 		titel.setFont(new Font("SansSerifs", Font.BOLD, 18));
 		expl.setFont(new Font("SansSerifs", Font.ITALIC, 12));

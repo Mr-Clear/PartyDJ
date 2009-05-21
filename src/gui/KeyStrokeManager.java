@@ -5,6 +5,10 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
@@ -25,10 +29,20 @@ public class KeyStrokeManager extends EventQueue
 	private final InputMap keys = new InputMap();
 	private final ActionMap actions = new ActionMap();
 	private List<Integer> regKeys = new ArrayList<Integer>();
+	static PrintWriter pw;
 
 	static
 	{
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(instance);
+		try
+		{
+			pw = new PrintWriter(new FileOutputStream(System.getProperty("user.home") + "\\Desktop" + "\\IncomingEvents.txt"));
+		}
+		catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void initHotKeys()
@@ -65,6 +79,13 @@ public class KeyStrokeManager extends EventQueue
 	protected void dispatchEvent(AWTEvent event)
 	{
 		super.dispatchEvent(event);
+		
+		if(!(event instanceof MouseEvent))
+		{
+			pw.write(event + "\n\n");
+			pw.flush();
+		}
+		
 		if(event instanceof KeyEvent)
 		{
 			if(event.getSource() instanceof JTextField)

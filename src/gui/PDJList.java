@@ -65,7 +65,8 @@ public class PDJList extends JList
 	private void initialise(ListDropMode ldMode, String name)
 	{
 		final DragDropHandler handler = new DragDropHandler();
-		
+
+		this.setIgnoreRepaint(true);
 		this.setName(name);
 		this.setListDropMode(ldMode);
 		this.setTransferHandler(handler);
@@ -217,16 +218,21 @@ public class PDJList extends JList
         return rv;
     }
     
-    protected void scrollToPlayed(Track playingCurrent)
+    protected void scrollToPlayed(final Track playingCurrent)
     {
-		int index = listModel.getIndex(playingCurrent);
-		if(index != -1)
-		{
-			int span = list.getLastVisibleIndex() - list.getFirstVisibleIndex();
-			final Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize()));
-	        if (cellBound != null)
-	        	scrollRectToVisible(cellBound);
-		}
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				int index = listModel.getIndex(playingCurrent);
+				if(index != -1)
+				{
+					int span = list.getLastVisibleIndex() - list.getFirstVisibleIndex();
+					final Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize()));
+			        if (cellBound != null)
+			        	scrollRectToVisible(cellBound);
+				}
+			}});
     }
     	
 	private class DragMotionListener extends MouseMotionAdapter
@@ -393,14 +399,10 @@ public class PDJList extends JList
 	
 	private class PlayerListenerForLists extends PlayStateAdapter
 	{
-		public void currentTrackChanged(Track playedLast, final Track playingCurrent, Reason reason)
+		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
-			SwingUtilities.invokeLater(new Runnable(){
-				@Override
-				public void run()
-				{
-					scrollToPlayed(playingCurrent);
-				}});
+			if(reason == Reason.RECEIVED_NEW_TRACK)
+				scrollToPlayed(playingCurrent);
 		}
 	}
 }

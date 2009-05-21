@@ -6,10 +6,10 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.ListCellRenderer;
 import basics.Controller;
 import common.Track;
 
@@ -21,8 +21,10 @@ import common.Track;
  * 
  * @see PDJList
  */
-public class TrackRenderer implements ListCellRenderer
+public class TrackRenderer extends DefaultListCellRenderer 
 {
+	private static final long serialVersionUID = 1791058448796268655L;
+
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
 		if(value == null)
