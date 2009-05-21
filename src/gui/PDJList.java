@@ -67,6 +67,7 @@ public class PDJList extends JList
 		final DragDropHandler handler = new DragDropHandler();
 
 		this.setIgnoreRepaint(true);
+		this.setAutoscrolls(false);
 		this.setName(name);
 		this.setListDropMode(ldMode);
 		this.setTransferHandler(handler);
