@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
@@ -26,21 +28,33 @@ import common.Track;
 public class TrackRenderer extends DefaultListCellRenderer 
 {
 	private static final long serialVersionUID = 1791058448796268655L;
-
+	
+	Map<Track, TrackRenderer.TrackListCellRendererComponent> lastUpdated = new HashMap<Track, TrackRenderer.TrackListCellRendererComponent>();
+	
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
+		if(lastUpdated.containsKey(value))
+			return lastUpdated.get(value);
+		
 		if(value == null)
 			return new JLabel("null"); 
 		if(!(value instanceof Track))
 			return new JLabel("no Track: " + value);
-		
+
 		Track track = (Track)value;
-		
+
 		/// Liest Track-Dauer automatisch ein. Deaktiviert da JList so lang mit Update braucht und Player ein Speicherleck hat.
 		if(track.duration == 0 && track.problem == Track.Problem.NONE)
 			Controller.getInstance().pushTrackToUpdate(track); //*/
+		
+		TrackRenderer.TrackListCellRendererComponent cell = new TrackListCellRendererComponent(list, track, index, isSelected, cellHasFocus);
+		lastUpdated.put(track, cell);
+		return cell;
+	}
 	
-		return new TrackListCellRendererComponent(list, track, index, isSelected, cellHasFocus);
+	public void enableRepaint()
+	{
+		lastUpdated.clear();
 	}
 
 	private class TrackListCellRendererComponent extends JPanel

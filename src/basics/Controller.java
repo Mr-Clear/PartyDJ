@@ -254,6 +254,7 @@ public class Controller
 		splash.setInfo("Lade Zeug");
 		{
 			new network.ClassicUdpReceiver().start();
+			System.out.println("network");
 		}
 		
 		splash.setInfo("PartyDJ bereit :)");

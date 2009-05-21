@@ -10,6 +10,8 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -47,6 +49,7 @@ public class PDJList extends JList
 	private final TrackListModel listModel;
 	private int count = 0;
 	private PDJList list = this;
+	private final TrackRenderer renderer = new TrackRenderer();
 	
 	public PDJList(TrackListModel listModel)
 	{
@@ -72,8 +75,8 @@ public class PDJList extends JList
 	private void initialise(ListDropMode ldMode, String name)
 	{
 		final DragDropHandler handler = new DragDropHandler();
-
-		this.setAutoscrolls(false);
+		
+		this.addComponentListener(new UpdateListener());
 		this.setName(name);
 		this.setListDropMode(ldMode);
 		this.setTransferHandler(handler);
@@ -164,7 +167,7 @@ public class PDJList extends JList
 									}
 								});
 		
-		this.setCellRenderer(new TrackRenderer());
+		this.setCellRenderer(renderer);
 		this.setPrototypeCellValue("123-45-6789");
 		
 		Controller.getInstance().getPlayer().addPlayStateListener(new PlayerListenerForLists());
@@ -431,6 +434,33 @@ public class PDJList extends JList
 		{
 			if(reason == Reason.RECEIVED_NEW_TRACK || reason == Reason.TRACK_LOADED)
 				scrollToPlayed(playingCurrent);
+		}
+	}
+	
+	private class UpdateListener implements ComponentListener
+	{
+		@Override
+		public void componentHidden(ComponentEvent e)
+		{
+			renderer.enableRepaint();
+		}
+
+		@Override
+		public void componentMoved(ComponentEvent e)
+		{
+			renderer.enableRepaint();
+		}
+
+		@Override
+		public void componentResized(ComponentEvent e)
+		{
+			renderer.enableRepaint();
+		}
+
+		@Override
+		public void componentShown(ComponentEvent e)
+		{
+			renderer.enableRepaint();
 		}
 	}
 }
