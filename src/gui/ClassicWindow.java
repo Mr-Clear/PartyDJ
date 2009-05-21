@@ -46,52 +46,56 @@ public class ClassicWindow extends JFrame
 	private Container gcp = getContentPane();
 	private PDJSlider slider;
 	private JSlider volume;
-	private ClassicWindow classicWindow;
+	private ClassicWindow classicWindow = this;
 	private JButton buttonPause;
 	
 	public ClassicWindow()
 	{
 		super("Party DJ");
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/p32.gif"));
-		classicWindow = this;
-		assert Controller.getInstance() != null : "Controller nicht geladen!";
-		player.addPlayStateListener(new PlayState());
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+				setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/p32.gif"));
+				assert Controller.getInstance() != null : "Controller nicht geladen!";
+				player.addPlayStateListener(new PlayState());
 
-		GridBagConstraints con = new GridBagConstraints();
-		GridBagLayout layout = new GridBagLayout();
-		
-		setLayout(layout);
-		con.anchor = GridBagConstraints.NORTHWEST;
-		con.insets = new Insets(0, 0, 0, 0);
-		con.fill = GridBagConstraints.BOTH;
-		
-		manageSize();
-		
-		gcp.setBackground(Color.darkGray);
-		
-		con.gridx = 0;
-		con.gridy = 0;
-		con.weightx = 0.0;
-		con.weighty = 0.0;
-		con.ipadx = GridBagConstraints.REMAINDER;
-		con.ipady = 22;
-		add(Control(), con);
+				GridBagConstraints con = new GridBagConstraints();
+				GridBagLayout layout = new GridBagLayout();
+				
+				setLayout(layout);
+				con.anchor = GridBagConstraints.NORTHWEST;
+				con.insets = new Insets(0, 0, 0, 0);
+				con.fill = GridBagConstraints.BOTH;
+				
+				manageSize();
+				
+				gcp.setBackground(Color.darkGray);
+				
+				con.gridx = 0;
+				con.gridy = 0;
+				con.weightx = 0.0;
+				con.weighty = 0.0;
+				con.ipadx = GridBagConstraints.REMAINDER;
+				con.ipady = 22;
+				add(control(), con);
 
-		con.gridx = 0;
-		con.gridy = 1;
-		con.weightx = 1.0;
-		con.weighty = 1.0;
-		add(MainPart(), con);
+				con.gridx = 0;
+				con.gridy = 1;
+				con.weightx = 1.0;
+				con.weighty = 1.0;
+				add(mainPart(), con);
 
-		setVisible(true);
+				setVisible(true);
+			}});
 	}
 
 	/**
 	 * Lautstärkeregler, Fortschrittsbalken und Buttons werden zu einer Kontrolleinheit zusammengefügt.
 	 * @return JPanel mit GridBagLayout, welches alle Steuerungen enthält.
 	 */
-	private Component Control()
+	private Component control()
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel control = new JPanel(new GridBagLayout());
@@ -106,19 +110,19 @@ public class ClassicWindow extends JFrame
 		c.ipadx = 10;
 		c.gridx = 0;
 		c.gridy = 0;
-		control.add(Buttons(), c);
+		control.add(buttons(), c);
 		
 		c.weightx = 0.0;
 		c.weighty = 0.0;
 		c.ipadx = 50;
 		c.gridx = 1;
-		control.add(Volume(), c);
+		control.add(volume(), c);
 		
 		c.weightx = 1.0;
 		c.weighty = 0.0;
 		c.ipadx = 500;
 		c.gridx = 2;
-		control.add(Slider(), c);
+		control.add(slider(), c);
 				
 		return control;
 	}
@@ -127,7 +131,7 @@ public class ClassicWindow extends JFrame
 	 * Alle Listen und die Suche werden zu einer Einheit zusammengefügt.
 	 * @return JPanel mit GridBagLayout, welches alle Listen und die Suche enthält.
 	 */
-	private Component MainPart()
+	private Component mainPart()
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel mainPart = new JPanel(new GridBagLayout());	
@@ -140,13 +144,13 @@ public class ClassicWindow extends JFrame
 		
 		mainPart.setBackground(Color.darkGray);
 
-		mainPart.add(List("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
+		mainPart.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
 
 		
 		c.gridy = 1;
 		try
 		{
-			mainPart.add(List("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
+			mainPart.add(list("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
 		}
 		catch (ListException e1)
 		{
@@ -158,7 +162,7 @@ public class ClassicWindow extends JFrame
 		c.gridy = 0;
 		try
 		{
-			mainPart.add(List("Wunschliste", listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
+			mainPart.add(list("Wunschliste", listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
 		}
 		catch (ListException e)
 		{
@@ -167,7 +171,7 @@ public class ClassicWindow extends JFrame
 		}
 
 		c.gridy = 1;
-		mainPart.add(Search(), c);
+		mainPart.add(search(), c);
 		
 		return mainPart;
 	}
@@ -176,7 +180,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt die Buttons und ordnet sie mit einem GridBagLayout an.
 	 * @return JPanel mit GridBagLayout, welches alle Buttons enthält.
 	 */
-	private JPanel Buttons()
+	private JPanel buttons()
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -292,7 +296,7 @@ public class ClassicWindow extends JFrame
 	 * @param title der Liste, Liste, DropMode
 	 * @return JPanel mit GridBagLayout, welches die Liste und Titel enthält.
 	 */
-	private Component List(String title, TrackListModel l, ListDropMode ldMode)
+	private Component list(String title, TrackListModel l, ListDropMode ldMode)
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -332,7 +336,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt eine Suchfunktion mit Ergebnisausgabe.
 	 * @return	JPanel mit GridBagLayout, welches das Suchfeld und die Ergebnisliste beinhaltet.
 	 */
-	private Component Search()
+	private Component search()
 	{
 		final JTextField textField = new JTextField();												// final damit die innere Klasse
 		final PDJList searchList = new PDJList(new SearchListModel(), ListDropMode.NONE, "Search");	// darauf zugreifen kann.
@@ -405,7 +409,7 @@ public class ClassicWindow extends JFrame
 	/**Erzeugt den Fortschrittsbalken.
 	 * @return JPanel mit GridBagLayout, welches den Titel und Slider beinhaltet.
 	 */
-	private Component Slider()
+	private Component slider()
 	{
 		try
 		{
@@ -434,7 +438,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt den Lautstärkeregler.
 	 * @return	JPanel mit GridBagLayout, welches den Lautstärkeregler beinhaltet.
 	 */
-	private Component Volume()
+	private Component volume()
 	{
 		volume = new JSlider(JSlider.VERTICAL, 0, 100, player.getVolume());
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -458,9 +462,15 @@ public class ClassicWindow extends JFrame
 		return panel;
 	}
 	
-	public void setVolume(int vol)
+	public void setVolume(final int vol)
 	{
-		volume.setValue(vol);
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run()
+			{
+				volume.setValue(vol);
+			}});
 	}
 	
 	
@@ -484,47 +494,53 @@ public class ClassicWindow extends JFrame
 	
 	private void manageSize()
 	{
-		try
-		{
-			setSize(Integer.parseInt(data.readSetting("ClassicWindowWidth", "800")), Integer.parseInt(data.readSetting("ClassicWindowHeight", "600")));
-		}
-		catch (NumberFormatException e1)
-		{
-			setSize(800, 600);
-		}
-		catch (SettingException e1)
-		{
-			setSize(800, 600);
-		}
-		
-		try
-		{
-			setExtendedState(Integer.parseInt(data.readSetting("ClassicWindowState", Integer.toString(MAXIMIZED_BOTH))));
-		}
-		catch (NumberFormatException e)
-		{
-			setExtendedState(MAXIMIZED_BOTH);
-		}
-		catch (SettingException e)
-		{
-			setExtendedState(MAXIMIZED_BOTH);
-		}
-		
-		this.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
-		
-		addWindowStateListener(new WindowStateListener(){
-			public void windowStateChanged(WindowEvent evt)
-	        {
-	            resize();
-	        }});
-		
-		getContentPane().addComponentListener(new ComponentAdapter(){  
-	        public void componentResized(ComponentEvent evt) 
-	        {
-	            resize();
-	        }});
-	
-		resize();
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run()
+			{
+				try
+				{
+					setSize(Integer.parseInt(data.readSetting("ClassicWindowWidth", "800")), Integer.parseInt(data.readSetting("ClassicWindowHeight", "600")));
+				}
+				catch (NumberFormatException e1)
+				{
+					setSize(800, 600);
+				}
+				catch (SettingException e1)
+				{
+					setSize(800, 600);
+				}
+				
+				try
+				{
+					setExtendedState(Integer.parseInt(data.readSetting("ClassicWindowState", Integer.toString(MAXIMIZED_BOTH))));
+				}
+				catch (NumberFormatException e)
+				{
+					setExtendedState(MAXIMIZED_BOTH);
+				}
+				catch (SettingException e)
+				{
+					setExtendedState(MAXIMIZED_BOTH);
+				}
+				
+				classicWindow.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
+				
+				addWindowStateListener(new WindowStateListener(){
+					public void windowStateChanged(WindowEvent evt)
+			        {
+			            resize();
+			        }});
+				
+				getContentPane().addComponentListener(new ComponentAdapter(){  
+			        public void componentResized(ComponentEvent evt) 
+			        {
+			            resize();
+			        }});
+			
+				resize();
+			}});
 	}
 	
 	/** Wird aufgerufen wenn sich die Größe des Fensters ändert.*/
@@ -550,20 +566,32 @@ public class ClassicWindow extends JFrame
 	{
 		public int duration;
 		
-		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+		public void currentTrackChanged(Track playedLast, final Track playingCurrent, Reason reason)
 		{
-			if(playingCurrent != null)
-				classicWindow.setTitle(playingCurrent.name + "   -   PartyDJ");
-			else
-				classicWindow.setTitle("PartyDJ");
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					if(playingCurrent != null)
+						classicWindow.setTitle(playingCurrent.name + "   -   PartyDJ");
+					else
+						classicWindow.setTitle("PartyDJ");
+				}});
+			
 		}
 
-		public void playStateChanged(boolean playState)
+		public void playStateChanged(final boolean playState)
 		{
-			if(playState)
-				buttonPause.setIcon(new ImageIcon("Resources/Pause.png"));
-			else
-				buttonPause.setIcon(new ImageIcon("Resources/Resume.png"));
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					if(playState)
+						buttonPause.setIcon(new ImageIcon("Resources/Pause.png"));
+					else
+						buttonPause.setIcon(new ImageIcon("Resources/Resume.png"));
+				}});
+			
 		}
 
 		public void volumeChanged(int vol)
@@ -587,22 +615,22 @@ public class ClassicWindow extends JFrame
 		}
 
 		@Override
-		public void volumeChanged(int volume)
+		public void volumeChanged(final int volume)
 		{
-			classicWindow.volume.setValue(volume);
+			SwingUtilities.invokeLater(new Runnable(){
+				@Override
+				public void run()
+				{
+					classicWindow.volume.setValue(volume);
+				}});
+			
 		}
 
 		@Override
-		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
-		{
-			//System.out.println(reason);
-		}
+		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason){}
 
 		@Override
-		public void playStateChanged(boolean playState)
-		{
-			//System.out.println(playState);
-		}
+		public void playStateChanged(boolean playState){}
 	}
 }
 

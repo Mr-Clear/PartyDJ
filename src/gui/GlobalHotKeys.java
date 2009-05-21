@@ -19,7 +19,6 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 		actionKeys.put(JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK, "next");
 		actionKeys.put(JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK, "prev");
 		actionKeys.put(JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE, "play");
-		
 	}
 	
 	public static GlobalHotKeys getInstance()

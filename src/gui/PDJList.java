@@ -55,18 +55,24 @@ public class PDJList extends JList
 		initialise(ldMode, null);
 	}
 	
-	public PDJList(TrackListModel listModel, ListDropMode ldMode, String name)
+	public PDJList(TrackListModel listModel, final ListDropMode ldMode, final String name)
 	{
 		super(listModel);
 		this.listModel = listModel;
-		initialise(ldMode, name);
+		SwingUtilities.invokeLater(new Runnable(){
+
+			@Override
+			public void run()
+			{
+				initialise(ldMode, name);
+			}});
+		
 	}
 	
 	private void initialise(ListDropMode ldMode, String name)
 	{
 		final DragDropHandler handler = new DragDropHandler();
 
-		this.setIgnoreRepaint(true);
 		this.setAutoscrolls(false);
 		this.setName(name);
 		this.setListDropMode(ldMode);
@@ -243,63 +249,68 @@ public class PDJList extends JList
 		private int index;
 		
 		@Override
-		public void mouseDragged(MouseEvent dge)
+		public void mouseDragged(final MouseEvent dge)
 		{	
 			if(SwingUtilities.isMiddleMouseButton(dge))
 			{
-				if(dge.getComponent() instanceof PDJList)
-				{
-					PDJList pdjList = ((PDJList)dge.getComponent());
-					listSize = pdjList.getModel().getSize();
-					index = dge.getY() / pdjList.getFixedCellHeight();
-					
-					if(index > pdjList.getLastVisibleIndex())
-						index = pdjList.getLastVisibleIndex();
-					
-					if(index >= 0)
+				SwingUtilities.invokeLater(new Runnable(){
+					@Override
+					public void run()
 					{
-						if(count == 0)
+						if(dge.getComponent() instanceof PDJList)
 						{
-							if(index > listSize)
-								startIndex = listSize - 1;
+							PDJList pdjList = ((PDJList)dge.getComponent());
+							listSize = pdjList.getModel().getSize();
+							index = dge.getY() / pdjList.getFixedCellHeight();
 							
-							else
-								startIndex = index;
-						}
-						
-						pdjList.ensureIndexIsVisible(index);
-						
-						if(index == startIndex)
-							pdjList.setSelectedIndex(index);
-						
-						if(startIndex < index)
-						{
-							pdjList.setSelectionInterval(index, startIndex);
-							pdjList.ensureIndexIsVisible(index + 2);
-						}
-						
-						if(index < startIndex)
-						{
-							pdjList.setSelectionInterval(startIndex, index);
-							pdjList.ensureIndexIsVisible(index - 2);
-						}
-					}
-					
-					if(index < 0)
-					{
-						if(count == 0)
-						{
-							startIndex = 0;
-						}
-						
-						if(startIndex > index)
-						{
-							pdjList.setSelectionInterval(startIndex, 0);
-							pdjList.ensureIndexIsVisible(0);
-						}
-					}
-				}	
-				count++;
+							if(index > pdjList.getLastVisibleIndex())
+								index = pdjList.getLastVisibleIndex();
+							
+							if(index >= 0)
+							{
+								if(count == 0)
+								{
+									if(index > listSize)
+										startIndex = listSize - 1;
+									
+									else
+										startIndex = index;
+								}
+								
+								pdjList.ensureIndexIsVisible(index);
+								
+								if(index == startIndex)
+									pdjList.setSelectedIndex(index);
+								
+								if(startIndex < index)
+								{
+									pdjList.setSelectionInterval(index, startIndex);
+									pdjList.ensureIndexIsVisible(index + 2);
+								}
+								
+								if(index < startIndex)
+								{
+									pdjList.setSelectionInterval(startIndex, index);
+									pdjList.ensureIndexIsVisible(index - 2);
+								}
+							}
+							
+							if(index < 0)
+							{
+								if(count == 0)
+								{
+									startIndex = 0;
+								}
+								
+								if(startIndex > index)
+								{
+									pdjList.setSelectionInterval(startIndex, 0);
+									pdjList.ensureIndexIsVisible(0);
+								}
+							}
+						}	
+						count++;
+					}});
 			}
 		}
 	}
@@ -307,9 +318,9 @@ public class PDJList extends JList
 	private class ClickListener extends MouseAdapter
 	{
 		@Override
-		public void mouseClicked(MouseEvent e)
+		public void mouseClicked(final MouseEvent e)
 		{
-			PDJList list;
+			final PDJList list;
 			if(!(e.getSource() instanceof PDJList))
 				return;
 			list = (PDJList)e.getSource();
@@ -321,36 +332,41 @@ public class PDJList extends JList
 				{
 					synchronized(list)
 					{
-						try
-						{
-							if(e.getY() / list.getFixedCellHeight() <= list.getLastVisibleIndex())
+						SwingUtilities.invokeLater(new Runnable(){
+							@Override
+							public void run()
 							{
-								if(list.getSelectedIndex() == -1)
+								try
 								{
-									list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
-								}
-
-								for(int i = list.getSelectedIndices().length; i > 0; i--)
-								{
-									if((int)(e.getY() / list.getFixedCellHeight()) == list.getSelectedIndices()[i-1])
+									if(e.getY() / list.getFixedCellHeight() <= list.getLastVisibleIndex())
 									{
-										if(list.getSelectedValue() != null)
+										if(list.getSelectedIndex() == -1)
 										{
-											PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
-											return;
+											list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
 										}
+
+										for(int i = list.getSelectedIndices().length; i > 0; i--)
+										{
+											if((int)(e.getY() / list.getFixedCellHeight()) == list.getSelectedIndices()[i-1])
+											{
+												if(list.getSelectedValue() != null)
+												{
+													PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
+													return;
+												}
+											}
+										}
+										list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+										PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
 									}
+									else
+										PopupMenuGenerator.listPopupMenu(list, null).show(list, e.getX(), e.getY());
 								}
-								list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
-								PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
-							}
-							else
-								PopupMenuGenerator.listPopupMenu(list, null).show(list, e.getX(), e.getY());
-						}
-						catch (IndexOutOfBoundsException ex)
-						{
-							return;
-						}
+								catch (IndexOutOfBoundsException ex)
+								{
+									return;
+								}
+							}});
 					}
 				}
 				
@@ -387,13 +403,19 @@ public class PDJList extends JList
 		}	
 		
 		@Override
-		public void mousePressed(MouseEvent e)
+		public void mousePressed(final MouseEvent e)
 		{
 			if(e.getComponent() instanceof PDJList)
 			{
-				PDJList list = (PDJList) e.getComponent();
-				if(list.getSelectedIndices().length == 0)
-					list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+				SwingUtilities.invokeLater(new Runnable(){
+					@Override
+					public void run()
+					{
+						PDJList list = (PDJList) e.getComponent();
+						if(list.getSelectedIndices().length == 0)
+							list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+					}});
+				
 			}
 		}
 	}
@@ -402,7 +424,7 @@ public class PDJList extends JList
 	{
 		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
-			if(reason == Reason.RECEIVED_NEW_TRACK)
+			if(reason == Reason.RECEIVED_NEW_TRACK || reason == Reason.TRACK_LOADED)
 				scrollToPlayed(playingCurrent);
 		}
 	}
