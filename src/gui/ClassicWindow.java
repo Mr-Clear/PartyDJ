@@ -120,32 +120,82 @@ public class ClassicWindow extends JFrame
 	 */
 	private Component control()
 	{
-		GridBagConstraints c = new GridBagConstraints();
-		JPanel control = new JPanel(new GridBagLayout());
-				
-		c.insets = new Insets(0, 5, 0, 5);
-		c.anchor = GridBagConstraints.WEST;
-		c.fill = GridBagConstraints.BOTH;
-		control.setBackground(Color.darkGray);	
+		final JPanel control = new JPanel(new GridBagLayout());
 		
-		c.weightx = 0.0;
-		c.weighty = 0.0;
-		c.ipadx = 10;
-		c.gridx = 0;
-		c.gridy = 0;
-		control.add(buttons(), c);
+		if(SwingUtilities.isEventDispatchThread())
+		{
+			GridBagConstraints c = new GridBagConstraints();
+					
+			c.insets = new Insets(0, 5, 0, 5);
+			c.anchor = GridBagConstraints.WEST;
+			c.fill = GridBagConstraints.BOTH;
+			control.setBackground(Color.darkGray);	
+			
+			c.weightx = 0.0;
+			c.weighty = 0.0;
+			c.ipadx = 10;
+			c.gridx = 0;
+			c.gridy = 0;
+			control.add(buttons(), c);
+			
+			c.weightx = 0.0;
+			c.weighty = 0.0;
+			c.ipadx = 50;
+			c.gridx = 1;
+			control.add(volume(), c);
+			
+			c.weightx = 1.0;
+			c.weighty = 0.0;
+			c.ipadx = 500;
+			c.gridx = 2;
+			control.add(slider(), c);
+		}
+		else
+			try
+			{
+				SwingUtilities.invokeAndWait(new Runnable(){
+
+					@Override
+					public void run()
+					{
+						GridBagConstraints c = new GridBagConstraints();
+						
+						c.insets = new Insets(0, 5, 0, 5);
+						c.anchor = GridBagConstraints.WEST;
+						c.fill = GridBagConstraints.BOTH;
+						control.setBackground(Color.darkGray);	
+						
+						c.weightx = 0.0;
+						c.weighty = 0.0;
+						c.ipadx = 10;
+						c.gridx = 0;
+						c.gridy = 0;
+						control.add(buttons(), c);
+						
+						c.weightx = 0.0;
+						c.weighty = 0.0;
+						c.ipadx = 50;
+						c.gridx = 1;
+						control.add(volume(), c);
+						
+						c.weightx = 1.0;
+						c.weighty = 0.0;
+						c.ipadx = 500;
+						c.gridx = 2;
+						control.add(slider(), c);
+					}});
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (InvocationTargetException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
-		c.weightx = 0.0;
-		c.weighty = 0.0;
-		c.ipadx = 50;
-		c.gridx = 1;
-		control.add(volume(), c);
-		
-		c.weightx = 1.0;
-		c.weighty = 0.0;
-		c.ipadx = 500;
-		c.gridx = 2;
-		control.add(slider(), c);
 				
 		return control;
 	}
@@ -158,7 +208,7 @@ public class ClassicWindow extends JFrame
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel mainPart = new JPanel(new GridBagLayout());	
-				
+			
 		c.insets = new Insets(0, 3, 3, 3);;
 		c.fill = GridBagConstraints.BOTH;
 		
@@ -374,7 +424,7 @@ public class ClassicWindow extends JFrame
 		GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(8, 0, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
-		textField.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
+		textField.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setAutoscrolls(false);
 		
 		panel.setBackground(Color.darkGray);

@@ -5,10 +5,6 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
@@ -16,7 +12,9 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import basics.Controller;
 import com.melloware.jintellitype.JIntellitype;
+import data.IData;
 
 /**KeyStrokeManager kümmert sich um globale und VM spezifische KeyEvents, unabhängig von Komponenten.
  * 
@@ -29,20 +27,11 @@ public class KeyStrokeManager extends EventQueue
 	private final InputMap keys = new InputMap();
 	private final ActionMap actions = new ActionMap();
 	private List<Integer> regKeys = new ArrayList<Integer>();
-	static PrintWriter pw;
+	protected IData data = Controller.getInstance().getData();
 
 	static
 	{
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(instance);
-		try
-		{
-			pw = new PrintWriter(new FileOutputStream(System.getProperty("user.home") + "\\Desktop" + "\\IncomingEvents.txt"));
-		}
-		catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	public void initHotKeys()
@@ -80,17 +69,10 @@ public class KeyStrokeManager extends EventQueue
 	{
 		super.dispatchEvent(event);
 		
-		if(!(event instanceof MouseEvent))
-		{
-			pw.write(event + "\n\n");
-			pw.flush();
-		}
-		
 		if(event instanceof KeyEvent)
 		{
 			if(event.getSource() instanceof JTextField)
 			{
-				super.dispatchEvent(event);
 				return;
 			}
 				
@@ -128,8 +110,8 @@ public class KeyStrokeManager extends EventQueue
 	public synchronized void enableHotKey(int modifier, int keyCode)
 	{
 		int id = (String.valueOf(keyCode) + (char)0 + modifier).hashCode();
-
 		JIntellitype.getInstance().registerHotKey(id, modifier, keyCode);
+		
 		regKeys.add(id);
 	}
 	

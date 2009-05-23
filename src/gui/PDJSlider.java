@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -53,111 +54,226 @@ public class PDJSlider extends JPanel
 	
 	public PDJSlider()
 	{
+		if(SwingUtilities.isEventDispatchThread())
+		{
+			GridBagConstraints c = new GridBagConstraints();
+			me.setLayout(new GridBagLayout());
+			Box vBox = Box.createVerticalBox();
+			
+			me.setBackground(Color.darkGray);
 
-		SwingUtilities.invokeLater(new Runnable(){
-			@Override
-			public void run()
+			titel.setBackground(Color.darkGray);
+			titel.setForeground(Color.green);
+			titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, 26));
+			
+			slider.setBackground(Color.darkGray);
+			
+			start.setForeground(Color.green);
+			middle.setForeground(Color.green);
+			end.setForeground(Color.green);
+			start.setFont(new Font(start.getFont().getName(), Font.BOLD, 12)); 
+			middle.setFont(new Font(middle.getFont().getName(), Font.BOLD, 12)); 
+			end.setFont(new Font(end.getFont().getName(), Font.BOLD, 12)); 
+			
+			middle.setVisible(true);
+			end.setVisible(true);
+			start.setVisible(true);
+			
+			Box hBox = Box.createHorizontalBox();
+			hBox.add(titel);
+			hBox.add(Box.createHorizontalGlue());
+			vBox.add(hBox);
+			vBox.add(Box.createVerticalStrut(8));
+			vBox.add(slider);
+			vBox.add(Box.createVerticalStrut(4));
+			hBox = Box.createHorizontalBox();
+			hBox.add(start);
+			hBox.add(Box.createHorizontalGlue());
+			hBox.add(middle);
+			hBox.add(Box.createHorizontalGlue());
+			hBox.add(end);
+			vBox.add(hBox);
+			
+			c.fill = GridBagConstraints.BOTH;
+			c.weightx = 1.0;
+			me.add(vBox, c);
+			
+
+			refreshTimer = new Timer(0, new ActionListener()
 			{
-				GridBagConstraints c = new GridBagConstraints();
-				me.setLayout(new GridBagLayout());
-				Box vBox = Box.createVerticalBox();
-				
-				me.setBackground(Color.darkGray);
-
-				titel.setBackground(Color.darkGray);
-				titel.setForeground(Color.green);
-				titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, 26));
-				
-				slider.setBackground(Color.darkGray);
-				
-				start.setForeground(Color.green);
-				middle.setForeground(Color.green);
-				end.setForeground(Color.green);
-				start.setFont(new Font(start.getFont().getName(), Font.BOLD, 12)); 
-				middle.setFont(new Font(middle.getFont().getName(), Font.BOLD, 12)); 
-				end.setFont(new Font(end.getFont().getName(), Font.BOLD, 12)); 
-				
-				middle.setVisible(true);
-				end.setVisible(true);
-				start.setVisible(true);
-				
-				Box hBox = Box.createHorizontalBox();
-				hBox.add(titel);
-				hBox.add(Box.createHorizontalGlue());
-				vBox.add(hBox);
-				vBox.add(Box.createVerticalStrut(8));
-				vBox.add(slider);
-				vBox.add(Box.createVerticalStrut(4));
-				hBox = Box.createHorizontalBox();
-				hBox.add(start);
-				hBox.add(Box.createHorizontalGlue());
-				hBox.add(middle);
-				hBox.add(Box.createHorizontalGlue());
-				hBox.add(end);
-				vBox.add(hBox);
-				
-				c.fill = GridBagConstraints.BOTH;
-				c.weightx = 1.0;
-				me.add(vBox, c);
-				
-
-				refreshTimer = new Timer(0, new ActionListener()
+				public void actionPerformed(ActionEvent evt)
 				{
-					public void actionPerformed(ActionEvent evt)
-					{
-						setPosition(player.getPosition());
-					}
-				});
-				
-				refreshTimer.setDelay(40);
-				
-				player.addPlayStateListener(new PlayStateAdapter(){
-							public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
-							{
-								if(playingCurrent != null)
-								{
-									if(currentTrack != playingCurrent)
-									{
-										currentTrack = playingCurrent;
-										titel.setText(playingCurrent.name);
-										setDuration(playingCurrent.duration);
-									}
-								}
-								else
-								{
-									currentTrack = null;
-									titel.setText("Party DJ");
-									setPosition(0);
-									setDuration(0);
-								}
-							}
-							public void playStateChanged(boolean playState)
-							{
-								if(playState)
-									refreshTimer.start();
-								else
-									refreshTimer.stop();
-							}});
-				
-				data.addListListener(new ListAdapter(){
-					public void trackChanged(Track track)
-					{
-						if(track == currentTrack)
+					setPosition(player.getPosition());
+				}
+			});
+			
+			refreshTimer.setDelay(40);
+			
+			player.addPlayStateListener(new PlayStateAdapter(){
+						public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 						{
-							if(duration != track.duration)
+							if(playingCurrent != null)
 							{
-								setDuration(track.duration);
+								if(currentTrack != playingCurrent)
+								{
+									currentTrack = playingCurrent;
+									titel.setText(playingCurrent.name);
+									setDuration(playingCurrent.duration);
+								}
 							}
-							titel.setText(track.name);
-						}			
+							else
+							{
+								currentTrack = null;
+								titel.setText("Party DJ");
+								setPosition(0);
+								setDuration(0);
+							}
+						}
+						public void playStateChanged(boolean playState)
+						{
+							if(playState)
+								refreshTimer.start();
+							else
+								refreshTimer.stop();
+						}});
+			
+			data.addListListener(new ListAdapter(){
+				public void trackChanged(Track track)
+				{
+					if(track == currentTrack)
+					{
+						if(duration != track.duration)
+						{
+							setDuration(track.duration);
+						}
+						titel.setText(track.name);
+					}			
+				}});
+			
+			currentTrack = player.getCurrentTrack();
+			if(currentTrack != null)
+				titel.setText(currentTrack.name);
+			setDuration(player.getDuration());
+			setPosition(player.getPosition());
+		}
+		else
+			try
+			{
+				SwingUtilities.invokeAndWait(new Runnable(){
+					@Override
+					public void run()
+					{
+						GridBagConstraints c = new GridBagConstraints();
+						me.setLayout(new GridBagLayout());
+						Box vBox = Box.createVerticalBox();
+						
+						me.setBackground(Color.darkGray);
+
+						titel.setBackground(Color.darkGray);
+						titel.setForeground(Color.green);
+						titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, 26));
+						
+						slider.setBackground(Color.darkGray);
+						
+						start.setForeground(Color.green);
+						middle.setForeground(Color.green);
+						end.setForeground(Color.green);
+						start.setFont(new Font(start.getFont().getName(), Font.BOLD, 12)); 
+						middle.setFont(new Font(middle.getFont().getName(), Font.BOLD, 12)); 
+						end.setFont(new Font(end.getFont().getName(), Font.BOLD, 12)); 
+						
+						middle.setVisible(true);
+						end.setVisible(true);
+						start.setVisible(true);
+						
+						Box hBox = Box.createHorizontalBox();
+						hBox.add(titel);
+						hBox.add(Box.createHorizontalGlue());
+						vBox.add(hBox);
+						vBox.add(Box.createVerticalStrut(8));
+						vBox.add(slider);
+						vBox.add(Box.createVerticalStrut(4));
+						hBox = Box.createHorizontalBox();
+						hBox.add(start);
+						hBox.add(Box.createHorizontalGlue());
+						hBox.add(middle);
+						hBox.add(Box.createHorizontalGlue());
+						hBox.add(end);
+						vBox.add(hBox);
+						
+						c.fill = GridBagConstraints.BOTH;
+						c.weightx = 1.0;
+						me.add(vBox, c);
+						
+
+						refreshTimer = new Timer(0, new ActionListener()
+						{
+							public void actionPerformed(ActionEvent evt)
+							{
+								setPosition(player.getPosition());
+							}
+						});
+						
+						refreshTimer.setDelay(40);
+						
+						player.addPlayStateListener(new PlayStateAdapter(){
+									public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+									{
+										if(playingCurrent != null)
+										{
+											if(currentTrack != playingCurrent)
+											{
+												currentTrack = playingCurrent;
+												titel.setText(playingCurrent.name);
+												setDuration(playingCurrent.duration);
+											}
+										}
+										else
+										{
+											currentTrack = null;
+											titel.setText("Party DJ");
+											setPosition(0);
+											setDuration(0);
+										}
+									}
+									public void playStateChanged(boolean playState)
+									{
+										if(playState)
+											refreshTimer.start();
+										else
+											refreshTimer.stop();
+									}});
+						
+						data.addListListener(new ListAdapter(){
+							public void trackChanged(Track track)
+							{
+								if(track == currentTrack)
+								{
+									if(duration != track.duration)
+									{
+										setDuration(track.duration);
+									}
+									titel.setText(track.name);
+								}			
+							}});
+						
+						currentTrack = player.getCurrentTrack();
+						if(currentTrack != null)
+							titel.setText(currentTrack.name);
+						setDuration(player.getDuration());
+						setPosition(player.getPosition());
 					}});
-				
-				currentTrack = player.getCurrentTrack();
-				if(currentTrack != null)
-					titel.setText(currentTrack.name);
-				setDuration(player.getDuration());
-				setPosition(player.getPosition());
-			}});
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (InvocationTargetException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	public void setDuration(final double duration)

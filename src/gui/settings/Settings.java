@@ -713,8 +713,9 @@ public class Settings extends JPanel
 	
 	protected class GlobalHotKeySetter implements KeyListener
 	{
-		JTextField[] fields;
-		KeyStrokeManager manager = KeyStrokeManager.getInstance();
+		protected JTextField[] fields;
+		protected KeyStrokeManager manager = KeyStrokeManager.getInstance();
+		protected int chr = 0;
 		
 		public GlobalHotKeySetter(JTextField...txts)
 		{
@@ -722,7 +723,10 @@ public class Settings extends JPanel
 		}
 		
 		@Override
-		public void keyPressed(final KeyEvent e)
+		public void keyPressed(final KeyEvent e){}
+
+		@Override
+		public void keyReleased(final KeyEvent e)
 		{
 			if(!(e.getComponent() instanceof JTextField))
 				return;
@@ -736,30 +740,37 @@ public class Settings extends JPanel
 					manager.enableHotKey(e.getModifiers(), e.getKeyCode());
 					int id = (String.valueOf(e.getKeyCode()) + (char)0 + e.getModifiers()).hashCode();
 					GlobalHotKeys.getInstance().setKeyAction(id, actual.getName());
-					actual.setText(KeyEvent.getKeyText(e.getKeyCode()));
+					if(e.getModifiers() != 0)
+						chr = e.getKeyCode();
+					else
+						if(chr == 0)
+							actual.setText(KeyEvent.getKeyText(e.getKeyCode()));
+						else
+							actual.setText(KeyEvent.getKeyText(e.getKeyCode()) + "  " + KeyEvent.getKeyText(chr));
 					actual.repaint();
 				}});
-			
 		}
 
 		@Override
-		public void keyReleased(KeyEvent e){}
-
-		@Override
-		public void keyTyped(KeyEvent e){}
+		public void keyTyped(final KeyEvent e){}
 	}
 	
 	protected class LocalHotKeySetter implements KeyListener
 	{
-		JTextField[] fields;
-		KeyStrokeManager manager = KeyStrokeManager.getInstance();
+		protected JTextField[] fields;
+		protected KeyStrokeManager manager = KeyStrokeManager.getInstance();
+		protected int chr = 0;
+		
 		public LocalHotKeySetter(JTextField...txts)
 		{
 			fields = txts;
 		}
 		
 		@Override
-		public void keyPressed(final KeyEvent e)
+		public void keyPressed(final KeyEvent e){}
+
+		@Override
+		public void keyReleased(final KeyEvent e)
 		{
 			InputMap iMap = manager.getInputMap();
 			ActionMap aMap = manager.getActionMap();
@@ -814,14 +825,17 @@ public class Settings extends JPanel
 				@Override
 				public void run()
 				{
-					txtField.setText(KeyEvent.getKeyText(e.getKeyCode()));
+					if(e.getModifiers() != 0)
+						chr = e.getKeyCode();
+					else
+						if(chr == 0)
+							txtField.setText(KeyEvent.getKeyText(e.getKeyCode()));
+						else
+							txtField.setText(KeyEvent.getKeyText(e.getKeyCode()) + "  " + KeyEvent.getKeyText(chr));
 					txtField.repaint();
 				}});
-			
 		}
-
-		@Override
-		public void keyReleased(KeyEvent e){}
+		
 		@Override
 		public void keyTyped(KeyEvent e){}
 	}
