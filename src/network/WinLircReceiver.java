@@ -1,16 +1,39 @@
 package network;
+import gui.settings.SettingNode;
 import java.io.*;
 import java.net.*;
+import java.util.*;
 import data.IData;
 import basics.Controller;
 import basics.Plugin;
 
+/**Verbindet sich mit dem Infrarot-Fernsteuerung-Empfänger WinLIRC und verarbeitet empfangene Signale.
+ * <p>
+ * Es darf immer nur eine Instanz dieses Plugins laufen.
+ * 
+ * @author Eraser
+ */
 public class WinLircReceiver implements Plugin
 {
+	protected static WinLircReceiver instance;
 	protected WinLircReceiverThread thread;
 	protected BufferedReader reader;
-	final protected Controller controller = Controller.getInstance();
-	final protected IData data = controller.getData();
+	final static protected Controller controller = Controller.getInstance();
+	final static protected IData data = controller.getData();
+	final protected List<WinLircListener> listeners = new ArrayList<WinLircListener>();
+	
+	static
+	{
+		controller.addSettingNode(new SettingNode("WinLIRC", WinLircReceiverSettings.class), controller.getSetingTree());
+	}
+	
+	public WinLircReceiver()
+	{
+		if(instance == null)
+			instance = this;
+		else
+			controller.logError(Controller.NORMAL_ERROR, this, null, "Es wurde eine weitere Instanz von WinLircReceiver erstellt.");
+	}
 	
 	@Override
 	public String getName()
@@ -27,35 +50,71 @@ public class WinLircReceiver implements Plugin
 	@Override
 	public void start()
 	{
-		thread = new WinLircReceiverThread();
-		thread.start();
+		if(instance == this)
+		{
+			if(!isRunning())
+			{
+				thread = new WinLircReceiverThread();
+				thread.start();
+			}
+			else
+				controller.logError(Controller.UNIMPORTANT_ERROR, this, null, "WinLircReceiver wurde gestartet, obwohl er schon läuft.");
+		}
+		else
+			instance.start();
 	}
 
 	@Override
 	public void stop()
 	{
-		if(isRunning())
-			thread.interrupt();
-		if(reader != null)
-			try
-			{
-				reader.close();
-			}
-			catch (IOException e)
-			{
-				controller.logError(Controller.REGULAR_ERROR, this, e, "Socket.getInputStream() konnte nicht geschlossen werden.");
-			}
+		if(instance == this)
+		{
+			if(isRunning())
+				thread.interrupt();
+			if(reader != null)
+				try
+				{
+					reader.close();
+				}
+				catch (IOException e)
+				{
+					controller.logError(Controller.REGULAR_ERROR, this, e, "Socket.getInputStream() konnte nicht geschlossen werden.");
+				}
+		}
+		else
+			instance.start();
 	}
 	
 	@Override
 	public boolean isRunning()
 	{
-		return thread != null && thread.isAlive();
+		if(instance == this)
+			return thread != null && thread.isAlive();
+		else
+			return instance.isRunning();
+	}
+	
+	public void addWinLircListener(WinLircListener listener)
+	{
+		listeners.add(listener);
+	}
+	
+	public void removeWinLircListener(WinLircListener listener)
+	{
+		listeners.remove(listener);
 	}
 	
 	protected void execute(String[] data)
 	{
-		
+		long keyCode = Long.parseLong(data[0], 16);
+		int repeat = Integer.parseInt(data[1], 16);
+		synchronized (listeners)
+		{
+			for(WinLircListener listener : listeners)
+			{
+				listener.keyPressed(data[3], data[2], repeat, keyCode);
+			}
+		}
 	}
 	
 	protected class WinLircReceiverThread extends Thread
@@ -86,8 +145,7 @@ public class WinLircReceiver implements Plugin
 				controller.logError(Controller.NORMAL_ERROR, this, e, "Vehler bei Verbinden zu WinLIRC.");
 				return;
 			}
-			
-			System.out.println("WL");
+
 			StringBuilder sb = new StringBuilder();
 			while(!isInterrupted())
 			{
@@ -99,7 +157,7 @@ public class WinLircReceiver implements Plugin
 				catch (IOException e)
 				{
 					controller.logError(Controller.NORMAL_ERROR, this, e, "Vehler in Verbindung zu WinLIRC.");
-					return;
+					break;
 				}
 				if(in == -1)
 					break;
@@ -115,5 +173,23 @@ public class WinLircReceiver implements Plugin
 					sb.append((char)in);
 			}
 		}
+	}
+	
+	/** Bekommt Daten von WinLirc */
+	protected interface WinLircListener
+	{
+		/**Eine Taste einer Fernsteuerung wurde gedrückt.
+		 * <br><b>Achtung Threadsave!</b>
+		 * @param remote Der Name der Fernbedienung, von der das Signal empfangen wurde.
+		 * @param key Der Name der gedrückten Taste.
+		 * @param repeat Die Anzahl der Wiederholungen. Sie erhöht sich, wenn man die Taste gedrückt hält.
+		 * @param keyCode Der Code der gedrückten Taste.
+		 */
+		void keyPressed(String remote, String key, int repeat, long keyCode);
+		/**Der Verbindungsstatus zu WinLIRC hat sich geändert.
+		 * <br><b>Achtung Threadsave!</b>
+		 * @param running Neuer Status.
+		 */
+		void statusChanged(boolean running);
 	}
 }
