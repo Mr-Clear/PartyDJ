@@ -16,7 +16,6 @@ import java.util.Timer;
 import java.util.Stack;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.tree.TreeNode;
 import players.IPlayer;
 import players.PlayerException;
 import common.*;
@@ -427,7 +426,7 @@ public class Controller
 		//TODO
 		throw new UnsupportedOperationException();
 	}
-	public TreeNode getSetingTree()
+	public SettingNode getSetingTree()
 	{
 		return settingTree;
 	}
