@@ -1,17 +1,21 @@
 package basics;
 
-/** Plugins werden von dieser Schnittstelle abgeleitet
+/** Plugins werden von dieser Schnittstelle abgeleitet.
+ *  <p>
+ *  Das Plugin sollte nicht im Konstruktor, sondern in der Methode start() gestartet werden.
  * 
- * @author Eraser
+ *  @author Eraser
  */
 public interface Plugin
 {
-	/** Name des Plugins */
+	/** Name des Plugins. */
 	String getName();
-	/** Beschreibung des Plugins */
+	/** Beschreibung des Plugins. */
 	String getDescription();
-	/** Startet das Plugin */
+	/** Startet das Plugin. */
 	void start();
-	/** Beendet das Plugin */
+	/** Beendet das Plugin und gibt alle Ressourcen frei. */
 	void stop();
+	/** Gibt an, ob das Plugin läuft. */
+	boolean isRunning();
 }
