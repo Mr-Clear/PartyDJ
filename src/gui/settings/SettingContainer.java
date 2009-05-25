@@ -2,7 +2,7 @@ package gui.settings;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Panel;
+import javax.swing.JPanel;
 
 /**
  * Nimmt Objekte vom Typ Component auf und zeigt sie im SettingWindow.
@@ -15,7 +15,7 @@ import java.awt.Panel;
  * @see Closeable
  */
 
-public class SettingContainer extends Panel
+public class SettingContainer extends JPanel
 {
 	private static final long serialVersionUID = -7000748047182190615L;
 	public void setSettingComponent(Component component)
