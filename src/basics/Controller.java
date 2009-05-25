@@ -41,11 +41,11 @@ public class Controller
 	public final String version = "3.0.0a";
 	
 	/** Statischer Verweis auf diese Instanz. */
-	private static Controller instance;
+	protected static Controller instance;
 	/** Verbindung zur Datenbank. */
-	private IData data;
+	protected IData data;
 	/** Dieser Thread überwacht ob der PartyDJ geschlossen wird. */
-	private Thread closeListenThread;
+	protected Thread closeListenThread;
 
 	/** Wunschliste aus derimmer der oberste Track gespielt und dabei gelöscht wird. */ 
 	protected EditableListModel playList;
@@ -59,22 +59,23 @@ public class Controller
 	protected Timer trackUpdateTimer; 
 
 	/** Liste aller registrierten CloseListener */ 
-	private final Set<CloseListener> closeListener = new HashSet<CloseListener>();
+	protected final Set<CloseListener> closeListener = new HashSet<CloseListener>();
 	/** Liste aller registrierten Fenster.
 	 *  Wenn die Liste leer wird, schließt sich der PartyDJ. */
-	private final Set<Frame> windows = new HashSet<Frame>();
+	protected final Set<Frame> windows = new HashSet<Frame>();
 	/** RootNode der Einstellungen. Alle Einstellungen haben einen Knoten in diesem Baum. */
-	private final SettingNode settingTree;
+	protected final SettingNode settingTree;
 	/** Stapel mit Liedern deren Dauer eingelesen werden soll. */
-	private Stack<Track> trackUpdateStack = new Stack<Track>();
-
-	
-	private java.io.PrintWriter logStream;
-	
+	protected Stack<Track> trackUpdateStack = new Stack<Track>();
 	/** Wird am Ende des Konstruktors auf true gesetzt. */
-	private boolean loadFinished = false;
+	protected boolean loadFinished = false;
+	protected final Scripter scripter;
 	
-	private Controller(String[] args)
+	
+	protected java.io.PrintWriter logStream;
+	
+	
+	protected Controller(String[] args)
 	{
 		if(instance == null)
 			instance = this;
@@ -194,6 +195,8 @@ public class Controller
 			}
 		}
 
+		scripter = new Scripter();
+		
 		splash.setOpacity(0.95f);
 		splash.setInfo("Lade Fenster");
 		{
@@ -301,6 +304,11 @@ public class Controller
 	public IPlayer getPlayer()
 	{
 		return player;
+	}
+	
+	public Scripter getScripter()
+	{
+		return scripter;
 	}
 	
 	public ListProvider getListProvider()
