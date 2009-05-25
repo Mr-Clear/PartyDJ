@@ -75,6 +75,7 @@ public class WinLircReceiver implements Plugin
 				try
 				{
 					reader.close();
+					reader = null;
 				}
 				catch (IOException e)
 				{
@@ -82,7 +83,7 @@ public class WinLircReceiver implements Plugin
 				}
 		}
 		else
-			instance.start();
+			instance.stop();
 	}
 	
 	@Override
@@ -117,11 +118,23 @@ public class WinLircReceiver implements Plugin
 		}
 	}
 	
+	protected void changeStatus(boolean newStatus)
+	{
+		synchronized (listeners)
+		{
+			for(WinLircListener listener : listeners)
+			{
+				listener.statusChanged(newStatus);
+			}
+		}
+	}
+	
 	protected class WinLircReceiverThread extends Thread
 	{
 		WinLircReceiverThread()
 		{
 			setDaemon(true);
+			setName("WinLIRC Socket reader");
 		}
 		
 		@Override
@@ -130,48 +143,47 @@ public class WinLircReceiver implements Plugin
 			String ip = data.readSetting("WinLIRC-IP", "127.0.0.1");
 		 	int port = Integer.parseInt(data.readSetting("WinLIRC-Port", "8765"));
 		 	
+		 	BufferedReader reader;
 		 	try
 			{
 		 		Socket socket = new Socket(ip,port);
 				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				WinLircReceiver.this.reader = reader;
 			}
 			catch (UnknownHostException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Vehler bei Verbinden zu WinLIRC.");
+				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Verbinden zu WinLIRC.");
 				return;
 			}
 			catch (IOException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Vehler bei Verbinden zu WinLIRC.");
+				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Verbinden zu WinLIRC.");
 				return;
 			}
+			
+			changeStatus(true);
 
-			StringBuilder sb = new StringBuilder();
 			while(!isInterrupted())
 			{
-				int in;
+				String in;
 				try
 				{
-					in = reader.read();
+					in = reader.readLine();
 				}
 				catch (IOException e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, this, e, "Vehler in Verbindung zu WinLIRC.");
+					changeStatus(false);
+					controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler in Verbindung zu WinLIRC.");
 					break;
 				}
-				if(in == -1)
+				if(in == null)
 					break;
-				
-				if(in == '\n')
-				{
-					String[] data = sb.toString().split(" ");
-					if(data.length == 4)
-						execute(data);
-					sb.setLength(0);
-				}
-				else
-					sb.append((char)in);
+
+				String[] data = in.split(" ");
+				if(data.length == 4)
+					execute(data);
 			}
+			changeStatus(false);
 		}
 	}
 	

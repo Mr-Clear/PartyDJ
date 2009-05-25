@@ -2,6 +2,7 @@ package network;
 
 import gui.settings.Closeable;
 import java.awt.Dimension;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +14,14 @@ import javax.swing.event.TableModelEvent;
 import static javax.swing.event.TableModelEvent.*;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.*;
+import data.IData;
+import basics.Controller;
 
 public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLircReceiver.WinLircListener, Closeable
 {
-	protected  static final long serialVersionUID = 8285774262584373492L;
+	protected static final long serialVersionUID = 8285774262584373492L;
+	protected final Controller controller = Controller.getInstance();
+	protected final IData data = controller.getData();
 	protected JTable tablePressedKeys;
 	protected final TablePressedKeysModel tablePressedKeysModel = new TablePressedKeysModel();
 	protected JTable tableKeys;
@@ -38,6 +43,7 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 	{
 		super();
 		initGUI();
+		statusChanged(receiver.isRunning());
 		receiver.addWinLircListener(this);
 	}
 	
@@ -73,7 +79,13 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 		}
 		{
 			txtHost = new JTextField();
-			txtHost.setText("127.0.0.1");
+			txtHost.setText(data.readSetting("WinLIRC-IP", "127.0.0.1"));
+			txtHost.addKeyListener(new KeyAdapter(){
+				@Override
+				public void keyTyped(KeyEvent e)
+				{
+					data.writeSetting("WinLIRC-IP", txtHost.getText());
+				}});
 		}
 		{
 			lblStatus = new JLabel();
@@ -87,14 +99,33 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 		{
 			btnConnect = new JButton();
 			btnConnect.setText("Verbinden");
+			btnConnect.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					receiver.start();
+				}});
 		}
 		{
 			btnDisconnect = new JButton();
 			btnDisconnect.setText("Trennen");
+			btnDisconnect.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					receiver.stop();
+				}});
 		}
 		{
 			btnReset = new JButton();
 			btnReset.setText("Neu Verbinden");
+			btnReset.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					receiver.stop();
+					receiver.start();
+				}});
 		}
 		{
 			lblKeys = new JLabel();
@@ -315,13 +346,25 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 	{
 		protected final Map<String, String> keys = new TreeMap<String, String>();
 		
+		public TableKeysModel()
+		{
+			String[] k = data.readSetting("WinLIRC_known_Keys", "").split(" ");
+			if(k.length % 2 != 0)
+				controller.logError(Controller.NORMAL_ERROR, this, null, "Setting WinLIRC_known_Keys muss eine gerade Anzahl Teilstrings haben.");
+			for(int i = 0; i < k.length; i += 2)
+			{
+				keys.put(k[i] + " " + k[i + 1], null);
+			}
+		}
+		
 		public void addKey(String remote, String key)
 		{
 			String mapKey = remote + " " + key;
 			if(!keys.containsKey(mapKey))
 			{
-				keys.put(mapKey, null);
+				keys.put(mapKey, null);				
 				fireEvent(new TableModelEvent(this, keys.size(), keys.size(), ALL_COLUMNS, INSERT));
+				saveMapKeys();
 			}
 		}
 
@@ -380,6 +423,15 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 		public void setValueAt(Object value, int rowIndex, int columnIndex)
 		{
 			throw new UnsupportedOperationException("Tabelle unterstützt setValueAt nicht.");
+		}
+		
+		protected void saveMapKeys()
+		{
+			StringBuilder sb = new StringBuilder();
+			for(String mapKey : keys.keySet())
+				sb.append(mapKey).append(' ');
+			sb.setLength(sb.length() - 1);
+			data.writeSetting("WinLIRC_known_Keys", sb.toString());
 		}
 	}
 }
