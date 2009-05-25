@@ -30,7 +30,7 @@ public class DerbyDB implements IData, CloseListener
 	final Set<SettingListener> settingListener = new HashSet<SettingListener>();
 	final Set<ListListener> listListener = new HashSet<ListListener>();
 	
-	public final String version = "0.3";
+	public final String version = "0.4";
 	
 	/** Verbindet zur Datenbank.
 	 * 
@@ -89,7 +89,7 @@ public class DerbyDB implements IData, CloseListener
 	/** Erstellt eine neue Datenbank.
 	 *	Wird vom Konstruktor aufgerufen, wenn Datenbank noch nicht existiert.
 	 */
-	private Connection createDb(String Name) throws OpenDbException
+	protected Connection createDb(String Name) throws OpenDbException
 	{
 		String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 		String connectionURL = "jdbc:derby:" + Name + ";create=true";
@@ -110,7 +110,7 @@ public class DerbyDB implements IData, CloseListener
 			conn.setAutoCommit(false);
 			
 			Statement s = conn.createStatement();
-			s.executeUpdate("CREATE TABLE SETTINGS (NAME VARCHAR(32) NOT NULL, VALUE LONG VARCHAR, PRIMARY KEY (NAME))");
+			s.executeUpdate("CREATE TABLE SETTINGS (NAME VARCHAR(64) NOT NULL, VALUE LONG VARCHAR, PRIMARY KEY (NAME))");
 			s.executeUpdate("CREATE INDEX SETTING ON SETTINGS (NAME)");
 			
 			s.executeUpdate("CREATE TABLE FILES (" +

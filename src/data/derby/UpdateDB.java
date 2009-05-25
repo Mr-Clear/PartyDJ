@@ -30,6 +30,8 @@ public class UpdateDB
 				return v0_2ato0_2b(data);
 			if(version.equals("0.2b"))
 				return v0_2bto0_3(data);
+			if(version.equals("0.3"))
+				return v0_3to0_4(data);
 			else
 				return false;
 		}
@@ -121,6 +123,29 @@ public class UpdateDB
 		data.conn.commit();
 		
 		setVersion(data, "0.3");
+		return true;
+	}
+	
+	private static boolean v0_3to0_4(DerbyDB data) throws SettingException, SQLException
+	{
+		final List<String[]> settings = new ArrayList<String[]>();
+		ResultSet rs = data.queryRS("SELECT * FROM SETTINGS");
+		while(rs.next())
+			settings.add(new String[]{rs.getString(1), rs.getString(2)});
+		rs.close();
+		data.conn.commit();
+		
+		data.executeUpdate("DROP TABLE SETTINGS");
+		
+		data.executeUpdate("CREATE TABLE SETTINGS (NAME VARCHAR(64) NOT NULL, VALUE LONG VARCHAR, PRIMARY KEY (NAME))");
+		data.executeUpdate("CREATE INDEX SETTING ON SETTINGS (NAME)");
+		
+		for(String[] setting : settings)
+			data.executeUpdate("INSERT INTO SETTINGS VALUES(?, ?)", setting[0], setting[1]);
+		
+		data.conn.commit();
+		setVersion(data, "0.4");
+		
 		return true;
 	}
 }

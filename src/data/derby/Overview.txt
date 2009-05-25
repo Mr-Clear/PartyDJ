@@ -6,7 +6,7 @@ __ Primary Key
 ? Unique (schließt Not Null ein)
 
 SETTINGS
-    |_NAME_ [String*32]
+    |_NAME_ [String*64]
     VALUE [String]
 
 FILES
