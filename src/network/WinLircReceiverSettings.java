@@ -59,6 +59,7 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				spTablePressedKeys.setViewportView(tablePressedKeys);
 				tablePressedKeys.setModel(tablePressedKeysModel);
 				tablePressedKeys.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+				tablePressedKeys.getColumnModel().getColumn(2).setMaxWidth(25);
 			}
 		}
 		{
@@ -75,6 +76,22 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				tableKeys = new JTable();
 				spTableKeys.setViewportView(tableKeys);
 				tableKeys.setModel(tableKeysModel);
+				tableKeys.getColumnModel().getColumn(3).setMaxWidth(50);
+				
+				JComboBox comboBox = new JComboBox();
+				comboBox.setEditable(true);
+				comboBox.addItem("<Keine>");
+				for(String command : controller.getScripter().getAvailableCommands())
+					comboBox.addItem(command);
+				tableKeys.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
+				
+//				java.awt.Component c = tableKeys;
+//				while(c.getParent() != null)
+//				{
+//					c = c.getParent();
+//					System.out.println(c);
+//				}
+//				System.out.println(c);
 			}
 		}
 		{
@@ -349,12 +366,9 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 		public TableKeysModel()
 		{
 			String[] k = data.readSetting("WinLIRC_known_Keys", "").split(" ");
-			if(k.length % 2 != 0)
-				controller.logError(Controller.NORMAL_ERROR, this, null, "Setting WinLIRC_known_Keys muss eine gerade Anzahl Teilstrings haben.");
-			for(int i = 0; i < k.length; i += 2)
-			{
-				keys.put(k[i] + " " + k[i + 1], null);
-			}
+			if(k.length % 2 == 0)
+				for(int i = 0; i < k.length; i += 2)
+					keys.put(k[i] + " " + k[i + 1], null);
 		}
 		
 		public void addKey(String remote, String key)
@@ -371,13 +385,18 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 		@Override
 		public Class<?> getColumnClass(int columnIndex)
 		{
-			return String.class;
+			if(columnIndex < 3)
+				return String.class;
+			else if(columnIndex == 3)
+				return Boolean.class;
+			else
+				throw new IllegalArgumentException("Tabelle hat nur 3 Spalten.");
 		}
 
 		@Override
 		public int getColumnCount()
 		{
-			return 3;
+			return 4;
 		}
 
 		@Override
@@ -391,6 +410,8 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				return "Taste";
 			case 2:
 				return "Aktion";
+			case 3:
+				return "Einmal";
 			default:
 				throw new IllegalArgumentException("Tabelle hat nur 3 Spalten.");
 			}
@@ -409,20 +430,22 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				return ((String)keys.keySet().toArray()[rowIndex]).split(" ")[columnIndex];
 			else if(columnIndex == 2)
 				return ((String)keys.values().toArray()[rowIndex]);
+			else if(columnIndex == 3)
+				return false;
 			else
-				throw new IllegalArgumentException("Tabelle hat nur 3 Spalten.");
+				throw new IllegalArgumentException("Tabelle hat nur 4 Spalten.");
 		}
 
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex)
 		{
-			return columnIndex == 3;
+			return columnIndex >= 2;
 		}
 
 		@Override
 		public void setValueAt(Object value, int rowIndex, int columnIndex)
 		{
-			throw new UnsupportedOperationException("Tabelle unterstützt setValueAt nicht.");
+			System.out.println("setValueAt(" + value + ", " + rowIndex + ", " + columnIndex + ");");
 		}
 		
 		protected void saveMapKeys()
