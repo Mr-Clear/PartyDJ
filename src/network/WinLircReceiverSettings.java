@@ -92,6 +92,7 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 			txtHost = new JTextField();
 			txtHost.setText(data.readSetting("WinLIRC-IP", "127.0.0.1"));
 			txtHost.addKeyListener(new KeyAdapter(){
+				//TODO Nachdem der Key eingetragen wurde.
 				@Override
 				public void keyTyped(KeyEvent e)
 				{
