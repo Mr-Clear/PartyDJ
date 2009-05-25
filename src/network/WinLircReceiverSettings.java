@@ -14,6 +14,7 @@ import javax.swing.event.TableModelEvent;
 import static javax.swing.event.TableModelEvent.*;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.*;
+import network.WinLircReceiver.KeyAction;
 import data.IData;
 import basics.Controller;
 
@@ -37,7 +38,9 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 	protected JLabel lblStatus;
 	protected JLabel lblHost;
 	protected JLabel lblLastKeys;
-	protected WinLircReceiver receiver = WinLircReceiver.instance;
+	
+	final protected WinLircReceiver receiver = WinLircReceiver.instance;
+	final protected Map<String, KeyAction> keyActions = receiver.keyActions;
 
 	public WinLircReceiverSettings()
 	{
@@ -84,14 +87,6 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				for(String command : controller.getScripter().getAvailableCommands())
 					comboBox.addItem(command);
 				tableKeys.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(comboBox));
-				
-//				java.awt.Component c = tableKeys;
-//				while(c.getParent() != null)
-//				{
-//					c = c.getParent();
-//					System.out.println(c);
-//				}
-//				System.out.println(c);
 			}
 		}
 		{
@@ -141,6 +136,13 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				public void actionPerformed(ActionEvent e)
 				{
 					receiver.stop();
+					long start = System.currentTimeMillis(); 
+					try
+					{
+						while(receiver.isRunning() && System.currentTimeMillis() - start < 1000)
+							Thread.sleep(10);
+					}
+					catch (InterruptedException ignored){}
 					receiver.start();
 				}});
 		}
@@ -428,24 +430,64 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 		{
 			if(columnIndex < 2)
 				return ((String)keys.keySet().toArray()[rowIndex]).split(" ")[columnIndex];
-			else if(columnIndex == 2)
-				return ((String)keys.values().toArray()[rowIndex]);
-			else if(columnIndex == 3)
-				return false;
-			else
-				throw new IllegalArgumentException("Tabelle hat nur 4 Spalten.");
+			else 
+			{
+				String mapKey = getValueAt(rowIndex, 0) + " " + getValueAt(rowIndex, 1);
+				if(columnIndex == 2)
+				{
+					return keyActions.containsKey(mapKey) ? keyActions.get(mapKey).command : null;
+				}
+				else if(columnIndex == 3)
+					return keyActions.containsKey(mapKey) ? !keyActions.get(mapKey).repeat : false;
+				else
+					throw new IllegalArgumentException("Tabelle hat nur 4 Spalten.");
+			}
+		}
+		
+		@Override
+		public void setValueAt(Object value, int rowIndex, int columnIndex)
+		{
+			if(columnIndex != 2 && columnIndex != 3)
+				throw new IllegalArgumentException("Nur Spalten 3 und 4 sind editierbar.");
+
+			String mapKey = getValueAt(rowIndex, 0) + " " + getValueAt(rowIndex, 1);
+			KeyAction action = keyActions.get(mapKey);
+			if(action == null)
+				action = receiver.new KeyAction();
+
+			if(columnIndex == 2)
+			{
+				if(!(value instanceof String))
+					throw new IllegalArgumentException("Spalte 2 nimmt nur Werte vom Typ String auf.");
+				
+				action.command = (String)value;
+				if(action.command != null)
+				{
+					action.command = action.command.trim();
+					if(action.command.length() == 0) action.command = null;
+				}
+				if(action.command == null)
+					keyActions.remove(mapKey);
+				else
+					keyActions.put(mapKey, action);
+				
+				fireEvent(new TableModelEvent(this, rowIndex, rowIndex, 3, UPDATE));
+			}
+			else //(columnIndex == 3)
+			{
+				if(!(value instanceof Boolean))
+					throw new IllegalArgumentException("Spalte 3 nimmt nur Werte vom Typ Boolean auf.");
+				
+				action.repeat = !(Boolean)value;
+				if(action.command != null)
+					keyActions.put(mapKey, action);
+			}
 		}
 
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex)
 		{
 			return columnIndex >= 2;
-		}
-
-		@Override
-		public void setValueAt(Object value, int rowIndex, int columnIndex)
-		{
-			System.out.println("setValueAt(" + value + ", " + rowIndex + ", " + columnIndex + ");");
 		}
 		
 		protected void saveMapKeys()

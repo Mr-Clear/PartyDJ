@@ -21,6 +21,8 @@ public class WinLircReceiver implements Plugin
 	final static protected Controller controller = Controller.getInstance();
 	final static protected IData data = controller.getData();
 	final protected List<WinLircListener> listeners = new ArrayList<WinLircListener>();
+	final protected Map<String, KeyAction> keyActions = new HashMap<String, KeyAction>();
+	protected boolean running;
 	
 	static
 	{
@@ -72,15 +74,37 @@ public class WinLircReceiver implements Plugin
 			if(isRunning())
 				thread.interrupt();
 			if(reader != null)
-				try
-				{
-					reader.close();
-					reader = null;
-				}
-				catch (IOException e)
-				{
-					controller.logError(Controller.REGULAR_ERROR, this, e, "Socket.getInputStream() konnte nicht geschlossen werden.");
-				}
+			{
+				new Thread(){
+					@Override
+					public void run()
+					{
+						try
+						{
+							if(reader != null)
+								reader.close();
+						}
+						catch (IOException e)
+						{
+							controller.logError(Controller.REGULAR_ERROR, this, e, "Socket.getInputStream() konnte nicht geschlossen werden.");
+						}
+					}
+				}.start();
+				
+				new Thread(){
+					@Override
+					public void run()
+					{
+						try
+						{
+							Thread.sleep(100);
+							reader = null;
+							changeStatus(false);
+						}
+						catch (InterruptedException ignored){}
+					}
+				}.start();
+			}
 		}
 		else
 			instance.stop();
@@ -89,10 +113,7 @@ public class WinLircReceiver implements Plugin
 	@Override
 	public boolean isRunning()
 	{
-		if(instance == this)
-			return thread != null && thread.isAlive();
-		else
-			return instance.isRunning();
+		return running;
 	}
 	
 	public void addWinLircListener(WinLircListener listener)
@@ -116,10 +137,15 @@ public class WinLircReceiver implements Plugin
 				listener.keyPressed(data[3], data[2], repeat, keyCode);
 			}
 		}
+		
+		KeyAction action = keyActions.get(data[3] + " " + data[2]);
+		if(action.repeat || repeat == 0)
+			controller.getScripter().executeCommand(action.command);
 	}
 	
 	protected void changeStatus(boolean newStatus)
 	{
+		running = newStatus;
 		synchronized (listeners)
 		{
 			for(WinLircListener listener : listeners)
@@ -163,7 +189,7 @@ public class WinLircReceiver implements Plugin
 			
 			changeStatus(true);
 
-			while(!isInterrupted())
+			while(true)
 			{
 				String in;
 				try
@@ -178,6 +204,9 @@ public class WinLircReceiver implements Plugin
 				}
 				if(in == null)
 					break;
+				
+				if(isInterrupted())
+					return;
 
 				String[] data = in.split(" ");
 				if(data.length == 4)
@@ -203,5 +232,12 @@ public class WinLircReceiver implements Plugin
 		 * @param running Neuer Status.
 		 */
 		void statusChanged(boolean running);
+	}
+	
+	protected class KeyAction
+	{
+		public KeyAction(){}
+		public String command;
+		public boolean repeat;
 	}
 }
