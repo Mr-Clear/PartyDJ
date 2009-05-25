@@ -14,7 +14,6 @@ import javax.swing.event.TableModelEvent;
 import static javax.swing.event.TableModelEvent.*;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.*;
-import network.WinLircReceiver.KeyAction;
 import data.IData;
 import basics.Controller;
 
@@ -40,7 +39,7 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 	protected JLabel lblLastKeys;
 	
 	final protected WinLircReceiver receiver = WinLircReceiver.instance;
-	final protected Map<String, KeyAction> keyActions = receiver.keyActions;
+	final protected Map<String, WinLircReceiverKeyAction> keyActions = receiver.keyActions;
 
 	public WinLircReceiverSettings()
 	{
@@ -451,9 +450,9 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				throw new IllegalArgumentException("Nur Spalten 3 und 4 sind editierbar.");
 
 			String mapKey = getValueAt(rowIndex, 0) + " " + getValueAt(rowIndex, 1);
-			KeyAction action = keyActions.get(mapKey);
+			WinLircReceiverKeyAction action = keyActions.get(mapKey);
 			if(action == null)
-				action = receiver.new KeyAction();
+				action = new WinLircReceiverKeyAction();
 
 			if(columnIndex == 2)
 			{
@@ -463,8 +462,8 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				action.command = (String)value;
 				if(action.command != null)
 				{
-					action.command = action.command.trim();
-					if(action.command.length() == 0) action.command = null;
+					action.command = action.command.trim().replace(' ', '_');
+					if(action.command.length() == 0 || action.command.equalsIgnoreCase("<Keine>")) action.command = null;
 				}
 				if(action.command == null)
 					keyActions.remove(mapKey);

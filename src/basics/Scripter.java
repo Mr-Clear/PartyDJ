@@ -19,6 +19,10 @@ public class Scripter
 			player.stop();
 		else if(command.equalsIgnoreCase("Pause"))
 			player.pause();
+		else if(command.equalsIgnoreCase("PlayPause"))
+			player.playPause();
+		else if(command.equalsIgnoreCase("FadeInOut"))
+			player.fadeInOut();
 		else if(command.equalsIgnoreCase("PlayNext"))
 			player.playNext();
 		else if(command.equalsIgnoreCase("PlayPrevious"))
@@ -29,6 +33,6 @@ public class Scripter
 	
 	public String[] getAvailableCommands()
 	{
-		return new String[]{"Play", "Stop", "Pause", "PlayNext", "PlayPrevious"};
+		return new String[]{"Play", "Stop", "Pause", "PlayPause", "FadeInOut", "PlayNext", "PlayPrevious"};
 	}
 }

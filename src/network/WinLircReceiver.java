@@ -21,7 +21,7 @@ public class WinLircReceiver implements Plugin
 	final static protected Controller controller = Controller.getInstance();
 	final static protected IData data = controller.getData();
 	final protected List<WinLircListener> listeners = new ArrayList<WinLircListener>();
-	final protected Map<String, KeyAction> keyActions = new HashMap<String, KeyAction>();
+	final protected Map<String, WinLircReceiverKeyAction> keyActions = new WinLircReceiverSelfSavingMap();
 	protected boolean running;
 	
 	static
@@ -138,8 +138,9 @@ public class WinLircReceiver implements Plugin
 			}
 		}
 		
-		KeyAction action = keyActions.get(data[3] + " " + data[2]);
-		if(action.repeat || repeat == 0)
+		WinLircReceiverKeyAction action = keyActions.get(data[3] + " " + data[2]);
+
+		if(action != null && (action.repeat || repeat == 0))
 			controller.getScripter().executeCommand(action.command);
 	}
 	
@@ -233,11 +234,6 @@ public class WinLircReceiver implements Plugin
 		 */
 		void statusChanged(boolean running);
 	}
-	
-	protected class KeyAction
-	{
-		public KeyAction(){}
-		public String command;
-		public boolean repeat;
-	}
 }
+
+

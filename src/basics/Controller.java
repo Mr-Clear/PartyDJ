@@ -255,8 +255,15 @@ public class Controller
 
 		splash.setInfo("Lade Zeug");
 		{
-			new network.ClassicUdpReceiver().start();
-			new network.WinLircReceiver().start();
+			try
+			{
+				new network.ClassicUdpReceiver().start();
+				new network.WinLircReceiver().start();
+			}
+			catch(Throwable t)
+			{
+				logError(IMPORTANT_ERROR, this, t, "Plugin laden fehlgeschlagen.");
+			}
 		}
 		
 		splash.setInfo("PartyDJ bereit :)");
@@ -528,7 +535,7 @@ public class Controller
 		if(sender != null)
 		{
 			Class<?> c = sender.getClass();
-			while(c != Object.class)
+			while(c != null)
 			{
 				senderClassString += c.getCanonicalName();
 				c = c.getSuperclass();
