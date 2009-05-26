@@ -58,15 +58,15 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 		if(action == null)
 			return;
 		
-		if(action.equalsIgnoreCase("play"))
+		if(action.equalsIgnoreCase("PLAY_PAUSE"))
 			player.fadeInOut();
-		else if(action.equalsIgnoreCase("next"))
+		else if(action.equalsIgnoreCase("NEXT"))
 			player.playNext();
-		else if(action.equalsIgnoreCase("prev"))
+		else if(action.equalsIgnoreCase("PREVIOUS"))
 			player.playPrevious();
-		else if(action.equalsIgnoreCase("volumeup"))
+		else if(action.equalsIgnoreCase("VOLUME_UP"))
 			player.setVolume(player.getVolume() + 10);
-		else if(action.equalsIgnoreCase("volumedown"))
+		else if(action.equalsIgnoreCase("VOLUME_DOWN"))
 			player.setVolume(player.getVolume() - 10);
 	}
 
