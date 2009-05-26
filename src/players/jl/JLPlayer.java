@@ -200,7 +200,8 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		Track track = contact.requestPreviousTrack();
 		try
 		{
-			start(track, 0);
+			if(track != null)
+				start(track, 0);
 		}
 		catch (PlayerException e)
 		{

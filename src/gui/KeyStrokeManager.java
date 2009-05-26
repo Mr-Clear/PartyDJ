@@ -8,11 +8,13 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import players.IPlayer;
 import basics.Controller;
 import com.melloware.jintellitype.JIntellitype;
 import data.IData;
@@ -29,7 +31,8 @@ public class KeyStrokeManager extends EventQueue
 	protected final ActionMap actions = new ActionMap();
 	protected HashMap<Integer, String> regKeys = new HashMap<Integer, String>();
 	protected final IData data = Controller.getInstance().getData();
-	protected StringBuilder sb = new StringBuilder();
+	protected StringBuilder global = new StringBuilder();
+	protected StringBuilder local = new StringBuilder();
 
 	static
 	{
@@ -50,6 +53,17 @@ public class KeyStrokeManager extends EventQueue
 			{
 				String[] key = k.split("@");
 				enableGlobalHotKey(Integer.valueOf(key[0]), Integer.valueOf(key[1]), key[2], false);
+			}
+		}
+		raw = data.readSetting("LocalHotKeys");
+		if(raw != null)
+		{
+			raw = raw.substring(1);
+			String[] regKeys = raw.split("§");
+			for(String k : regKeys)
+			{
+				String[] key = k.split("@");
+				enableLocalHotKey(Integer.valueOf(key[0]), Integer.valueOf(key[1]), key[2], false);
 			}
 		}
 	}
@@ -126,50 +140,82 @@ public class KeyStrokeManager extends EventQueue
 	
 	public synchronized void enableGlobalHotKey(int modifier, int keyCode, String command, boolean save)
 	{
-		System.out.println(modifier + "   "+ keyCode + "  " + command);
-		
 		JIntellitype.getInstance().registerHotKey(command.hashCode(), modifier, keyCode);
 		GlobalHotKeys.getInstance().setKeyAction(command.hashCode(), command);
 		regKeys.put(command.hashCode(), modifier + "@" + keyCode + "@" + command);
 		
 		if(save)
 		{
-			sb.append("§" + modifier + "@" + keyCode + "@" + command);
-			data.writeSetting("GlobalHotKeys", sb.toString());
+			global.append("§" + modifier + "@" + keyCode + "@" + command);
+			data.writeSetting("GlobalHotKeys", global.toString());
 		}
 	}
 	
 	public synchronized void enableLocalHotKey(int modifier, int keyCode, String command)
 	{
-		enableLocalHotKey(modifier, keyCode, command, false);
+		enableLocalHotKey(modifier, keyCode, command, true);
 	}
 	
-	public synchronized void enableLocalHotKey(int modifier, int keyCode, String command, boolean save)
+	public synchronized void enableLocalHotKey(int modifier, int keyCode, final String command, boolean save)
 	{
-		
+		KeyStroke keyStroke = KeyStroke.getKeyStroke(keyCode, modifier);
+
+		keys.put(keyStroke, command);
+		actions.put(command, new AbstractAction(){
+			
+								private static final long serialVersionUID = 8899350838466037814L;
+								@Override
+								public void actionPerformed(ActionEvent e)
+								{
+									IPlayer p = Controller.getInstance().getPlayer();
+									if(command.equalsIgnoreCase("PLAY_PAUSE"))
+										p.fadeInOut();
+									else if(command.equalsIgnoreCase("STOP"))
+										p.stop();
+									else if(command.equalsIgnoreCase("VOLUME_UP"))
+										p.setVolume(p.getVolume() + 10);
+									else if(command.equalsIgnoreCase("VOLUME_DOWN"))
+										p.setVolume(p.getVolume() - 10);
+									else if(command.equalsIgnoreCase("NEXT"))
+										p.playNext();
+									else if(command.equalsIgnoreCase("PREVIOUS"))
+										p.playPrevious();
+								}});
+		if(save)
+		{
+			local.append("§" + modifier + "@" + keyCode + "@" + command);
+			data.writeSetting("LocalHotKeys", local.toString());
+		}
 	}
 	
 	/**Löscht einen globalen HotKey
 	 * 
 	 * @param id	ID des HotKeys, der gelöscht werden soll. ID ist der HashCode des commands.
 	 */
-	public synchronized void disableHotKey(int id)
+	public synchronized void disableGlobalHotKey(int id)
 	{
 		JIntellitype.getInstance().unregisterHotKey(id);
 		regKeys.remove(id);
 		
 		for(String s : regKeys.values())
 		{
-			sb.append("$" + s);
+			global.append("$" + s);
 		}
-		data.writeSetting("GlobalHotKeys", sb.toString());
+		data.writeSetting("GlobalHotKeys", global.toString());
 	}
 
 	/**
-	 * @return	Liste aller global gesetzten HotKeys
+	 * @return	Liste der ID's aller global gesetzten HotKeys
 	 */
-	public Set<Integer> getHotKeys()
+	public Set<String> getGlobalHotKeys()
 	{
-		return new HashSet<Integer>(regKeys.keySet());
+		return new HashSet<String>(regKeys.values());
+	}
+
+	public void disableLocalHotKeys()
+	{
+		keys.clear();
+		local = new StringBuilder();
+		data.writeSetting("LocalHotKeys", local.toString());
 	}
 }

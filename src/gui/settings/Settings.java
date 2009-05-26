@@ -15,9 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
-import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -38,7 +36,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import players.IPlayer;
 import data.IData;
 import data.ListAdapter;
 import data.SettingListener;
@@ -275,21 +272,21 @@ public class Settings extends JPanel
 		
 		//--Eingeschoben
 		c.gridx = 1;
-		p.add(makeLabel("Lokal:"), c);
+		p.add(new JLabel("Lokal:"), c);
 		c.gridx = 2;
-		p.add(makeLabel("Global:"), c);
+		p.add(new JLabel("Global:"), c);
 		
 		c.gridx = 4;
-		p.add(makeLabel("Lokal:"), c);
+		p.add(new JLabel("Lokal:"), c);
 		c.gridx = 5;
-		p.add(makeLabel("Global:"), c);
+		p.add(new JLabel("Global:"), c);
 		
 		int startX = 0;
 		int startY = 1;
 		
 		c.gridx = 0 + startX;
 		c.gridy = 0 + startY;
-		p.add(makeLabel("Play / Pause:"), c);
+		p.add(new JLabel("Play / Pause:"), c);
 
 		c.gridx = 2 + startX;
 		final JTextField play = new JTextField("NONE          ");
@@ -302,18 +299,18 @@ public class Settings extends JPanel
 		c.gridx = 1 + startX;
 		final JTextField localPlay = new JTextField("NONE          ");
 		localPlay.setName("PLAY_PAUSE");
-		play.setToolTipText("Lokaler HotKey für PLAY");
+		localPlay.setToolTipText("Lokaler HotKey für PLAY");
 		localPlay.setBackground(Color.WHITE);
 		localPlay.setEditable(false);
 		p.add(localPlay, c);
 
 		c.gridx = 3 + startX;
-		p.add(makeLabel("Stop:"), c);
+		p.add(new JLabel("Stop:"), c);
 
 		c.gridx = 5 + startX;
 		final JTextField stop = new JTextField("NONE          ");
 		stop.setName("STOP");
-		play.setToolTipText("Globaler HotKey für STOP");
+		stop.setToolTipText("Globaler HotKey für STOP");
 		stop.setBackground(Color.WHITE);
 		stop.setEditable(false);
 		p.add(stop, c);
@@ -321,19 +318,19 @@ public class Settings extends JPanel
 		c.gridx = 4 + startX;
 		final JTextField localStop = new JTextField("NONE          ");
 		localStop.setName("STOP");
-		play.setToolTipText("Lokaler HotKey für STOP");
+		localStop.setToolTipText("Lokaler HotKey für STOP");
 		localStop.setBackground(Color.WHITE);
 		localStop.setEditable(false);
 		p.add(localStop, c);
 
 		c.gridx = 0 + startX;
 		c.gridy = 1 + startY;
-		p.add(makeLabel("Nächstes Lied:"), c);
+		p.add(new JLabel("Nächstes Lied:"), c);
 
 		c.gridx = 2 + startX;
 		final JTextField next = new JTextField("NONE          ");
 		next.setName("NEXT");
-		play.setToolTipText("Globaler HotKey für NÄCHSTES LIED");
+		next.setToolTipText("Globaler HotKey für NÄCHSTES LIED");
 		next.setBackground(Color.WHITE);
 		next.setEditable(false);
 		p.add(next, c);
@@ -341,19 +338,19 @@ public class Settings extends JPanel
 		c.gridx = 1 + startX;
 		final JTextField localNext = new JTextField("NONE          ");
 		localNext.setName("NEXT");
-		play.setToolTipText("Lokaler HotKey für NÄCHSTES LIED");
+		localNext.setToolTipText("Lokaler HotKey für NÄCHSTES LIED");
 		localNext.setBackground(Color.WHITE);
 		localNext.setEditable(false);
 		p.add(localNext, c);
 
 		c.gridx = 3 + startX;
 		c.gridy = 1 + startY;
-		p.add(makeLabel("Vorheriges Lied:"), c);
+		p.add(new JLabel("Vorheriges Lied:"), c);
 
 		c.gridx = 5 + startX;
 		final JTextField prev = new JTextField("NONE          ");
 		prev.setName("PREVIOUS");
-		play.setToolTipText("Globaler HotKey für VORHERIGES LIED");
+		prev.setToolTipText("Globaler HotKey für VORHERIGES LIED");
 		prev.setBackground(Color.WHITE);
 		prev.setEditable(false);
 		p.add(prev, c);
@@ -361,14 +358,14 @@ public class Settings extends JPanel
 		c.gridx = 4 + startX;
 		final JTextField localPrev = new JTextField("NONE          ");
 		localPrev.setName("PREVIOUS");
-		play.setToolTipText("Lokaler HotKey für VORHERIGES LIED");
+		localPrev.setToolTipText("Lokaler HotKey für VORHERIGES LIED");
 		localPrev.setBackground(Color.WHITE);
 		localPrev.setEditable(false);
 		p.add(localPrev, c);
 
 		c.gridx = 0 + startX;
 		c.gridy = 2 + startY;
-		p.add(makeLabel("Lauter:"), c);
+		p.add(new JLabel("Lauter:"), c);
 		
 		c.gridx = 2 + startX;
 		final JTextField volUp = new JTextField("NONE          ");
@@ -388,7 +385,7 @@ public class Settings extends JPanel
 
 		c.gridx = 3 + startX;
 		c.gridy = 2 + startY;
-		p.add(makeLabel("Leiser:"), c);
+		p.add(new JLabel("Leiser:"), c);
 
 		c.gridx = 5 + startX;
 		final JTextField volDown = new JTextField("NONE          ");
@@ -437,8 +434,10 @@ public class Settings extends JPanel
 								@Override
 								public void actionPerformed(ActionEvent e)
 								{
-									for(Integer cmd : KeyStrokeManager.getInstance().getHotKeys())
-										KeyStrokeManager.getInstance().disableHotKey(cmd);
+									for(String cmd : KeyStrokeManager.getInstance().getGlobalHotKeys())
+									{
+										KeyStrokeManager.getInstance().disableGlobalHotKey(cmd.hashCode());
+									}
 									play.setText("NONE          ");
 									stop.setText("NONE          ");
 									volDown.setText("NONE          ");
@@ -451,7 +450,7 @@ public class Settings extends JPanel
 								@Override
 								public void actionPerformed(ActionEvent e)
 								{
-									KeyStrokeManager.getInstance().getInputMap().clear();
+									KeyStrokeManager.getInstance().disableLocalHotKeys();
 									localPlay.setText("NONE          ");
 									localStop.setText("NONE          ");
 									localVolDown.setText("NONE          ");
@@ -461,6 +460,7 @@ public class Settings extends JPanel
 								}});
 		
 		setGlobalFieldText(play, stop, prev, next, volUp, volDown);
+		setLocalFieldText(localPlay, localStop, localPrev, localNext, localVolUp, localVolDown);
 		
 		return p;
 	}
@@ -486,19 +486,45 @@ public class Settings extends JPanel
 						StringBuilder sb = new StringBuilder();
 						sb.append(represent[0].toUpperCase());
 						sb.append(represent[1]);
-						while(sb.length() < 12)
+						while(sb.length() < 10)
 							sb.append(" ");
 						toSet.setText(sb.toString());
 					}
 				}
-				
 			}
 		}
 	}
 	
-	protected JLabel makeLabel(String text)
+	protected void setLocalFieldText(JTextField...fields)
 	{
-		return new JLabel(text);
+		IData data = Controller.getInstance().getData();
+		JTextField[] txtFields = fields;
+		
+		String raw = data.readSetting("LocalHotKeys");
+		if(raw != null)
+		{
+			if(raw.length() < 1)
+				return;
+			raw = raw.substring(1);
+			String[] regKeys = raw.split("§");
+			for(String k : regKeys)
+			{
+				String[] key = k.split("@");
+				for(JTextField toSet : txtFields)
+				{
+					if(key[2].equalsIgnoreCase(toSet.getName()))
+					{
+						String[] represent = KeyStroke.getKeyStroke(Integer.valueOf(key[1]), Integer.valueOf(key[0])).toString().split("pressed ");
+						StringBuilder sb = new StringBuilder();
+						sb.append(represent[0].toUpperCase());
+						sb.append(represent[1]);
+						while(sb.length() < 10)
+							sb.append(" ");
+						toSet.setText(sb.toString());
+					}
+				}
+			}
+		}
 	}
 	
 	protected class SpinnerListener implements ChangeListener
@@ -767,6 +793,17 @@ public class Settings extends JPanel
 			
 			final JTextField actual = (JTextField) e.getComponent();
 			
+			//TODO anderes Textfeld löschen
+//			for(String raw : manager.getHotKeys())
+//			{
+//				String[] key = raw.split("@");
+//				KeyStroke keyStroke = KeyEvent.getKeyText(key);
+//				for(JTextField field : fields)
+//				{
+//					
+//				}
+//			}
+			
 			SwingUtilities.invokeLater(new Runnable(){
 				@Override
 				public void run()
@@ -786,7 +823,7 @@ public class Settings extends JPanel
 					else
 					{
 						manager.enableGlobalHotKey(e.getModifiers(), e.getKeyCode(), actual.getName());
-						actual.setText(KeyEvent.getKeyText(e.getModifiers()) + "  " + KeyEvent.getKeyText(e.getKeyCode()));
+						actual.setText(KeyEvent.getKeyText(e.getKeyCode()));
 					}
 					actual.repaint();
 				}});
@@ -800,7 +837,9 @@ public class Settings extends JPanel
 	{
 		protected JTextField[] fields;
 		protected KeyStrokeManager manager = KeyStrokeManager.getInstance();
-		protected int chr = 0;
+		protected int key = 0;
+		protected int mod = 0;
+		protected boolean ignore = false;
 		
 		public LocalHotKeySetter(JTextField...txts)
 		{
@@ -814,12 +853,11 @@ public class Settings extends JPanel
 		public void keyReleased(final KeyEvent e)
 		{
 			InputMap iMap = manager.getInputMap();
-			ActionMap aMap = manager.getActionMap();
 			KeyStroke keyStroke = KeyStroke.getKeyStroke(e.getKeyCode(), e.getModifiers());
 			if(!(e.getComponent() instanceof JTextField))
 				return;
 			
-			final JTextField txtField = (JTextField) e.getComponent();
+			final JTextField actual = (JTextField) e.getComponent();
 			
 			if(iMap.get(keyStroke) != null)
 			{
@@ -831,49 +869,35 @@ public class Settings extends JPanel
 							@Override
 							public void run()
 							{
-								field.setText("");
+								field.setText("NONE          ");
 								field.repaint();
 							}});
-						
 					}
 				}
 			}
 			
-			iMap.put(keyStroke, txtField.getName());
-			aMap.put(txtField.getName(), new AbstractAction(){
-				
-									private static final long serialVersionUID = 8899350838466037814L;
-									@Override
-									public void actionPerformed(ActionEvent e)
-									{
-										IPlayer p = Controller.getInstance().getPlayer();
-										String action = txtField.getName();
-										if(action.equalsIgnoreCase("play"))
-											p.fadeInOut();
-										else if(action.equalsIgnoreCase("stop"))
-											p.stop();
-										else if(action.equalsIgnoreCase("volup"))
-											p.setVolume(p.getVolume() + 10);
-										else if(action.equalsIgnoreCase("voldown"))
-											p.setVolume(p.getVolume() - 10);
-										else if(action.equalsIgnoreCase("next"))
-											p.playNext();
-										else if(action.equalsIgnoreCase("prev"))
-											p.playPrevious();
-											
-									}});
 			SwingUtilities.invokeLater(new Runnable(){
 				@Override
 				public void run()
 				{
 					if(e.getModifiers() != 0)
-						chr = e.getKeyCode();
+					{
+						ignore = true;
+						key = e.getKeyCode();
+						mod = e.getModifiers();
+					}
+					else if(ignore)
+					{
+						ignore = false;
+						manager.enableLocalHotKey(mod, key, actual.getName());
+						actual.setText(KeyEvent.getKeyText(e.getKeyCode()) + "  " + KeyEvent.getKeyText(key));
+					}
 					else
-						if(chr == 0)
-							txtField.setText(KeyEvent.getKeyText(e.getKeyCode()));
-						else
-							txtField.setText(KeyEvent.getKeyText(e.getKeyCode()) + "  " + KeyEvent.getKeyText(chr));
-					txtField.repaint();
+					{
+						manager.enableLocalHotKey(e.getModifiers(), e.getKeyCode(), actual.getName());
+						actual.setText(KeyEvent.getKeyText(e.getKeyCode()));
+					}
+					actual.repaint();
 				}});
 		}
 		
