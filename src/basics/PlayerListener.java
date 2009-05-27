@@ -71,14 +71,12 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		}
 		return predictedTrack;
 	}
-	
+	//TODO Neu machen...
 	public int ignoreCount(List<String> names)
 	{
 		try
 		{
 			int min = Integer.MAX_VALUE;
-			int ignoreCount = 0;
-			String minList = "";
 			boolean allNull = true;
 			for(String a : names)
 			{
@@ -90,7 +88,6 @@ class PlayerListener implements PlayerContact, PlayStateListener
 					if(size < min)
 					{
 						min = size;
-						minList = a;
 					}
 				}
 			}
@@ -104,9 +101,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 				}
 			}
 			
-			if(controller.listProvider.listPlayPossibility(minList) / 100 > 0)
-				ignoreCount = (int)(min / (controller.listProvider.listPlayPossibility(minList) / 100));
-			return (int)(ignoreCount * 0.8);
+			return (int) (min * 0.8);
 		}
 		catch(ListException le)
 		{
