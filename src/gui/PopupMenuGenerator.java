@@ -221,6 +221,9 @@ class ListMenuItemListener implements ActionListener
 			
 		else if(command.equals("OpenFile"))
 		{
+			if(!(list.getListModel() instanceof EditableListModel))
+				return;
+			
 			final JFileChooser fileChooser = new JFileChooser("Datei öffnen:");
 			fileChooser.setDialogType(JFileChooser.OPEN_DIALOG); 
 			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -231,12 +234,9 @@ class ListMenuItemListener implements ActionListener
 	        	return;
 	        
             File file = fileChooser.getSelectedFile();
-
-    		if(list.getListModel() instanceof EditableListModel)
-    		{
-    			new StatusDialog("Lese M3U", null, new lists.InsertM3U(((EditableListModel)list.getListModel()), file.getPath()));
-    		}
-		}
+            
+    		new StatusDialog("Lese M3U", null, new lists.InsertM3U(((EditableListModel)list.getListModel()), file.getPath()));
+   		}
 		
 		else if(command.equals("sortName"))
 			Sort.quickSort(list, SortMode.NAME);
@@ -305,6 +305,7 @@ class FileMenuItemListener implements ActionListener
 		this.list = list;
 	}
 	
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if(list.getListModel() instanceof EditableListModel)
@@ -316,7 +317,7 @@ class FileMenuItemListener implements ActionListener
 
 class TrackTransfer implements ClipboardOwner
 {
-
+	@Override
 	public void lostOwnership(Clipboard clipboard, Transferable contents){}
 	
 	public void setClipboardContents(Track[] track)
