@@ -209,7 +209,7 @@ public class ClassicWindow extends JFrame
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel mainPart = new JPanel(new GridBagLayout());	
 			
-		c.insets = new Insets(0, 3, 3, 3);;
+		c.insets = new Insets(0, 3, 3, 3);
 		c.fill = GridBagConstraints.BOTH;
 		
 		c.weightx = 1.0;
