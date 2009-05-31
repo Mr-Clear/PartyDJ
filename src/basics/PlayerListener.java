@@ -172,9 +172,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 
 	@Override
 	public void playCompleted()
-	{
-		// TODO Auto-generated method stub
-	}
+	{}
 	
 	@Override
 	public void reportProblem(final PlayerException e, final Track track)
