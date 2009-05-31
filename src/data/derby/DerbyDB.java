@@ -237,6 +237,7 @@ public class DerbyDB implements IData, CloseListener
 			return null;
 	}
 	
+	@Override
 	public HashMap<Integer, Track> readMasterList() throws ListException
 	{
 		if(masterList == null)
@@ -269,6 +270,7 @@ public class DerbyDB implements IData, CloseListener
 		return masterList;
 	}
 	
+	@Override
 	public List<Track> readList(String listName, String searchString, data.SortOrder order) throws ListException
 	{
 		if(searchString != null)
@@ -408,6 +410,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public int addTrack(Track track) throws ListException
 	{
 		try
@@ -471,6 +474,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void updateTrack(Track track) throws ListException
 	{
 		synchronized(conn)
@@ -517,6 +521,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void updateTrack(Track track, Track.TrackElement element) throws ListException
 	{
 		synchronized(conn)
@@ -588,6 +593,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void deleteTrack(Track track) throws ListException
 	{
 		if(track == null)
@@ -640,20 +646,24 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void addListListener(ListListener listener)
 	{
 		listListener.add(listener);
 	}
+	@Override
 	public void removeListListener(ListListener listener)
 	{
 		listListener.remove(listener);
 	}
 	
+	@Override
 	public void addList(String listName) throws ListException
 	{
 		addList(listName, null);
 	}
 	
+	@Override
 	public void addList(String listName, String description) throws ListException
 	{
 		synchronized(conn)
@@ -706,6 +716,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void removeList(String listName) throws ListException
 	{
 		try
@@ -742,6 +753,7 @@ public class DerbyDB implements IData, CloseListener
 			listIndices.remove(listName);
 	}
 	
+	@Override
 	public int getListPriority(String listName) throws ListException
 	{
 		try
@@ -757,6 +769,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void setListPriority(String listName, int priority) throws ListException
 	{
 		try
@@ -777,6 +790,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public String getListDescription(String listName) throws ListException
 	{
 		try
@@ -791,6 +805,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void setListDescription(String listName, String description) throws ListException
 	{
 		try
@@ -809,6 +824,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void renameList(String oldName, String newName) throws ListException
 	{
 		try
@@ -829,6 +845,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public List<String> getLists() throws ListException
 	{
 		List<String> lists = new ArrayList<String>();
@@ -845,6 +862,7 @@ public class DerbyDB implements IData, CloseListener
 		return lists;
 	}
 	
+	@Override
 	public void writeSetting(String name, String value) throws SettingException
 	{
 		synchronized(settings)
@@ -877,10 +895,12 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public String readSetting(String name) throws SettingException
 	{
 		return readSetting(name, null);
 	}
+	@Override
 	public String readSetting(String name, String defaultValue) throws SettingException
 	{
 		synchronized(settings)
@@ -911,16 +931,19 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void addSettingListener(SettingListener listener)
 	{
 		settingListener.add(listener);
 	}
 
+	@Override
 	public void removeSettingListener(SettingListener listener)
 	{
 		settingListener.remove(listener);
 	}
 
+	@Override
 	public void insertTrack(String listName, Track track) throws ListException
 	{
 		if(track.index == -1)
@@ -956,6 +979,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void insertTrackAt(String listName, Track track, int trackPosition) throws ListException
 	{		
 		if(track.index == -1)
@@ -1008,6 +1032,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 
+	@Override
 	public void removeTrack(String listName, int trackPosition) throws ListException
 	{
 		synchronized(conn)
@@ -1052,6 +1077,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void swapTrack(String listName, int trackA, int trackB) throws ListException
 	{
 		synchronized(conn)
@@ -1120,6 +1146,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
+	@Override
 	public void close() throws ListException
 	{
 		try
@@ -1135,6 +1162,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 
+	@Override
 	public void closing() //Von CloseListener
 	{
 		try
