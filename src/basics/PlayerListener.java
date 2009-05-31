@@ -129,8 +129,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 					}
 					catch (ListException e)
 					{
-						e.printStackTrace();
-						//TODO Auto-generated catch block
+						controller.logError(Controller.NORMAL_ERROR, this, e, "requestNextTrack fehlgeschlagen");
 					}
 				}
 			}
