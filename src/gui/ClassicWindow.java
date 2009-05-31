@@ -288,6 +288,14 @@ public class ClassicWindow extends JFrame
 	  
 	    pause.setActionMap(pauseAction);*/
 		
+		play.addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent me) 
+			{
+				player.start();
+			}
+		});
+		
 		pause.addMouseListener(new MouseAdapter()
 				{
 					public void mouseClicked(MouseEvent me) 
