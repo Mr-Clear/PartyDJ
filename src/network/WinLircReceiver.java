@@ -75,14 +75,15 @@ public class WinLircReceiver implements Plugin
 				thread.interrupt();
 			if(reader != null)
 			{
+				final BufferedReader r = reader;
 				new Thread(){
 					@Override
 					public void run()
 					{
 						try
 						{
-							if(reader != null)
-								reader.close();
+							if(r != null)
+								r.close();
 						}
 						catch (IOException e)
 						{
@@ -91,19 +92,7 @@ public class WinLircReceiver implements Plugin
 					}
 				}.start();
 				
-				new Thread(){
-					@Override
-					public void run()
-					{
-						try
-						{
-							Thread.sleep(100);
-							reader = null;
-							changeStatus(false);
-						}
-						catch (InterruptedException ignored){}
-					}
-				}.start();
+				changeStatus(false);
 			}
 		}
 		else
@@ -179,7 +168,7 @@ public class WinLircReceiver implements Plugin
 			}
 			catch (UnknownHostException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Verbinden zu WinLIRC.");
+				controller.logError(Controller.REGULAR_ERROR, this, e, "Fehler bei Verbinden zu WinLIRC.");
 				return;
 			}
 			catch (IOException e)
