@@ -19,6 +19,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 	Controller controller = Controller.getInstance();
 	private IData data = controller.getData();
 	
+	@Override
 	public synchronized Track predictNextTrack()
 	{
 		Track predictedTrack = null;
@@ -71,8 +72,9 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		}
 		return predictedTrack;
 	}
+	
 	//TODO Neu machen...
-	public int ignoreCount(List<String> names)
+	protected int ignoreCount(List<String> names)
 	{
 		try
 		{
@@ -111,6 +113,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		return 0;
 	}
 	
+	@Override
 	public synchronized Track requestNextTrack()
 	{
 		Track nextTrack = null;
@@ -141,6 +144,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		return nextTrack;
 	}
 
+	@Override
 	public synchronized Track requestPreviousTrack()
 	{
 		if(controller.lastPlayedList.getSize() == 0)
@@ -168,11 +172,13 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		return previous;
 	}
 
+	@Override
 	public void playCompleted()
 	{
 		// TODO Auto-generated method stub
 	}
 	
+	@Override
 	public void reportProblem(final PlayerException e, final Track track)
 	{
 		track.problem = e.problem;
@@ -185,6 +191,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		t.start();
 	}
 
+	@Override
 	public void trackDurationCalculated(Track track, double duration)
 	{
 		if(duration > 0 && track.problem != Problem.NONE)
@@ -210,6 +217,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 	}
 
 	//--- PlayStateListener
+	@Override
 	public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 	{
 		if(reason == Reason.RECEIVED_NEW_TRACK)
@@ -252,7 +260,9 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		}
 	}
 
+	@Override
 	public void playStateChanged(boolean playState){}
+	@Override
 	public void volumeChanged(int volume)
 	{
 		try
