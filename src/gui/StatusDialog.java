@@ -249,7 +249,8 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 		}
 		public void windowClosed(WindowEvent e)
 		{
-			initialiser.stopTask();
+			//Entfernt wegen Bug mit öffnen-Dialog.
+			//initialiser.stopTask();
 		}
 		
 		public void windowActivated(WindowEvent e){}
