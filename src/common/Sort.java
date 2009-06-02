@@ -90,6 +90,8 @@ public class Sort
 		
 		if(list.getListModel() instanceof EditableListModel)
 			lm = (EditableListModel) list.getListModel();
+		else
+			throw new IllegalArgumentException("Liste nicht editierbar."); 
 		
 		Track pivot = lm.getElementAt(hi);
 		

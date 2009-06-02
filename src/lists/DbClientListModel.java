@@ -31,6 +31,7 @@ public class DbClientListModel extends LightClientListModel
 		this.listName = listName;
 	}
 	
+	@Override
 	public void add(Track track) throws ListException
 	{
 		try
@@ -45,11 +46,13 @@ public class DbClientListModel extends LightClientListModel
 		
 	}
 	
+	@Override
 	protected void add(int trackIndex) throws ListException
 	{
 		add(controller.getListProvider().getTrackByIndex(trackIndex));
 	}
 
+	@Override
 	public void add(int index, Track track) throws ListException
 	{
 		if(index < 0)
@@ -70,6 +73,7 @@ public class DbClientListModel extends LightClientListModel
 		super.add(index, track);
 	}
 	
+	@Override
 	public void remove(int index) throws ListException
 	{
 		if(index < 0 || index >= getSize())

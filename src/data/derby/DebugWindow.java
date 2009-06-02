@@ -11,7 +11,6 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -57,7 +56,7 @@ public class DebugWindow extends javax.swing.JFrame
 	
 	private void initGUI()
 	{
-		GroupLayout thisLayout = new GroupLayout((JComponent)getContentPane());
+		GroupLayout thisLayout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(thisLayout);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		{
@@ -66,7 +65,7 @@ public class DebugWindow extends javax.swing.JFrame
 				listsList = new JList(new ListsListModel());
 				listsScrollPane.setViewportView(listsList);
 				listsList.addMouseListener(new MouseAdapter(){
-				public void mouseClicked(MouseEvent e)
+				@Override public void mouseClicked(MouseEvent e)
 							{
 								String valueString = (String)listsList.getSelectedValue();
 								int valueInt = Integer.parseInt(valueString.substring(0, valueString.indexOf(':')));
@@ -237,12 +236,14 @@ public class DebugWindow extends javax.swing.JFrame
 			fireTableChanged(null);			
 		}
 		
-	    public boolean isCellEditable(int rowIndex, int columnIndex)
+	    @Override
+		public boolean isCellEditable(int rowIndex, int columnIndex)
 	    {
 	    	return columnIndex == 1;
 	    }
 	    
-	    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+	    @Override
+		public void setValueAt(Object aValue, int rowIndex, int columnIndex)
 	    {
 	    	if(columnIndex == 1)
 	    	{
@@ -274,12 +275,14 @@ public class DebugWindow extends javax.swing.JFrame
 			columns = new TableColumn[]{column1, column2};
 		}
 		
+		@Override
 		public int getColumnCount()
 		{
 			return 2;
 		}
 		
-	    public TableColumn getColumn(int columnIndex)
+	    @Override
+		public TableColumn getColumn(int columnIndex)
 	    {
 	    	return columns[columnIndex];
 	    }
@@ -301,6 +304,7 @@ public class DebugWindow extends javax.swing.JFrame
 			openList(listIndex);
 		}
 		
+		@SuppressWarnings("hiding")
 		public void openList(int listIndex)
 		{
 			this.listIndex = listIndex;
@@ -337,12 +341,14 @@ public class DebugWindow extends javax.swing.JFrame
 			return content.get(rowIndex)[columnIndex];
 		}
 		
-	    public boolean isCellEditable(int rowIndex, int columnIndex)
+	    @Override
+		public boolean isCellEditable(int rowIndex, int columnIndex)
 	    {
 	    	return columnIndex == 1;
 	    }
 	    
-	    public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+	    @Override
+		public void setValueAt(Object aValue, int rowIndex, int columnIndex)
 	    {
 	    	if(columnIndex == 1)
 	    	{
@@ -381,12 +387,14 @@ public class DebugWindow extends javax.swing.JFrame
 			columns = new TableColumn[]{column1, column2, column3};
 		}
 		
+		@Override
 		public int getColumnCount()
 		{
 			return 3;
 		}
 		
-	    public TableColumn getColumn(int columnIndex)
+	    @Override
+		public TableColumn getColumn(int columnIndex)
 	    {
 	    	return columns[columnIndex];
 	    }

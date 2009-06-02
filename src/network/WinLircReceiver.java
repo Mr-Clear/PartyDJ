@@ -115,19 +115,19 @@ public class WinLircReceiver implements Plugin
 		listeners.remove(listener);
 	}
 	
-	protected void execute(String[] data)
+	protected void execute(String[] keyData)
 	{
-		long keyCode = Long.parseLong(data[0], 16);
-		int repeat = Integer.parseInt(data[1], 16);
+		long keyCode = Long.parseLong(keyData[0], 16);
+		int repeat = Integer.parseInt(keyData[1], 16);
 		synchronized (listeners)
 		{
 			for(WinLircListener listener : listeners)
 			{
-				listener.keyPressed(data[3], data[2], repeat, keyCode);
+				listener.keyPressed(keyData[3], keyData[2], repeat, keyCode);
 			}
 		}
 		
-		WinLircReceiverKeyAction action = keyActions.get(data[3] + " " + data[2]);
+		WinLircReceiverKeyAction action = keyActions.get(keyData[3] + " " + keyData[2]);
 
 		if(action != null && (action.repeat || repeat == 0))
 			controller.getScripter().executeCommand(action.command);
@@ -159,12 +159,12 @@ public class WinLircReceiver implements Plugin
 			String ip = data.readSetting("WinLIRC-IP", "127.0.0.1");
 		 	int port = Integer.parseInt(data.readSetting("WinLIRC-Port", "8765"));
 		 	
-		 	BufferedReader reader;
+		 	BufferedReader r;
 		 	try
 			{
 		 		Socket socket = new Socket(ip,port);
-				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				WinLircReceiver.this.reader = reader;
+				r = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				reader = r;
 			}
 			catch (UnknownHostException e)
 			{
@@ -184,7 +184,7 @@ public class WinLircReceiver implements Plugin
 				String in;
 				try
 				{
-					in = reader.readLine();
+					in = r.readLine();
 				}
 				catch (IOException e)
 				{
@@ -198,9 +198,9 @@ public class WinLircReceiver implements Plugin
 				if(isInterrupted())
 					return;
 
-				String[] data = in.split(" ");
-				if(data.length == 4)
-					execute(data);
+				String[] keyData = in.split(" ");
+				if(keyData.length == 4)
+					execute(keyData);
 			}
 			changeStatus(false);
 		}

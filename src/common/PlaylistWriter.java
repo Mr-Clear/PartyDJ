@@ -242,8 +242,10 @@ public class PlaylistWriter
 	{
 		if(format.equals("M3U") || format.equals("M3U8"))
 			writeM3U(tracks, stream, false, format.encoding);
-		else if (format.equals("EXTM3U") || format.equals("EXTM3U8"))
+		else if(format.equals("EXTM3U") || format.equals("EXTM3U8"))
 			writeM3U(tracks, stream, true, format.encoding);
+		else if(format.equals("PLS"))
+			writePls(tracks, stream);
 		else
 			throw new IllegalArgumentException("Format wird nicht unterstützt: " + format);		
 	}
@@ -281,6 +283,13 @@ public class PlaylistWriter
 				new Format("EXTM3U", ".m3u", "M3U Playlist mit zusätzlichen Informationen", "Cp1252", 5),
 				new Format("M3U8", ".m3u8", "Einfache M3U Playlist im Format UTF-8", "UTF-8", 0),
 				new Format("EXTM3U8", ".m3u8", "M3U Playlist mit zusätzlichen Informationen im Format UTF-8", "UTF-8", 5),
+				new Format("PLS", ".pls", "PLS-Playlist", "Cp1252", 0),
+				/* Geplant:
+				 * PLS: http://de.wikipedia.org/wiki/PLS_(Dateiformat)
+				 * PdlList -> Serialisable
+				 * I-Tunes Format
+				 * http://gonze.com/playlists/playlist-format-survey.html
+				 */
 		};
 	}
 	
@@ -351,6 +360,46 @@ public class PlaylistWriter
 			}
 			pw.println(track.path);
 		}
+	}
+	
+	protected static void writePls(Track[] tracks, OutputStream os) throws IOException
+	{
+		PrintStream pw;
+		try
+		{
+			pw = new PrintStream(os, false, "Cp1252");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new IOException(e);
+		}
+		
+		pw.println("[Playlist]");
+		pw.print("NumberOfEntries=");
+		pw.println(tracks.length);
+		
+		int i = 1;
+		for(Track track : tracks)
+		{
+			pw.print("File");
+			pw.print(i);
+			pw.print('=');
+			pw.println(track.path);
+			
+			pw.print("Title");
+			pw.print(i);
+			pw.print('=');
+			pw.println(track.name);
+			
+			pw.print("Length");
+			pw.print(i);
+			pw.print('=');
+			pw.println(Math.round(track.duration));
+			
+			i++;
+		}
+		
+		pw.println("Version=2");
 	}
 	
 	/** Format einer Playlist */

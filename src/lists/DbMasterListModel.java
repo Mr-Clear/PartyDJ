@@ -21,6 +21,7 @@ public class DbMasterListModel extends BasicListModel
 		super(Controller.getInstance().getData().readList(null, null, data.SortOrder.NAME));
 	}
 
+	@Override
 	public void trackAdded(Track track)
 	{
 		list.add(track);
@@ -28,6 +29,7 @@ public class DbMasterListModel extends BasicListModel
 			listener.intervalAdded(new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, list.size() - 1, list.size() - 1));
 	}
 
+	@Override
 	public void trackDeleted(Track track)
 	{
 		synchronized(list)
@@ -43,7 +45,7 @@ public class DbMasterListModel extends BasicListModel
 			}
 		}	
 	}
-	
+
 	public int getIndex(Track track)
 	{
 		for(int i = 0; i < getSize(); i++)

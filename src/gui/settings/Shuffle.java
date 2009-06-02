@@ -178,6 +178,7 @@ public class Shuffle extends JPanel
 			this.table = table;
 		}
 
+		@Override
 		public void listPriorityChanged(final String listName, final int newPriority)
 		{
 			SwingUtilities.invokeLater(new Runnable(){

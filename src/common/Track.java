@@ -97,8 +97,7 @@ public class Track implements Serializable, Comparable<Track>
 	{
 		if(o instanceof Track)
 			return compareTo((Track)o) == 0;
-		else
-			return false;
+		return false;
 	}
 	
 	@Override

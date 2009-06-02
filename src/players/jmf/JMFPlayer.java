@@ -39,7 +39,7 @@ public class JMFPlayer implements IPlayer
 	private boolean status;
 	private Track currentTrack;
 	
-	Player p;
+	Player player;
 	
 	public JMFPlayer(PlayerContact playerContact)
 	{
@@ -80,16 +80,16 @@ public class JMFPlayer implements IPlayer
 
 	public void pause()
 	{
-		if(p != null)
-			p.stop();
+		if(player != null)
+			player.stop();
 		
 		changeState(false);
 	}
 
 	public void play()
 	{
-		if(p != null)
-			p.start();
+		if(player != null)
+			player.start();
 		
 		changeState(true);
 		
@@ -120,7 +120,7 @@ public class JMFPlayer implements IPlayer
 		else if(seconds > getDuration())
 			seconds = getDuration();
 		
-		p.setMediaTime(new Time(seconds));
+		player.setMediaTime(new Time(seconds));
 	}
 
 	public void setVolume(int volume)
@@ -140,7 +140,7 @@ public class JMFPlayer implements IPlayer
 		catch (SettingException e){}
 		
 		if(status)
-			p.getGainControl().setLevel(volume/100f);
+			player.getGainControl().setLevel(volume/100f);
 		
 		//gui.ClassicWindow.setVolume(volume);
 	}
@@ -161,14 +161,14 @@ public class JMFPlayer implements IPlayer
 		if(track == null)
 			return;
 		
-		if(p != null)
-			p.close();
+		if(player != null)
+			player.close();
 		
 		try
 		{
-			p = getPlayer(track.path);
+			player = getPlayer(track.path);
 		
-			p.getGainControl().setLevel(volume / 100f);
+			player.getGainControl().setLevel(volume / 100f);
 		}
 		catch (PlayerException e)
 		{
@@ -176,7 +176,7 @@ public class JMFPlayer implements IPlayer
 			return;
 		}
 	
-		p.addControllerListener(new ControllerListener()
+		player.addControllerListener(new ControllerListener()
 								{
 									public void controllerUpdate(ControllerEvent e)
 									{
@@ -195,7 +195,7 @@ public class JMFPlayer implements IPlayer
 										}
 									}
 								});
-		p.start();
+		player.start();
 		
 		if(currentTrack != track)
 		{
@@ -210,22 +210,21 @@ public class JMFPlayer implements IPlayer
 
 	public void stop()
 	{
-		if(p != null)
-			p.stop();
+		if(player != null)
+			player.stop();
 		changeState(false);
-		 p.deallocate();
+		 player.deallocate();
 	}
 
 	public double getDuration()
 	{
-		if(p != null)
+		if(player != null)
 		{
-			double duration = p.getDuration().getSeconds();
+			double duration = player.getDuration().getSeconds();
 			contact.trackDurationCalculated(currentTrack, duration);
 			return duration;
 		}
-		else
-			return 0;
+		return 0;
 	}
 	
 	public double getDuration(Track track) throws PlayerException
@@ -247,18 +246,16 @@ public class JMFPlayer implements IPlayer
 	public Track getCurrentTrack()
 	{
 		//TODO
-		if(p != null)
+		if(player != null)
 			return null;
-		else
-			return null;
+		return null;
 	}
 
 	public double getPosition()
 	{
-		if(p != null)
-			return p.getMediaTime().getSeconds();
-		else
-			return 0;
+		if(player != null)
+			return player.getMediaTime().getSeconds();
+		return 0;
 	}
 
 	public int getVolume()
@@ -273,10 +270,10 @@ public class JMFPlayer implements IPlayer
 
 	public void dispose()
 	{
-		if(p != null)
+		if(player != null)
 		{
-			p.stop();
-			p.deallocate();
+			player.stop();
+			player.deallocate();
 		}
 	}
 
@@ -339,7 +336,7 @@ public class JMFPlayer implements IPlayer
 		try
 		{
 			currentTrack = track;
-			p = getPlayer(track.path);
+			player = getPlayer(track.path);
 		}
 		catch (PlayerException e)
 		{

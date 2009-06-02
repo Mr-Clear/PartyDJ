@@ -1,6 +1,7 @@
 package gui.settings;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -37,28 +38,28 @@ public class About extends JPanel
 		{
 			lbl = new JLabel("Hier fehlt ein Bild :(");
 		}
-		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
 		box.add(lbl);
 
 		box.add(Box.createVerticalGlue());
 		lbl = new JLabel("PartyDJ Version " + Controller.getInstance().version);
-		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
 		box.add(lbl);
 		
 		box.add(Box.createVerticalStrut(8));
 		lbl = new JLabel("Geschrieben von Thomas Klier und Samantha Vordermeier");
-		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
 		box.add(lbl);
 		
 		box.add(Box.createVerticalStrut(8));
 		lbl = new JLabel("Tracks gesamt: " + Controller.getInstance().getListProvider().getMasterList().getSize());
-		lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+		lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
 		box.add(lbl);
 		
 		try
 		{
 			lbl = new JLabel("Ladedauer: " + Integer.parseInt(Controller.getInstance().getData().readSetting("LastLoadTime")) / 1000d + "Sekunden");
-			lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+			lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
 			box.add(lbl);
 		}
 		catch (SettingException e){}

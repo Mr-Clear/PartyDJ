@@ -74,20 +74,21 @@ public class FactoryRegistry extends AudioDeviceFactory
 		factories.remove(factory.getClass());	
 	}
 	
+	@Override
 	public AudioDevice createAudioDevice() throws JavaLayerException
 	{
 		AudioDevice device = null;
-		AudioDeviceFactory[] factories = getFactoriesPriority();
+		AudioDeviceFactory[] factorieList = getFactoriesPriority();
 		
-		if (factories==null)
+		if (factorieList==null)
 			throw new JavaLayerException(this+": no factories registered");
 		
 		JavaLayerException lastEx = null;
-		for (int i=0; (device==null) && (i<factories.length); i++)
+		for (int i=0; (device==null) && (i<factorieList.length); i++)
 		{
 			try
 			{
-				device = factories[i].createAudioDevice();
+				device = factorieList[i].createAudioDevice();
 			}
 			catch (JavaLayerException ex)
 			{
@@ -117,7 +118,7 @@ public class FactoryRegistry extends AudioDeviceFactory
 				Enumeration<AudioDeviceFactory> e = factories.elements();
 				while (e.hasMoreElements())
 				{
-					AudioDeviceFactory factory = (AudioDeviceFactory)e.nextElement();
+					AudioDeviceFactory factory = e.nextElement();
 					fa[idx++] = factory;	
 				}
 			}

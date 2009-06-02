@@ -17,7 +17,6 @@ import java.util.List;
 import javax.swing.*;
 import lists.ListException;
 import lists.SearchListModel;
-import lists.TrackListModel;
 import basics.Controller;
 import com.jgoodies.forms.layout.*;
 import common.Track;
@@ -113,7 +112,7 @@ public class MainList extends JPanel
 						for(int i = selected.length - 1; i >= 0; i--)
 						{
 							//TODO ProgressBar o.ä.
-							data.deleteTrack(((TrackListModel)list.getListModel()).getElementAt(selected[i]));
+							data.deleteTrack(list.getListModel().getElementAt(selected[i]));
 						}									
 					}
 					catch (ListException e)
@@ -276,9 +275,9 @@ public class MainList extends JPanel
 		}
 		catch(ListException le)
 		{
-			JLabel list = new JLabel("Kann Liste nicht laden: \n" + le.getMessage());
-			list.setForeground(Color.RED);
-			add(list);
+			JLabel listErrorMessage = new JLabel("Kann Liste nicht laden: \n" + le.getMessage());
+			listErrorMessage.setForeground(Color.RED);
+			add(listErrorMessage);
 		}
 	}
 

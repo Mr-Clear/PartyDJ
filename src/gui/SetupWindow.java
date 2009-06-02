@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -62,7 +61,7 @@ public class SetupWindow extends javax.swing.JFrame
 		final Controller controller = Controller.getInstance();
 		final IData data = controller.getData();
 		
-		GroupLayout thisLayout = new GroupLayout((JComponent)getContentPane());
+		GroupLayout thisLayout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(thisLayout);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		this.setTitle("PartyDJ Setup");
@@ -138,11 +137,11 @@ public class SetupWindow extends javax.swing.JFrame
 					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 			        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			        chooser.setFileFilter(new FileFilter(){
-						public boolean accept(File f)
+						@Override public boolean accept(File f)
 						{
 							return f.isDirectory() || (f.isFile() && f.getName().equalsIgnoreCase("Party DJ.exe"));
 						}
-						public String getDescription(){return null;}
+						@Override public String getDescription(){return null;}
 						});
 					chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", common.Functions.getFolder())));
 			        				        

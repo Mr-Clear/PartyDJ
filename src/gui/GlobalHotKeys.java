@@ -5,7 +5,7 @@ import players.IPlayer;
 import basics.Controller;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.IntellitypeListener;
-import com.melloware.jintellitype.JIntellitype;
+import com.melloware.jintellitype.JIntellitypeConstants;
 
 public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 {
@@ -29,14 +29,14 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 		IPlayer player = Controller.getInstance().getPlayer();
 		switch(id)
 		{
-		case JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK:		player.playNext();
-															break;
-		case JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK:	player.playPrevious();
-															break;
-		case JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE:		player.fadeInOut();
-															break;
-		case JIntellitype.APPCOMMAND_MEDIA_STOP:			player.stop();
-															break;
+		case JIntellitypeConstants.APPCOMMAND_MEDIA_NEXTTRACK:		player.playNext();
+																	break;
+		case JIntellitypeConstants.APPCOMMAND_MEDIA_PREVIOUSTRACK:	player.playPrevious();
+																	break;
+		case JIntellitypeConstants.APPCOMMAND_MEDIA_PLAY_PAUSE:		player.fadeInOut();
+																	break;
+		case JIntellitypeConstants.APPCOMMAND_MEDIA_STOP:			player.stop();
+																	break;
 		}
 	}
 

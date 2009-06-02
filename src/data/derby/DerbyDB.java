@@ -103,13 +103,13 @@ public class DerbyDB implements IData, CloseListener
 			throw new OpenDbException(e);
 		}
 		
-		Connection conn = null;
+		Connection newConn = null;
 		try
 		{
-			conn = DriverManager.getConnection(connectionURL);
-			conn.setAutoCommit(false);
+			newConn = DriverManager.getConnection(connectionURL);
+			newConn.setAutoCommit(false);
 			
-			Statement s = conn.createStatement();
+			Statement s = newConn.createStatement();
 			s.executeUpdate("CREATE TABLE SETTINGS (NAME VARCHAR(64) NOT NULL, VALUE LONG VARCHAR, PRIMARY KEY (NAME))");
 			s.executeUpdate("CREATE INDEX SETTING ON SETTINGS (NAME)");
 			
@@ -139,17 +139,17 @@ public class DerbyDB implements IData, CloseListener
 			s.executeUpdate("CREATE TABLE LISTS_CONTENT (LIST INTEGER NOT NULL, INDEX INTEGER NOT NULL, POSITION INTEGER NOT NULL, PRIMARY KEY (LIST, POSITION))");
 			
 			s.close();
-			conn.commit();
+			newConn.commit();
 			
-			return conn;
+			return newConn;
 		}
 		catch (SQLException e)
 		{
-			if(conn != null)
+			if(newConn != null)
 			{
 				try
 				{
-					conn.rollback();
+					newConn.rollback();
 				}
 				catch (SQLException e1)
 				{
@@ -216,8 +216,7 @@ public class DerbyDB implements IData, CloseListener
 	{
 		if(rs.next())
 			return rs.getInt(1);
-		else
-			throw new SQLException("Kein Eintag gefunden:");
+		throw new SQLException("Kein Eintag gefunden:");
 	}
 	
 	String queryString(String SQL, Object... parameters) throws SQLException
@@ -233,8 +232,7 @@ public class DerbyDB implements IData, CloseListener
 	{
 		if(rs.next())
 			return rs.getString(1);
-		else
-			return null;
+		return null;
 	}
 	
 	@Override
@@ -345,47 +343,44 @@ public class DerbyDB implements IData, CloseListener
 						addList(listName);
 						return new ArrayList<Track>();
 					}
+					
+					String statement;
+					if(searchString == null)
+						statement = "SELECT FILES.INDEX FROM FILES, LISTS_CONTENT WHERE LIST = ? AND FILES.INDEX = LISTS_CONTENT.INDEX";
 					else
+						statement = "SELECT FILES.INDEX FROM FILES, LISTS_CONTENT WHERE LIST = ? AND FILES.INDEX = LISTS_CONTENT.INDEX AND FILES.SEARCHNAME LIKE ?";
+										
+					switch(order)
 					{
-	
-						String statement;
-						if(searchString == null)
-							statement = "SELECT FILES.INDEX FROM FILES, LISTS_CONTENT WHERE LIST = ? AND FILES.INDEX = LISTS_CONTENT.INDEX";
-						else
-							statement = "SELECT FILES.INDEX FROM FILES, LISTS_CONTENT WHERE LIST = ? AND FILES.INDEX = LISTS_CONTENT.INDEX AND FILES.SEARCHNAME LIKE ?";
-											
-						switch(order)
-						{
-						case NONE:
-							break;
-						case DEFAULT:
-						case POSITION:
-							statement += " ORDER BY LISTS_CONTENT.POSITION";
-							break;
-						case MASTERLISTINDEX:
-							statement += " ORDER BY FILES.INDEX";
-							break;
-						case NAME:
-							statement += " ORDER BY FILES.SEARCHNAME";
-							break;
-						case PATH:
-							statement += " ORDER BY FILES.PATH";
-							break;
-						case DURATION:
-							statement += " ORDER BY FILES.DURATION";
-							break;
-						case SIZE:
-							statement += " ORDER BY FILES.SIZE";
-							break;
-						}
-						
-						ps = conn.prepareStatement(statement);
-						
-						ps.setInt(1, listIndex);
-						
-						if(searchString != null)
-							ps.setString(2, searchString);
+					case NONE:
+						break;
+					case DEFAULT:
+					case POSITION:
+						statement += " ORDER BY LISTS_CONTENT.POSITION";
+						break;
+					case MASTERLISTINDEX:
+						statement += " ORDER BY FILES.INDEX";
+						break;
+					case NAME:
+						statement += " ORDER BY FILES.SEARCHNAME";
+						break;
+					case PATH:
+						statement += " ORDER BY FILES.PATH";
+						break;
+					case DURATION:
+						statement += " ORDER BY FILES.DURATION";
+						break;
+					case SIZE:
+						statement += " ORDER BY FILES.SIZE";
+						break;
 					}
+					
+					ps = conn.prepareStatement(statement);
+					
+					ps.setInt(1, listIndex);
+					
+					if(searchString != null)
+						ps.setString(2, searchString);
 				}
 	
 				ArrayList<Track> list = new ArrayList<Track>();
@@ -462,11 +457,9 @@ public class DerbyDB implements IData, CloseListener
 				track.index = index;
 				return index;
 			}
-			else				
-			{
-				conn.commit(); //commit nach checkIndex()
-				return -1;
-			}
+			
+			conn.commit(); //commit nach checkIndex()
+			return -1;
 		}
 		catch (SQLException e)
 		{
@@ -690,7 +683,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
-	int getListIndex(String listName) throws ListException
+	int getListIndex(String listName)
 	{
 		synchronized(listIndices)
 		{
@@ -699,19 +692,17 @@ public class DerbyDB implements IData, CloseListener
 			{
 				return listIndices.get(listName);
 			}
+			
 			//Ansonsten aus Datenbank lesen
-			else
+			try
 			{
-				try
-				{
-					int listIndex = queryInt("SELECT INDEX FROM LISTS WHERE NAME = ?", listName);
-					listIndices.put(listName, listIndex);
-					return listIndex;
-				}
-				catch (SQLException e)
-				{
-					return -1;
-				}
+				int listIndex = queryInt("SELECT INDEX FROM LISTS WHERE NAME = ?", listName);
+				listIndices.put(listName, listIndex);
+				return listIndex;
+			}
+			catch (SQLException e)
+			{
+				return -1;
 			}
 		}
 	}
@@ -911,22 +902,19 @@ public class DerbyDB implements IData, CloseListener
 				return settings.get(name);
 			}
 			//Ansonsten aus Datenbank lesen
-			else
+			try
 			{
-				try
-				{
-					String value = queryString("SELECT VALUE FROM SETTINGS WHERE NAME = ?", name);
-					if(value != null)
-						settings.put(name, value);
-					else						
-						value = defaultValue;
-					conn.commit();
-					return value;
-				}
-				catch (SQLException e)
-				{
-					throw new SettingException(e);
-				}
+				String value = queryString("SELECT VALUE FROM SETTINGS WHERE NAME = ?", name);
+				if(value != null)
+					settings.put(name, value);
+				else						
+					value = defaultValue;
+				conn.commit();
+				return value;
+			}
+			catch (SQLException e)
+			{
+				throw new SettingException(e);
 			}
 		}
 	}

@@ -69,15 +69,8 @@ public class JLPlayer implements IPlayer, PlaybackListener
 			{
 				load(currentTrack);
 				p.fadeIn();
-				try
-				{
-					p.fadeDuration = 1000;
-					p.play(tempPosition);
-				}
-				catch (JavaLayerException e)
-				{
-					contact.reportProblem(new PlayerException(Problem.CANT_PLAY, e), currentTrack);
-				}
+				p.fadeDuration = 1000;
+				p.play(tempPosition);
 				
 				changeState(true);
 			}
@@ -146,8 +139,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	{
 		if(p != null)
 			return p.getPosition();
-		else
-			return 0;
+		return 0;
 	}
 
 	public int getVolume()
@@ -216,15 +208,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 			p.pause();
 		else
 		{
-			try
-			{
-				p.play();
-			}
-			catch (JavaLayerException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			p.play();
 		}
 	}
 
@@ -321,14 +305,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 			try
 			{
 				load(track);
-				try
-				{
-					p.play(position);
-				}
-				catch (JavaLayerException e)
-				{
-					contact.reportProblem(new PlayerException(Problem.CANT_PLAY, e), track);
-				}
+				p.play(position);
 				changeState(true);
 			}
 			catch (PlayerException e1)
@@ -441,7 +418,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 				double startTime = System.currentTimeMillis();
 				p.fadeDuration = 500;
 				p.fadeOut();
-				while(status && System.currentTimeMillis() < startTime + 500);
+				while(status && System.currentTimeMillis() < startTime + 500)
 				{
 					try
 					{

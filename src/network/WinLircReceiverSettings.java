@@ -51,7 +51,7 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 	
 	private void initGUI()
 	{
-		GroupLayout thisLayout = new GroupLayout((JComponent)this);
+		GroupLayout thisLayout = new GroupLayout(this);
 		this.setLayout(thisLayout);
 		setPreferredSize(new Dimension(400, 300));
 		{
@@ -430,18 +430,16 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 		{
 			if(columnIndex < 2)
 				return ((String)keys.keySet().toArray()[rowIndex]).split(" ")[columnIndex];
-			else 
+			
+			String mapKey = getValueAt(rowIndex, 0) + " " + getValueAt(rowIndex, 1);
+			if(columnIndex == 2)
 			{
-				String mapKey = getValueAt(rowIndex, 0) + " " + getValueAt(rowIndex, 1);
-				if(columnIndex == 2)
-				{
-					return keyActions.containsKey(mapKey) ? keyActions.get(mapKey).command : null;
-				}
-				else if(columnIndex == 3)
-					return keyActions.containsKey(mapKey) ? !keyActions.get(mapKey).repeat : false;
-				else
-					throw new IllegalArgumentException("Tabelle hat nur 4 Spalten.");
+				return keyActions.containsKey(mapKey) ? keyActions.get(mapKey).command : null;
 			}
+			else if(columnIndex == 3)
+				return keyActions.containsKey(mapKey) ? !keyActions.get(mapKey).repeat : false;
+			else
+				throw new IllegalArgumentException("Tabelle hat nur 4 Spalten.");
 		}
 		
 		@Override

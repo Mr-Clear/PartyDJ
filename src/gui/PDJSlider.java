@@ -110,7 +110,7 @@ public class PDJSlider extends JPanel
 			refreshTimer.setDelay(40);
 			
 			player.addPlayStateListener(new PlayStateAdapter(){
-						public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+						@Override public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 						{
 							if(playingCurrent != null)
 							{
@@ -129,7 +129,7 @@ public class PDJSlider extends JPanel
 								setDuration(0);
 							}
 						}
-						public void playStateChanged(boolean playState)
+						@Override public void playStateChanged(boolean playState)
 						{
 							if(playState)
 								refreshTimer.start();
@@ -138,7 +138,7 @@ public class PDJSlider extends JPanel
 						}});
 			
 			data.addListListener(new ListAdapter(){
-				public void trackChanged(Track track)
+				@Override public void trackChanged(Track track)
 				{
 					if(track == currentTrack)
 					{
@@ -217,7 +217,7 @@ public class PDJSlider extends JPanel
 						refreshTimer.setDelay(40);
 						
 						player.addPlayStateListener(new PlayStateAdapter(){
-									public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+									@Override public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 									{
 										if(playingCurrent != null)
 										{
@@ -236,7 +236,7 @@ public class PDJSlider extends JPanel
 											setDuration(0);
 										}
 									}
-									public void playStateChanged(boolean playState)
+									@Override public void playStateChanged(boolean playState)
 									{
 										if(playState)
 											refreshTimer.start();
@@ -245,7 +245,7 @@ public class PDJSlider extends JPanel
 									}});
 						
 						data.addListListener(new ListAdapter(){
-							public void trackChanged(Track track)
+							@Override public void trackChanged(Track track)
 							{
 								if(track == currentTrack)
 								{
@@ -309,9 +309,8 @@ public class PDJSlider extends JPanel
 	class Slider extends JComponent implements MouseListener
 	{
 		private static final long serialVersionUID = -1283733626056623005L;
-		private Slider me = this;
-		double duration;
-		double position;
+		double sliderDuration;
+		double sliderPosition;
 		
 		public Slider()
 		{
@@ -320,10 +319,10 @@ public class PDJSlider extends JPanel
 				@Override
 				public void run()
 				{
-					me.setMinimumSize(new Dimension(100, 20));
-					me.setPreferredSize(new Dimension(500, 20));
-					me.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-					me.addMouseListener(me);
+					Slider.this.setMinimumSize(new Dimension(100, 20));
+					Slider.this.setPreferredSize(new Dimension(500, 20));
+					Slider.this.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+					Slider.this.addMouseListener(Slider.this);
 				}});
 		}
 		
@@ -335,7 +334,7 @@ public class PDJSlider extends JPanel
 			g.setColor(new Color(33, 32, 32));
 			g.fillRect(0, 0, getSize().width, getSize().height);
 			g.setColor(new Color(0, 240 /* TODO 230 */, 0));
-			int mid = (int)((getSize().width - 4) / duration * position);
+			int mid = (int)((getSize().width - 4) / sliderDuration * sliderPosition);
 			g.fill3DRect(2, 2, mid, getSize().height - 4, true);
 			g.setColor(new Color(0, 128, 0));
 			g.fill3DRect(mid - 2, 1, 4, getSize().height - 3, true);
@@ -343,7 +342,7 @@ public class PDJSlider extends JPanel
 		
 		public void setMaximum(double max)
 		{
-			duration = max;
+			sliderDuration = max;
 		}
 		
 		public void setValue(final double val)
@@ -352,7 +351,7 @@ public class PDJSlider extends JPanel
 				@Override
 				public void run()
 				{
-					position = val;
+					sliderPosition = val;
 					repaint();
 				}});
 		}
@@ -360,9 +359,9 @@ public class PDJSlider extends JPanel
 		@Override 
 		public void mouseClicked(MouseEvent e)
 		{
-			if(duration > position)
+			if(sliderDuration > sliderPosition)
 			{
-				player.setPosition((e.getX() - 1d) / (getSize().width - 3d) * duration);
+				player.setPosition((e.getX() - 1d) / (getSize().width - 3d) * sliderDuration);
 			}			
 		}
 

@@ -48,8 +48,8 @@ public class KeyStrokeManager extends EventQueue
 		if(raw != null)
 		{
 			raw = raw.substring(1);
-			String[] regKeys = raw.split("§");
-			for(String k : regKeys)
+			String[] rawKeys = raw.split("§");
+			for(String k : rawKeys)
 			{
 				String[] key = k.split("@");
 				enableGlobalHotKey(Integer.valueOf(key[0]), Integer.valueOf(key[1]), key[2], false);
@@ -59,8 +59,8 @@ public class KeyStrokeManager extends EventQueue
 		if(raw != null && raw.length() > 1)
 		{
 			raw = raw.substring(1);
-			String[] regKeys = raw.split("§");
-			for(String k : regKeys)
+			String[] rawKeys = raw.split("§");
+			for(String k : rawKeys)
 			{
 				String[] key = k.split("@");
 				enableLocalHotKey(Integer.valueOf(key[0]), Integer.valueOf(key[1]), key[2], false);

@@ -38,6 +38,9 @@ public class LightClientListModel extends BasicListModel implements EditableList
 			listener.intervalAdded(new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, list.size(), list.size()));
 	}
 	
+	/**
+	 * @throws ListException  
+	 */
 	protected void add(int trackIndex) throws ListException
 	{
 		list.add(listProvider.getTrackByIndex(trackIndex));
@@ -109,8 +112,10 @@ public class LightClientListModel extends BasicListModel implements EditableList
 
 	}
 	
+	@Override
 	public void trackAdded(Track track)	{} // Erst interesant, wenn der Track in diese Liste eingefügt wird. 
 	
+	@Override
 	public void trackDeleted(Track track)
 	{
 		synchronized(list)

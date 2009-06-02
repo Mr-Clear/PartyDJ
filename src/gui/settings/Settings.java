@@ -42,8 +42,7 @@ import data.SettingListener;
 import lists.ListException;
 import basics.Controller;
 
-//TODO JavaDoc
-//TODO Sinnvollen Namen für die Klasse finden.
+//TODO Löschen
 
 /**
  * Einstellungen für die Listen.
@@ -52,6 +51,7 @@ import basics.Controller;
  * 
  * @see SettingWindow
  */
+@Deprecated
 public class Settings extends JPanel
 {
 	private static final long serialVersionUID = -6987892133947674516L;
@@ -603,6 +603,7 @@ public class Settings extends JPanel
 			this.table = table;
 		}
 
+		@Override
 		public void listPriorityChanged(final String listName, final int newPriority)
 		{
 			SwingUtilities.invokeLater(new Runnable(){

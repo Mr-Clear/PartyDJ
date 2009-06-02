@@ -28,6 +28,7 @@ public class TrackRenderer extends DefaultListCellRenderer
 	private static final long serialVersionUID = 1791058448796268655L;
 	private int fontSize = 22;
 	
+	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
 		if(value == null)
@@ -84,7 +85,7 @@ public class TrackRenderer extends DefaultListCellRenderer
 			}
 		}
 		
-		protected void init(final JList list, final Track track, int index, final boolean isSelected, final boolean cellHasFocus)
+		protected void init(final JList list, final Track track, @SuppressWarnings("unused") int index, final boolean isSelected, final boolean cellHasFocus)
 		{
 			JLabel titel = new JLabel();
 			JLabel duration = new JLabel();	

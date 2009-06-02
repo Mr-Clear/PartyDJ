@@ -13,6 +13,9 @@ import common.Track;
 
 public class FillDB
 {
+	/**
+	 * @param args Braucht keiner. 
+	 */
 	public static void mmain(String[] args) throws IOException
 	{
 		
@@ -25,6 +28,7 @@ public class FillDB
 		{
 			e.printStackTrace();
 			System.exit(1);
+			return;
 		}
 				
 		BufferedReader r = new BufferedReader(new FileReader("\\\\Merkur\\Musik\\Playlists\\Quelle.m3u"));

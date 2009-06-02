@@ -67,6 +67,7 @@ abstract class BasicListModel extends ListAdapter implements TrackListModel, Pla
 	}
 	public void playStateChanged(boolean playState){}
 	
+	@Override
 	public void trackChanged(Track track)
 	{
 		synchronized(list)

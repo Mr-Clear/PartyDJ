@@ -50,12 +50,9 @@ public class ListProvider
 		{
 			return dbClientListModels.get(listName);
 		}
-		else
-		{
-			DbClientListModel lm = new DbClientListModel(listName);
-			dbClientListModels.put(listName, lm);
-			return lm;
-		}
+		DbClientListModel lm = new DbClientListModel(listName);
+		dbClientListModels.put(listName, lm);
+		return lm;
 	}
 	
 	/**
@@ -90,7 +87,6 @@ public class ListProvider
 	{
 		try
 		{
-			IData data = Controller.getInstance().getData();
 			List<String> lists = data.getLists();
 			int sum = Integer.parseInt(data.readSetting("MasterListPriority", "1"));
 			double val = 0;

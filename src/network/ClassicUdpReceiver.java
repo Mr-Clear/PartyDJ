@@ -14,9 +14,9 @@ public class ClassicUdpReceiver extends Thread
 		setDaemon(true);
 	}
 	
+	@Override
 	public void run()
 	{
-
 		DatagramSocket socket;
 		try
 		{

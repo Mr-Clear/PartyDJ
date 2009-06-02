@@ -12,7 +12,6 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Calendar;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -20,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -40,7 +40,6 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 	private JProgressBar statusBar;
 	private JLabel statusInfo;
 	private StatusSupportedFunction initialiser;
-	private final StatusDialog me = this;
 	private StatusThread thread;
 	
 	private final long startTime = System.currentTimeMillis(); 
@@ -57,15 +56,15 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 				initialiser = init;
 
 				DialogListener dialogListener = new DialogListener();
-				me.addWindowListener(dialogListener);
-				me.addComponentListener(dialogListener);
-				me.setLocationRelativeTo(owner);
-				me.setResizable(true);
-				me.setMaximumSize(new Dimension(Integer.MAX_VALUE, 155));
-				me.setMinimumSize(new Dimension(100, 155));
-				me.setTitle(title);
-				me.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-				me.setModalityType(ModalityType.DOCUMENT_MODAL);
+				StatusDialog.this.addWindowListener(dialogListener);
+				StatusDialog.this.addComponentListener(dialogListener);
+				StatusDialog.this.setLocationRelativeTo(owner);
+				StatusDialog.this.setResizable(true);
+				StatusDialog.this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 155));
+				StatusDialog.this.setMinimumSize(new Dimension(100, 155));
+				StatusDialog.this.setTitle(title);
+				StatusDialog.this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+				StatusDialog.this.setModalityType(ModalityType.DOCUMENT_MODAL);
 				initGUI();
 				thread = new StatusThread();
 				//thread.setUncaughtExceptionHandler(this);
@@ -88,13 +87,13 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 					}});
 				
 				showTimeTimer.start();
-				me.setVisible(true);
+				StatusDialog.this.setVisible(true);
 			}});
 	}
 	
 	private void initGUI() 
 	{
-		GroupLayout thisLayout = new GroupLayout((JComponent)getContentPane());
+		GroupLayout thisLayout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(thisLayout);
 		{
 			statusInfo = new JLabel();
@@ -106,7 +105,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 		{
 			time = new JLabel();
 			time.setText("k.A.");
-			time.setHorizontalTextPosition(JLabel.RIGHT);
+			time.setHorizontalTextPosition(SwingConstants.RIGHT);
 		}
 		{
 			icon = new JLabel(new ImageIcon("Resources/Settings32.gif"));
@@ -118,6 +117,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 			cancelButton.setText("Cancel");
 			cancelButton.addMouseListener(new MouseAdapter()
 			{
+				@Override
 				public void mouseClicked(MouseEvent me) 
 				{
 					initialiser.stopTask();
@@ -213,9 +213,10 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 	
 	class StatusThread extends Thread
 	{
+		@Override
 		public void run()
 		{
-			initialiser.runFunction(me);
+			initialiser.runFunction(StatusDialog.this);
 			showTimeTimer.stop();
 			SwingUtilities.invokeLater(new Runnable(){
 				@Override
@@ -279,7 +280,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 
 	public void uncaughtException(Thread t, Throwable e)
 	{
-		JOptionPane.showMessageDialog(me, "Fehler in " + t + " aufgetreten:\n" + e.getMessage(), "Status Dialog", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(StatusDialog.this, "Fehler in " + t + " aufgetreten:\n" + e.getMessage(), "Status Dialog", JOptionPane.ERROR_MESSAGE);
 		dispose();
 	}
 }

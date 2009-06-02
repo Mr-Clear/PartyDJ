@@ -8,6 +8,7 @@ import java.io.IOException;
 import javax.swing.JComponent;
 import javax.swing.ListModel;
 import javax.swing.TransferHandler;
+import basics.Controller;
 import lists.EditableListModel;
 import lists.ListException;
 import common.Track;
@@ -20,6 +21,7 @@ public class DragDropHandler extends TransferHandler
 {
 	private static final long serialVersionUID = 6601023550058648978L;
 	
+	@Override
 	public boolean canImport(TransferHandler.TransferSupport info)
 	{
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
@@ -32,13 +34,13 @@ public class DragDropHandler extends TransferHandler
 	{
 		if (!transferable.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 		{
-			System.out.println("Unsupported Flavor");
+			Controller.getInstance().logError(Controller.INERESTING_INFO, this, null, "Drop mit unsupported flavor.");
 			return false;
 		}
 		
 		Object[] data = null;
 		PDJList pdjList = list;
-		ListModel listModel = (ListModel)pdjList.getModel();
+		ListModel listModel = pdjList.getModel();
 		
 		try
 		{
@@ -46,16 +48,15 @@ public class DragDropHandler extends TransferHandler
 		}
 		catch (UnsupportedFlavorException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e, "Drop mit unsupported flavor.");
+			return false;
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Drop.");
+			return false;
 		}
 		
-				
 		switch (list.getListDropMode())
 		{
 		case NONE:					break;
@@ -96,23 +97,19 @@ public class DragDropHandler extends TransferHandler
 		return true;
 	}
 	
-	
-	
-	
-	
-	
+	@Override
 	public synchronized boolean importData(TransferHandler.TransferSupport info)
 	{
 		Object[] data = null;
 					
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 		{
-			System.out.println("Unsupported Flavor");
+			Controller.getInstance().logError(Controller.INERESTING_INFO, this, null, "Drop mit unsupported flavor.");
 			return false;
 		}
 	
 		PDJList pdjList = (PDJList)info.getComponent();
-		ListModel listModel = (ListModel)pdjList.getModel();
+		ListModel listModel = pdjList.getModel();
 		
 		try
 		{
@@ -120,151 +117,14 @@ public class DragDropHandler extends TransferHandler
 		}
 		catch (UnsupportedFlavorException e)
 		{
-			System.out.println("Unsupported Flavor");
-			e.printStackTrace();
+			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e, "Drop mit unsupported flavor.");
+			return false;
 		}
 		catch (IOException e)
 		{
-			System.out.println("importData: I/O exception");
-			e.printStackTrace();
+			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Drop.");
+			return false;
 		}
-		
-		
-	
-		
-		
-//		if (info.isDrop())
-//		{	
-//			PDJList.DropLocation dropLocation = (PDJList.DropLocation)info.getDropLocation();
-//			if(info.getComponent() instanceof PDJList)
-//			{
-//				if(DragEvent.dge.getComponent() != info.getComponent())
-//				{	
-//					if(((PDJList)info.getComponent()).getListDropMode() == null)
-//						return false;
-//					
-//					switch (((PDJList)info.getComponent()).getListDropMode())
-//					{
-//					case NONE:					break;
-//					
-//					case COPY:					if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
-//												{
-//													try
-//													
-//													{
-//														for(int i = data.length; i > 0; i--)
-//														{
-//															((EditableListModel)listModel).add(dropLocation.getIndex(), (Track)data[i-1]);
-//														}	
-//													}
-//													catch (ListException e)
-//													{
-//														// TODO Auto-generated catch block
-//														e.printStackTrace();
-//													}
-//												}
-//												break;
-//								
-//					case MOVE:					System.out.println("MOVE not supported");
-//												break;
-//												
-//					case DELETE:				if(((PDJList)DragEvent.dge.getComponent()).getListModel() instanceof EditableListModel)
-//												{
-//													try
-//													{
-//														for(int i = data.length; i > 0; i--)
-//														{
-//															((EditableListModel)((PDJList)DragEvent.dge.getComponent()).getListModel()).remove(((PDJList)DragEvent.dge.getComponent()).getSelectedIndices()[i-1]);
-//														}
-//													}
-//													catch (Exception e)
-//													{
-//														// TODO Auto-generated catch block
-//														e.printStackTrace();
-//													}
-//												}
-//												break;
-//												
-//					case COPY_OR_MOVE:			if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
-//												{
-//													try
-//													{
-//														for(int i = data.length; i > 0; i--)
-//														{
-//															((EditableListModel)listModel).add(dropLocation.getIndex(), (Track)data[i-1]);
-//														}	
-//													}
-//													catch (ListException e)
-//													{
-//														// TODO Auto-generated catch block
-//														e.printStackTrace();
-//													}
-//												}
-//												break;
-//					}
-//				}
-//				
-//				if(DragEvent.dge.getComponent() == info.getComponent())
-//				{
-//					if(pdjList.getSelectedValues().length >= pdjList.getModel().getSize())
-//						return false;
-//					
-//					switch (((PDJList)info.getComponent()).getListDropMode())
-//					{
-//					case NONE:					break;
-//					
-//					case COPY:					if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
-//												{
-//													try
-//													{
-//														for(int i = data.length; i > 0; i--)
-//														{
-//															((EditableListModel)listModel).add(dropLocation.getIndex(), (Track)data[i-1]);
-//														}	
-//													}
-//													catch (ListException e)
-//													{
-//														// TODO Auto-generated catch block
-//														e.printStackTrace();
-//													}
-//												}
-//												break;
-//								
-//					case MOVE:					System.out.println("MOVE not supported");
-//												break;
-//												
-//					case DELETE:				break;
-//												
-//					case COPY_OR_MOVE:			if(((PDJList)info.getComponent()).getListModel() instanceof EditableListModel)
-//												{
-//													try
-//													{
-//														int addIndex = dropLocation.getIndex();
-//														PDJList list = ((PDJList)DragEvent.dge.getComponent());
-//														EditableListModel model = (EditableListModel)list.getListModel();
-//														for(int i = list.getSelectedIndices().length; i > 0; i--)
-//														{
-//															if(list.getSelectedIndices()[i-1] < addIndex)
-//																addIndex--;
-//															model.remove(list.getSelectedIndices()[i-1]);
-//														}
-//							
-//														for(int i = data.length; i > 0; i--)
-//														{
-//															model.add(addIndex ,(Track)data[i - 1]);
-//														}
-//													}
-//													catch (Exception e)
-//													{
-//														// TODO Auto-generated catch block
-//														e.printStackTrace();
-//													}
-//												}
-//													break;
-//					}
-//				}
-//			}
-//		}
 		
 		if(!info.isDrop()) 
         {
@@ -285,6 +145,7 @@ public class DragDropHandler extends TransferHandler
 			
 	}
 	
+	@Override
 	public Transferable createTransferable(JComponent c)
 	{
 		PDJList pdjList = (PDJList)c;
@@ -293,11 +154,13 @@ public class DragDropHandler extends TransferHandler
 		return new TrackSelection(values);
 	}
 	
+	@Override
 	public int getSourceActions(JComponent c)
 	{
 		 return COPY;
 	}
 	
+	@Override
 	public void exportDone(JComponent component, Transferable data, int action) 
 	{
 		//Clipboard export
@@ -322,8 +185,8 @@ public class DragDropHandler extends TransferHandler
 		transfer.setClipboardContents(export);*/
 
        
-       if(action == MOVE)
-        {
+		if(action == MOVE)
+		{
         	if(component instanceof PDJList)
 	        {
 	        	PDJList pdjList = (PDJList)component;

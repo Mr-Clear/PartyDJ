@@ -32,8 +32,7 @@ public class UpdateDB
 				return v0_2bto0_3(data);
 			if(version.equals("0.3"))
 				return v0_3to0_4(data);
-			else
-				return false;
+			return false;
 		}
 		catch (Exception e)
 		{

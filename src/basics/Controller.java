@@ -97,7 +97,7 @@ public class Controller
 		Runtime.getRuntime().addShutdownHook(closeListenThread);
 		
 		String dbPath = Functions.getFolder() + System.getProperty("file.separator") + "DataBase";
-		List<String> windows = new ArrayList<String>();
+		List<String> windowsToLoad = new ArrayList<String>();
 		int whichPlayer = -1;	// 0=JMF, 1=JL
 		
 		int lastParam = 0;
@@ -129,7 +129,7 @@ public class Controller
 						whichPlayer = 1;
 					break;
 				case 3:	//+window
-					windows.add(arg);
+					windowsToLoad.add(arg);
 					break;
 				}
 				lastParam = 0;
@@ -207,10 +207,10 @@ public class Controller
 			addSettingNode(new SettingNode("Hauptliste", gui.settings.MainList.class), settingTree);
 			addSettingNode(new SettingNode("Zeug", gui.settings.Stuff.class), settingTree);
 			
-			if(windows.size() == 0)
-				windows.add("gui.ClassicWindow");
+			if(windowsToLoad.size() == 0)
+				windowsToLoad.add("gui.ClassicWindow");
 			
-			for(String window : windows)
+			for(String window : windowsToLoad)
 			{
 				loadWindow(window);
 			}
@@ -459,11 +459,15 @@ public class Controller
 	{
 		parent.add(node);
 	}
+	@SuppressWarnings("unused")
+	@Deprecated
 	public void addSettingNode(SettingNode node, String path)
 	{
 		//TODO
 		throw new UnsupportedOperationException();
 	}
+	@SuppressWarnings("unused")
+	@Deprecated
 	public void removeSettingNode(SettingNode node)
 	{
 		//TODO
@@ -569,8 +573,7 @@ public class Controller
 				c = c.getSuperclass();
 				if(c == Object.class)
 					break;
-				else
-					senderClassString += " <- ";
+				senderClassString += " <- ";
 			}
 		}
 		

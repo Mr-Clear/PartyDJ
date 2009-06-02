@@ -17,9 +17,9 @@ import data.SortOrder;
  */
 public class SearchListModel extends BasicListModel
 {
-	private String searchString = "";
-	private SortOrder sortOrder;
-	private String dbList;
+	private String actualSearchString = "";
+	private SortOrder actualSortOrder;
+	private String actualDbList;
 	
 	/**Liste ist anfangs leer*/
 	public SearchListModel()
@@ -62,18 +62,18 @@ public class SearchListModel extends BasicListModel
 	 */
 	public synchronized int search(String searchString, SortOrder sortOrder, String dbList) throws ListException
 	{
-		this.searchString = searchString;
-		this.sortOrder = sortOrder;
-		this.dbList = dbList;
+		this.actualSearchString = searchString;
+		this.actualSortOrder = sortOrder;
+		this.actualDbList = dbList;
 		return search();
 	}
 	
 	private int search() throws ListException
 	{
 		int maxSize = getSize();
-		if(searchString == null || searchString.length() > 0)
+		if(actualSearchString == null || actualSearchString.length() > 0)
 		{
-			list = Controller.getInstance().getData().readList(dbList, searchString, sortOrder);
+			list = Controller.getInstance().getData().readList(actualDbList, actualSearchString, actualSortOrder);
 			
 			if(list.size() > maxSize)
 			maxSize = list.size();
@@ -89,6 +89,7 @@ public class SearchListModel extends BasicListModel
 		return list.size();
 	}
 
+	@Override
 	public void trackAdded(Track track)
 	{
 		try
@@ -101,6 +102,7 @@ public class SearchListModel extends BasicListModel
 			e.printStackTrace();
 		}
 	}
+	@Override
 	public void trackDeleted(Track track)
 	{
 		trackAdded(track);

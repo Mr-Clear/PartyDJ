@@ -225,13 +225,13 @@ public class JIntellitype implements JIntellitypeConstants {
       int mask = 0;
       for (int i = 0; i < split.length - 1; i++) {
          if ("ALT".equalsIgnoreCase(split[i])) {
-            mask += JIntellitype.MOD_ALT;
+            mask += JIntellitypeConstants.MOD_ALT;
          } else if ("CTRL".equalsIgnoreCase(split[i]) || "CONTROL".equalsIgnoreCase(split[i])) {
-            mask += JIntellitype.MOD_CONTROL;
+            mask += JIntellitypeConstants.MOD_CONTROL;
          } else if ("SHIFT".equalsIgnoreCase(split[i])) {
-            mask += JIntellitype.MOD_SHIFT;
+            mask += JIntellitypeConstants.MOD_SHIFT;
          } else if ("WIN".equalsIgnoreCase(split[i])) {
-            mask += JIntellitype.MOD_WIN;
+            mask += JIntellitypeConstants.MOD_WIN;
          }
       }
       registerHotKey(identifier, mask, split[split.length - 1].charAt(0));
@@ -367,22 +367,22 @@ public class JIntellitype implements JIntellitypeConstants {
    protected static int swingToIntelliType(int swingKeystrokeModifier) {
       int mask = 0;
       if ((swingKeystrokeModifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK) {
-         mask += JIntellitype.MOD_SHIFT;
+         mask += JIntellitypeConstants.MOD_SHIFT;
       }
       if ((swingKeystrokeModifier & InputEvent.ALT_MASK) == InputEvent.ALT_MASK) {
-         mask += JIntellitype.MOD_ALT;
+         mask += JIntellitypeConstants.MOD_ALT;
       }
       if ((swingKeystrokeModifier & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK) {
-         mask += JIntellitype.MOD_CONTROL;
+         mask += JIntellitypeConstants.MOD_CONTROL;
       }
       if ((swingKeystrokeModifier & InputEvent.SHIFT_DOWN_MASK) == InputEvent.SHIFT_DOWN_MASK) {
-         mask += JIntellitype.MOD_SHIFT;
+         mask += JIntellitypeConstants.MOD_SHIFT;
       }
       if ((swingKeystrokeModifier & InputEvent.ALT_DOWN_MASK) == InputEvent.ALT_DOWN_MASK) {
-         mask += JIntellitype.MOD_ALT;
+         mask += JIntellitypeConstants.MOD_ALT;
       }
       if ((swingKeystrokeModifier & InputEvent.CTRL_DOWN_MASK) == InputEvent.CTRL_DOWN_MASK) {
-         mask += JIntellitype.MOD_CONTROL;
+         mask += JIntellitypeConstants.MOD_CONTROL;
       }
       return mask;
    }

@@ -4,7 +4,6 @@ import java.awt.Font;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import javax.swing.GroupLayout;
-import javax.swing.JComponent;
 
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -26,7 +25,7 @@ public class DataOutputDialog extends javax.swing.JDialog
 	public DataOutputDialog(JFrame frame, Object output)
 	{
 		super(frame, "Query Output");
-		GroupLayout thisLayout = new GroupLayout((JComponent)getContentPane());
+		GroupLayout thisLayout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(thisLayout);
 		{
 			textArea = new JTextArea();

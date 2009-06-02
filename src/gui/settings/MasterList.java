@@ -24,11 +24,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import lists.ListException;
 import lists.SearchListModel;
-import lists.TrackListModel;
 import common.Track;
 import data.IData;
 import data.SortOrder;
 import basics.Controller;
+
+//TODO löschen
 
 /**
  * Setting-Panel über das sie die Hauptliste verwalten lässt.
@@ -37,6 +38,7 @@ import basics.Controller;
  * 
  * @see SettingWindow
  */
+@Deprecated
 public class MasterList extends JPanel
 {
 	private static final long serialVersionUID = 6101715371957303072L;
@@ -171,7 +173,7 @@ public class MasterList extends JPanel
 									for(int i = selected.length - 1; i >= 0; i--)
 									{
 										//TODO ProgressBar o.ä.
-										data.deleteTrack(((TrackListModel)list.getListModel()).getElementAt(selected[i]));
+										data.deleteTrack(list.getListModel().getElementAt(selected[i]));
 									}									
 								}
 								catch (ListException e)
@@ -267,9 +269,9 @@ public class MasterList extends JPanel
 		}
 		catch (ListException e)
 		{
-			JLabel list = new JLabel("Kann Liste nicht laden: \n" + e.getMessage());
-			list.setForeground(Color.RED);
-			box.add(list);
+			JLabel listErrorMessage = new JLabel("Kann Liste nicht laden: \n" + e.getMessage());
+			listErrorMessage.setForeground(Color.RED);
+			box.add(listErrorMessage);
 		}
 		
 		add(box);	

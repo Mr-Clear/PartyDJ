@@ -13,6 +13,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 
@@ -47,18 +48,18 @@ public class SplashWindow extends JWindow
 		{
 			picture = new JLabel("Hier fehlt ein Bild :(");
 		}
-		picture.setHorizontalAlignment(JLabel.CENTER);
+		picture.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		info = new JLabel("Lade PartyDJ");
 		info.setFont(new Font(Font.SERIF, 0, 24));
 		info.setForeground(Color.GREEN);
-		info.setHorizontalAlignment(JLabel.CENTER);
+		info.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		timer = new JLabel("0");
 		timer.setFont(new Font(Font.SERIF, 0, 10));
-		timer.setVerticalAlignment(JLabel.BOTTOM);
+		timer.setVerticalAlignment(SwingConstants.BOTTOM);
 		timer.setForeground(Color.GREEN);
-		timer.setHorizontalAlignment(JLabel.LEFT);
+		timer.setHorizontalAlignment(SwingConstants.LEFT);
 		
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -105,7 +106,7 @@ public class SplashWindow extends JWindow
 			@Override
 			public void run()
 			{
-				//com.sun.awt.AWTUtilities.setWindowOpacity(me, opacity);
+				//com.sun.awt.AWTUtilities.setWindowOpacity(SplashWindow.this, opacity);
 				try 
 				{
 					Class<?> utils = Class.forName("com.sun.awt.AWTUtilities");
@@ -125,7 +126,6 @@ public class SplashWindow extends JWindow
 			{
 				dispose();
 			}});
-		
 	}
 
 	public long getElapsedTime()
@@ -135,15 +135,10 @@ public class SplashWindow extends JWindow
 	
 	private class UpdateTask extends TimerTask  
 	{
+		@Override
 		public void run()
 		{
-			SwingUtilities.invokeLater(new Runnable(){
-				@Override
-				public void run()
-				{
-					timer.setText(Double.toString(getElapsedTime() / 1000d));
-				}});
-			
+			timer.setText(Double.toString(getElapsedTime() / 1000d));
 		}
 	}
 }

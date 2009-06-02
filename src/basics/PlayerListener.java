@@ -25,7 +25,6 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		Track predictedTrack = null;
 		try
 		{
-			IData data = controller.getData();
 			List<String> listNames = controller.getData().getLists();
 			HashMap<Integer, String> listMap = new HashMap<Integer, String>();
 			Random random = new Random();
@@ -179,7 +178,7 @@ class PlayerListener implements PlayerContact, PlayStateListener
 	{
 		track.problem = e.problem;
 		Thread t = new Thread(){
-			public void run()
+			@Override public void run()
 			{
 				JOptionPane.showMessageDialog(null, "Fehler beim Abspielen:\n" + track.name + "\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 			}

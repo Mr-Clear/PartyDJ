@@ -66,41 +66,40 @@ public class ForeignDrop extends DropTargetAdapter
 						        	e.dropComplete(true);
 						        	return;
 						        }
-						        else
-							    {
-						        	if(e.getSource() instanceof DropTarget)
-						        	{
-						        		if(e.getDropTargetContext().getComponent() instanceof PDJList)
-						        		{
-						        			PDJList list = (PDJList) e.getDropTargetContext().getComponent();
-											ListProvider listProvider = new ListProvider();
-											Track added = listProvider.assignTrack(new Track(filePath, true));
-											
-											if(list.getListDropMode() == null)
-											{
-												e.dropComplete(false);
-												return;
-											}
-											
-											switch(list.getListDropMode())
-											{
-												case NONE:			e.rejectDrop();
-																	break;
-																		
-											}
-											if(list.getListModel() instanceof EditableListModel)
-											{
-												((EditableListModel)list.getListModel()).add(added);
-											}
-											e.dropComplete(true);
-						        		}
-						        	}
-						        	else
-						        	{
-						        		e.dropComplete(false);
-						        		return;
-						        	}
-							    }
+		    					
+								if(e.getSource() instanceof DropTarget)
+								{
+									if(e.getDropTargetContext().getComponent() instanceof PDJList)
+									{
+										PDJList list = (PDJList) e.getDropTargetContext().getComponent();
+										ListProvider listProvider = new ListProvider();
+										Track added = listProvider.assignTrack(new Track(filePath, true));
+										
+										if(list.getListDropMode() == null)
+										{
+											e.dropComplete(false);
+											return;
+										}
+										
+										switch(list.getListDropMode())
+										{
+											case NONE:			e.rejectDrop();
+																break;
+											default:			e.acceptDrop(e.getDropAction());
+																break;
+										}
+										if(list.getListModel() instanceof EditableListModel)
+										{
+											((EditableListModel)list.getListModel()).add(added);
+										}
+										e.dropComplete(true);
+									}
+								}
+								else
+								{
+									e.dropComplete(false);
+									return;
+								}
 		    				}
 				        	else
 				        		e.dropComplete(false);
@@ -160,6 +159,7 @@ public class ForeignDrop extends DropTargetAdapter
 					{
 					case NONE:			break;
 					case MOVE:			System.out.println("MOVE not supported!"); //TODO Dialog
+										break;
 					case DELETE:		if(DragListener.getList().getListModel() instanceof EditableListModel)
 										{
 											try
@@ -183,6 +183,7 @@ public class ForeignDrop extends DropTargetAdapter
 											}
 										}
 										break;
+					case COPY:
 					case COPY_OR_MOVE:	if(list.getListModel() instanceof EditableListModel)
 										{
 											if(!list.equals(DragListener.getList()))
@@ -302,8 +303,7 @@ public class ForeignDrop extends DropTargetAdapter
 				dtde.rejectDrag();
 				return;
 			}
-			else
-				dtde.acceptDrag(DnDConstants.ACTION_COPY);
+			dtde.acceptDrag(DnDConstants.ACTION_COPY);
 		}
 		else
 			dtde.rejectDrag();

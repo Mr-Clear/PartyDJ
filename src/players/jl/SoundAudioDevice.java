@@ -23,34 +23,33 @@ public class SoundAudioDevice extends AudioDeviceBase
 {
 	private SourceDataLine	source = null;
 
-	private AudioFormat		fmt = null;
+	private AudioFormat		format = null;
 
 	private byte[]			byteBuf = new byte[4096];
 
 	protected void setAudioFormat(AudioFormat fmt0)
 	{
-		fmt = fmt0;
+		format = fmt0;
 	}
 
 	protected AudioFormat getAudioFormat()
 	{
-		if (fmt==null)
+		if (format==null)
 		{
 			Decoder decoder = getDecoder();
-			fmt = new AudioFormat(decoder.getOutputFrequency(),
+			format = new AudioFormat(decoder.getOutputFrequency(),
 								  16,
 								  decoder.getOutputChannels(),
 								  true,
 								  false);
 		}
-		return fmt;
+		return format;
 	}
 
 	protected DataLine.Info getSourceLineInfo()
 	{
-		AudioFormat fmt = getAudioFormat();
-		//DataLine.Info info = new DataLine.Info(SourceDataLine.class, fmt, 4000);
-		DataLine.Info info = new DataLine.Info(SourceDataLine.class, fmt);
+		//DataLine.Info info = new DataLine.Info(SourceDataLine.class, getAudioFormat(), 4000);
+		DataLine.Info info = new DataLine.Info(SourceDataLine.class, getAudioFormat());
 		return info;
 	}
 
@@ -64,6 +63,7 @@ public class SoundAudioDevice extends AudioDeviceBase
 		}
 	}
 
+	@Override
 	protected void openImpl()
 		throws JavaLayerException
 	{
@@ -81,7 +81,7 @@ public class SoundAudioDevice extends AudioDeviceBase
             {
          		source = (SourceDataLine)line;
                 //source.open(fmt, millisecondsToBytes(fmt, 2000));
-				source.open(fmt);
+				source.open(format);
 				
                 FloatControl gainControl = (FloatControl)source.getControl(FloatControl.Type.MASTER_GAIN);
                 gainControl.setValue(-80.0f);
@@ -121,6 +121,7 @@ public class SoundAudioDevice extends AudioDeviceBase
 		return (int)(time*(fmt.getSampleRate()*fmt.getChannels()*fmt.getSampleSizeInBits())/8000.0);
 	}
 
+	@Override
 	protected void closeImpl()
 	{
 		if (source!=null)
@@ -129,6 +130,7 @@ public class SoundAudioDevice extends AudioDeviceBase
 		}
 	}
 
+	@Override
 	protected void writeImpl(short[] samples, int offs, int len)
 		throws JavaLayerException
 	{
@@ -162,6 +164,7 @@ public class SoundAudioDevice extends AudioDeviceBase
 		return b;
 	}
 
+	@Override
 	protected void flushImpl()
 	{
 		if (source!=null)

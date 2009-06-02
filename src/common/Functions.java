@@ -15,7 +15,7 @@ public class Functions
 	 */
 	public static String formatTime(double time)
 	{
-        long seconds = (long)Math.round(time);
+        long seconds = Math.round(time);
         long hours = seconds / 3600;
         seconds = seconds % 3600;
         long minutes = seconds / 60;

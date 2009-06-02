@@ -60,6 +60,7 @@ public class SettingWindow extends JFrame
 	class TreeListener extends MouseAdapter
 	{
 		TreePath lastPath;
+		@Override
 		public void mouseClicked(MouseEvent e)
 		{
 			if(SwingUtilities.isEventDispatchThread())

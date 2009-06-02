@@ -290,7 +290,7 @@ public class ClassicWindow extends JFrame
 		
 		play.addMouseListener(new MouseAdapter()
 		{
-			public void mouseClicked(MouseEvent me) 
+			@Override public void mouseClicked(MouseEvent me) 
 			{
 				player.start();
 			}
@@ -298,7 +298,7 @@ public class ClassicWindow extends JFrame
 		
 		pause.addMouseListener(new MouseAdapter()
 				{
-					public void mouseClicked(MouseEvent me) 
+					@Override public void mouseClicked(MouseEvent me) 
 					{
 						player.fadeInOut();
 					}
@@ -306,7 +306,7 @@ public class ClassicWindow extends JFrame
 
 		stop.addMouseListener(new MouseAdapter()
 				{
-					public void mouseClicked(MouseEvent me) 
+					@Override public void mouseClicked(MouseEvent me) 
 					{
 						player.stop();
 					}
@@ -314,7 +314,7 @@ public class ClassicWindow extends JFrame
 		
 		fwd.addMouseListener(new MouseAdapter()
 				{
-					public void mouseClicked(MouseEvent me) 
+					@Override public void mouseClicked(MouseEvent me) 
 					{
 						player.setPosition(player.getPosition() + 5);
 					}
@@ -322,6 +322,7 @@ public class ClassicWindow extends JFrame
 		
 		bwd.addMouseListener(new MouseAdapter()
 				{
+					@Override
 					public void mouseClicked(MouseEvent me) 
 					{
 						player.setPosition(player.getPosition() - 5);
@@ -330,7 +331,7 @@ public class ClassicWindow extends JFrame
 		
 		skipFWD.addMouseListener(new MouseAdapter()
 					{
-						public void mouseClicked(MouseEvent me) 
+						@Override public void mouseClicked(MouseEvent me) 
 						{
 							player.playNext();
 						}
@@ -338,7 +339,7 @@ public class ClassicWindow extends JFrame
 		
 		skipBWD.addMouseListener(new MouseAdapter()
 					{
-						public void mouseClicked(MouseEvent me) 
+						@Override public void mouseClicked(MouseEvent me) 
 						{
 							player.playPrevious();
 						}
@@ -346,7 +347,7 @@ public class ClassicWindow extends JFrame
 		
 		setting.addMouseListener(new MouseAdapter()
 				{
-					public void mouseClicked(MouseEvent me) 
+					@Override public void mouseClicked(MouseEvent me) 
 					{
 						controller.registerWindow(new gui.settings.SettingWindow());
 					}
@@ -521,7 +522,7 @@ public class ClassicWindow extends JFrame
 	 */
 	private Component volume()
 	{
-		volume = new JSlider(JSlider.VERTICAL, 0, 100, player.getVolume());
+		volume = new JSlider(SwingConstants.VERTICAL, 0, 100, player.getVolume());
 		JPanel panel = new JPanel(new GridBagLayout());
 		
 		GridBagConstraints c = new GridBagConstraints();
@@ -612,7 +613,7 @@ public class ClassicWindow extends JFrame
 		        }});
 			
 			getContentPane().addComponentListener(new ComponentAdapter(){  
-		        public void componentResized(ComponentEvent evt) 
+		        @Override public void componentResized(ComponentEvent evt) 
 		        {
 		            resize();
 		        }});
@@ -662,7 +663,7 @@ public class ClassicWindow extends JFrame
 					        }});
 						
 						getContentPane().addComponentListener(new ComponentAdapter(){  
-					        public void componentResized(ComponentEvent evt) 
+					        @Override public void componentResized(ComponentEvent evt) 
 					        {
 					            resize();
 					        }});
@@ -705,6 +706,7 @@ public class ClassicWindow extends JFrame
 	{
 		public int duration;
 		
+		@Override
 		public void currentTrackChanged(Track playedLast, final Track playingCurrent, Reason reason)
 		{
 			SwingUtilities.invokeLater(new Runnable(){
@@ -719,6 +721,7 @@ public class ClassicWindow extends JFrame
 			
 		}
 
+		@Override
 		public void playStateChanged(final boolean playState)
 		{
 			SwingUtilities.invokeLater(new Runnable(){
@@ -733,6 +736,7 @@ public class ClassicWindow extends JFrame
 			
 		}
 
+		@Override
 		public void volumeChanged(int vol)
 		{
 			volume.setValue(vol);
@@ -743,24 +747,18 @@ public class ClassicWindow extends JFrame
 	{
 		public void stateChanged(ChangeEvent e)
 		{
-			JSlider slider;
 			if(e.getSource() instanceof JSlider)
-				slider = (JSlider)e.getSource();
-			
-			else
-				return;
-			
-			player.setVolume(slider.getValue());
+				player.setVolume(((JSlider)e.getSource()).getValue());
 		}
 
 		@Override
-		public void volumeChanged(final int volume)
+		public void volumeChanged(final int newVolume)
 		{
 			SwingUtilities.invokeLater(new Runnable(){
 				@Override
 				public void run()
 				{
-					classicWindow.volume.setValue(volume);
+					volume.setValue(newVolume);
 				}});
 			
 		}

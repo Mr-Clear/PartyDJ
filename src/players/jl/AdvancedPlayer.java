@@ -47,7 +47,7 @@ public class AdvancedPlayer
 	/** Wenn false, sendet der Player kein playbackFinished */
 	boolean sendMessage = true;
 	private final PlayStateListener listener = new PlayStateAdapter(){
-		public void volumeChanged(int vol)
+		@Override public void volumeChanged(int vol)
 		{
 			volume = vol;
 		}};
@@ -77,7 +77,7 @@ public class AdvancedPlayer
 		volume = vol;
 	}
 	
-	public boolean play(double start) throws JavaLayerException
+	public boolean play(double start)
 	{
 		if(!skip(start))
 			return false;
@@ -85,7 +85,7 @@ public class AdvancedPlayer
 		return play();
 	}
 	
-	public boolean play() throws JavaLayerException
+	public boolean play()
 	{
 		new PlayerThread().start();
 		return true;
@@ -229,15 +229,15 @@ public class AdvancedPlayer
 	//TODO JEDE MENGE
 	private boolean skip(double newPosition)
 	{
-		double position = this.position;
-		this.position = newPosition;
-		while(position < newPosition)
+		double oldPosition = position;
+		position = newPosition;
+		while(oldPosition < newPosition)
 		{
 			Header header = null;
 			try
 			{
 				header = bitStream.readFrame();
-				position += frameDuration;
+				oldPosition += frameDuration;
 				
 			}
 			catch (BitstreamException e)
@@ -248,7 +248,7 @@ public class AdvancedPlayer
 			if(header != null)
 				bitStream.closeFrame();
 		}
-		this.position = position;
+		position = oldPosition;
 		return true;
 	}
 	
@@ -281,6 +281,7 @@ public class AdvancedPlayer
 	
 	class PlayerThread extends Thread
 	{		
+		@Override
 		public synchronized void run()
 		{
 			this.setName("AdvancedPlayer Thread");

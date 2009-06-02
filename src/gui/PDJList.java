@@ -42,7 +42,7 @@ import common.Track;
 public class PDJList extends JList
 {
 	private static final long serialVersionUID = -8653111853374564564L;
-	private ListDropMode ldMode;
+	private ListDropMode listDropMode;
 	private final TrackListModel listModel;
 	private int count = 0;
 	private PDJList list = this;
@@ -52,7 +52,7 @@ public class PDJList extends JList
 	{
 		super(listModel);
 		this.listModel = listModel;
-		initialise(ldMode, null);
+		initialise(listDropMode, null);
 	}
 	
 	public PDJList(TrackListModel listModel, final ListDropMode ldMode, final String name)
@@ -111,14 +111,14 @@ public class PDJList extends JList
 													{
 														if(pdjList.getModel() instanceof EditableListModel)
 														{
-		            								        EditableListModel listModel = (EditableListModel)pdjList.getModel();
+		            								        EditableListModel elm = (EditableListModel)pdjList.getModel();
 		            								        int[] indices = pdjList.getSelectedIndices();
 		            								 
 		            								        	for(int i = indices.length; i > 0; i--)
 		            											{
 		            												try
 		            												{
-		            													listModel.remove(indices[i-1]);
+		            													elm.remove(indices[i-1]);
 		            												}
 		            												catch (ListException e){}
 		            											}
@@ -178,12 +178,12 @@ public class PDJList extends JList
 
 	public void setListDropMode(ListDropMode ldMode)
 	{
-		this.ldMode = ldMode;
+		this.listDropMode = ldMode;
 	}
 
 	public ListDropMode getListDropMode()
 	{
-		return ldMode;
+		return listDropMode;
 	}
 
 	public TrackListModel getListModel()
@@ -201,8 +201,9 @@ public class PDJList extends JList
 		return listModel.getElementAt(listModel.getSize());
 	}
 	
-    public Track[] getSelectedValues()
-    {
+    @Override
+	public Track[] getSelectedValues()
+    {    	
         ListSelectionModel sm = getSelectionModel();
 
         int iMin = sm.getMinSelectionIndex();
@@ -327,17 +328,17 @@ public class PDJList extends JList
 		@Override
 		public void mouseClicked(final MouseEvent e)
 		{
-			final PDJList list;
+			final PDJList clickedList;
 			if(!(e.getSource() instanceof PDJList))
 				return;
-			list = (PDJList)e.getSource();
+			clickedList = (PDJList)e.getSource();
 			
 			if(SwingUtilities.isRightMouseButton(e))
 			{
 				//Alle Fenster eintragen, die rechten Mausklick unterstützen sollen.
 				if(((PDJList)e.getSource()).getTopLevelAncestor() instanceof ClassicWindow)
 				{
-					synchronized(list)
+					synchronized(clickedList)
 					{
 						SwingUtilities.invokeLater(new Runnable(){
 							@Override
@@ -345,29 +346,29 @@ public class PDJList extends JList
 							{
 								try
 								{
-									if(e.getY() / list.getFixedCellHeight() <= list.getLastVisibleIndex())
+									if(e.getY() / clickedList.getFixedCellHeight() <= clickedList.getLastVisibleIndex())
 									{
-										if(list.getSelectedIndex() == -1)
+										if(clickedList.getSelectedIndex() == -1)
 										{
-											list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+											clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
 										}
 
-										for(int i = list.getSelectedIndices().length; i > 0; i--)
+										for(int i = clickedList.getSelectedIndices().length; i > 0; i--)
 										{
-											if((int)(e.getY() / list.getFixedCellHeight()) == list.getSelectedIndices()[i-1])
+											if(e.getY() / clickedList.getFixedCellHeight() == clickedList.getSelectedIndices()[i-1])
 											{
-												if(list.getSelectedValue() != null)
+												if(clickedList.getSelectedValue() != null)
 												{
-													PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
+													PopupMenuGenerator.listPopupMenu(clickedList, (Track)clickedList.getSelectedValue()).show(clickedList, e.getX(), e.getY());
 													return;
 												}
 											}
 										}
-										list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
-										PopupMenuGenerator.listPopupMenu(list, (Track)list.getSelectedValue()).show(list, e.getX(), e.getY());
+										clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
+										PopupMenuGenerator.listPopupMenu(clickedList, (Track)clickedList.getSelectedValue()).show(clickedList, e.getX(), e.getY());
 									}
 									else
-										PopupMenuGenerator.listPopupMenu(list, null).show(list, e.getX(), e.getY());
+										PopupMenuGenerator.listPopupMenu(clickedList, null).show(clickedList, e.getX(), e.getY());
 								}
 								catch (IndexOutOfBoundsException ex)
 								{
@@ -383,14 +384,14 @@ public class PDJList extends JList
 			{
 				if(e.getClickCount() == 2)
 				{
-					int clickIndex = e.getY() / list.getFixedCellHeight();
+					int clickIndex = e.getY() / clickedList.getFixedCellHeight();
 					
-					if(list.getSelectedIndex() != clickIndex)
+					if(clickedList.getSelectedIndex() != clickIndex)
 						return;
-					if(!(list.getSelectedValue() instanceof Track))
+					if(!(clickedList.getSelectedValue() instanceof Track))
 						return;
 					
-					Track track = (Track) list.getSelectedValue();
+					Track track = (Track) clickedList.getSelectedValue();
 					try
 					{
 						Controller.getInstance().getPlayer().start(track);
@@ -404,6 +405,7 @@ public class PDJList extends JList
 			}
 		}
 		
+		@Override
 		public void mouseReleased(MouseEvent e)
 		{
 			count = 0;
@@ -418,9 +420,9 @@ public class PDJList extends JList
 					@Override
 					public void run()
 					{
-						PDJList list = (PDJList) e.getComponent();
-						if(list.getSelectedIndices().length == 0)
-							list.setSelectedIndex(e.getY() / list.getFixedCellHeight());
+						PDJList clickedList = (PDJList) e.getComponent();
+						if(clickedList.getSelectedIndices().length == 0)
+							clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
 					}});
 				
 			}

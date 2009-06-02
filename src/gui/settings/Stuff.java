@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 import javax.swing.LayoutStyle;
@@ -39,7 +38,7 @@ public class Stuff extends javax.swing.JPanel {
 	
 	private void initGUI() {
 		try {
-			GroupLayout thisLayout = new GroupLayout((JComponent)this);
+			GroupLayout thisLayout = new GroupLayout(this);
 			this.setLayout(thisLayout);
 			setPreferredSize(new Dimension(400, 300));
 			{

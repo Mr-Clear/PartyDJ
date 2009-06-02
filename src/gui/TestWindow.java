@@ -78,7 +78,7 @@ public class TestWindow extends JFrame
 	        }});
 		
 		getContentPane().addComponentListener(new ComponentAdapter(){  
-	        public void componentResized(ComponentEvent evt) 
+	        @Override public void componentResized(ComponentEvent evt) 
 	        {
 	            resize();
 	        }});
@@ -104,7 +104,7 @@ public class TestWindow extends JFrame
 		text.addActionListener(new TextBoxListener());
 
 		controller.getPlayer().addPlayStateListener(new PlayStateAdapter(){
-			public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+			@Override public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 			{
 				setTitle(playingCurrent.name);			
 			}});
