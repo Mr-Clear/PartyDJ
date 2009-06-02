@@ -27,13 +27,9 @@ public class TrackRenderer extends DefaultListCellRenderer
 {
 	private static final long serialVersionUID = 1791058448796268655L;
 	private int fontSize = 22;
-	private Font font;
-	private JList list;
 	
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
-		this.list = list;
-		font = new Font(list.getFont().getFontName(), Font.PLAIN, fontSize);
 		if(value == null)
 			return new JLabel("null"); 
 		if(!(value instanceof Track))
@@ -49,28 +45,9 @@ public class TrackRenderer extends DefaultListCellRenderer
 		return cell;
 	}
 	
-	public void setFont(Font font)
-	{
-		this.font = font;
-	}
-	
 	public void setFontSize(int point)
 	{
 		fontSize = point;
-		if(list == null)
-			font = new Font(Font.SANS_SERIF, Font.PLAIN, fontSize);	
-		else
-			font = new Font(list.getFont().getFontName(), Font.PLAIN, fontSize);
-	}
-	
-	public Font getFont()
-	{
-		return font;
-	}
-	
-	public int getFontSize()
-	{
-		return fontSize;
 	}
 
 	private class TrackListCellRendererComponent extends JPanel
@@ -121,8 +98,8 @@ public class TrackRenderer extends DefaultListCellRenderer
 			titel.setText(track.toString());
 			duration.setText(common.Functions.formatTime(track.duration));
 			
-			titel.setFont(font);
-			duration.setFont(font);
+			titel.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, fontSize));
+			duration.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, fontSize));
 					
 			if(isSelected)
 			{

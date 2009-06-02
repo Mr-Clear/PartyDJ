@@ -191,10 +191,9 @@ public class PDJList extends JList
 		return listModel;
 	}
 	
-	@Override
-	public TrackRenderer getCellRenderer()
+	public void setFontSize(int point)
 	{
-		return renderer;
+		renderer.setFontSize(point);
 	}
 	
 	public Track getLastTrack()

@@ -8,7 +8,6 @@ import gui.EditTrackWindow;
 import gui.PDJList;
 import gui.PDJScrollList;
 import gui.StatusDialog;
-import gui.TrackRenderer;
 import gui.settings.tools.ReadDuration;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -219,8 +218,7 @@ public class MainList extends JPanel
 			searchText = new JTextField();
 			CellConstraints cc = new CellConstraints();
 
-			if(list.getCellRenderer() instanceof TrackRenderer)
-				((TrackRenderer)list.getCellRenderer()).setFontSize(16);
+			list.setFontSize(16);
 			//======== this ========
 	
 			setLayout(new FormLayout(
