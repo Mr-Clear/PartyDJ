@@ -60,7 +60,8 @@ public class About extends JPanel
 			lbl = new JLabel("Ladedauer: " + Integer.parseInt(Controller.getInstance().getData().readSetting("LastLoadTime")) / 1000d + "Sekunden");
 			lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 			box.add(lbl);
-		}catch (SettingException e){}
+		}
+		catch (SettingException e){}
 
 
 		add(box);

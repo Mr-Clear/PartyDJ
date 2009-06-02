@@ -120,8 +120,7 @@ public class KeyStrokeManager extends EventQueue
 	 * @param ke KeyEvent, von dem der RawCode ausgegeben werden soll
 	 * @return
 	 */
-	@SuppressWarnings("unused")
-	private int getRawCode(KeyEvent ke)
+	public static int getRawCode(KeyEvent ke)
 	{
 		String s = ke.toString();
 		int p = s.indexOf("rawCode=") + 8;

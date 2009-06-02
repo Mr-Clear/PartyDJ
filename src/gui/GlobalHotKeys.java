@@ -11,15 +11,7 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 {
 	private static final GlobalHotKeys instance = new GlobalHotKeys();
 	private static HashMap<Integer, String> actionKeys = new HashMap<Integer, String>();
-	
-	static
-	{
-		actionKeys.put(JIntellitype.APPCOMMAND_VOLUME_UP, "volumeup");
-		actionKeys.put(JIntellitype.APPCOMMAND_VOLUME_DOWN, "volumedown");
-		actionKeys.put(JIntellitype.APPCOMMAND_MEDIA_NEXTTRACK, "next");
-		actionKeys.put(JIntellitype.APPCOMMAND_MEDIA_PREVIOUSTRACK, "prev");
-		actionKeys.put(JIntellitype.APPCOMMAND_MEDIA_PLAY_PAUSE, "play");
-	}
+	private boolean stopped;
 	
 	public static GlobalHotKeys getInstance()
 	{
@@ -59,7 +51,18 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 			return;
 		
 		if(action.equalsIgnoreCase("PLAY_PAUSE"))
-			player.fadeInOut();
+		{
+			if(stopped)
+				player.start();
+			else
+				player.fadeInOut();
+			stopped = false;
+		}
+		else if(action.equalsIgnoreCase("STOP"))
+		{
+			player.stop();
+			stopped = true;
+		}
 		else if(action.equalsIgnoreCase("NEXT"))
 			player.playNext();
 		else if(action.equalsIgnoreCase("PREVIOUS"))
