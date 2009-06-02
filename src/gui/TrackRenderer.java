@@ -26,14 +26,14 @@ import common.Track;
 public class TrackRenderer extends DefaultListCellRenderer 
 {
 	private static final long serialVersionUID = 1791058448796268655L;
-	
-//	Map<Track, TrackRenderer.TrackListCellRendererComponent> lastUpdated = new HashMap<Track, TrackRenderer.TrackListCellRendererComponent>();
+	private int fontSize = 22;
+	private Font font;
+	private JList list;
 	
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
-//		if(lastUpdated.containsKey(value))
-//			return lastUpdated.get(value);
-		
+		this.list = list;
+		font = new Font(list.getFont().getFontName(), Font.PLAIN, fontSize);
 		if(value == null)
 			return new JLabel("null"); 
 		if(!(value instanceof Track))
@@ -46,13 +46,31 @@ public class TrackRenderer extends DefaultListCellRenderer
 			Controller.getInstance().pushTrackToUpdate(track); //*/
 		
 		TrackRenderer.TrackListCellRendererComponent cell = new TrackListCellRendererComponent(list, track, index, isSelected, cellHasFocus);
-//		lastUpdated.put(track, cell);
 		return cell;
 	}
 	
-	public void enableRepaint()
+	public void setFont(Font font)
 	{
-//		lastUpdated.clear();
+		this.font = font;
+	}
+	
+	public void setFontSize(int point)
+	{
+		fontSize = point;
+		if(list == null)
+			font = new Font(Font.SANS_SERIF, Font.PLAIN, fontSize);	
+		else
+			font = new Font(list.getFont().getFontName(), Font.PLAIN, fontSize);
+	}
+	
+	public Font getFont()
+	{
+		return font;
+	}
+	
+	public int getFontSize()
+	{
+		return fontSize;
 	}
 
 	private class TrackListCellRendererComponent extends JPanel
@@ -60,7 +78,6 @@ public class TrackRenderer extends DefaultListCellRenderer
 		private static final long serialVersionUID = -1441760682667191892L;
 	
 		private JPanel me = this;
-		private int fontSize;
 		
 		public TrackListCellRendererComponent(final JList list, final Track track, final int index, final boolean isSelected, final boolean cellHasFocus)
 		{
@@ -95,7 +112,6 @@ public class TrackRenderer extends DefaultListCellRenderer
 			JLabel titel = new JLabel();
 			JLabel duration = new JLabel();	
 			
-			fontSize = 22;
 			me.setBackground(list.getBackground());
 			GridBagConstraints c = new GridBagConstraints();
 			
@@ -105,8 +121,8 @@ public class TrackRenderer extends DefaultListCellRenderer
 			titel.setText(track.toString());
 			duration.setText(common.Functions.formatTime(track.duration));
 			
-			titel.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, fontSize));
-			duration.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, fontSize));
+			titel.setFont(font);
+			duration.setFont(font);
 					
 			if(isSelected)
 			{

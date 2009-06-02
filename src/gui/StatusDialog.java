@@ -1,6 +1,5 @@
 package gui;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -16,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
@@ -47,7 +47,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 	private JLabel time;
 	Timer showTimeTimer;
 
-	public StatusDialog(final String title, final Frame owner, final StatusSupportedFunction init) 
+	public StatusDialog(final String title, final JFrame owner, final StatusSupportedFunction init) 
 	{
 		super(owner);
 		SwingUtilities.invokeLater(new Runnable(){

@@ -7,7 +7,6 @@ import gui.StatusDialog;
 import gui.settings.tools.ReadDuration;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -17,6 +16,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -43,7 +43,7 @@ public class MasterList extends JPanel
 	private PDJList list;
 	private final Controller controller = Controller.getInstance();
 	private final IData data = controller.getData();
-	private final Frame frame;
+	private final JFrame frame;
 	
 	private JComboBox sortOrderBox;
 	private JComboBox listBox;
@@ -57,7 +57,7 @@ public class MasterList extends JPanel
 	
 	private SearchListModel listModel;
 
-	public MasterList(final Frame parent)
+	public MasterList(final JFrame parent)
 	{
 		super();
 		frame = parent;

@@ -10,8 +10,6 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -24,7 +22,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
-import players.PlayStateAdapter;
 import players.PlayerException;
 import basics.Controller;
 import lists.DbMasterListModel;
@@ -76,7 +73,6 @@ public class PDJList extends JList
 	{
 		final DragDropHandler handler = new DragDropHandler();
 		
-		this.addComponentListener(new UpdateListener());
 		this.setName(name);
 		this.setListDropMode(ldMode);
 		this.setTransferHandler(handler);
@@ -170,8 +166,6 @@ public class PDJList extends JList
 		this.setCellRenderer(renderer);
 		this.setPrototypeCellValue("123-45-6789");
 		
-		Controller.getInstance().getPlayer().addPlayStateListener(new PlayerListenerForLists());
-		
 		DragListener dgl = new DragListener();
 
 		new DropTarget(this, new ForeignDrop());
@@ -195,6 +189,12 @@ public class PDJList extends JList
 	public TrackListModel getListModel()
 	{
 		return listModel;
+	}
+	
+	@Override
+	public TrackRenderer getCellRenderer()
+	{
+		return renderer;
 	}
 	
 	public Track getLastTrack()
@@ -425,43 +425,6 @@ public class PDJList extends JList
 					}});
 				
 			}
-		}
-	}
-	
-	private class PlayerListenerForLists extends PlayStateAdapter
-	{
-		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
-		{
-			if(reason == Reason.RECEIVED_NEW_TRACK || reason == Reason.TRACK_LOADED)
-				scrollToPlayed(playingCurrent);
-			renderer.enableRepaint();
-		}
-	}
-	
-	private class UpdateListener implements ComponentListener
-	{
-		@Override
-		public void componentHidden(ComponentEvent e)
-		{
-			renderer.enableRepaint();
-		}
-
-		@Override
-		public void componentMoved(ComponentEvent e)
-		{
-			renderer.enableRepaint();
-		}
-
-		@Override
-		public void componentResized(ComponentEvent e)
-		{
-			renderer.enableRepaint();
-		}
-
-		@Override
-		public void componentShown(ComponentEvent e)
-		{
-			renderer.enableRepaint();
 		}
 	}
 }

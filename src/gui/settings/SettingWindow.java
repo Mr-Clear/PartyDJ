@@ -73,7 +73,7 @@ public class SettingWindow extends JFrame
 					
 					try
 					{
-						panel.setSettingComponent(compClass.getConstructor(Frame.class).newInstance(me));
+						panel.setSettingComponent(compClass.getConstructor(JFrame.class).newInstance(me));
 					}
 					catch (Exception e1)
 					{
