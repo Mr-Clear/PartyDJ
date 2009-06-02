@@ -279,36 +279,34 @@ public class Controller
 			logError(REGULAR_ERROR, this, t, "Fehler beim Laden von Intellitype!");
 		}
 		
+		splash.setInfo("Lade Look And Feel");
+		{
+			//TODO an Anfang von Kontruktor setzen, ohne dass das ClassicWindow bäh aussieht.
+			//UI
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+			catch (ClassNotFoundException e)
+			{
+				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
+			}
+			catch (InstantiationException e)
+			{
+				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
+			}
+			catch (IllegalAccessException e)
+			{
+				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
+			}
+			catch (UnsupportedLookAndFeelException e)
+			{
+				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
+			}
+		}
 		
 		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
 		splash.close();
-
-		//TODO an Anfang von Kontruktor setzen, ohne dass das ClassicWindow bäh aussieht.
-		//UI
-		try
-		{
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		}
-		catch (ClassNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (InstantiationException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IllegalAccessException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (UnsupportedLookAndFeelException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		loadFinished = true;
 		
