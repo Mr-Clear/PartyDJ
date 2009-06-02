@@ -16,6 +16,8 @@ import java.util.Timer;
 import java.util.Stack;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import players.IPlayer;
 import players.PlayerException;
 import common.*;
@@ -200,7 +202,8 @@ public class Controller
 		splash.setInfo("Lade Fenster");
 		{
 			settingTree = new SettingNode("Einstellungen", gui.settings.About.class);
-			addSettingNode(new SettingNode("Einstellungen", gui.settings.Settings.class), settingTree);
+			addSettingNode(new SettingNode("Shuffle", gui.settings.Shuffle.class), settingTree);
+			addSettingNode(new SettingNode("HotKeys", gui.settings.HotKeys.class), settingTree);
 			addSettingNode(new SettingNode("Hauptliste", gui.settings.MasterList.class), settingTree);
 			addSettingNode(new SettingNode("Zeug", gui.settings.Stuff.class), settingTree);
 			
@@ -279,6 +282,33 @@ public class Controller
 		
 		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
 		splash.close();
+		
+		//UI
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		}
+		catch (ClassNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (InstantiationException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IllegalAccessException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (UnsupportedLookAndFeelException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		loadFinished = true;
 		
 		/*player.addPlayStateListener(new players.PlayStateAdapter(){
