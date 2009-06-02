@@ -18,7 +18,8 @@ import basics.Controller;
 public class ListProvider
 {
 	protected final Map<Integer, Track> masterList;
-	protected final IData data = Controller.getInstance().getData();
+	protected final Controller controller = Controller.getInstance();
+	protected final IData data = controller.getData();
 	
 	protected DbMasterListModel masterListModel;
 	protected Map<String, DbClientListModel> dbClientListModels = new HashMap<String, DbClientListModel>();
@@ -30,7 +31,7 @@ public class ListProvider
 		
 		for(Track track : masterList.values())
 			if(track.duration == 0 && track.problem == Track.Problem.NONE)
-				Controller.getInstance().pushTrackToUpdate(track);
+				controller.pushTrackToUpdate(track);
 	}
 	
 	public DbMasterListModel getMasterList()
@@ -64,8 +65,9 @@ public class ListProvider
 	 * 
 	 * @param track Track der synchronisiert werden soll.
 	 * @return Synchronisierter Track.
+	 * @throws ListException 
 	 */
-	public Track assignTrack(Track track)
+	public Track assignTrack(Track track) throws ListException
 	{
 		if(masterList.containsKey(track) && track == masterList.get(track))
 			return track;
@@ -74,17 +76,9 @@ public class ListProvider
 			if(track.equals(t))
 				return t;
 		}
-		try
-		{
-			data.addTrack(track);
-			return track;
-		}
-		catch (ListException e)
-		{
-			//TODO null is nix gut.
-			e.printStackTrace();
-			return null;
-		}		
+		data.addTrack(track);
+		controller.pushTrackToUpdate(track);
+		return track;
 	}
 	
 	/**Berechnet die Spielwahrscheinlichkeit einer Liste im Vergleich zu allen Anderen Listen.
