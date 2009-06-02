@@ -55,9 +55,6 @@ public class Controller
 	protected ListProvider listProvider;
 	/** Verwendeter Player */
 	protected IPlayer player;
-	/** Timer der im regelmäßigen Abstand die Dauer der Tracks aus trackUpdateStack einliest. */
-	protected Timer trackUpdateTimer; 
-
 	/** Liste aller registrierten CloseListener */ 
 	protected final Set<CloseListener> closeListener = new HashSet<CloseListener>();
 	/** Liste aller registrierten Fenster.
@@ -65,8 +62,10 @@ public class Controller
 	protected final Set<Frame> windows = new HashSet<Frame>();
 	/** RootNode der Einstellungen. Alle Einstellungen haben einen Knoten in diesem Baum. */
 	protected final SettingNode settingTree;
+	/** Timer der im regelmäßigen Abstand die Dauer der Tracks aus trackUpdateStack einliest. */
+	protected Timer trackUpdateTimer; 
 	/** Stapel mit Liedern deren Dauer eingelesen werden soll. */
-	protected Stack<Track> trackUpdateStack = new Stack<Track>();
+	final protected Stack<Track> trackUpdateStack = new Stack<Track>();
 	/** Wird am Ende des Konstruktors auf true gesetzt. */
 	protected boolean loadFinished = false;
 	protected final Scripter scripter;
@@ -253,7 +252,7 @@ public class Controller
 			}
 		}
 
-		splash.setInfo("Lade Zeug");
+		splash.setInfo("Lade Plugins");
 		{
 			try
 			{

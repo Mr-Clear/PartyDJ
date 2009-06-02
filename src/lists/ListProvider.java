@@ -17,17 +17,20 @@ import basics.Controller;
  */
 public class ListProvider
 {
-	private final Map<Integer, Track> masterList;
-	private final IData data = Controller.getInstance().getData();
+	protected final Map<Integer, Track> masterList;
+	protected final IData data = Controller.getInstance().getData();
 	
-	private DbMasterListModel masterListModel;
-	private Map<String, DbClientListModel> dbClientListModels = new HashMap<String, DbClientListModel>();
+	protected DbMasterListModel masterListModel;
+	protected Map<String, DbClientListModel> dbClientListModels = new HashMap<String, DbClientListModel>();
 	
 	public ListProvider() throws ListException
 	{
-		assert Controller.getInstance() != null : "Controller nicht geladen!";
 		masterList = data.readMasterList();
 		masterListModel = new DbMasterListModel();
+		
+		for(Track track : masterList.values())
+			if(track.duration == 0 && track.problem == Track.Problem.NONE)
+				Controller.getInstance().pushTrackToUpdate(track);
 	}
 	
 	public DbMasterListModel getMasterList()
