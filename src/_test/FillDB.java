@@ -15,6 +15,7 @@ public class FillDB
 {
 	/**
 	 * @param args Braucht keiner. 
+	 * @throws IOException 
 	 */
 	public static void mmain(String[] args) throws IOException
 	{

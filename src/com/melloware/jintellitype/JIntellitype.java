@@ -239,6 +239,7 @@ public class JIntellitype implements JIntellitypeConstants {
 
    /**
     * Removes a listener for hotkeys.
+    * @param listener Listener to remove.
     */
    public void removeHotKeyListener(HotkeyListener listener) {
       hotkeyListeners.remove(listener);
@@ -246,6 +247,7 @@ public class JIntellitype implements JIntellitypeConstants {
 
    /**
     * Removes a listener for intellitype commands.
+    * @param listener Listener to remove
     */
    public void removeIntellitypeListener(IntellitypeListener listener) {
       intellitypeListeners.remove(listener);

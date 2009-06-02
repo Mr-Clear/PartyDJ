@@ -99,7 +99,6 @@ public class AdvancedPlayer
 	/**
 	 * Closes this player. Any audio currently playing is stopped
 	 * immediately.
-	 * @throws IOException 
 	 */
 	public synchronized void close()
 	{

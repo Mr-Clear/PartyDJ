@@ -99,6 +99,7 @@ public class Functions
 	/**
 	 * Gibt den Ordner zurück in dem der PartyDJ arbeitet.
 	 * Ist normalerweise nicht das Verzeichnis in dem der PartyDJ selbst steht. 
+	 * @return Ordner, in dem der PartyDJ arbeitet.
 	 */
 	public static String getFolder()
 	{
@@ -110,6 +111,7 @@ public class Functions
 	/**
 	 * Gibt einen Dateipfad zurück, der im Arbeitsverzeichnis des PartyDJ liegt.
 	 * @param fileName Name der Datei.
+	 * @return Dateipfad, der im Arbeitsverzeichnis des PartyDJ liegt.
 	 */
 	public static String getFolder(String fileName)
 	{

@@ -39,7 +39,7 @@ import data.derby.DerbyDB;
  */
 public class Controller
 {
-	/** Verion des PartyDJ */
+	/** Version des PartyDJ */
 	public final String version = "3.0.0a";
 	
 	/** Statischer Verweis auf diese Instanz. */
@@ -366,7 +366,8 @@ public class Controller
 		return "LastPlayed";
 	}
 	
-	/** Gibt zurück ob der PartyDJ vollständig geladen ist. */
+	/** Gibt zurück ob der PartyDJ vollständig geladen ist. 
+	 * @return True, wenn der PartyDJ vollständig geladen ist.*/
 	public boolean isLoadFinished()
 	{
 		return loadFinished;
@@ -374,6 +375,7 @@ public class Controller
 	
 	/**Schiebt einen Track auf den Duration-Update-Stapel.
 	 * Damit wird die länge des Tracks eingelesen, sobald er an der Reihe ist.
+	 * @param track Track dessen Dauer eingelesen werden soll.
 	 */
 	public void pushTrackToUpdate(Track track)
 	{
@@ -421,6 +423,7 @@ public class Controller
 	/**Registriert ein Fenster.
 	 * Erstellt einen WindowsListener für das Fenster der bei windowColsing das Fenster schließt.
 	 * Wenn das letzte registrierte Fenster geschlossen wird, beendet sich der PartyDJ.
+	 * @param window Fenster das registriert werden soll.
 	 */
 	public void registerWindow(JFrame window)
 	{
@@ -441,7 +444,8 @@ public class Controller
 			closePartyDJ();
 	}
 	
-	/** CloseListener.closing wird aufgerufen bevor der PDJ geschlossen wird. */
+	/** CloseListener.closing wird aufgerufen bevor der PDJ geschlossen wird. 
+	 * @param listener Der CloseListener.*/
 	public void addCloseListener(CloseListener listener)
 	{
 		closeListener.add(listener);
@@ -454,6 +458,7 @@ public class Controller
 	/**Fügt eine SettingNode im SettingWindow ein.
 	 * 
 	 * @param node Node die eingefügt wird.
+	 * @param parent Vorhandene Node an die die neue Node als Child angehängt wird.
 	 */
 	public void addSettingNode(SettingNode node, SettingNode parent)
 	{

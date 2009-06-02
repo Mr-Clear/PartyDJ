@@ -37,7 +37,7 @@ package com.melloware.jintellitype;
  * @author Emil A. Lefkof III <info@melloware.com>
  * @version 1.3
  * 
- * @see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/winui/windowsuserinterface/userinput/keyboardinput/keyboardinputreference/keyboardinputmessages/wm_appcommand.asp
+ * @see "http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/winui/windowsuserinterface/userinput/keyboardinput/keyboardinputreference/keyboardinputmessages/wm_appcommand.asp"
  */
 public interface IntellitypeListener
 {

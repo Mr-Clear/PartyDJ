@@ -115,10 +115,10 @@ public class KeyStrokeManager extends EventQueue
 		}
 	}
 	
-	/**Gibt den RawCode eines KeyEvents zurück
+	/**Gibt den RawCode eines KeyEvents zurück.
 	 * 
-	 * @param ke KeyEvent, von dem der RawCode ausgegeben werden soll
-	 * @return
+	 * @param ke KeyEvent, von dem der RawCode ausgegeben werden soll.
+	 * @return RawCode des KeyEvents.
 	 */
 	public static int getRawCode(KeyEvent ke)
 	{
@@ -131,6 +131,7 @@ public class KeyStrokeManager extends EventQueue
 	 * 
 	 * @param modifier	Wie z.B. alt, strg oder Windows-Taste abzurufen unter JIntellitype.MOD_(was auch immer)
 	 * @param keyCode	Code der Taste
+	 * @param command	Aktion die bei dieser Taste ausgeführt werden soll.
 	 */
 	public synchronized void enableGlobalHotKey(int modifier, int keyCode, String command)
 	{

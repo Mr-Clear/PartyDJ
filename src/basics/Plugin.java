@@ -8,14 +8,14 @@ package basics;
  */
 public interface Plugin
 {
-	/** Name des Plugins. */
+	/** @return Name des Plugins.*/
 	String getName();
-	/** Beschreibung des Plugins. */
+	/** @return Beschreibung des Plugins. */
 	String getDescription();
 	/** Startet das Plugin. */
 	void start();
 	/** Beendet das Plugin und gibt alle Ressourcen frei. */
 	void stop();
-	/** Gibt an, ob das Plugin läuft. */
+	/** @return True, wenn das Plugin läuft. */
 	boolean isRunning();
 }

@@ -17,7 +17,7 @@ public interface IData
 	 * 
 	 * @param name Name der Einstellung.
 	 * @param value Wert der Einstellung.
-	 * @throws ListException
+	 * @throws SettingException
 	 */
 	void writeSetting(String name, String value) throws SettingException;
 	/**Liest eine Einstellung.
@@ -25,7 +25,7 @@ public interface IData
 	 * 
 	 * @param name Name der Einstellung.
 	 * @return Wert der Einstellung.
-	 * @throws ListException
+	 * @throws SettingException
 	 */
 	String readSetting(String name) throws SettingException;
 	/**Liest eine Einstellung.
@@ -33,7 +33,7 @@ public interface IData
 	 * @param name Name der Einstellung.
 	 * @param defaultValue Standardwert, der zurückgegeben wird, wenn Einstellung nicht vorhanden ist.
 	 * @return Wert der Einstellung.
-	 * @throws ListException
+	 * @throws SettingException
 	 */
 	String readSetting(String name, String defaultValue) throws SettingException;
 	
@@ -198,6 +198,7 @@ public interface IData
 	void swapTrack(String listName, int positionA, int positionB) throws ListException;
 	
 	/**Speichert ungesicherte Daten und schließt alle Verbindungen.
+	 * @throws ListException 
 	 */
 	void close() throws ListException;
 }

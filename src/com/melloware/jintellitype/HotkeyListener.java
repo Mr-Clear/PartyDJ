@@ -32,7 +32,7 @@ package com.melloware.jintellitype;
  * @author Emil A. Lefkof III <info@melloware.com>
  * @version 1.3
  * 
- * @see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/winui/windowsuserinterface/userinput/keyboardinput/keyboardinputreference/keyboardinputfunctions/registerhotkey.asp
+ * @see "http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/winui/windowsuserinterface/userinput/keyboardinput/keyboardinputreference/keyboardinputfunctions/registerhotkey.asp"
  */
 public interface HotkeyListener
 {

@@ -1,7 +1,6 @@
 package _test;
 
 import java.io.IOException;
-import java.util.prefs.BackingStoreException;
 
 public class Tests
 {
@@ -9,7 +8,6 @@ public class Tests
 	/**
 	 * @param args
 	 * @throws IOException 
-	 * @throws BackingStoreException 
 	 */
 	public static void main(String[] args) throws IOException
 	{

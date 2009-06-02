@@ -198,6 +198,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 	
 	/**
 	 * ThreadSafe
+	 * @param position Neue Position der StatusBar.
 	 */
 	public void setBarPosition(final int position)
 	{

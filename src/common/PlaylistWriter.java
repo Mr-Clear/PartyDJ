@@ -154,7 +154,7 @@ public class PlaylistWriter
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
 	 * @param tracks Aufzählung der Tracks die gespeichert werden.
-	 * @param fileName Dateiname der Playlist.
+	 * @param stream Stream zu der Playlist.
 	 * @param format Format in dem die Playlist gespeichert wird.
 	 * @throws IOException 
 	 */
@@ -165,7 +165,7 @@ public class PlaylistWriter
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
 	 * @param tracks Aufzählung der Tracks die gespeichert werden.
-	 * @param fileName Dateiname der Playlist.
+	 * @param stream Stream zu der Playlist.
 	 * @param format Format in dem die Playlist gespeichert wird.
 	 * @throws IOException 
 	 */
@@ -177,7 +177,7 @@ public class PlaylistWriter
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
 	 * @param tracks Liste der Tracks die gespeichert werden.
-	 * @param fileName Dateiname der Playlist.
+	 * @param stream Stream zu der Playlist.
 	 * @param format Format in dem die Playlist gespeichert wird.
 	 * @throws IOException 
 	 */
@@ -188,7 +188,7 @@ public class PlaylistWriter
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
 	 * @param tracks Liste der Tracks die gespeichert werden.
-	 * @param fileName Dateiname der Playlist.
+	 * @param stream Stream zu der Playlist.
 	 * @param format Format in dem die Playlist gespeichert wird.
 	 * @throws IOException 
 	 */
@@ -200,7 +200,7 @@ public class PlaylistWriter
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
 	 * @param tracks TrackListModel der Tracks die gespeichert werden.
-	 * @param fileName Dateiname der Playlist.
+	 * @param stream Stream zu der Playlist.
 	 * @param format Format in dem die Playlist gespeichert wird.
 	 * @throws IOException 
 	 */
@@ -211,7 +211,7 @@ public class PlaylistWriter
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
 	 * @param tracks TrackListModel der Tracks die gespeichert werden.
-	 * @param fileName Dateiname der Playlist.
+	 * @param stream Stream zu der Playlist.
 	 * @param format Format in dem die Playlist gespeichert wird.
 	 * @throws IOException 
 	 */
@@ -223,7 +223,7 @@ public class PlaylistWriter
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
 	 * @param tracks Array der Tracks die gespeichert werden.
-	 * @param fileName Dateiname der Playlist.
+	 * @param stream Stream zu der Playlist.
 	 * @param format Format in dem die Playlist gespeichert wird.
 	 * @throws IOException 
 	 */
@@ -234,7 +234,7 @@ public class PlaylistWriter
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
 	 * @param tracks Array der Tracks die gespeichert werden.
-	 * @param fileName Dateiname der Playlist.
+	 * @param stream Stream zu der Playlist.
 	 * @param format Format in dem die Playlist gespeichert wird.
 	 * @throws IOException 
 	 */
@@ -275,7 +275,8 @@ public class PlaylistWriter
 		return array;
 	}
 	
-	/** Gibt die unterstützten Formate zurück. */
+	/** Gibt die unterstützten Formate zurück. 
+	 * @return Array mit allen unterstützen Formaten.*/
 	public static Format[] getFormats()
 	{
 		return new Format[]{
@@ -293,7 +294,9 @@ public class PlaylistWriter
 		};
 	}
 	
-	/** Stellt fest, ob das angegebene Format unterstützt wird. */
+	/** Stellt fest, ob das angegebene Format unterstützt wird. 
+	 * @param format Format dass überprüft wird.
+	 * @return True, wenn das angegebene Format unterstützt wird. */
 	public static boolean isFormatSupported(String format)
 	{
 		for(Format supported : getFormats())
@@ -302,7 +305,9 @@ public class PlaylistWriter
 		return false;
 	}
 	
-	/** Gibt ein passendes Format für eine Dateinamenerweiterung zurück. */
+	/** Gibt ein passendes Format für eine Dateinamenerweiterung zurück. 
+	 * @param fileName Dateiname.
+	 * @return Passendes Format zu dem Dateinamen.*/
 	public static Format getFormatByFileName(String fileName)
 	{
 		Format ret = null;
@@ -316,7 +321,9 @@ public class PlaylistWriter
 		return ret;
 	}
 	
-	/** Gibt das format mit dem angegbenen Namen zurück. */
+	/** Gibt das format mit dem angegbenen Namen zurück. 
+	 * @param name Name des Formates.
+	 * @return Format mir dem Namen.*/
 	public static Format getFormatByName(String name)
 	{
 		for(Format f : getFormats())

@@ -185,6 +185,7 @@ public class SoundAudioDevice extends AudioDeviceBase
 
 	/**
 	 * Runs a short test by playing a short silent sound.
+	 * @throws JavaLayerException 
 	 */
 	public void test()
 		throws JavaLayerException

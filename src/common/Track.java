@@ -34,7 +34,14 @@ public class Track implements Serializable, Comparable<Track>
 	/** File-Objekt */
 	private File file;
 	
-	/**Erstellt einen neuen Track mit den angegebenen Werten
+	/**Erstellt einen neuen Track mit den angegebenen Werten.
+	 * @param index Index in der Hauptliste.
+	 * @param path Pfad der Datei.
+	 * @param name Angezeigter Name.
+	 * @param duration Dauer in Sekunden.
+	 * @param size Dateigröße in Byte.
+	 * @param problem Problem mit dem Track.
+	 * @param info Zusätzliche Info.
 	 */
 	public Track(int index, String path, String name, double duration, long size, Problem problem, String info)
 	{
@@ -49,6 +56,11 @@ public class Track implements Serializable, Comparable<Track>
 		this.file = new File(path);
 	}
 	
+	/**Erstellt einen neuen Track für die angegebene Datei.
+	 * 
+	 * @param filePath Pfad der Datei.
+	 * @param readDuration Wenn true, wird die Dauer sofort eingelesen.
+	 */
 	public Track(String filePath, boolean readDuration)
 	{
 		file = new File(filePath);
