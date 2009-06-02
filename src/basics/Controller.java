@@ -77,7 +77,7 @@ public class Controller
 	
 	
 	protected Controller(String[] args)
-	{
+	{	
 		if(instance == null)
 			instance = this;
 		else
@@ -282,7 +282,8 @@ public class Controller
 		
 		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
 		splash.close();
-		
+
+		//TODO an Anfang von Kontruktor setzen, ohne dass das ClassicWindow bäh aussieht.
 		//UI
 		try
 		{
