@@ -56,7 +56,7 @@ public class KeyStrokeManager extends EventQueue
 			}
 		}
 		raw = data.readSetting("LocalHotKeys");
-		if(raw != null)
+		if(raw != null && raw.length() > 1)
 		{
 			raw = raw.substring(1);
 			String[] regKeys = raw.split("§");
