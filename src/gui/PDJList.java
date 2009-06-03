@@ -22,6 +22,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import players.PlayStateAdapter;
 import players.PlayerException;
 import basics.Controller;
 import lists.DbMasterListModel;
@@ -41,12 +42,13 @@ import common.Track;
  */
 public class PDJList extends JList
 {
-	private static final long serialVersionUID = -8653111853374564564L;
-	private ListDropMode listDropMode;
-	private final TrackListModel listModel;
-	private int count = 0;
-	private PDJList list = this;
-	private final TrackRenderer renderer = new TrackRenderer();
+	protected static final long serialVersionUID = -8653111853374564564L;
+	protected ListDropMode listDropMode;
+	protected final TrackListModel listModel;
+	protected int count = 0;
+	protected PDJList list = this;
+	protected final TrackRenderer renderer = new TrackRenderer();
+	protected boolean scrollToPlayed = true;
 	
 	public PDJList(TrackListModel listModel)
 	{
@@ -80,6 +82,7 @@ public class PDJList extends JList
 		this.setDragEnabled(true);
 		this.addMouseMotionListener(new DragMotionListener());
 		this.addMouseListener(new ClickListener());
+		Controller.getInstance().getPlayer().addPlayStateListener(new PlayerListenerForLists());
 
 		
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl X"),TransferHandler.getCutAction().getValue(Action.NAME));
@@ -175,6 +178,11 @@ public class PDJList extends JList
 		
 		scrollToPlayed(Controller.getInstance().getPlayer().getCurrentTrack());
 	}
+	
+	public void setScrollToPlayedEnabled(boolean b)
+	{
+		scrollToPlayed = b;
+	}
 
 	public void setListDropMode(ListDropMode ldMode)
 	{
@@ -230,6 +238,9 @@ public class PDJList extends JList
     
     protected void scrollToPlayed(final Track playingCurrent)
     {
+    	if(!scrollToPlayed)
+    		return;
+    	
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
 			public void run()
@@ -244,6 +255,16 @@ public class PDJList extends JList
 				}
 			}});
     }
+    
+    protected class PlayerListenerForLists extends PlayStateAdapter
+	{
+		@Override
+		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+		{
+			if(reason == Reason.RECEIVED_NEW_TRACK || reason == Reason.TRACK_LOADED && scrollToPlayed)
+				scrollToPlayed(playingCurrent);
+		}
+	}
     	
 	private class DragMotionListener extends MouseMotionAdapter
 	{

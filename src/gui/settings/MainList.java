@@ -209,6 +209,7 @@ public class MainList extends JPanel
 			listModel = new SearchListModel(null, SortOrder.DEFAULT, null);
 			scrollPane1 = new PDJScrollList(listModel);
 			list = scrollPane1.getList();
+			list.setScrollToPlayedEnabled(false);
 			label2 = new JLabel();
 			sortOrderBox = new JComboBox(SortOrder.getStringArray());
 			label3 = new JLabel();
