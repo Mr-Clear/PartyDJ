@@ -18,21 +18,25 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import javax.swing.filechooser.FileFilter;
 import players.PlayerException;
 import basics.Controller;
 import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
+import common.PlaylistWriter;
 import common.Sort;
 import common.SortMode;
 import common.Track;
+import common.PlaylistWriter.Format;
 
 //TODO Mehrfachauswahl
 
 /**
  * Erzeugt Popup-Menüs.
  * 
- * @author Eraser, Sam
+ * @author Eraser
+ * @author Sam
  */
 
 public class PopupMenuGenerator
@@ -137,6 +141,12 @@ public class PopupMenuGenerator
 		newItem.setActionCommand("OpenFile");
 		newItem.addActionListener(listener);
 		fileMenu.add(newItem);	
+		
+		newItem = new JMenuItem("Speichern...");
+		newItem.setActionCommand("Save");
+		newItem.addActionListener(listener);
+		menu.add(newItem);
+		
 		return menu;
 	}
 }
@@ -246,7 +256,53 @@ class ListMenuItemListener implements ActionListener
 		
 		else if(command.equals("shuffle"))
 			Sort.shuffle(list);
-			
+		
+		else if(command.equals("Save"))
+		{
+			save();
+		}
+	}
+	
+	protected void save()
+	{
+		class FormatFiler extends FileFilter
+		{
+			public final Format format;
+			public FormatFiler(Format format)
+			{
+				this.format = format;
+			}
+			@Override public boolean accept(File f)
+			{
+				return f.getName().toLowerCase().endsWith(format.extension.toLowerCase());
+			}
+			@Override public String getDescription()
+			{
+				return format.description + " (" + format.extension + ")";
+			}
+		}
+		
+		Format[] formats = PlaylistWriter.getFormats();
+		JFileChooser chooser = new JFileChooser();
+		chooser.setDialogTitle("Liste als Playlist speichern.");
+
+		for(Format format : formats)
+			chooser.addChoosableFileFilter(new FormatFiler(format));
+		//TODO Standartfilter
+		int rVal = chooser.showSaveDialog(null);
+		if(rVal == JFileChooser.APPROVE_OPTION)
+		{
+			if(chooser.getFileFilter() instanceof FormatFiler)
+			{
+				Format format = ((FormatFiler)chooser.getFileFilter()).format;
+				String filePath = chooser.getSelectedFile().getPath();
+				if(chooser.getSelectedFile().getName().indexOf('.') == -1)
+					filePath += format.extension;
+				PlaylistWriter.write(list.getListModel(), filePath, format);
+			}
+			else
+				PlaylistWriter.write(list.getListModel(), chooser.getSelectedFile().getPath());
+		}
 	}
 }
 

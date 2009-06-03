@@ -7,7 +7,9 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import basics.Controller;
 import lists.TrackListModel;
 
@@ -24,7 +26,7 @@ public class PlaylistWriter
 	 */
 	public static void write(Iterable<Track> tracks, String fileName)
 	{
-		write(IterableToArray(tracks), fileName, getFormatByFileName(fileName));
+		write(toArray(tracks), fileName, getFormatByFileName(fileName));
 	}
 	/**Schreibt eine Playlist in eine Datei.
 	 * 
@@ -34,7 +36,7 @@ public class PlaylistWriter
 	 */
 	public static void write(Iterable<Track> tracks, String fileName, Format format)
 	{
-		write(IterableToArray(tracks), fileName, format);
+		write(toArray(tracks), fileName, format);
 	}
 	/**Schreibt eine Playlist in eine Datei.
 	 * 
@@ -44,7 +46,7 @@ public class PlaylistWriter
 	 */
 	public static void write(Iterable<Track> tracks, String fileName, String format)
 	{
-		write(IterableToArray(tracks), fileName, getFormatByName(format));
+		write(toArray(tracks), fileName, getFormatByName(format));
 	}
 	
 	/**Schreibt eine Playlist in eine Datei.
@@ -54,7 +56,7 @@ public class PlaylistWriter
 	 */
 	public static void write(List<Track> tracks, String fileName)
 	{
-		write(ListToArray(tracks), fileName, getFormatByFileName(fileName));
+		write(toArray(tracks), fileName, getFormatByFileName(fileName));
 	}
 	/**Schreibt eine Playlist in eine Datei.
 	 * 
@@ -64,7 +66,7 @@ public class PlaylistWriter
 	 */
 	public static void write(List<Track> tracks, String fileName, Format format)
 	{
-		write(ListToArray(tracks), fileName, format);
+		write(toArray(tracks), fileName, format);
 	}
 	/**Schreibt eine Playlist in eine Datei.
 	 * 
@@ -74,7 +76,7 @@ public class PlaylistWriter
 	 */
 	public static void write(List<Track> tracks, String fileName, String format)
 	{
-		write(ListToArray(tracks), fileName, getFormatByName(format));
+		write(toArray(tracks), fileName, getFormatByName(format));
 	}
 	
 	/**Schreibt eine Playlist in eine Datei.
@@ -84,7 +86,7 @@ public class PlaylistWriter
 	 */
 	public static void write(TrackListModel tracks, String fileName)
 	{
-		write(listModelToArray(tracks), fileName, getFormatByFileName(fileName));
+		write(toArray(tracks), fileName, getFormatByFileName(fileName));
 	}
 	/**Schreibt eine Playlist in eine Datei.
 	 * 
@@ -94,7 +96,7 @@ public class PlaylistWriter
 	 */
 	public static void write(TrackListModel tracks, String fileName, Format format)
 	{
-		write(listModelToArray(tracks), fileName, format);
+		write(toArray(tracks), fileName, format);
 	}
 	/**Schreibt eine Playlist in eine Datei.
 	 * 
@@ -104,7 +106,7 @@ public class PlaylistWriter
 	 */
 	public static void write(TrackListModel tracks, String fileName, String format)
 	{
-		write(listModelToArray(tracks), fileName, getFormatByName(format));
+		write(toArray(tracks), fileName, getFormatByName(format));
 	}
 	
 	/**Schreibt eine Playlist in eine Datei.
@@ -160,7 +162,7 @@ public class PlaylistWriter
 	 */
 	public static void write(Iterable<Track> tracks, OutputStream stream, Format format) throws IOException
 	{
-		write(IterableToArray(tracks), stream, format);
+		write(toArray(tracks), stream, format);
 	}
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
@@ -171,7 +173,7 @@ public class PlaylistWriter
 	 */
 	public static void write(Iterable<Track> tracks, OutputStream stream, String format) throws IOException
 	{
-		write(IterableToArray(tracks), stream, format);
+		write(toArray(tracks), stream, format);
 	}
 	
 	/**Schreibt eine Playlist in einen OutputStream.
@@ -183,7 +185,7 @@ public class PlaylistWriter
 	 */
 	public static void write(List<Track> tracks, OutputStream stream, Format format) throws IOException
 	{
-		write(ListToArray(tracks), stream, format);
+		write(toArray(tracks), stream, format);
 	}
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
@@ -194,7 +196,7 @@ public class PlaylistWriter
 	 */
 	public static void write(List<Track> tracks, OutputStream stream, String format) throws IOException
 	{
-		write(ListToArray(tracks), stream, format);
+		write(toArray(tracks), stream, format);
 	}
 	
 	/**Schreibt eine Playlist in einen OutputStream.
@@ -206,7 +208,7 @@ public class PlaylistWriter
 	 */
 	public static void write(TrackListModel tracks, OutputStream stream, Format format) throws IOException
 	{
-		write(listModelToArray(tracks), stream, format);
+		write(toArray(tracks), stream, format);
 	}
 	/**Schreibt eine Playlist in einen OutputStream.
 	 * 
@@ -217,7 +219,7 @@ public class PlaylistWriter
 	 */
 	public static void write(TrackListModel tracks, OutputStream stream, String format) throws IOException
 	{
-		write(listModelToArray(tracks), stream, format);
+		write(toArray(tracks), stream, format);
 	}
 	
 	/**Schreibt eine Playlist in einen OutputStream.
@@ -251,7 +253,7 @@ public class PlaylistWriter
 	}
 	
 
-	protected static Track[] listModelToArray(TrackListModel listModel)
+	protected static Track[] toArray(TrackListModel listModel)
 	{
 		Track[] array = new Track[listModel.getSize()];
 		synchronized(listModel)
@@ -261,14 +263,14 @@ public class PlaylistWriter
 		}
 		return array;
 	}
-	protected static Track[] IterableToArray(Iterable<Track> iterable)
+	protected static Track[] toArray(Iterable<Track> iterable)
 	{
 		List<Track> list = new ArrayList<Track>();
 		for(Track track : iterable)
 			list.add(track);
-		return ListToArray(list);
+		return toArray(list);
 	}
-	protected static Track[] ListToArray(List<Track> list)
+	protected static Track[] toArray(List<Track> list)
 	{
 		Track[] array = new Track[list.size()];
 		list.toArray(array);
@@ -276,22 +278,42 @@ public class PlaylistWriter
 	}
 	
 	/** Gibt die unterstützten Formate zurück. 
+	 * @param onlyHighestPriority Wenn true, wird zu jeder Dateinamenerweiterung nur das Format mit der größten Priorität zurück gegeben. 
 	 * @return Array mit allen unterstützen Formaten.*/
-	public static Format[] getFormats()
+	public static Format[] getFormats(boolean onlyHighestPriority)
 	{
-		return new Format[]{
+		Format[] ret = new Format[]{
 				new Format("M3U", ".m3u", "Einfache M3U Playlist", "Cp1252", 0),
 				new Format("EXTM3U", ".m3u", "M3U Playlist mit zusätzlichen Informationen", "Cp1252", 5),
 				new Format("M3U8", ".m3u8", "Einfache M3U Playlist im Format UTF-8", "UTF-8", 0),
 				new Format("EXTM3U8", ".m3u8", "M3U Playlist mit zusätzlichen Informationen im Format UTF-8", "UTF-8", 5),
 				new Format("PLS", ".pls", "PLS-Playlist", "Cp1252", 0),
 				/* Geplant:
-				 * PLS: http://de.wikipedia.org/wiki/PLS_(Dateiformat)
-				 * PdlList -> Serialisable
-				 * I-Tunes Format
+				 * PdjList -> Serialisable
+				 * iTunes Format
 				 * http://gonze.com/playlists/playlist-format-survey.html
 				 */
 		};
+		if(onlyHighestPriority)
+		{
+			Map<String, Format> formats = new HashMap<String, Format>();
+			for(Format format : ret)
+			{
+				Format f = formats.get(format.extension);
+				if(f == null || f.priority < format.priority)
+					formats.put(format.extension, format);
+			}
+			ret = new Format[formats.size()];
+			formats.values().toArray(ret);
+		}
+		return ret;
+	}
+	
+	/** Gibt die unterstützten Formate zurück. 
+	 * @return Array mit allen unterstützen Formaten.*/
+	public static Format[] getFormats()
+	{
+		return getFormats(false);
 	}
 	
 	/** Stellt fest, ob das angegebene Format unterstützt wird. 
@@ -413,15 +435,15 @@ public class PlaylistWriter
 	public static class Format
 	{
 		/** Name des Formates. Nicht case sensitive. */
-		final protected String name;
+		final public String name;
 		/** Übliche Dateinamenerweiterung für das Format. */
-		final protected String extension;
+		final public String extension;
 		/** Kurze Beschreibung des formates. */
-		final protected String description;
+		final public String description;
 		/** Codierung des Formats */
-		final protected String encoding;
+		final public String encoding;
 		/** Bei zwei Formaten mit gleicher Erweiterung wird das Format mit der größeren Priorität gewählt */
-		final protected int priority;
+		final public int priority;
 		
 		public Format(String formatName, String extension, String description, String encoding)
 		{
