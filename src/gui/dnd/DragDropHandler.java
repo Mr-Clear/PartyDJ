@@ -29,7 +29,7 @@ public class DragDropHandler extends TransferHandler
 		
         return true;
 	}
-	
+
 	public synchronized boolean importData(PDJList list, Transferable transferable)
 	{
 		if (!transferable.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))

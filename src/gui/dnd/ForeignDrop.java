@@ -17,6 +17,7 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DropMode;
 import javax.swing.JOptionPane;
@@ -158,25 +159,7 @@ public class ForeignDrop extends DropTargetAdapter
 										break;
 					case DELETE:		if(DragListener.getList().getListModel() instanceof EditableListModel)
 										{
-											try
-											{
-												EditableListModel elm = (EditableListModel)DragListener.getList().getListModel();
-												if(tracks.length == 1)
-													elm.remove(DragListener.getList().getSelectedIndex());
-												else
-												{
-													for(int i = 0; i < tracks.length; i++)
-													{
-														elm.remove(DragListener.getList().getSelectedIndices()[0]);
-													}
-												}
-												e.dropComplete(true);
-											}
-											catch (ListException e1)
-											{
-												// TODO Auto-generated catch block
-												e1.printStackTrace();
-											}
+											new StatusDialog("Entferne MP3s", null, new removeMP3s(DragListener.getList(), tracks));
 										}
 										break;
 					case COPY:
@@ -184,29 +167,12 @@ public class ForeignDrop extends DropTargetAdapter
 										{
 											if(!list.equals(DragListener.getList()))
 											{
-												int addIndex = e.getLocation().y / list.getFixedCellHeight() + list.getFirstVisibleIndex();
-												EditableListModel elm = (EditableListModel)list.getListModel();
-												TrackListModel dragLM = DragListener.getList().getListModel();
-												try
-												{
-													if(tracks.length == 1)
-													{
-														elm.add(addIndex, dragLM.getElementAt(DragListener.getList().getSelectedIndex()));
-													}
-													else
-													{
-														for(int i = 0; i < tracks.length; i++)
-														{
-															elm.add(addIndex, dragLM.getElementAt(DragListener.getList().getSelectedIndices()[i]));
-														}
-													}
-													e.dropComplete(true);
-												}
-												catch (ListException e1)
-												{
-													// TODO Auto-generated catch block
-													e1.printStackTrace();
-												}
+												List toAdd = new ArrayList<Track>();
+												for(Track track : tracks)
+													toAdd.add(track);
+												
+												new StatusDialog("Füge MP3s ein.", null, new addMP3s(e, toAdd, toAdd.size()));
+												e.dropComplete(true);
 											}
 											else
 											{
@@ -309,35 +275,6 @@ public class ForeignDrop extends DropTargetAdapter
 			dtde.rejectDrag();
 	}
 	
-	@Override
-	public void dragOver(DropTargetDragEvent dtde)
-	{
-		/*if(dtde.getDropTargetContext().getComponent() instanceof PDJList)
-		{
-			count++;
-			PDJList list = (PDJList) dtde.getDropTargetContext().getComponent();
-			Graphics g = list.getGraphics();
-			int loc = dtde.getLocation().y;
-			int index = loc / list.getFixedCellHeight();
-			int delta = loc - (index * list.getFixedCellHeight());
-			if(delta > 21 || delta < 9 && index > list.getListModel().getSize())
-			{
-				g.setColor(Color.RED);
-				g.fillRect(0, loc, list.getWidth(), 3);
-				if(count > 6)
-				{
-					count = 0;
-					list.repaint();
-				}
-			}
-			else if(count > 6)
-			{
-				count = 0;
-				list.repaint();
-			}
-		}*/
-	}
-	
 	protected class addMP3s implements StatusSupportedFunction
 	{
 		protected final DropTargetDropEvent  dtde;
@@ -354,7 +291,7 @@ public class ForeignDrop extends DropTargetAdapter
 			j = toAdd;
 		}
 		@Override
-		public void runFunction(StatusDialog sd)
+		public synchronized void runFunction(StatusDialog sd)
 		{
 			int count = 0;
 			sd.setBarMaximum(j);
@@ -389,6 +326,31 @@ public class ForeignDrop extends DropTargetAdapter
 
 						sd.setLabel(count + ": " + filePath);
 						sd.setBarPosition(count);
+						sd.stopTimer();
+						JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
+					}
+					else if(data.get(i) instanceof Track)
+					{
+						PDJList list = (PDJList) dtde.getDropTargetContext().getComponent();
+						ListProvider listProvider = new ListProvider();
+						
+						if(list.getListDropMode() == null)
+						{
+							dtde.dropComplete(false);
+							return;
+						}
+						
+						if(list.getListModel() instanceof EditableListModel)
+						{
+							((EditableListModel)list.getListModel()).add(listProvider.assignTrack((Track) data.get(i)));
+							count++;
+						}
+						else if(list.getListModel() instanceof DbMasterListModel)
+							if(Controller.getInstance().getData().addTrack((Track) data.get(i)) == -1)
+								count++;
+						
+						sd.setLabel(count + ": " + ((Track) data.get(i)).name);
+						sd.setBarPosition(count);
 					}
 				}
 			}
@@ -396,8 +358,6 @@ public class ForeignDrop extends DropTargetAdapter
 			{
 				le.printStackTrace();
 			}
-			sd.stopTimer();
-			JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		@Override
@@ -405,6 +365,53 @@ public class ForeignDrop extends DropTargetAdapter
 		{
 			goOn = false;
 		}
+	}
+	
+	protected class removeMP3s implements StatusSupportedFunction
+	{
+		protected final PDJList pdj;
+		protected final Track[] toAdd;
+		protected int count;
+		
+		public removeMP3s(PDJList list, Track[] tracks)
+		{
+			pdj = list;
+			toAdd = tracks;
+		}
+		
+		@Override
+		public synchronized void runFunction(StatusDialog sd)
+		{
+			if(pdj.getListModel() instanceof EditableListModel)
+			{
+				sd.setBarMaximum(toAdd.length);
+				try
+				{
+					EditableListModel elm = (EditableListModel) pdj.getListModel();
+
+					for(Track t : toAdd)
+					{
+						elm.remove(DragListener.getList().getSelectedIndex());
+						count++;
+						sd.setBarPosition(count);
+						sd.setLabel(count + " von Liste entfernt!");
+					}
+				}
+				catch (ListException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		@Override
+		public void stopTask()
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 
 }
