@@ -7,6 +7,7 @@ import java.io.FileFilter;
 import java.io.FilenameFilter;
 import javax.swing.JOptionPane;
 import basics.Controller;
+import lists.EditableListModel;
 import lists.ListException;
 import common.Track;
 
@@ -24,9 +25,17 @@ public class ReadFolder implements StatusSupportedFunction
 	private int count = 0;
 	private boolean goOn = true;
 	private final boolean searchSubFolders;
+	protected EditableListModel listModel;
 
 	public ReadFolder(String path, boolean subFolders)
 	{
+		folderPath = path;
+		searchSubFolders = subFolders;
+	}
+	
+	public ReadFolder(String path, boolean subFolders, EditableListModel elm)
+	{
+		listModel = elm;
 		folderPath = path;
 		searchSubFolders = subFolders;
 	}
@@ -39,7 +48,7 @@ public class ReadFolder implements StatusSupportedFunction
 		search(new File(folderPath), 0, 1, sd, searchSubFolders);
 
 		sd.setLabel("Fertig.");
-
+		sd.stopTimer();
 		JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
@@ -89,13 +98,15 @@ public class ReadFolder implements StatusSupportedFunction
 	
 	private void addTrack(String path, StatusDialog sd)
 	{
-		String name = path.substring(path.lastIndexOf("\\") + 1, path.lastIndexOf("."));
 		try
 		{
-			//TODO New Track(String) verwenden.
-			Track newTrack = new Track(-1, path, name, 0, new File(path).length(), Track.Problem.NONE, null);
+			Track newTrack = new Track(path, false);
 			Controller.getInstance().getData().addTrack(newTrack);
-			if(newTrack.index != -1)
+			if(listModel != null)
+			{
+				listModel.add(Controller.getInstance().getListProvider().assignTrack(newTrack));
+			}
+			if(newTrack.index != -1 || listModel != null)
 			{
 				count++;
 				sd.setLabel(count + ": " + path);

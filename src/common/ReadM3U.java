@@ -25,10 +25,19 @@ public class ReadM3U
 {
 	public static int readM3U(String filePath, Reporter<Track> rep, StatusDialog sd)
 	{
-		return readM3U(filePath, rep, sd, false);
+		return readM3U(filePath, rep, sd, false, true);
 	}
-	
-	public static int readM3U(String filePath, Reporter<Track> rep, StatusDialog sd, boolean getInfos)
+	/**
+	 * 
+	 * @param filePath
+	 * @param rep
+	 * @param sd
+	 * @param getInfos
+	 * @param onlyMasterList  true, wenn nur in die Hauptliste eingefügt wird. false, wenn in ein EditableListModel und die
+	 * 						  Hauptliste eingefügt wird.
+	 * @return
+	 */
+	public static int readM3U(String filePath, Reporter<Track> rep, StatusDialog sd, boolean getInfos, boolean onlyMasterList)
 	{
 		int count = 0;
 		int bytes = 0;
@@ -69,7 +78,7 @@ public class ReadM3U
 				final String name = line.substring(line.lastIndexOf("\\") + 1, line.lastIndexOf("."));
 				sd.setLabel(count + ": " + name);
 				boolean counted = rep.report(new Track(line, getInfos));
-				if(counted)
+				if(counted  || !onlyMasterList)
 					count++;
 				sd.setBarPosition(bytes);
 			}

@@ -5,6 +5,7 @@ import common.Reporter;
 import common.Track;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
+import lists.EditableListModel;
 import lists.ListException;
 import basics.Controller;
 
@@ -22,18 +23,25 @@ public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 {
 	private final String filePath;
 	private boolean stopped = false;
+	protected EditableListModel listModel;
 
 	public AddM3U(String path)
 	{
 		filePath = path;
+	}
+	
+	public AddM3U(String path, EditableListModel elm)
+	{
+		filePath = path;
+		listModel = elm;
 	}
 
 	public void runFunction(StatusDialog sd) 
 	{
 		int count;
 		
-		count = common.ReadM3U.readM3U(filePath, this, sd, false);
-
+		count = common.ReadM3U.readM3U(filePath, this, sd, false, listModel == null);
+		sd.stopTimer();
 		JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
@@ -46,6 +54,10 @@ public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 		try
 		{
 			newIndex = Controller.getInstance().getData().addTrack(track);
+			if(listModel != null)
+			{
+				listModel.add(Controller.getInstance().getListProvider().assignTrack(track));
+			}
 		}
 		catch (ListException ignored)
 		{

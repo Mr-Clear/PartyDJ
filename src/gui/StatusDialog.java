@@ -41,10 +41,11 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 	private JLabel statusInfo;
 	private StatusSupportedFunction initialiser;
 	private StatusThread thread;
+	long elapsedTime;
 	
 	private final long startTime = System.currentTimeMillis(); 
 	private JLabel time;
-	Timer showTimeTimer;
+	protected Timer showTimeTimer;
 
 	public StatusDialog(final String title, final JFrame owner, final StatusSupportedFunction init) 
 	{
@@ -75,7 +76,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 					{
 						if(statusBar.getValue() > 0)
 						{
-							long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
+							elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
 							long remainingTime = elapsedTime * (statusBar.getMaximum() - statusBar.getValue()) / statusBar.getValue();
 							Calendar cal = Calendar.getInstance();
 							cal.add(Calendar.SECOND, (int)remainingTime);
@@ -85,7 +86,6 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 									//" Fertig: " + common.Functions.formatTime((System.currentTimeMillis() / 1000 + remainingTime) % 86400));
 						}
 					}});
-				
 				showTimeTimer.start();
 				StatusDialog.this.setVisible(true);
 			}});
@@ -104,7 +104,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 		}
 		{
 			time = new JLabel();
-			time.setText("k.A.");
+//			time.setText("k.A.");
 			time.setHorizontalTextPosition(SwingConstants.RIGHT);
 		}
 		{
@@ -212,13 +212,21 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 		
 	}
 	
+	/**
+	 * Stoppt den Timer des StatusDialoges.
+	 */
+	public void stopTimer()
+	{
+		showTimeTimer.stop();
+		time.setText("Vergangen: " + common.Functions.formatTime(elapsedTime));
+	}
+	
 	class StatusThread extends Thread
 	{
 		@Override
 		public void run()
 		{
 			initialiser.runFunction(StatusDialog.this);
-			showTimeTimer.stop();
 			SwingUtilities.invokeLater(new Runnable(){
 				@Override
 				public void run()
@@ -248,6 +256,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 		public void windowClosing(WindowEvent e)
 		{
 			initialiser.stopTask();
+			showTimeTimer.stop();
 		}
 		public void windowClosed(WindowEvent e)
 		{

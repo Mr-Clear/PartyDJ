@@ -37,7 +37,7 @@ public class ForeignDrop extends DropTargetAdapter
 {
 	private int count;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "incomplete-switch" })
 	@Override
 	public synchronized void drop(final DropTargetDropEvent e) 
 	{
@@ -59,41 +59,51 @@ public class ForeignDrop extends DropTargetAdapter
 		    				if(data.get(i) instanceof File)
 		    				{
 		    					String filePath = ((File)data.get(i)).getAbsolutePath();
+		    					if(((File)data.get(i)).isDirectory())
+		    					{
+		    						if(e.getDropTargetContext().getComponent() instanceof PDJList)
+		    						{
+		    							TrackListModel tlm = ((PDJList) e.getDropTargetContext().getComponent()).getListModel();
+		    							if(tlm instanceof EditableListModel)
+		    								new StatusDialog("Lese Ordner", null, new gui.settings.tools.ReadFolder(filePath, true, (EditableListModel) tlm));
+		    							e.dropComplete(true);
+		    							return;
+		    						}
+		    					}
+		    			    	
 		    					if(filePath.toLowerCase().endsWith(".m3u"))
 						        {
-		    						//TODO Welche Liste? readM3u statt add
-						        	new StatusDialog("Lese M3U", null, new gui.settings.tools.AddM3U(filePath));
-						        	e.dropComplete(true);
-						        	return;
+		    						if(e.getDropTargetContext().getComponent() instanceof PDJList)
+		    						{
+		    							TrackListModel tlm = ((PDJList) e.getDropTargetContext().getComponent()).getListModel();
+		    							if(tlm instanceof EditableListModel)
+		    								new StatusDialog("Lese M3U", null, new gui.settings.tools.AddM3U(filePath, (EditableListModel) tlm));
+							        	e.dropComplete(true);
+							        	return;
+		    						}
 						        }
-		    					
-								if(e.getSource() instanceof DropTarget)
+		    					else if(e.getDropTargetContext().getComponent() instanceof PDJList && filePath.toLowerCase().endsWith(".mp3"))
 								{
-									if(e.getDropTargetContext().getComponent() instanceof PDJList)
+									PDJList list = (PDJList) e.getDropTargetContext().getComponent();
+									ListProvider listProvider = new ListProvider();
+									Track added = listProvider.assignTrack(new Track(filePath, false));
+									
+									if(list.getListDropMode() == null)
 									{
-										PDJList list = (PDJList) e.getDropTargetContext().getComponent();
-										ListProvider listProvider = new ListProvider();
-										Track added = listProvider.assignTrack(new Track(filePath, true));
-										
-										if(list.getListDropMode() == null)
-										{
-											e.dropComplete(false);
-											return;
-										}
-										
-										switch(list.getListDropMode())
-										{
-											case NONE:			e.rejectDrop();
-																break;
-											default:			e.acceptDrop(e.getDropAction());
-																break;
-										}
-										if(list.getListModel() instanceof EditableListModel)
-										{
-											((EditableListModel)list.getListModel()).add(added);
-										}
-										e.dropComplete(true);
+										e.dropComplete(false);
+										return;
 									}
+									
+									switch(list.getListDropMode())
+									{
+										case NONE:			e.rejectDrop();
+															break;
+									}
+									if(list.getListModel() instanceof EditableListModel)
+									{
+										((EditableListModel)list.getListModel()).add(added);
+									}
+									e.dropComplete(true);
 								}
 								else
 								{
