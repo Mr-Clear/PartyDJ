@@ -199,6 +199,25 @@ public class Controller
 		scripter = new Scripter();
 		
 		splash.setOpacity(0.95f);
+		splash.setInfo("Lade Fenster");
+		{
+			settingTree = new SettingNode("Einstellungen", gui.settings.About.class);
+			addSettingNode(new SettingNode("Hauptliste", gui.settings.MainList.class), settingTree);
+			addSettingNode(new SettingNode("Shuffle", gui.settings.Shuffle.class), settingTree);
+			addSettingNode(new SettingNode("HotKeys", gui.settings.HotKeys.class), settingTree);
+			addSettingNode(new SettingNode("Verschiedenes", gui.settings.Miscellaneous.class), settingTree);
+			addSettingNode(new SettingNode("Zeug", gui.settings.Stuff.class), settingTree);
+			
+			if(windowsToLoad.size() == 0)
+				windowsToLoad.add("gui.ClassicWindow");
+			
+			for(String window : windowsToLoad)
+			{
+				loadWindow(window);
+			}
+		}
+		
+		splash.setOpacity(1f);
 		if(listProvider.getMasterList().getSize() == 0)
 		{
 			registerWindow(new gui.SetupWindow());
@@ -234,31 +253,11 @@ public class Controller
 						catch (NumberFormatException e){}catch (SettingException e){}
 						
 						player.setPosition(pos = pos >= 0 ? pos : lastPosition, false);
-						System.out.println("posarrived");
 						if(autoPlay)
 							player.fadeIn();
 					}
 					catch (PlayerException e){logError(UNIMPORTANT_ERROR, this, e, "player.load(firstTrack);");}
 				}
-			}
-		}
-		
-		splash.setOpacity(1f);
-		splash.setInfo("Lade Fenster");
-		{
-			settingTree = new SettingNode("Einstellungen", gui.settings.About.class);
-			addSettingNode(new SettingNode("Hauptliste", gui.settings.MainList.class), settingTree);
-			addSettingNode(new SettingNode("Shuffle", gui.settings.Shuffle.class), settingTree);
-			addSettingNode(new SettingNode("HotKeys", gui.settings.HotKeys.class), settingTree);
-			addSettingNode(new SettingNode("Verschiedenes", gui.settings.Miscellaneous.class), settingTree);
-			addSettingNode(new SettingNode("Zeug", gui.settings.Stuff.class), settingTree);
-			
-			if(windowsToLoad.size() == 0)
-				windowsToLoad.add("gui.ClassicWindow");
-			
-			for(String window : windowsToLoad)
-			{
-				loadWindow(window);
 			}
 		}
 
