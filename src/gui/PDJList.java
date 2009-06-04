@@ -130,6 +130,8 @@ public class PDJList extends JList
 														else if(pdjList.getModel() instanceof DbMasterListModel)
 														{
 															int[] indices = pdjList.getSelectedIndices();
+															if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Alle " + indices.length + " wirklich löschen?", "PartyDJ", JOptionPane.YES_NO_OPTION))
+																return;
 															for(int i = indices.length; i > 0; i--)
 	            											{
 	            												try

@@ -314,20 +314,22 @@ public class ForeignDrop extends DropTargetAdapter
 							dtde.dropComplete(false);
 							return;
 						}
-						
+
 						if(list.getListModel() instanceof EditableListModel)
 						{
 							((EditableListModel)list.getListModel()).add(listProvider.assignTrack(new Track(filePath, false)));
 							count++;
 						}
 						else if(list.getListModel() instanceof DbMasterListModel)
-							if(Controller.getInstance().getData().addTrack(new Track(filePath, false)) == -1)
+						{
+							int a = Controller.getInstance().getData().addTrack(new Track(filePath, false));
+							if(a != -1)
 								count++;
+						}
 
 						sd.setLabel(count + ": " + filePath);
 						sd.setBarPosition(count);
 						sd.stopTimer();
-						JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
 					}
 					else if(data.get(i) instanceof Track)
 					{
@@ -339,15 +341,18 @@ public class ForeignDrop extends DropTargetAdapter
 							dtde.dropComplete(false);
 							return;
 						}
-						
+
 						if(list.getListModel() instanceof EditableListModel)
 						{
 							((EditableListModel)list.getListModel()).add(listProvider.assignTrack((Track) data.get(i)));
 							count++;
 						}
 						else if(list.getListModel() instanceof DbMasterListModel)
-							if(Controller.getInstance().getData().addTrack((Track) data.get(i)) == -1)
+						{
+							int a = Controller.getInstance().getData().addTrack((Track) data.get(i));
+							if(a != -1)
 								count++;
+						}
 						
 						sd.setLabel(count + ": " + ((Track) data.get(i)).name);
 						sd.setBarPosition(count);
@@ -358,6 +363,8 @@ public class ForeignDrop extends DropTargetAdapter
 			{
 				le.printStackTrace();
 			}
+			if(data.get(0) instanceof File)
+				JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		@Override

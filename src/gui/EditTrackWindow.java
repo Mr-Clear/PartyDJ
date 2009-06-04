@@ -69,6 +69,13 @@ public class EditTrackWindow extends JDialog
 		add(lblPfad, c);
 		
 		txtPath = new JTextField(track.path);
+		txtPath.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				String name = txtPath.getText().substring(txtPath.getText().lastIndexOf("\\") + 1, txtPath.getText().lastIndexOf("."));
+				txtName.setText(name);
+			}});
 		c = new GridBagConstraints();
 		c.insets = insets;
 		c.gridx = 1;
@@ -273,22 +280,25 @@ public class EditTrackWindow extends JDialog
 		{
 			int changeCount = 0;
 			Track.TrackElement change = Track.TrackElement.NAME;
-			if(!myTrack.path.equals(txtPath.getText()))
-			{
-				if(!new File(txtPath.getText()).exists())
-				{
-					if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Angegebene Datei existiert nicht.\nTrotzdem ändern?", "PartyDJ", JOptionPane.YES_NO_OPTION))
-						return;
-				}
-				changeCount++;
-				myTrack.path = txtPath.getText();
-				change = Track.TrackElement.PATH;
-			}
+
 			if(!myTrack.name.equals(txtName.getText()))
 			{
 				changeCount++;
 				myTrack.name = txtName.getText();
 				change = Track.TrackElement.NAME;
+			}
+			if(!myTrack.path.equals(txtPath.getText()))
+			{
+				if(!new File(txtPath.getText()).exists())
+				{
+					if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Datei wirklich umbennen bzw. verschieben?", "PartyDJ", JOptionPane.YES_NO_OPTION))
+						return;
+				}
+				changeCount++;
+
+				new File(myTrack.path).renameTo(new File(txtPath.getText()));
+				myTrack.path = txtPath.getText();
+				change = Track.TrackElement.PATH;
 			}
 			if(myTrack.problem != Problem.arrayIndexToProblem(cmbProblem.getSelectedIndex()))
 			{
@@ -336,7 +346,7 @@ public class EditTrackWindow extends JDialog
 				catch (ListException e)
 				{
 					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Fehler bei Update:\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Fehler bei Update:\nExistiert die Datei im Zielverzeichnis bereits?\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
