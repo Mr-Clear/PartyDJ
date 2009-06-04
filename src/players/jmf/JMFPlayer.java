@@ -344,4 +344,16 @@ public class JMFPlayer implements IPlayer
 			return;
 		}
 	}
+
+	@Override
+	@Deprecated
+	public void setPosition(double seconds, boolean autoPlay)
+	{
+//		if(seconds < 0)
+//			seconds = 0;
+//		else if(seconds > getDuration())
+//			seconds = getDuration();
+//		
+//		player.setMediaTime(new Time(seconds));
+	}
 }

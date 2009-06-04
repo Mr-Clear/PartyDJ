@@ -68,9 +68,17 @@ public interface IPlayer
 	int getVolume();
 	
 	/** Setzt die Position im Track suf die angegebene Position.
-	 * @param Seconds Neue Position in Sekunden.
+	 * @param Seconds neue Position in Sekunden.
 	 */
 	void setPosition(double Seconds);
+
+	/**
+	 * 
+	 * @param d Seconds neue Position in Sekunden.
+	 * @param b	Ob nach setzen der Zeit automatisch abgespielt werden soll oder nicht.
+	 */
+	void setPosition(double d, boolean b);
+	
 	/** Setzt die Lautstärke des Players.
 	 *  @param Volume Lautstärke in Prozent.
 	 */

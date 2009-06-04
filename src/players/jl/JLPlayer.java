@@ -235,12 +235,20 @@ public class JLPlayer implements IPlayer, PlaybackListener
 
 	public synchronized void setPosition(double seconds)
 	{
+		setPosition(seconds, true);
+	}
+	
+	public synchronized void setPosition(double seconds, boolean autoFadeIn)
+	{
 		p.sendMessage = false;
 		p.fadeDuration = 300;
 		p.fadeOut();
-		p = null;
 		tempPosition = seconds;
-		fadeIn();
+		if(autoFadeIn)
+		{
+			p = null;
+			fadeIn();
+		}
 	}
 
 	public void setVolume(int volume)
