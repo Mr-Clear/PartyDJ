@@ -122,80 +122,31 @@ public class ClassicWindow extends JFrame
 	{
 		final JPanel control = new JPanel(new GridBagLayout());
 		
-		if(SwingUtilities.isEventDispatchThread())
-		{
-			GridBagConstraints c = new GridBagConstraints();
-					
-			c.insets = new Insets(0, 5, 0, 5);
-			c.anchor = GridBagConstraints.WEST;
-			c.fill = GridBagConstraints.BOTH;
-			control.setBackground(Color.darkGray);	
-			
-			c.weightx = 0.0;
-			c.weighty = 0.0;
-			c.ipadx = 10;
-			c.gridx = 0;
-			c.gridy = 0;
-			control.add(buttons(), c);
-			
-			c.weightx = 0.0;
-			c.weighty = 0.0;
-			c.ipadx = 50;
-			c.gridx = 1;
-			control.add(volume(), c);
-			
-			c.weightx = 1.0;
-			c.weighty = 0.0;
-			c.ipadx = 500;
-			c.gridx = 2;
-			control.add(slider(), c);
-		}
-		else
-			try
-			{
-				SwingUtilities.invokeAndWait(new Runnable(){
-
-					@Override
-					public void run()
-					{
-						GridBagConstraints c = new GridBagConstraints();
-						
-						c.insets = new Insets(0, 5, 0, 5);
-						c.anchor = GridBagConstraints.WEST;
-						c.fill = GridBagConstraints.BOTH;
-						control.setBackground(Color.darkGray);	
-						
-						c.weightx = 0.0;
-						c.weighty = 0.0;
-						c.ipadx = 10;
-						c.gridx = 0;
-						c.gridy = 0;
-						control.add(buttons(), c);
-						
-						c.weightx = 0.0;
-						c.weighty = 0.0;
-						c.ipadx = 50;
-						c.gridx = 1;
-						control.add(volume(), c);
-						
-						c.weightx = 1.0;
-						c.weighty = 0.0;
-						c.ipadx = 500;
-						c.gridx = 2;
-						control.add(slider(), c);
-					}});
-			}
-			catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (InvocationTargetException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		GridBagConstraints c = new GridBagConstraints();
+				
+		c.insets = new Insets(0, 5, 0, 5);
+		c.anchor = GridBagConstraints.WEST;
+		c.fill = GridBagConstraints.BOTH;
+		control.setBackground(Color.darkGray);	
 		
+		c.weightx = 0.0;
+		c.weighty = 0.0;
+		c.ipadx = 10;
+		c.gridx = 0;
+		c.gridy = 0;
+		control.add(buttons(), c);
+		
+		c.weightx = 0.0;
+		c.weighty = 0.0;
+		c.ipadx = 50;
+		c.gridx = 1;
+		control.add(volume(), c);
+		
+		c.weightx = 1.0;
+		c.weighty = 0.0;
+		c.ipadx = 500;
+		c.gridx = 2;
+		control.add(slider(), c);
 				
 		return control;
 	}
@@ -546,13 +497,7 @@ public class ClassicWindow extends JFrame
 	
 	public void setVolume(final int vol)
 	{
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run()
-			{
-				volume.setValue(vol);
-			}});
+		volume.setValue(vol);
 	}
 	
 	
@@ -576,8 +521,6 @@ public class ClassicWindow extends JFrame
 	
 	private void manageSize()
 	{
-		if(SwingUtilities.isEventDispatchThread())
-		{
 			try
 			{
 				setSize(Integer.parseInt(data.readSetting("ClassicWindowWidth", "800")), Integer.parseInt(data.readSetting("ClassicWindowHeight", "600")));
@@ -619,68 +562,6 @@ public class ClassicWindow extends JFrame
 		        }});
 		
 			resize();
-		}
-		else
-			try
-			{
-				SwingUtilities.invokeAndWait(new Runnable(){
-
-					@Override
-					public void run()
-					{
-						try
-						{
-							setSize(Integer.parseInt(data.readSetting("ClassicWindowWidth", "800")), Integer.parseInt(data.readSetting("ClassicWindowHeight", "600")));
-						}
-						catch (NumberFormatException e1)
-						{
-							setSize(800, 600);
-						}
-						catch (SettingException e1)
-						{
-							setSize(800, 600);
-						}
-						
-						try
-						{
-							setExtendedState(Integer.parseInt(data.readSetting("ClassicWindowState", Integer.toString(MAXIMIZED_BOTH))));
-						}
-						catch (NumberFormatException e)
-						{
-							setExtendedState(MAXIMIZED_BOTH);
-						}
-						catch (SettingException e)
-						{
-							setExtendedState(MAXIMIZED_BOTH);
-						}
-						
-						classicWindow.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
-						
-						addWindowStateListener(new WindowStateListener(){
-							public void windowStateChanged(WindowEvent evt)
-					        {
-					            resize();
-					        }});
-						
-						getContentPane().addComponentListener(new ComponentAdapter(){  
-					        @Override public void componentResized(ComponentEvent evt) 
-					        {
-					            resize();
-					        }});
-					
-						resize();
-					}});
-			}
-			catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (InvocationTargetException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 	}
 	
 	/** Wird aufgerufen wenn sich die Größe des Fensters ändert.*/

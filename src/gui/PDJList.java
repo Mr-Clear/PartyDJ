@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JList;
@@ -61,13 +62,29 @@ public class PDJList extends JList
 	{
 		super(listModel);
 		this.listModel = listModel;
-		SwingUtilities.invokeLater(new Runnable(){
-
-			@Override
-			public void run()
+		if(SwingUtilities.isEventDispatchThread())
+			initialise(ldMode, name);
+		else
+			try
 			{
-				initialise(ldMode, name);
-			}});
+				SwingUtilities.invokeAndWait(new Runnable(){
+
+					@Override
+					public void run()
+					{
+						initialise(ldMode, name);
+					}});
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (InvocationTargetException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
 	}
 	
@@ -279,69 +296,64 @@ public class PDJList extends JList
 		{	
 			if(SwingUtilities.isMiddleMouseButton(dge))
 			{
-				SwingUtilities.invokeLater(new Runnable(){
-					@Override
-					public void run()
+				if(dge.getComponent() instanceof PDJList)
+				{
+					PDJList pdjList = ((PDJList)dge.getComponent());
+					listSize = pdjList.getModel().getSize();
+					index = dge.getY() / pdjList.getFixedCellHeight();
+					
+					if(index > pdjList.getLastVisibleIndex())
 					{
-						if(dge.getComponent() instanceof PDJList)
+						index = pdjList.getLastVisibleIndex();
+					}
+					if(index < 0)
+					{
+						index = 0;
+					}
+					if(index >= 0)
+					{
+						if(count == 0)
 						{
-							PDJList pdjList = ((PDJList)dge.getComponent());
-							listSize = pdjList.getModel().getSize();
-							index = dge.getY() / pdjList.getFixedCellHeight();
+							if(index > listSize)
+								startIndex = listSize - 1;
 							
-							if(index > pdjList.getLastVisibleIndex())
-							{
-								index = pdjList.getLastVisibleIndex();
-							}
-							if(index < 0)
-							{
-								index = 0;
-							}
-							if(index >= 0)
-							{
-								if(count == 0)
-								{
-									if(index > listSize)
-										startIndex = listSize - 1;
-									
-									else
-										startIndex = index;
-								}
-								
-								pdjList.ensureIndexIsVisible(index);
-								
-								if(index == startIndex)
-									pdjList.setSelectedIndex(index);
-								
-								if(startIndex < index)
-								{
-									pdjList.setSelectionInterval(index, startIndex);
-									pdjList.ensureIndexIsVisible(index + 2);
-								}
-								
-								if(index < startIndex)
-								{
-									pdjList.setSelectionInterval(startIndex, index);
-									pdjList.ensureIndexIsVisible(index - 2);
-								}
-							}
-							
-							if(index < 0)
-							{
-								if(count == 0)
-								{
-									startIndex = 0;
-								}
-								
-								if(startIndex > index)
-								{
-									pdjList.setSelectionInterval(startIndex, 0);
-									pdjList.ensureIndexIsVisible(0);
-								}
-							}
-						}	
-						count++;
-					}});
+							else
+								startIndex = index;
+						}
+						
+						pdjList.ensureIndexIsVisible(index);
+						
+						if(index == startIndex)
+							pdjList.setSelectedIndex(index);
+						
+						if(startIndex < index)
+						{
+							pdjList.setSelectionInterval(index, startIndex);
+							pdjList.ensureIndexIsVisible(index + 2);
+						}
+						
+						if(index < startIndex)
+						{
+							pdjList.setSelectionInterval(startIndex, index);
+							pdjList.ensureIndexIsVisible(index - 2);
+						}
+					}
+					
+					if(index < 0)
+					{
+						if(count == 0)
+						{
+							startIndex = 0;
+						}
+						
+						if(startIndex > index)
+						{
+							pdjList.setSelectionInterval(startIndex, 0);
+							pdjList.ensureIndexIsVisible(0);
+						}
+					}
+				}	
+				count++;
 			}
 		}
 	}
@@ -363,41 +375,36 @@ public class PDJList extends JList
 				{
 					synchronized(clickedList)
 					{
-						SwingUtilities.invokeLater(new Runnable(){
-							@Override
-							public void run()
+						try
+						{
+							if(e.getY() / clickedList.getFixedCellHeight() <= clickedList.getLastVisibleIndex())
 							{
-								try
+								if(clickedList.getSelectedIndex() == -1)
 								{
-									if(e.getY() / clickedList.getFixedCellHeight() <= clickedList.getLastVisibleIndex())
-									{
-										if(clickedList.getSelectedIndex() == -1)
-										{
-											clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
-										}
+									clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
+								}
 
-										for(int i = clickedList.getSelectedIndices().length; i > 0; i--)
-										{
-											if(e.getY() / clickedList.getFixedCellHeight() == clickedList.getSelectedIndices()[i-1])
-											{
-												if(clickedList.getSelectedValue() != null)
-												{
-													PopupMenuGenerator.listPopupMenu(clickedList, (Track)clickedList.getSelectedValue()).show(clickedList, e.getX(), e.getY());
-													return;
-												}
-											}
-										}
-										clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
-										PopupMenuGenerator.listPopupMenu(clickedList, (Track)clickedList.getSelectedValue()).show(clickedList, e.getX(), e.getY());
-									}
-									else
-										PopupMenuGenerator.listPopupMenu(clickedList, null).show(clickedList, e.getX(), e.getY());
-								}
-								catch (IndexOutOfBoundsException ex)
+								for(int i = clickedList.getSelectedIndices().length; i > 0; i--)
 								{
-									return;
+									if(e.getY() / clickedList.getFixedCellHeight() == clickedList.getSelectedIndices()[i-1])
+									{
+										if(clickedList.getSelectedValue() != null)
+										{
+											PopupMenuGenerator.listPopupMenu(clickedList, (Track)clickedList.getSelectedValue()).show(clickedList, e.getX(), e.getY());
+											return;
+										}
+									}
 								}
-							}});
+								clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
+								PopupMenuGenerator.listPopupMenu(clickedList, (Track)clickedList.getSelectedValue()).show(clickedList, e.getX(), e.getY());
+							}
+							else
+								PopupMenuGenerator.listPopupMenu(clickedList, null).show(clickedList, e.getX(), e.getY());
+						}
+						catch (IndexOutOfBoundsException ex)
+						{
+							return;
+						}
 					}
 				}
 				
@@ -439,15 +446,9 @@ public class PDJList extends JList
 		{
 			if(e.getComponent() instanceof PDJList)
 			{
-				SwingUtilities.invokeLater(new Runnable(){
-					@Override
-					public void run()
-					{
-						PDJList clickedList = (PDJList) e.getComponent();
-						if(clickedList.getSelectedIndices().length == 0)
-							clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
-					}});
-				
+				PDJList clickedList = (PDJList) e.getComponent();
+				if(clickedList.getSelectedIndices().length == 0)
+					clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
 			}
 		}
 	}

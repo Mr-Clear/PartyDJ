@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Shape;
 import java.awt.Window;
 import java.awt.geom.RoundRectangle2D;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,6 +32,32 @@ public class SplashWindow extends JWindow
 	private long startTime;
 
 	public SplashWindow()
+	{
+		if(SwingUtilities.isEventDispatchThread())
+			init();
+		else
+			try
+			{
+				SwingUtilities.invokeAndWait(new Runnable(){
+					@Override
+					public void run()
+					{
+						init();
+					}});
+			}
+			catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (InvocationTargetException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	
+	public void init()
 	{
 		startTime = System.currentTimeMillis();
 
@@ -90,32 +117,20 @@ public class SplashWindow extends JWindow
 	
 	public void setInfo(final String infoString)
 	{
-		SwingUtilities.invokeLater(new Runnable(){
-			@Override
-			public void run()
-			{
-				info.setText(infoString);
-				timer.setText(Double.toString(getElapsedTime() / 1000d));
-			}});
-		
+		info.setText(infoString);
+		timer.setText(Double.toString(getElapsedTime() / 1000d));
 	}
 	
 	public void setOpacity(final float opacity)
 	{
-		SwingUtilities.invokeLater(new Runnable(){
-			@Override
-			public void run()
-			{
-				//com.sun.awt.AWTUtilities.setWindowOpacity(SplashWindow.this, opacity);
-				try 
-				{
-					Class<?> utils = Class.forName("com.sun.awt.AWTUtilities");
-					Method method = utils.getMethod("setWindowOpacity", Window.class, float.class);
-					method.invoke(this, SplashWindow.this, opacity);
-				}
-				catch(Exception ignored){}
-			}});
-		
+		//com.sun.awt.AWTUtilities.setWindowOpacity(SplashWindow.this, opacity);
+		try 
+		{
+			Class<?> utils = Class.forName("com.sun.awt.AWTUtilities");
+			Method method = utils.getMethod("setWindowOpacity", Window.class, float.class);
+			method.invoke(this, SplashWindow.this, opacity);
+		}
+		catch(Exception ignored){}
 	}
 	
 	public void close()
@@ -138,7 +153,29 @@ public class SplashWindow extends JWindow
 		@Override
 		public void run()
 		{
-			timer.setText(Double.toString(getElapsedTime() / 1000d));
+			if(SwingUtilities.isEventDispatchThread())
+					timer.setText(Double.toString(getElapsedTime() / 1000d));
+			else
+				try
+				{
+					SwingUtilities.invokeAndWait(new Runnable(){
+
+						@Override
+						public void run()
+						{
+							timer.setText(Double.toString(getElapsedTime() / 1000d));
+						}});
+				}
+				catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				catch (InvocationTargetException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 	}
 }
