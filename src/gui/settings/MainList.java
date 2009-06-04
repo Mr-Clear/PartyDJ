@@ -312,7 +312,7 @@ public class MainList extends JPanel
 			add(completeDuration, cc.xywh(7, 15, 3, 1));
 	
 			//---- songsSelected ----
-			songsSelected.setText(list.getSelectedIndices().length + " Lieder ausgew\u00e4hlt");
+			songsSelected.setText(list.getSelectedIndices().length + " Lieder ausgew\u00e4hlt    -->");
 			add(songsSelected, cc.xywh(11, 15, 3, 1));
 	
 			//---- playDuration ----

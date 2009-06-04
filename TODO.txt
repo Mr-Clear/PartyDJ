@@ -4,20 +4,15 @@ PopupMenu verschönern
 Add Liste.
 ini-Datei..
 Autoplay einstellbar
-ClassicWindow sinnvolle Fehlermeldungen wenn die Listen nicht gehen.
 Funktion der Maustasten in PDJList wählbar?
 ?data.derby.DerbyDB Events vervollständigen.
 Error Reporter.
 Tasten
 EnsureVisible
 TODOs abarbeiten!
-
-[Mal merken]
-System LookAndFeel:
-	UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 	
 ALTER TABLE LISTS_CONTENT ADD PRIMARY KEY (LIST, POSITION)
 DELETE FROM LISTS_CONTENT WHERE LIST = 1 AND POSITION > 2
 
 Bug:
-Einfügen aud M3U über Datei öffnen... show -> close
+Einfügen aus M3U über Datei öffnen... show -> close
