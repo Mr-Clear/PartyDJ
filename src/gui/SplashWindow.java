@@ -117,30 +117,35 @@ public class SplashWindow extends JWindow
 	
 	public void setInfo(final String infoString)
 	{
-		info.setText(infoString);
-		timer.setText(Double.toString(getElapsedTime() / 1000d));
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run()
+			{
+				info.setText(infoString);
+				timer.setText(Double.toString(getElapsedTime() / 1000d));
+			}});
 	}
 	
 	public void setOpacity(final float opacity)
-	{
-		//com.sun.awt.AWTUtilities.setWindowOpacity(SplashWindow.this, opacity);
-		try 
-		{
-			Class<?> utils = Class.forName("com.sun.awt.AWTUtilities");
-			Method method = utils.getMethod("setWindowOpacity", Window.class, float.class);
-			method.invoke(this, SplashWindow.this, opacity);
-		}
-		catch(Exception ignored){}
-	}
-	
-	public void close()
 	{
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
 			public void run()
 			{
-				dispose();
+				//com.sun.awt.AWTUtilities.setWindowOpacity(SplashWindow.this, opacity);
+				try 
+				{
+					Class<?> utils = Class.forName("com.sun.awt.AWTUtilities");
+					Method method = utils.getMethod("setWindowOpacity", Window.class, float.class);
+					method.invoke(this, SplashWindow.this, opacity);
+				}
+				catch(Exception ignored){}
 			}});
+	}
+	
+	public void close()
+	{
+		dispose();
 	}
 
 	public long getElapsedTime()

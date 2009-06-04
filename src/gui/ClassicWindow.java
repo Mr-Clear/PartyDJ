@@ -222,23 +222,7 @@ public class ClassicWindow extends JFrame
 		JButton skipFWD = customizeButton("Resources/Vor.png");
 		JButton skipBWD = customizeButton("Resources/Zurück.png");
 		JButton setting = customizeButton("Resources/Einstellungen.png");
-	
-	    /*InputMap pauseInput = pause.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-	    pauseInput.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "pause");
-	    ActionMap pauseAction = pause.getActionMap();
-	    pauseAction.put("pause", new AbstractAction("pause")
-	    								{
-											private static final long serialVersionUID = 7795134144645322604L;
-
-											@Override
-											public void actionPerformed(ActionEvent e)
-											{
-												System.out.println("Pause");
-												player.fadeInOut();
-										}});
-	  
-	    pause.setActionMap(pauseAction);*/
-		
+			
 		play.addMouseListener(new MouseAdapter()
 		{
 			@Override public void mouseClicked(MouseEvent me) 
@@ -495,73 +479,60 @@ public class ClassicWindow extends JFrame
 		return panel;
 	}
 	
-	public void setVolume(final int vol)
-	{
-		volume.setValue(vol);
-	}
-	
-	
 	private JButton customizeButton(String iconPath)
 	{
 		JButton button = new JButton(new ImageIcon(iconPath));
-
 		button.setMargin(new Insets(0 ,0, 0, 0));
-		
 		button.setFocusPainted(false);
-		
 		button.setBackground(Color.darkGray);
-		
 		Border buttonBorder = new javax.swing.plaf.basic.BasicBorders.ButtonBorder(Color.gray, Color.black, Color.black, Color.gray);
-		
 		button.setBorder(buttonBorder);
-
 		return button;
 	}
 	
-	
 	private void manageSize()
 	{
-			try
-			{
-				setSize(Integer.parseInt(data.readSetting("ClassicWindowWidth", "800")), Integer.parseInt(data.readSetting("ClassicWindowHeight", "600")));
-			}
-			catch (NumberFormatException e1)
-			{
-				setSize(800, 600);
-			}
-			catch (SettingException e1)
-			{
-				setSize(800, 600);
-			}
-			
-			try
-			{
-				setExtendedState(Integer.parseInt(data.readSetting("ClassicWindowState", Integer.toString(MAXIMIZED_BOTH))));
-			}
-			catch (NumberFormatException e)
-			{
-				setExtendedState(MAXIMIZED_BOTH);
-			}
-			catch (SettingException e)
-			{
-				setExtendedState(MAXIMIZED_BOTH);
-			}
-			
-			classicWindow.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
-			
-			addWindowStateListener(new WindowStateListener(){
-				public void windowStateChanged(WindowEvent evt)
-		        {
-		            resize();
-		        }});
-			
-			getContentPane().addComponentListener(new ComponentAdapter(){  
-		        @Override public void componentResized(ComponentEvent evt) 
-		        {
-		            resize();
-		        }});
+		try
+		{
+			setSize(Integer.parseInt(data.readSetting("ClassicWindowWidth", "800")), Integer.parseInt(data.readSetting("ClassicWindowHeight", "600")));
+		}
+		catch (NumberFormatException e1)
+		{
+			setSize(800, 600);
+		}
+		catch (SettingException e1)
+		{
+			setSize(800, 600);
+		}
 		
-			resize();
+		try
+		{
+			setExtendedState(Integer.parseInt(data.readSetting("ClassicWindowState", Integer.toString(MAXIMIZED_BOTH))));
+		}
+		catch (NumberFormatException e)
+		{
+			setExtendedState(MAXIMIZED_BOTH);
+		}
+		catch (SettingException e)
+		{
+			setExtendedState(MAXIMIZED_BOTH);
+		}
+		
+		classicWindow.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
+		
+		addWindowStateListener(new WindowStateListener(){
+			public void windowStateChanged(WindowEvent evt)
+	        {
+	            resize();
+	        }});
+		
+		getContentPane().addComponentListener(new ComponentAdapter(){  
+	        @Override public void componentResized(ComponentEvent evt) 
+	        {
+	            resize();
+	        }});
+	
+		resize();
 	}
 	
 	/** Wird aufgerufen wenn sich die Größe des Fensters ändert.*/
