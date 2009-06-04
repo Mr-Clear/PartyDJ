@@ -35,7 +35,8 @@ public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 		filePath = path;
 		listModel = elm;
 	}
-
+	
+	@Override
 	public void runFunction(StatusDialog sd) 
 	{
 		int count;

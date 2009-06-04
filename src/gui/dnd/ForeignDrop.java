@@ -2,6 +2,7 @@ package gui.dnd;
 
 import gui.PDJList;
 import gui.StatusDialog;
+import gui.StatusDialog.StatusSupportedFunction;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -11,14 +12,18 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetContext;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.DropMode;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import basics.Controller;
+import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
 import lists.ListProvider;
@@ -35,12 +40,12 @@ import common.Track;
 @SuppressWarnings("unused")
 public class ForeignDrop extends DropTargetAdapter
 {
-	private int count;
-
-	@SuppressWarnings({ "unchecked", "incomplete-switch" })
+	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized void drop(final DropTargetDropEvent e) 
 	{
+		int mp3s = 0;
+		List data = null;
 		Transferable tr = e.getTransferable();
 	    DataFlavor[] flavors = tr.getTransferDataFlavors();
 	    for(DataFlavor flav : flavors)
@@ -53,7 +58,7 @@ public class ForeignDrop extends DropTargetAdapter
 		    		Object raw = tr.getTransferData(flav);
 		    		if(raw instanceof List)
 		    		{
-		    			List data = (List)raw;
+		    			data = (List)raw;
 		    			for(int i = 0; i < data.size(); i++)
 		    			{
 		    				if(data.get(i) instanceof File)
@@ -66,6 +71,8 @@ public class ForeignDrop extends DropTargetAdapter
 		    							TrackListModel tlm = ((PDJList) e.getDropTargetContext().getComponent()).getListModel();
 		    							if(tlm instanceof EditableListModel)
 		    								new StatusDialog("Lese Ordner", null, new gui.settings.tools.ReadFolder(filePath, true, (EditableListModel) tlm));
+		    							else if(tlm instanceof DbMasterListModel)
+		    								new StatusDialog("Lese Ordner", null, new gui.settings.tools.ReadFolder(filePath, true));
 		    							e.dropComplete(true);
 		    							return;
 		    						}
@@ -78,31 +85,15 @@ public class ForeignDrop extends DropTargetAdapter
 		    							TrackListModel tlm = ((PDJList) e.getDropTargetContext().getComponent()).getListModel();
 		    							if(tlm instanceof EditableListModel)
 		    								new StatusDialog("Lese M3U", null, new gui.settings.tools.AddM3U(filePath, (EditableListModel) tlm));
+		    							else if(tlm instanceof DbMasterListModel)
+		    								new StatusDialog("Lese M3U", null, new gui.settings.tools.AddM3U(filePath));
 							        	e.dropComplete(true);
 							        	return;
 		    						}
 						        }
 		    					else if(e.getDropTargetContext().getComponent() instanceof PDJList && filePath.toLowerCase().endsWith(".mp3"))
 								{
-									PDJList list = (PDJList) e.getDropTargetContext().getComponent();
-									ListProvider listProvider = new ListProvider();
-									Track added = listProvider.assignTrack(new Track(filePath, false));
-									
-									if(list.getListDropMode() == null)
-									{
-										e.dropComplete(false);
-										return;
-									}
-									
-									switch(list.getListDropMode())
-									{
-										case NONE:			e.rejectDrop();
-															break;
-									}
-									if(list.getListModel() instanceof EditableListModel)
-									{
-										((EditableListModel)list.getListModel()).add(added);
-									}
+									mp3s++;
 									e.dropComplete(true);
 								}
 								else
@@ -122,11 +113,6 @@ public class ForeignDrop extends DropTargetAdapter
 					e1.printStackTrace();
 				} 
 		    	catch (IOException e1) 
-		    	{
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} 
-		    	catch (ListException e1) 
 		    	{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -274,6 +260,10 @@ public class ForeignDrop extends DropTargetAdapter
 	    	e.dropComplete(false);
 	    }
 	    
+	    if(mp3s > 0 && data != null)
+	    {
+	    	new StatusDialog("Füge MP3s ein.", null, new addMP3s(e, data, mp3s));
+	    }
 	    if(e.getDropTargetContext().getComponent() instanceof PDJList)
 		{
 	    	SwingUtilities.invokeLater(new Runnable(){
@@ -346,6 +336,75 @@ public class ForeignDrop extends DropTargetAdapter
 				list.repaint();
 			}
 		}*/
+	}
+	
+	protected class addMP3s implements StatusSupportedFunction
+	{
+		protected final DropTargetDropEvent  dtde;
+		protected int j;
+		@SuppressWarnings("unchecked")
+		protected List data;
+		protected boolean goOn = true;
+		
+		@SuppressWarnings("unchecked")
+		public addMP3s(DropTargetDropEvent dropTargetDropEvent, List mp3s, int toAdd)
+		{
+			dtde = dropTargetDropEvent;
+			data = mp3s;
+			j = toAdd;
+		}
+		@Override
+		public void runFunction(StatusDialog sd)
+		{
+			int count = 0;
+			sd.setBarMaximum(j);
+			try
+			{
+				for(int i = 0; i < data.size() && goOn; i++)
+				{
+					if(data.get(i) instanceof File && !((File)data.get(i)).isDirectory())
+					{
+						String filePath = ((File)data.get(i)).getAbsolutePath();
+						
+						if(!filePath.toLowerCase().endsWith(".mp3"))
+							break;
+						
+						PDJList list = (PDJList) dtde.getDropTargetContext().getComponent();
+						ListProvider listProvider = new ListProvider();
+						
+						if(list.getListDropMode() == null)
+						{
+							dtde.dropComplete(false);
+							return;
+						}
+						
+						if(list.getListModel() instanceof EditableListModel)
+						{
+							((EditableListModel)list.getListModel()).add(listProvider.assignTrack(new Track(filePath, false)));
+							count++;
+						}
+						else if(list.getListModel() instanceof DbMasterListModel)
+							if(Controller.getInstance().getData().addTrack(new Track(filePath, false)) == -1)
+								count++;
+
+						sd.setLabel(count + ": " + filePath);
+						sd.setBarPosition(count);
+					}
+				}
+			}
+			catch(ListException le)
+			{
+				le.printStackTrace();
+			}
+			sd.stopTimer();
+			JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
+		}
+
+		@Override
+		public void stopTask()
+		{
+			goOn = false;
+		}
 	}
 
 }
