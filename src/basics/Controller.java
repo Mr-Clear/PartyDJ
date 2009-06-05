@@ -202,7 +202,7 @@ public class Controller
 		splash.setInfo("Lade Fenster");
 		{
 			settingTree = new SettingNode("Einstellungen", gui.settings.About.class);
-			addSettingNode(new SettingNode("Hauptliste", gui.settings.MainList.class), settingTree);
+			addSettingNode(new SettingNode("Listen", gui.settings.MainList.class), settingTree);
 			addSettingNode(new SettingNode("Shuffle", gui.settings.Shuffle.class), settingTree);
 			addSettingNode(new SettingNode("HotKeys", gui.settings.HotKeys.class), settingTree);
 			addSettingNode(new SettingNode("Verschiedenes", gui.settings.Miscellaneous.class), settingTree);
