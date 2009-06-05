@@ -344,7 +344,6 @@ public class ForeignDrop extends DropTargetAdapter
 
 						if(list.getListModel() instanceof EditableListModel)
 						{
-							System.out.println(data.get(i));
 							((EditableListModel)list.getListModel()).add((Track) data.get(i));
 							count++;
 						}
