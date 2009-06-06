@@ -346,6 +346,7 @@ public class ForeignDrop extends DropTargetAdapter
 						{
 							((EditableListModel)list.getListModel()).add((Track) data.get(i));
 							count++;
+							System.gc();
 						}
 						
 						sd.setLabel(count + ": " + ((Track) data.get(i)).name);
@@ -359,12 +360,14 @@ public class ForeignDrop extends DropTargetAdapter
 			}
 			if(data.get(0) instanceof File)
 				JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
+			System.gc();
 		}
 
 		@Override
 		public void stopTask()
 		{
 			goOn = false;
+			System.gc();
 		}
 	}
 	
@@ -414,5 +417,4 @@ public class ForeignDrop extends DropTargetAdapter
 		}
 		
 	}
-
 }
