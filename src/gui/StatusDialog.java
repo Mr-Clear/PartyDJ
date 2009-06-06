@@ -16,12 +16,12 @@ import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import basics.Controller;
 
 /**
  * Führt eine Aufgabe vom Typ StatusSupportedFunction aus,
@@ -50,45 +50,40 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 	public StatusDialog(final String title, final JFrame owner, final StatusSupportedFunction init) 
 	{
 		super(owner);
-		SwingUtilities.invokeLater(new Runnable(){
-			@Override
-			public void run()
-			{
-				initialiser = init;
+		initialiser = init;
 
-				DialogListener dialogListener = new DialogListener();
-				StatusDialog.this.addWindowListener(dialogListener);
-				StatusDialog.this.addComponentListener(dialogListener);
-				StatusDialog.this.setLocationRelativeTo(owner);
-				StatusDialog.this.setResizable(true);
-				StatusDialog.this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 155));
-				StatusDialog.this.setMinimumSize(new Dimension(100, 155));
-				StatusDialog.this.setTitle(title);
-				StatusDialog.this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-				StatusDialog.this.setModalityType(ModalityType.DOCUMENT_MODAL);
-				initGUI();
-				thread = new StatusThread();
-				//thread.setUncaughtExceptionHandler(this);
-				thread.start();
-				
-				showTimeTimer = new Timer(100, new ActionListener(){
-					public void actionPerformed(ActionEvent e)
-					{
-						if(statusBar.getValue() > 0)
-						{
-							elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
-							long remainingTime = elapsedTime * (statusBar.getMaximum() - statusBar.getValue()) / statusBar.getValue();
-							Calendar cal = Calendar.getInstance();
-							cal.add(Calendar.SECOND, (int)remainingTime);
-							time.setText("Vergangen: " + common.Functions.formatTime(elapsedTime) + 
-									"   Verbleibend: " + common.Functions.formatTime(remainingTime) +
-									"   Fertig: " + String.format("%tT%n", cal));
-									//" Fertig: " + common.Functions.formatTime((System.currentTimeMillis() / 1000 + remainingTime) % 86400));
-						}
-					}});
-				showTimeTimer.start();
-				StatusDialog.this.setVisible(true);
+		DialogListener dialogListener = new DialogListener();
+		StatusDialog.this.addWindowListener(dialogListener);
+		StatusDialog.this.addComponentListener(dialogListener);
+		StatusDialog.this.setLocationRelativeTo(owner);
+		StatusDialog.this.setResizable(true);
+		StatusDialog.this.setMaximumSize(new Dimension(Integer.MAX_VALUE, 155));
+		StatusDialog.this.setMinimumSize(new Dimension(100, 155));
+		StatusDialog.this.setTitle(title);
+		StatusDialog.this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		StatusDialog.this.setModalityType(ModalityType.DOCUMENT_MODAL);
+		initGUI();
+		thread = new StatusThread();
+		thread.setUncaughtExceptionHandler(this);
+		thread.start();
+		
+		showTimeTimer = new Timer(100, new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{
+				if(statusBar.getValue() > 0)
+				{
+					elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
+					long remainingTime = elapsedTime * (statusBar.getMaximum() - statusBar.getValue()) / statusBar.getValue();
+					Calendar cal = Calendar.getInstance();
+					cal.add(Calendar.SECOND, (int)remainingTime);
+					time.setText("Vergangen: " + common.Functions.formatTime(elapsedTime) + 
+							"   Verbleibend: " + common.Functions.formatTime(remainingTime) +
+							"   Fertig: " + String.format("%tT%n", cal));
+							//" Fertig: " + common.Functions.formatTime((System.currentTimeMillis() / 1000 + remainingTime) % 86400));
+				}
 			}});
+		showTimeTimer.start();
+		StatusDialog.this.setVisible(true);
 	}
 	
 	private void initGUI() 
@@ -290,7 +285,7 @@ public class StatusDialog extends javax.swing.JDialog implements UncaughtExcepti
 
 	public void uncaughtException(Thread t, Throwable e)
 	{
-		JOptionPane.showMessageDialog(StatusDialog.this, "Fehler in " + t + " aufgetreten:\n" + e.getMessage(), "Status Dialog", JOptionPane.ERROR_MESSAGE);
+		Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, null);
 		dispose();
 	}
 }
