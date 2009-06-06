@@ -4,15 +4,11 @@ import gui.PDJList;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetContext;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
@@ -38,15 +34,13 @@ import common.Track;
  * @author Sam
  * @date   15.05.09
  */
-@SuppressWarnings("unused")
 public class ForeignDrop extends DropTargetAdapter
 {
-	@SuppressWarnings("unchecked")
 	@Override
 	public synchronized void drop(final DropTargetDropEvent e) 
 	{
 		int mp3s = 0;
-		List data = null;
+		List<?> data = null;
 		Transferable tr = e.getTransferable();
 	    DataFlavor[] flavors = tr.getTransferDataFlavors();
 	    for(DataFlavor flav : flavors)
@@ -59,7 +53,7 @@ public class ForeignDrop extends DropTargetAdapter
 		    		Object raw = tr.getTransferData(flav);
 		    		if(raw instanceof List)
 		    		{
-		    			data = (List)raw;
+		    			data = (List<?>)raw;
 		    			for(int i = 0; i < data.size(); i++)
 		    			{
 		    				if(data.get(i) instanceof File)
@@ -167,7 +161,7 @@ public class ForeignDrop extends DropTargetAdapter
 										{
 											if(!list.equals(DragListener.getList()))
 											{
-												List toAdd = new ArrayList<Track>();
+												List<Track> toAdd = new ArrayList<Track>();
 												for(Track track : tracks)
 													toAdd.add(track);
 												
@@ -279,12 +273,10 @@ public class ForeignDrop extends DropTargetAdapter
 	{
 		protected final DropTargetDropEvent  dtde;
 		protected int j;
-		@SuppressWarnings("unchecked")
-		protected List data;
+		protected List<?> data;
 		protected boolean goOn = true;
 		
-		@SuppressWarnings("unchecked")
-		public addMP3s(DropTargetDropEvent dropTargetDropEvent, List mp3s, int toAdd)
+		public addMP3s(DropTargetDropEvent dropTargetDropEvent, List<?> mp3s, int toAdd)
 		{
 			dtde = dropTargetDropEvent;
 			data = mp3s;
@@ -334,7 +326,7 @@ public class ForeignDrop extends DropTargetAdapter
 					else if(data.get(i) instanceof Track)
 					{
 						PDJList list = (PDJList) dtde.getDropTargetContext().getComponent();
-						ListProvider listProvider = new ListProvider();
+						//TODO Brauch ma ned: ListProvider listProvider = new ListProvider();
 						
 						if(list.getListDropMode() == null)
 						{
@@ -393,7 +385,7 @@ public class ForeignDrop extends DropTargetAdapter
 				{
 					EditableListModel elm = (EditableListModel) pdj.getListModel();
 
-					for(Track t : toAdd)
+					for(@SuppressWarnings("unused") Track t : toAdd)		//XXX Was das?
 					{
 						elm.remove(DragListener.getList().getSelectedIndex());
 						count++;
