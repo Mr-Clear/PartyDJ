@@ -7,8 +7,6 @@ import data.IData;
 import basics.Controller;
 import basics.Plugin;
 
-//FIXME Autoconnect abschaltbar.
-
 /**Verbindet sich mit dem Infrarot-Fernsteuerung-Empfänger WinLIRC und verarbeitet empfangene Signale.
  * <p>
  * Es darf immer nur eine Instanz dieses Plugins laufen.
