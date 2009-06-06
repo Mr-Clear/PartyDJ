@@ -149,7 +149,7 @@ public class ForeignDrop extends DropTargetAdapter
 					switch(list.getListDropMode())
 					{
 					case NONE:			break;
-					case MOVE:			System.out.println("MOVE not supported!"); //TODO Dialog
+					case MOVE:			Controller.getInstance().logError(Controller.UNIMPORTANT_ERROR, this, null, "MOVE not supported.");
 										break;
 					case DELETE:		if(DragListener.getList().getListModel() instanceof EditableListModel)
 										{
@@ -165,7 +165,9 @@ public class ForeignDrop extends DropTargetAdapter
 												for(Track track : tracks)
 													toAdd.add(track);
 												
-												new StatusDialog("Füge MP3s ein.", null, new addMP3s(e, toAdd, toAdd.size()));
+												//FIXME StatusDialog zum laufen bringen.
+												//new StatusDialog("Füge MP3s ein.", null, new addMP3s(e, toAdd, toAdd.size()));
+												new addMP3s(e, toAdd, toAdd.size()).runFunction(null);
 												e.dropComplete(true);
 											}
 											else
@@ -286,9 +288,15 @@ public class ForeignDrop extends DropTargetAdapter
 		public synchronized void runFunction(StatusDialog sd)
 		{
 			int count = 0;
-			sd.setBarMaximum(j);
+			if(sd != null)
+				sd.setBarMaximum(j);
 			try
 			{
+				//FIXME Da gehts nicht weiter.
+				System.out.println("1");
+				PDJList list = (PDJList)dtde.getDropTargetContext().getComponent();
+				System.out.println("2");
+				
 				for(int i = 0; i < data.size() && goOn; i++)
 				{
 					if(data.get(i) instanceof File && !((File)data.get(i)).isDirectory())
@@ -298,7 +306,7 @@ public class ForeignDrop extends DropTargetAdapter
 						if(!filePath.toLowerCase().endsWith(".mp3"))
 							break;
 						
-						PDJList list = (PDJList) dtde.getDropTargetContext().getComponent();
+						
 						ListProvider listProvider = new ListProvider();
 						
 						if(list.getListDropMode() == null)
@@ -319,15 +327,15 @@ public class ForeignDrop extends DropTargetAdapter
 								count++;
 						}
 
-						sd.setLabel(count + ": " + filePath);
-						sd.setBarPosition(count);
-						sd.stopTimer();
+						if(sd != null)
+						{
+							sd.setLabel(count + ": " + filePath);
+							sd.setBarPosition(count);
+							sd.stopTimer();
+						}
 					}
 					else if(data.get(i) instanceof Track)
 					{
-						PDJList list = (PDJList) dtde.getDropTargetContext().getComponent();
-						//TODO Brauch ma ned: ListProvider listProvider = new ListProvider();
-						
 						if(list.getListDropMode() == null)
 						{
 							dtde.dropComplete(false);
@@ -338,11 +346,13 @@ public class ForeignDrop extends DropTargetAdapter
 						{
 							((EditableListModel)list.getListModel()).add((Track) data.get(i));
 							count++;
-							System.gc();
 						}
 						
-						sd.setLabel(count + ": " + ((Track) data.get(i)).name);
-						sd.setBarPosition(count);
+						if(sd != null)
+						{
+							sd.setLabel(count + ": " + ((Track) data.get(i)).name);
+							sd.setBarPosition(count);
+						}
 					}
 				}
 			}
@@ -350,16 +360,14 @@ public class ForeignDrop extends DropTargetAdapter
 			{
 				le.printStackTrace();
 			}
-			if(data.get(0) instanceof File)
+			if(sd != null && data.get(0) instanceof File)
 				JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
-			System.gc();
 		}
 
 		@Override
 		public void stopTask()
 		{
 			goOn = false;
-			System.gc();
 		}
 	}
 	
