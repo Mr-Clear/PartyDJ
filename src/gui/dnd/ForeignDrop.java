@@ -153,7 +153,7 @@ public class ForeignDrop extends DropTargetAdapter
 										break;
 					case DELETE:		if(DragListener.getList().getListModel() instanceof EditableListModel)
 										{
-											new StatusDialog("Entferne MP3s", null, new removeMP3s(DragListener.getList(), tracks));
+											new StatusDialog("Entferne MP3s", null, new RemoveMP3s(DragListener.getList()));
 										}
 										break;
 					case COPY:
@@ -166,7 +166,7 @@ public class ForeignDrop extends DropTargetAdapter
 													toAdd.add(track);
 												
 												//FIXME StatusDialog zum laufen bringen.
-												new StatusDialog("Füge MP3s ein.", null, new addMP3s(e, toAdd, toAdd.size()));
+												new StatusDialog("Füge MP3s ein.", null, new AddMP3s(e, toAdd, toAdd.size()));
 //												new addMP3s(e, toAdd, toAdd.size()).runFunction(null);
 												e.dropComplete(true);
 											}
@@ -224,7 +224,7 @@ public class ForeignDrop extends DropTargetAdapter
 	    
 	    if(mp3s > 0 && data != null)
 	    {
-	    	new StatusDialog("Füge MP3s ein.", null, new addMP3s(e, data, mp3s));
+	    	new StatusDialog("Füge MP3s ein.", null, new AddMP3s(e, data, mp3s));
 	    }
 	    if(e.getDropTargetContext().getComponent() instanceof PDJList)
 		{
@@ -271,7 +271,7 @@ public class ForeignDrop extends DropTargetAdapter
 			dtde.rejectDrag();
 	}
 	
-	protected class addMP3s implements StatusSupportedFunction
+	protected class AddMP3s implements StatusSupportedFunction
 	{
 		protected final DropTargetDropEvent  dtde;
 		protected int j;
@@ -279,7 +279,7 @@ public class ForeignDrop extends DropTargetAdapter
 		protected boolean goOn = true;
 		protected PDJList list;
 		
-		public addMP3s(DropTargetDropEvent dropTargetDropEvent, List<?> mp3s, int toAdd)
+		public AddMP3s(DropTargetDropEvent dropTargetDropEvent, List<?> mp3s, int toAdd)
 		{
 			dtde = dropTargetDropEvent;
 			data = mp3s;
@@ -366,52 +366,5 @@ public class ForeignDrop extends DropTargetAdapter
 		{
 			goOn = false;
 		}
-	}
-	
-	protected class removeMP3s implements StatusSupportedFunction
-	{
-		protected final PDJList pdj;
-		protected final Track[] toAdd;
-		protected int count;
-		
-		public removeMP3s(PDJList list, Track[] tracks)
-		{
-			pdj = list;
-			toAdd = tracks;
-		}
-		
-		@Override
-		public synchronized void runFunction(StatusDialog sd)
-		{
-			if(pdj.getListModel() instanceof EditableListModel)
-			{
-				sd.setBarMaximum(toAdd.length);
-				try
-				{
-					EditableListModel elm = (EditableListModel) pdj.getListModel();
-
-					for(@SuppressWarnings("unused") Track t : toAdd)		//XXX Was das?
-					{
-						elm.remove(DragListener.getList().getSelectedIndex());
-						count++;
-						sd.setBarPosition(count);
-						sd.setLabel(count + " von Liste entfernt!");
-					}
-				}
-				catch (ListException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-
-		@Override
-		public void stopTask()
-		{
-			// TODO Auto-generated method stub
-			
-		}
-		
 	}
 }
