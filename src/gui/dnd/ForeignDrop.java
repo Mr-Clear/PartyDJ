@@ -166,8 +166,8 @@ public class ForeignDrop extends DropTargetAdapter
 													toAdd.add(track);
 												
 												//FIXME StatusDialog zum laufen bringen.
-												//new StatusDialog("Füge MP3s ein.", null, new addMP3s(e, toAdd, toAdd.size()));
-												new addMP3s(e, toAdd, toAdd.size()).runFunction(null);
+												new StatusDialog("Füge MP3s ein.", null, new addMP3s(e, toAdd, toAdd.size()));
+//												new addMP3s(e, toAdd, toAdd.size()).runFunction(null);
 												e.dropComplete(true);
 											}
 											else
@@ -277,12 +277,14 @@ public class ForeignDrop extends DropTargetAdapter
 		protected int j;
 		protected List<?> data;
 		protected boolean goOn = true;
+		protected PDJList list;
 		
 		public addMP3s(DropTargetDropEvent dropTargetDropEvent, List<?> mp3s, int toAdd)
 		{
 			dtde = dropTargetDropEvent;
 			data = mp3s;
 			j = toAdd;
+			list  = (PDJList)dtde.getDropTargetContext().getComponent();
 		}
 		@Override
 		public synchronized void runFunction(StatusDialog sd)
@@ -291,12 +293,7 @@ public class ForeignDrop extends DropTargetAdapter
 			if(sd != null)
 				sd.setBarMaximum(j);
 			try
-			{
-				//FIXME Da gehts nicht weiter.
-				System.out.println("1");
-				PDJList list = (PDJList)dtde.getDropTargetContext().getComponent();
-				System.out.println("2");
-				
+			{				
 				for(int i = 0; i < data.size() && goOn; i++)
 				{
 					if(data.get(i) instanceof File && !((File)data.get(i)).isDirectory())
