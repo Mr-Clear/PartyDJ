@@ -50,6 +50,13 @@ public class WinLircReceiver implements Plugin
 	{
 		return "Verbindet sich mit dem Infrarot-Fernsteuerung-Empfänger WinLIRC und verarbeitet empfangene Signale.";
 	}
+	
+	@Override
+	public void initialise()
+	{
+		if(Boolean.parseBoolean(data.readSetting("WinLIRC-Autorun", "false")))
+			start();
+	}
 
 	@Override
 	public void start()

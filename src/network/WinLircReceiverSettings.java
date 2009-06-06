@@ -24,6 +24,7 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 	protected final IData data = controller.getData();
 	protected JTable tablePressedKeys;
 	protected final TablePressedKeysModel tablePressedKeysModel = new TablePressedKeysModel();
+	protected JCheckBox cbAutoConnect;
 	protected JTable tableKeys;
 	protected final TableKeysModel tableKeysModel = new TableKeysModel();
 	protected JScrollPane spTableKeys;
@@ -71,6 +72,16 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 		{
 			lblHost = new JLabel();
 			lblHost.setText("Host:");
+		}
+		{
+			cbAutoConnect = new JCheckBox();
+			cbAutoConnect.setText("Automatisch verbinden");
+			cbAutoConnect.setSelected(Boolean.parseBoolean(data.readSetting("WinLIRC-Autorun", "false")));
+			cbAutoConnect.addActionListener(new ActionListener(){
+				@Override public void actionPerformed(ActionEvent e)
+				{
+					data.writeSetting("WinLIRC-Autorun", Boolean.toString(cbAutoConnect.getModel().isSelected()));
+				}});
 		}
 		{
 			spTableKeys = new JScrollPane();
@@ -157,7 +168,7 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				    .addComponent(lblLastKeys, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				    .addComponent(lblHost, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 				.addGroup(thisLayout.createParallelGroup()
-				    .addComponent(spTablePressedKeys, GroupLayout.Alignment.LEADING, 0, 352, Short.MAX_VALUE)
+				    .addComponent(spTablePressedKeys, GroupLayout.Alignment.LEADING, 0, 254, Short.MAX_VALUE)
 				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				        .addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -166,10 +177,12 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				            .addComponent(lblStatus, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				            .addComponent(btnDisconnect, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				            .addComponent(btnReset, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-				        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-				        .addComponent(lblKeys, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-				        .addComponent(spTableKeys, 0, 291, Short.MAX_VALUE)))
+				        .addGroup(thisLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				            .addComponent(cbAutoConnect, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				            .addComponent(lblKeys, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+				        .addComponent(spTableKeys, 0, 199, Short.MAX_VALUE)))
 				.addContainerGap());
 			thisLayout.setHorizontalGroup(thisLayout.createSequentialGroup()
 				.addContainerGap()
@@ -185,21 +198,25 @@ public class WinLircReceiverSettings extends javax.swing.JPanel implements WinLi
 				                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 				                .addComponent(btnConnect, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-				                .addComponent(btnDisconnect, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-				                .addComponent(btnReset, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				                .addGap(0, 132, Short.MAX_VALUE))
-				            .addComponent(txtHost, GroupLayout.Alignment.LEADING, 0, 431, Short.MAX_VALUE))
+				                .addGroup(thisLayout.createParallelGroup()
+				                    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                        .addComponent(btnDisconnect, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+				                        .addComponent(btnReset, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+				                    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
+				                        .addGap(0, 20, GroupLayout.PREFERRED_SIZE)
+				                        .addComponent(cbAutoConnect, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)))
+				                .addGap(0, 78, Short.MAX_VALUE))
+				            .addComponent(txtHost, GroupLayout.Alignment.LEADING, 0, 377, Short.MAX_VALUE))
 				        .addGap(6))
 				    .addGroup(GroupLayout.Alignment.LEADING, thisLayout.createSequentialGroup()
 				        .addComponent(lblKeys, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				        .addGap(0, 393, Short.MAX_VALUE))
-				    .addComponent(spTableKeys, GroupLayout.Alignment.LEADING, 0, 492, Short.MAX_VALUE))
+				        .addGap(0, 339, Short.MAX_VALUE))
+				    .addComponent(spTableKeys, GroupLayout.Alignment.LEADING, 0, 438, Short.MAX_VALUE))
 				.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 				.addGroup(thisLayout.createParallelGroup()
 				    .addComponent(spTablePressedKeys, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 190, GroupLayout.PREFERRED_SIZE)
-				    .addComponent(lblLastKeys, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 190, GroupLayout.PREFERRED_SIZE))
-				.addContainerGap(17, 17));
+				    .addComponent(lblLastKeys, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 190, GroupLayout.PREFERRED_SIZE)));
 	}
 
 	@Override

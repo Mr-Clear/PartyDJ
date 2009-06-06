@@ -266,7 +266,7 @@ public class Controller
 			try
 			{
 				new network.ClassicUdpReceiver().start();
-				new network.WinLircReceiver().start();
+				new network.WinLircReceiver().initialise();
 			}
 			catch(Throwable t)
 			{

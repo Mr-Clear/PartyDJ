@@ -35,7 +35,7 @@ public class ReadM3U
 	 * @param getInfos
 	 * @param onlyMasterList  true, wenn nur in die Hauptliste eingefügt wird. false, wenn in ein EditableListModel und die
 	 * 						  Hauptliste eingefügt wird.
-	 * @return
+	 * @return Anzahl der eingelesenen Dateien.
 	 */
 	public static int readM3U(String filePath, Reporter<Track> rep, StatusDialog sd, boolean getInfos, boolean onlyMasterList)
 	{

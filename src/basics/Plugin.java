@@ -12,9 +12,11 @@ public interface Plugin
 	String getName();
 	/** @return Beschreibung des Plugins. */
 	String getDescription();
-	/** Startet das Plugin. */
+	/** Wird bei Start des PartyDJ aufgerufen. */
+	void initialise();
+	/** Das Plugin soll die Arbeit aufnahemen. */
 	void start();
-	/** Beendet das Plugin und gibt alle Ressourcen frei. */
+	/** Das Plugin soll die Arbeit beenden. */
 	void stop();
 	/** @return True, wenn das Plugin läuft. */
 	boolean isRunning();
