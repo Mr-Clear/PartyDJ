@@ -37,6 +37,7 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 																	break;
 		case JIntellitypeConstants.APPCOMMAND_MEDIA_STOP:			player.stop();
 																	break;
+//																	JIntellitypeConstants.APPCOMMAND_LAUNCH_MEDIA_SELECT
 		}
 	}
 
