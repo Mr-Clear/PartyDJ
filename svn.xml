@@ -1,5 +1,7 @@
 <!-- Generate a java class with the current svn revision number -->
 <project>
+	<echo>Generate build info class...</echo>
+	<taskdef resource="svntask.properties" />
 	<svn>
 		<status path="${basedir}\BuildInfo.java" revisionProperty="svn.revision" />
 	</svn>
@@ -8,7 +10,7 @@
 	  </tstamp>
 	<echo>Virtual PVT Cell Revision: ${svn.revision}</echo>
 	<echo>Time stamp ${TODAY}</echo>
-	<echo>Write build info to file ${basedir}\tests\BuildInfo.java</echo>
+	<echo>Write build info to file ${basedir}\BuildInfo.java</echo>
 	<!-- the source code of the java class -->
 	<echo file="${basedir}\BuildInfo.java">
 		package gui;
