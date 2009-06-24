@@ -86,7 +86,7 @@ public class Controller
 			throw new RuntimeException("Es darf nur ein Controller erstellt werden!");
 		}
 		
-		SplashWindow splash = new SplashWindow(); 
+//		SplashWindow splash = new SplashWindow(); 
 	
 		
 		closeListenThread = new Thread(){
@@ -136,8 +136,8 @@ public class Controller
 			}
 		}
 		
-		splash.setOpacity(0.82f);
-		splash.setInfo("Verbinde zur Datenbank");
+//		splash.setOpacity(0.82f);
+//		splash.setInfo("Verbinde zur Datenbank");
 		{
 			try
 			{
@@ -150,11 +150,11 @@ public class Controller
 			}
 		}
 			
-		splash.setOpacity(0.88f);
-		splash.setInfo("Lade Player");
+//		splash.setOpacity(0.88f);
+//		splash.setInfo("Lade Player");
 		{
 			PlayerListener playerListener = new PlayerListener();	// implements PlayerContact, PlayStateListener
-			splash.setInfo("Lade Player0");
+//			splash.setInfo("Lade Player0");
 			switch(whichPlayer)
 			{
 			case 0:			
@@ -165,7 +165,7 @@ public class Controller
 				player = new players.jl.JLPlayer(playerListener);
 				break;
 			}
-			splash.setInfo("Lade Player 1");
+//			splash.setInfo("Lade Player 1");
 			try
 			{
 				player.setVolume(Integer.parseInt(data.readSetting("Volume", "100")));
@@ -175,13 +175,13 @@ public class Controller
 			catch (SettingException e1)
 				{player.setVolume(100);}
 			
-			splash.setInfo("Lade Player2");
+//			splash.setInfo("Lade Player2");
 			player.addPlayStateListener(playerListener);
-			splash.setInfo("Lade Player3");
+//			splash.setInfo("Lade Player3");
 		}
 		
-		splash.setOpacity(0.9f);
-		splash.setInfo("Lade Listen");
+//		splash.setOpacity(0.9f);
+//		splash.setInfo("Lade Listen");
 		{
 			try
 			{
@@ -198,8 +198,8 @@ public class Controller
 
 		scripter = new Scripter();
 		
-		splash.setOpacity(0.95f);
-		splash.setInfo("Lade Fenster");
+//		splash.setOpacity(0.95f);
+//		splash.setInfo("Lade Fenster");
 		{
 			settingTree = new SettingNode("Einstellungen", gui.settings.About.class);
 			addSettingNode(new SettingNode("Listen", gui.settings.MainList.class), settingTree);
@@ -217,14 +217,14 @@ public class Controller
 			}
 		}
 		
-		splash.setOpacity(1f);
+//		splash.setOpacity(1f);
 		if(listProvider.getMasterList().getSize() == 0)
 		{
 			registerWindow(new gui.SetupWindow());
 		}
 		else
 		{
-			splash.setInfo("Starte");
+//			splash.setInfo("Starte");
 			String firstTrackPath = null;
 			try
 			{
@@ -237,7 +237,7 @@ public class Controller
 				firstTrack = listProvider.getMasterList().getTrackByPath(firstTrackPath);
 				if(firstTrack != null)
 				{
-					splash.setInfo("Starte " + firstTrack.name);
+//					splash.setInfo("Starte " + firstTrack.name);
 					try
 					{
 						double pos = 0;
@@ -261,7 +261,7 @@ public class Controller
 			}
 		}
 
-		splash.setInfo("Lade Plugins");
+//		splash.setInfo("Lade Plugins");
 		{
 			try
 			{
@@ -274,7 +274,7 @@ public class Controller
 			}
 		}
 		
-		splash.setInfo("PartyDJ bereit :)");
+//		splash.setInfo("PartyDJ bereit :)");
 		try
 		{
 			if(System.getenv().get("OS").equalsIgnoreCase("windows_NT"))
@@ -285,7 +285,7 @@ public class Controller
 			logError(REGULAR_ERROR, this, t, "Fehler beim Laden von Intellitype!");
 		}
 		
-		splash.setInfo("Lade Look And Feel");
+//		splash.setInfo("Lade Look And Feel");
 		{
 			//TODO an Anfang von Kontruktor setzen, ohne dass das ClassicWindow bäh aussieht.
 			//UI
@@ -311,8 +311,8 @@ public class Controller
 			}
 		}
 		
-		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
-		splash.close();
+//		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
+//		splash.close();
 		
 		loadFinished = true;
 		

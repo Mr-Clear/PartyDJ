@@ -1,4 +1,4 @@
-package gui.dnd;
+package gui.settings.tools;
 
 import javax.swing.JOptionPane;
 import basics.Controller;
@@ -30,9 +30,9 @@ public class RemoveMP3s implements StatusSupportedFunction
 				try
 				{
 					EditableListModel elm = (EditableListModel) pdj.getListModel();
-		        	for(int i = indices.length; i > 0 && goOn; i--)
+		        	for(int i = 0; i < indices.length && goOn; i++)
 					{
-						elm.remove(indices[i-1]);
+						elm.remove(indices[0]);
 						count++;
 						sd.setBarPosition(count);
 						sd.setLabel(count + " von Liste entfernt!");
@@ -53,7 +53,7 @@ public class RemoveMP3s implements StatusSupportedFunction
 				{
 					try
 					{
-						Controller.getInstance().getData().deleteTrack(pdj.getListModel().getElementAt(indices[i-1]));
+						Controller.getInstance().getData().deleteTrack(pdj.getListModel().getElementAt(indices[0]));
 						count++;
 						sd.setBarPosition(count);
 						sd.setLabel(count + " von Liste entfernt!");
@@ -65,6 +65,7 @@ public class RemoveMP3s implements StatusSupportedFunction
 				}
 				
 			}
+			pdj.setSelectedIndex(-1);
 		}
 
 		@Override

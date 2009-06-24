@@ -4,8 +4,8 @@ import gui.dnd.DragDropHandler;
 import gui.dnd.DragListener;
 import gui.dnd.ForeignDrop;
 import gui.dnd.ListDropMode;
-import gui.dnd.RemoveMP3s;
 import gui.dnd.TrackSelection;
+import gui.settings.tools.RemoveMP3s;
 import java.awt.Rectangle;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragSource;
@@ -132,17 +132,6 @@ public class PDJList extends JList
 													{
 														if(pdjList.getModel() instanceof EditableListModel)
 														{
-//		            								        EditableListModel elm = (EditableListModel)pdjList.getModel();
-//		            								        int[] indices = pdjList.getSelectedIndices();
-//		            								 
-//		            								        	for(int i = indices.length; i > 0; i--)
-//		            											{
-//		            												try
-//		            												{
-//		            													elm.remove(indices[i-1]);
-//		            												}
-//		            												catch (ListException e){}
-//		            											}
 															new StatusDialog("Entferne MP3s", null, new RemoveMP3s(pdjList));
 														}
 														
