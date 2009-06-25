@@ -36,7 +36,7 @@ abstract class BasicListModel extends ListAdapter implements TrackListModel, Pla
 		return list.size();
 	}
 	
-	public Track getElementAt(int index)
+	public synchronized Track getElementAt(int index)
 	{
 		return list.get(index);
 	}

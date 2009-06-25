@@ -272,7 +272,10 @@ public class PDJList extends JList
 		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
 			if(reason == Reason.RECEIVED_NEW_TRACK || reason == Reason.TRACK_LOADED && scrollToPlayed)
+			{
 				scrollToPlayed(playingCurrent);
+				list.repaint();
+			}
 		}
 	}
     	
