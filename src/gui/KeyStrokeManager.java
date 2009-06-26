@@ -56,7 +56,7 @@ public class KeyStrokeManager extends EventQueue
 				enableGlobalHotKey(Integer.valueOf(key[0]), Integer.valueOf(key[1]), key[2], false);
 			}
 		}
-		raw = data.readSetting("LocalHotKeys");
+		raw = data.readSetting("LocalHotKeys", "§0@102@PLAY_PAUSE§0@100@PREVIOUS§0@98@VOLUME_DOWN§0@104@VOLUME_UP§0@102@NEXT§0@101@PLAY_PAUSE§0@96@STOP");
 		if(raw != null && raw.length() > 1)
 		{
 			raw = raw.substring(1);
