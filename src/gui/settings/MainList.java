@@ -9,6 +9,7 @@ import gui.PDJList;
 import gui.PDJScrollList;
 import gui.StatusDialog;
 import gui.settings.tools.ReadDuration;
+import gui.settings.tools.RemoveMP3s;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -110,25 +111,8 @@ public class MainList extends JPanel
 					int[] selected = list.getSelectedIndices();
 					if(selected.length == 0)
 						return;
-					//Sicherheitsabfrage
-					if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Alle " + selected.length + " Tracks aus Hauptliste entfernen?", "Tracks entfernen", JOptionPane.YES_NO_OPTION))
-						return;
 
-					try
-					{
-						//Absteigend löschen, damit keine Indexfehler auftreten
-						for(int i = selected.length - 1; i >= 0; i--)
-						{
-							//TODO ProgressBar o.ä.
-							data.deleteTrack(list.getListModel().getElementAt(selected[i]));
-						}									
-					}
-					catch (ListException e)
-					{
-						JOptionPane.showMessageDialog(null, "Löschen Fehlgeschlagen:\n" + e.getMessage(), "Tracks entfernen", JOptionPane.ERROR_MESSAGE);
-					}								
-					list.setSelectedIndex(-1);
-					list.setSelectedIndices(new int[0]);
+					new StatusDialog("Tracks entfernen", null, new RemoveMP3s(list));	
 				}
 			}});
 		

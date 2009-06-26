@@ -8,6 +8,7 @@ import gui.StatusDialog.StatusSupportedFunction;
 import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
+import lists.SearchListModel;
 
 public class RemoveMP3s implements StatusSupportedFunction
 	{
@@ -31,7 +32,8 @@ public class RemoveMP3s implements StatusSupportedFunction
 				{
 					EditableListModel elm = (EditableListModel) pdj.getListModel();
 		        	for(int i = 0; i < indices.length && goOn; i++)
-					{
+					{		
+						System.out.println(indices[0]);
 						elm.remove(indices[0]);
 						count++;
 						sd.setBarPosition(count);
@@ -44,7 +46,7 @@ public class RemoveMP3s implements StatusSupportedFunction
 					e.printStackTrace();
 				}
 			}
-			else if(pdj.getListModel() instanceof DbMasterListModel)
+			else if(pdj.getListModel() instanceof DbMasterListModel || pdj.getListModel() instanceof SearchListModel)
 			{
 				int[] indices = pdj.getSelectedIndices();
 				if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Alle " + indices.length + " wirklich löschen?", "PartyDJ", JOptionPane.YES_NO_OPTION))
