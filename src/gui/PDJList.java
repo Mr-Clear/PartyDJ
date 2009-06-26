@@ -27,9 +27,6 @@ import javax.swing.TransferHandler;
 import players.PlayStateAdapter;
 import players.PlayerException;
 import basics.Controller;
-import lists.DbMasterListModel;
-import lists.EditableListModel;
-import lists.ListException;
 import lists.TrackListModel;
 import common.Track;
 
@@ -130,26 +127,7 @@ public class PDJList extends JList
             										PDJList pdjList = (PDJList)evt.getSource();
 													if(evt.getSource() instanceof PDJList)
 													{
-														if(pdjList.getModel() instanceof EditableListModel)
-														{
-															new StatusDialog("Entferne MP3s", null, new RemoveMP3s(pdjList));
-														}
-														
-														else if(pdjList.getModel() instanceof DbMasterListModel)
-														{
-															int[] indices = pdjList.getSelectedIndices();
-															if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Alle " + indices.length + " wirklich löschen?", "PartyDJ", JOptionPane.YES_NO_OPTION))
-																return;
-															for(int i = indices.length; i > 0; i--)
-	            											{
-	            												try
-	            												{
-	            													Controller.getInstance().getData().deleteTrack(listModel.getElementAt(indices[i-1]));
-	            												}
-	            												catch (ListException e){}
-	            											}
-															
-														}
+														new StatusDialog("Entferne MP3s", null, new RemoveMP3s(pdjList));
 													}
             									}
 											});
@@ -279,7 +257,7 @@ public class PDJList extends JList
 		}
 	}
     	
-	private class DragMotionListener extends MouseMotionAdapter
+    protected class DragMotionListener extends MouseMotionAdapter
 	{
 		private int startIndex;
 		private int listSize;
@@ -352,7 +330,7 @@ public class PDJList extends JList
 		}
 	}
 	
-	private class ClickListener extends MouseAdapter
+    protected class ClickListener extends MouseAdapter
 	{
 		@Override
 		public void mouseClicked(final MouseEvent e)

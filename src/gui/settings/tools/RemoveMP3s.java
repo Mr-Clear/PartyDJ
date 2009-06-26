@@ -27,14 +27,17 @@ public class RemoveMP3s implements StatusSupportedFunction
 			if(pdj.getListModel() instanceof EditableListModel)
 			{
 				int[] indices = pdj.getSelectedIndices();
+				pdj.setSelectedIndices(new int[0]);
 				sd.setBarMaximum(indices.length);
 				try
 				{
 					EditableListModel elm = (EditableListModel) pdj.getListModel();
 		        	for(int i = 0; i < indices.length && goOn; i++)
 					{		
-						System.out.println(indices[0]);
 						elm.remove(indices[0]);
+						int[] toSelect = pdj.getSelectedIndices();
+						toSelect[0] = -1;
+						pdj.setSelectedIndices(toSelect);
 						count++;
 						sd.setBarPosition(count);
 						sd.setLabel(count + " von Liste entfernt!");
@@ -56,6 +59,9 @@ public class RemoveMP3s implements StatusSupportedFunction
 					try
 					{
 						Controller.getInstance().getData().deleteTrack(pdj.getListModel().getElementAt(indices[0]));
+						int[] toSelect = pdj.getSelectedIndices();
+						toSelect[0] = -1;
+						pdj.setSelectedIndices(toSelect);
 						count++;
 						sd.setBarPosition(count);
 						sd.setLabel(count + " von Liste entfernt!");
@@ -67,7 +73,6 @@ public class RemoveMP3s implements StatusSupportedFunction
 				}
 				
 			}
-			pdj.setSelectedIndex(-1);
 		}
 
 		@Override
