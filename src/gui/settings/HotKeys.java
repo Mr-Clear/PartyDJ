@@ -98,8 +98,11 @@ public class HotKeys extends JPanel
 		JTextField[] txtFields = fields;
 		
 		String raw = data.readSetting("GlobalHotKeys");
+		
 		if(raw != null)
 		{
+			if(raw.length() < 1)
+				return;
 			raw = raw.substring(1);
 			String[] regKeys = raw.split("§");
 			for(String k : regKeys)
@@ -193,6 +196,11 @@ public class HotKeys extends JPanel
 				@Override
 				public void run()
 				{
+					if(e.getKeyCode() == 0)
+					{
+						actual.setText("Unknown Key!");
+						return;
+					}
 					if(e.getModifiers() != 0)
 					{
 						ignore = true;
@@ -265,6 +273,11 @@ public class HotKeys extends JPanel
 				@Override
 				public void run()
 				{
+					if(e.getKeyCode() == 0)
+					{
+						actual.setText("Unknown Key!");
+						return;
+					}
 					if(e.getModifiers() != 0)
 					{
 						ignore = true;

@@ -45,7 +45,8 @@ public class KeyStrokeManager extends EventQueue
 		JIntellitype.getInstance().addIntellitypeListener(GlobalHotKeys.getInstance());
 		
 		String raw = data.readSetting("GlobalHotKeys");
-		if(raw != null)
+
+		if(raw != null && raw.length() > 1)
 		{
 			raw = raw.substring(1);
 			String[] rawKeys = raw.split("§");
