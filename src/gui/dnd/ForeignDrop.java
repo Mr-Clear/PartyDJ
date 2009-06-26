@@ -68,11 +68,10 @@ public class ForeignDrop extends DropTargetAdapter
 		    							else if(tlm instanceof DbMasterListModel)
 		    								new StatusDialog("Lese Ordner", null, new gui.settings.tools.ReadFolder(filePath, true));
 		    							e.dropComplete(true);
-		    							return;
 		    						}
 		    					}
 		    			    	
-		    					if(filePath.toLowerCase().endsWith(".m3u"))
+		    					else if(filePath.toLowerCase().endsWith(".m3u"))
 						        {
 		    						if(e.getDropTargetContext().getComponent() instanceof PDJList)
 		    						{

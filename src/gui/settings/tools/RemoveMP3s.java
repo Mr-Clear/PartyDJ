@@ -36,7 +36,8 @@ public class RemoveMP3s implements StatusSupportedFunction
 					{		
 						elm.remove(indices[0]);
 						int[] toSelect = pdj.getSelectedIndices();
-						toSelect[0] = -1;
+						if(toSelect.length > 0)
+							toSelect[0] = -1;
 						pdj.setSelectedIndices(toSelect);
 						count++;
 						sd.setBarPosition(count);

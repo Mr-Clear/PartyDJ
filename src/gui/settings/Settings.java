@@ -500,7 +500,9 @@ public class Settings extends JPanel
 		IData data = Controller.getInstance().getData();
 		JTextField[] txtFields = fields;
 		
-		String raw = data.readSetting("LocalHotKeys");
+		String raw = data.readSetting("LocalHotKeys", "§0@102@PLAY_PAUSE§0@100@PREVIOUS§0@98@VOLUME_DOWN§0@104@VOLUME_UP§0@102@NEXT§0@101@PLAY_PAUSE§0@96@STOP");
+
+		System.out.println(raw);
 		if(raw != null)
 		{
 			if(raw.length() < 1)
