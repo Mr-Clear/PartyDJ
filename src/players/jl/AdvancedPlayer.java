@@ -289,11 +289,8 @@ public class AdvancedPlayer
 			
 			while (ftd)
 			{
-				if(audio == null || !audio.isOpen())
-				{
-					System.out.println("Audio: " + audio + " isOpen? " + audio.isOpen() + " Track: " + Controller.getInstance().getPlayer().getCurrentTrack());
+				if(audio == null)//XXX skip Problem ??? || !audio.isOpen())
 					break;
-				}
 				
 				double fadeElapsed = System.currentTimeMillis() - fadeStartTime;
 				if(fadeElapsed < fadeDuration)
@@ -313,10 +310,7 @@ public class AdvancedPlayer
 				}
 				
 				if(paused)
-				{
-					System.out.println(" paused! Track: " + Controller.getInstance().getPlayer().getCurrentTrack());
 					break;
-				}
 				
 				try
 				{
@@ -330,23 +324,12 @@ public class AdvancedPlayer
 				}
 				
 				position += frameDuration;
-			}
-			try
+			}			
+			if (audio != null)
 			{
-				if(position < getDuration(Controller.getInstance().getPlayer().getCurrentTrack().path))
-					System.out.println("end of while!  Track: " + Controller.getInstance().getPlayer().getCurrentTrack() + " ftd: " + ftd);
-				
-				if (audio != null)
-				{
-					audio.flush();
-					audio.close();
-					close();
-				}
-			}
-			catch (PlayerException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				audio.flush();
+				audio.close();
+				close();
 			}
 			
 			jlPlayer.removePlayStateListener(listener);
