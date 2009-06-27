@@ -342,44 +342,39 @@ public class PDJList extends JList
 			
 			if(SwingUtilities.isRightMouseButton(e))
 			{
-				//Alle Fenster eintragen, die rechten Mausklick unterstützen sollen.
-				if(((PDJList)e.getSource()).getTopLevelAncestor() instanceof ClassicWindow)
+				synchronized(clickedList)
 				{
-					synchronized(clickedList)
+					try
 					{
-						try
+						if(e.getY() / clickedList.getFixedCellHeight() <= clickedList.getLastVisibleIndex())
 						{
-							if(e.getY() / clickedList.getFixedCellHeight() <= clickedList.getLastVisibleIndex())
+							if(clickedList.getSelectedIndex() == -1)
 							{
-								if(clickedList.getSelectedIndex() == -1)
-								{
-									clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
-								}
+								clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
+							}
 
-								for(int i = clickedList.getSelectedIndices().length; i > 0; i--)
+							for(int i = clickedList.getSelectedIndices().length; i > 0; i--)
+							{
+								if(e.getY() / clickedList.getFixedCellHeight() == clickedList.getSelectedIndices()[i-1])
 								{
-									if(e.getY() / clickedList.getFixedCellHeight() == clickedList.getSelectedIndices()[i-1])
+									if(clickedList.getSelectedValue() != null)
 									{
-										if(clickedList.getSelectedValue() != null)
-										{
-											PopupMenuGenerator.listPopupMenu(clickedList, (Track)clickedList.getSelectedValue()).show(clickedList, e.getX(), e.getY());
-											return;
-										}
+										PopupMenuGenerator.listPopupMenu(clickedList, (Track)clickedList.getSelectedValue()).show(clickedList, e.getX(), e.getY());
+										return;
 									}
 								}
-								clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
-								PopupMenuGenerator.listPopupMenu(clickedList, (Track)clickedList.getSelectedValue()).show(clickedList, e.getX(), e.getY());
 							}
-							else
-								PopupMenuGenerator.listPopupMenu(clickedList, null).show(clickedList, e.getX(), e.getY());
+							clickedList.setSelectedIndex(e.getY() / clickedList.getFixedCellHeight());
+							PopupMenuGenerator.listPopupMenu(clickedList, (Track)clickedList.getSelectedValue()).show(clickedList, e.getX(), e.getY());
 						}
-						catch (IndexOutOfBoundsException ex)
-						{
-							return;
-						}
+						else
+							PopupMenuGenerator.listPopupMenu(clickedList, null).show(clickedList, e.getX(), e.getY());
+					}
+					catch (IndexOutOfBoundsException ex)
+					{
+						return;
 					}
 				}
-				
 			}
 
 			if(SwingUtilities.isLeftMouseButton(e))
