@@ -287,6 +287,7 @@ public class ClassicWindow extends JFrame
 						controller.registerWindow(new gui.settings.SettingWindow());
 					}
 				});
+		setting.setToolTipText("Einstellungen");
 				
 				c.insets = new Insets(1, 1, 1, 1);
 				
