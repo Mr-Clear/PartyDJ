@@ -61,7 +61,7 @@ public class RemoveMP3s implements StatusSupportedFunction
 					{
 						Controller.getInstance().getData().deleteTrack(pdj.getListModel().getElementAt(indices[0]));
 						int[] toSelect = pdj.getSelectedIndices();
-						toSelect[0] = -1;
+						toSelect[toSelect.length - 1] = -1;
 						pdj.setSelectedIndices(toSelect);
 						count++;
 						sd.setBarPosition(count);
