@@ -24,6 +24,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.TreeMap;
 import lists.ListException;
 import lists.ListProvider;
 import lists.SearchListModel;
@@ -44,6 +45,7 @@ public class ClassicWindow extends JFrame
 	private final IPlayer player = controller.getPlayer();
 	private final ListProvider listProvider = controller.getListProvider();
 	private final IData data = controller.getData();
+	protected final TreeMap<Integer, String> lists = new TreeMap<Integer, String>();
 	private JSlider volume;
 	protected JComponent main;
 	private JButton buttonPause;
@@ -112,8 +114,10 @@ public class ClassicWindow extends JFrame
 		con.weighty = 1.0;
 		add(main = mainPart(), con);
 		
-		if(!Boolean.parseBoolean(Controller.getInstance().getData().readSetting("PLAYLIST", "true")))
-			removePlaylistFromGui(true);
+		if(!Boolean.parseBoolean(Controller.getInstance().getData().readSetting("2", "true")))
+			removeListFromGui(2, true);
+		if(!Boolean.parseBoolean(Controller.getInstance().getData().readSetting("0", "true")))
+			removeListFromGui(0, true);
 		
 		setVisible(true);
 	}
@@ -176,13 +180,13 @@ public class ClassicWindow extends JFrame
 		c.weighty = 1.0;
 		mainPart.setBackground(Color.darkGray);
 
-		mainPart.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
+		mainPart.add(list("Alle", 0, listProvider.getMasterList(), ListDropMode.DELETE), c);
 
 		
 		c.gridy = 1;
 		try
 		{
-			mainPart.add(list("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
+			mainPart.add(list("Playlist", 2, listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
 		}
 		catch (ListException e1)
 		{
@@ -194,7 +198,7 @@ public class ClassicWindow extends JFrame
 		c.gridy = 0;
 		try
 		{
-			mainPart.add(list("Wunschliste", listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
+			mainPart.add(list("Wunschliste", 1, listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
 		}
 		catch (ListException e)
 		{
@@ -203,7 +207,7 @@ public class ClassicWindow extends JFrame
 		}
 
 		c.gridy = 1;
-		mainPart.add(search(), c);
+		mainPart.add(search(3), c);
 		
 		return mainPart;
 	}
@@ -322,7 +326,7 @@ public class ClassicWindow extends JFrame
 	 * @param title der Liste, Liste, DropMode
 	 * @return JPanel mit GridBagLayout, welches die Liste und Titel enthält.
 	 */
-	private JPanel list(String title, TrackListModel l, ListDropMode ldMode)
+	private JPanel list(String title, int index, TrackListModel l, ListDropMode ldMode)
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -353,15 +357,20 @@ public class ClassicWindow extends JFrame
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		panel.add(scrollPane, c);
+		
+		lists.put(index, title);
 
+		panel.setPreferredSize(new Dimension(20, 20));
+		
 		return panel;
 	}
 	
 	/**
 	 * Erzeugt eine Suchfunktion mit Ergebnisausgabe.
+	 * @param index 
 	 * @return	JPanel mit GridBagLayout, welches das Suchfeld und die Ergebnisliste beinhaltet.
 	 */
-	private JPanel search()
+	private JPanel search(int index)
 	{
 		final JTextField textField = new JTextField();												// final damit die innere Klasse
 		final PDJList searchList = new PDJList(new SearchListModel(), ListDropMode.NONE, "Search");	// darauf zugreifen kann.
@@ -427,6 +436,8 @@ public class ClassicWindow extends JFrame
 					textField.setBackground(bgColor);
 				}
 			}});
+		
+		lists.put(index, "SEARCH");
 		
 		return panel;
 	}
@@ -562,82 +573,99 @@ public class ClassicWindow extends JFrame
 		}
 	}
 
-	public void removePlaylistFromGui(boolean init)
+	public void removeListFromGui(int index, boolean init)
 	{	
+		if(init)
+			;//Baustelle!!!
+		lists.remove(index);
 		main.removeAll();
+
 		GridBagConstraints c = new GridBagConstraints();
-		
 		c.insets = new Insets(0, 3, 3, 3);
-		c.fill = GridBagConstraints.BOTH;
-		
 		c.weightx = 1.0;
 		c.weighty = 1.0;
-		c.gridheight = 2;
-
-		main.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
+//		c.fill = GridBagConstraints.BOTH;
 		
-		c.gridx = 1;
-		c.gridy = 0;
-		c.ipady = init ? 0 : -450;
-		c.gridheight = 1;
-		try
+		int count = 0;
+		for(String list : lists.values())
 		{
-			main.add(list("Wunschliste", listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
+			int j = -1;
+			for(int i = 0; i <= count; i++)
+			{
+				if(lists.keySet().iterator().hasNext())
+					j = lists.keySet().iterator().next();
+			}
+			if(j == -1)
+				throw new RuntimeException("J: " + j);
+				
+			c.gridx = count;
+			c.gridy = count / 2;
+			try
+			{
+				if(list.equalsIgnoreCase("ALLE"))
+					main.add(list(list, j, listProvider.getMasterList(), ListDropMode.DELETE), c);
+				else
+					main.add(list(list, j, listProvider.getDbList(list), ListDropMode.COPY_OR_MOVE), c);
+			}
+			catch (ListException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println(list);
 		}
-		catch (ListException e)
-		{
-			JOptionPane.showMessageDialog(this, "Konnte Wunschliste nicht erstellen!", "PartyDJ", JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
-		}
-
-		c.gridy = 1;
-		c.ipady = 450;
-		main.add(search(), c);
+		System.out.println("comps  " + main.getComponentCount());
+		
+//		main.removeAll();
+//		GridBagConstraints c = new GridBagConstraints();
+//		
+//		c.insets = new Insets(0, 3, 3, 3);
+//		c.fill = GridBagConstraints.BOTH;
+//		
+//		c.weightx = 1.0;
+//		c.weighty = 1.0;
+//		c.gridheight = 2;
+//
+//		if(!list.equalsIgnoreCase("MAINLIST"))
+//			main.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
+//		if(!list.equalsIgnoreCase("PLAYLIST"))
+//		{
+//			c.gridy = 1;
+//			try
+//			{
+//				main.add(list("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
+//			}
+//			catch (ListException e1)
+//			{
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//		}
+//		
+//		c.gridx = 1;
+//		c.gridy = 0;
+//		c.ipady = init ? 0 : -450;
+//		c.gridheight = 1;
+//		try
+//		{
+//			main.add(list("Wunschliste", listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
+//		}
+//		catch (ListException e)
+//		{
+//			JOptionPane.showMessageDialog(this, "Konnte Wunschliste nicht erstellen!", "PartyDJ", JOptionPane.ERROR_MESSAGE);
+//			e.printStackTrace();
+//		}
+//
+//		c.gridy = 1;
+//		c.ipady = 450;
+//		main.add(search(), c);
 
 		SwingUtilities.updateComponentTreeUI(main);
 	}
 	
-	public void addPlaylistToGui()
+	public void restoreDefaultGUI()
 	{
-		main.removeAll();
-		GridBagConstraints c = new GridBagConstraints();	
-			
-		c.insets = new Insets(0, 3, 3, 3);
-		c.fill = GridBagConstraints.BOTH;
-		
-		c.weightx = 1.0;
-		c.weighty = 1.0;
-		main.setBackground(Color.darkGray);
-
-		main.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
-
-		
-		c.gridy = 1;
-		try
-		{
-			main.add(list("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
-		}
-		catch (ListException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		c.gridx = 1;
-		c.gridy = 0;
-		try
-		{
-			main.add(list("Wunschliste", listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
-		}
-		catch (ListException e)
-		{
-			JOptionPane.showMessageDialog(this, "Konnte Wunschliste nicht erstellen!", "PartyDJ", JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
-		}
-
-		c.gridy = 1;
-		main.add(search(), c);
-		
+		main = mainPart();
 		SwingUtilities.updateComponentTreeUI(main);
 	}
 	
