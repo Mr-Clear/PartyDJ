@@ -48,6 +48,7 @@ public class ClassicWindow extends JFrame
 	private PDJSlider slider;
 	private JSlider volume;
 	private ClassicWindow classicWindow = this;
+	protected JComponent main;
 	private JButton buttonPause;
 	
 	public ClassicWindow()
@@ -110,15 +111,15 @@ public class ClassicWindow extends JFrame
 		con.gridy = 1;
 		con.weightx = 1.0;
 		con.weighty = 1.0;
-		add(mainPart(), con);
-
+		add(main = mainPart(), con);
+		
 		setVisible(true);
 	}
 	/**
 	 * Lautstärkeregler, Fortschrittsbalken und Buttons werden zu einer Kontrolleinheit zusammengefügt.
 	 * @return JPanel mit GridBagLayout, welches alle Steuerungen enthält.
 	 */
-	private Component control()
+	private JPanel control()
 	{
 		final JPanel control = new JPanel(new GridBagLayout());
 		
@@ -155,7 +156,7 @@ public class ClassicWindow extends JFrame
 	 * Alle Listen und die Suche werden zu einer Einheit zusammengefügt.
 	 * @return JPanel mit GridBagLayout, welches alle Listen und die Suche enthält.
 	 */
-	private Component mainPart()
+	private JPanel mainPart()
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel mainPart = new JPanel(new GridBagLayout());	
@@ -165,7 +166,6 @@ public class ClassicWindow extends JFrame
 		
 		c.weightx = 1.0;
 		c.weighty = 1.0;
-		
 		mainPart.setBackground(Color.darkGray);
 
 		mainPart.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
@@ -314,7 +314,7 @@ public class ClassicWindow extends JFrame
 	 * @param title der Liste, Liste, DropMode
 	 * @return JPanel mit GridBagLayout, welches die Liste und Titel enthält.
 	 */
-	private Component list(String title, TrackListModel l, ListDropMode ldMode)
+	private JPanel list(String title, TrackListModel l, ListDropMode ldMode)
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -354,7 +354,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt eine Suchfunktion mit Ergebnisausgabe.
 	 * @return	JPanel mit GridBagLayout, welches das Suchfeld und die Ergebnisliste beinhaltet.
 	 */
-	private Component search()
+	private JPanel search()
 	{
 		final JTextField textField = new JTextField();												// final damit die innere Klasse
 		final PDJList searchList = new PDJList(new SearchListModel(), ListDropMode.NONE, "Search");	// darauf zugreifen kann.
@@ -427,7 +427,7 @@ public class ClassicWindow extends JFrame
 	/**Erzeugt den Fortschrittsbalken.
 	 * @return JPanel mit GridBagLayout, welches den Titel und Slider beinhaltet.
 	 */
-	private Component slider()
+	private JPanel slider()
 	{
 		try
 		{
@@ -456,7 +456,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt den Lautstärkeregler.
 	 * @return	JPanel mit GridBagLayout, welches den Lautstärkeregler beinhaltet.
 	 */
-	private Component volume()
+	private JPanel volume()
 	{
 		volume = new JSlider(SwingConstants.VERTICAL, 0, 100, player.getVolume());
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -552,7 +552,40 @@ public class ClassicWindow extends JFrame
 		{
 			e.printStackTrace();
 		}
-        
+	}
+
+	public void removePlaylistFromGui()
+	{	
+		main.removeAll();
+		GridBagConstraints c = new GridBagConstraints();
+		
+		c.insets = new Insets(0, 3, 3, 3);
+		c.fill = GridBagConstraints.BOTH;
+		
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		c.gridheight = 2;
+//		main.setBackground(Color.darkGray);
+
+		main.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
+		
+		c.gridx = 1;
+		c.gridy = 0;
+		c.gridheight = 1;
+		try
+		{
+			main.add(list("Wunschliste", listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
+		}
+		catch (ListException e)
+		{
+			JOptionPane.showMessageDialog(this, "Konnte Wunschliste nicht erstellen!", "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+
+		c.gridy = 1;
+		c.ipady = 450;
+		main.add(search(), c);
+		main.repaint();
 	}
 	
 	class PlayState extends PlayStateAdapter
