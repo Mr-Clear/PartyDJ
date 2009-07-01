@@ -100,6 +100,32 @@ public class Controller
 		List<String> windowsToLoad = new ArrayList<String>();
 		int whichPlayer = -1;	// 0=JMF, 1=JL
 		
+		splash.setInfo("Lade Look And Feel");
+		{
+			//TODO an Anfang von Kontruktor setzen, ohne dass das ClassicWindow bäh aussieht.
+			//UI
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			}
+			catch (ClassNotFoundException e)
+			{
+				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
+			}
+			catch (InstantiationException e)
+			{
+				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
+			}
+			catch (IllegalAccessException e)
+			{
+				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
+			}
+			catch (UnsupportedLookAndFeelException e)
+			{
+				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
+			}
+		}
+		
 		int lastParam = 0;
 		for(String arg : args)
 		{
@@ -283,32 +309,6 @@ public class Controller
 		catch(Throwable t)
 		{
 			logError(REGULAR_ERROR, this, t, "Fehler beim Laden von Intellitype!");
-		}
-		
-		splash.setInfo("Lade Look And Feel");
-		{
-			//TODO an Anfang von Kontruktor setzen, ohne dass das ClassicWindow bäh aussieht.
-			//UI
-			try
-			{
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			}
-			catch (ClassNotFoundException e)
-			{
-				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
-			}
-			catch (InstantiationException e)
-			{
-				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
-			}
-			catch (IllegalAccessException e)
-			{
-				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
-			}
-			catch (UnsupportedLookAndFeelException e)
-			{
-				logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
-			}
 		}
 		
 		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));

@@ -44,12 +44,10 @@ public class ClassicWindow extends JFrame
 	private final IPlayer player = controller.getPlayer();
 	private final ListProvider listProvider = controller.getListProvider();
 	private final IData data = controller.getData();
-	private Container gcp = getContentPane();
-	private PDJSlider slider;
 	private JSlider volume;
-	private ClassicWindow classicWindow = this;
 	protected JComponent main;
 	private JButton buttonPause;
+	protected static ClassicWindow instance;
 	
 	public ClassicWindow()
 	{
@@ -78,6 +76,7 @@ public class ClassicWindow extends JFrame
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			instance = this;
 	}
 
 	protected void initGUI()
@@ -97,7 +96,7 @@ public class ClassicWindow extends JFrame
 		
 		manageSize();
 		
-		gcp.setBackground(Color.darkGray);
+		getContentPane().setBackground(Color.darkGray);
 		
 		con.gridx = 0;
 		con.gridy = 0;
@@ -113,8 +112,17 @@ public class ClassicWindow extends JFrame
 		con.weighty = 1.0;
 		add(main = mainPart(), con);
 		
+		if(!Boolean.parseBoolean(Controller.getInstance().getData().readSetting("PLAYLIST", "true")))
+			removePlaylistFromGui(true);
+		
 		setVisible(true);
 	}
+	
+	public static ClassicWindow getInstance()
+	{
+		return instance;
+	}
+	
 	/**
 	 * Lautstärkeregler, Fortschrittsbalken und Buttons werden zu einer Kontrolleinheit zusammengefügt.
 	 * @return JPanel mit GridBagLayout, welches alle Steuerungen enthält.
@@ -325,8 +333,7 @@ public class ClassicWindow extends JFrame
 		JPanel panel = new JPanel(new GridBagLayout());
 		getContentPane().add(scrollPane);
 		
-		
-		scrollPane.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		list.setForeground(new Color(0, 255, 0));
 		panel.setBackground(Color.darkGray);
 		label.setBackground(Color.darkGray);
@@ -429,6 +436,8 @@ public class ClassicWindow extends JFrame
 	 */
 	private JPanel slider()
 	{
+		PDJSlider slider = null;
+		JPanel panel = new JPanel(new GridBagLayout());
 		try
 		{
 			slider = new PDJSlider();
@@ -436,9 +445,8 @@ public class ClassicWindow extends JFrame
 		catch(Throwable e)
 		{
 			e.printStackTrace();
+			return panel;
 		}
-		JPanel panel = new JPanel(new GridBagLayout());
-		
 		panel.setBackground(Color.darkGray);
 		slider.setBackground(Color.darkGray);
 		slider.setForeground(Color.green);
@@ -484,9 +492,9 @@ public class ClassicWindow extends JFrame
 	{
 		JButton button = new JButton(new ImageIcon(iconPath));
 		button.setMargin(new Insets(0 ,0, 0, 0));
-		button.setFocusPainted(false);
+		button.setFocusPainted(true);
 		button.setBackground(Color.darkGray);
-		Border buttonBorder = new javax.swing.plaf.basic.BasicBorders.ButtonBorder(Color.gray, Color.black, Color.black, Color.gray);
+		Border buttonBorder = new javax.swing.border.EtchedBorder(0, Color.gray, Color.black);//new javax.swing.plaf.basic.BasicBorders.ButtonBorder(Color.blue, Color.red, Color.red, Color.blue);
 		button.setBorder(buttonBorder);
 		return button;
 	}
@@ -519,7 +527,7 @@ public class ClassicWindow extends JFrame
 			setExtendedState(MAXIMIZED_BOTH);
 		}
 		
-		classicWindow.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
+		this.setLocationRelativeTo(null); //Macht dass das Fenster in Bildschirmmitte steht
 		
 		addWindowStateListener(new WindowStateListener(){
 			public void windowStateChanged(WindowEvent evt)
@@ -554,7 +562,7 @@ public class ClassicWindow extends JFrame
 		}
 	}
 
-	public void removePlaylistFromGui()
+	public void removePlaylistFromGui(boolean init)
 	{	
 		main.removeAll();
 		GridBagConstraints c = new GridBagConstraints();
@@ -565,12 +573,12 @@ public class ClassicWindow extends JFrame
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		c.gridheight = 2;
-//		main.setBackground(Color.darkGray);
 
 		main.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
 		
 		c.gridx = 1;
 		c.gridy = 0;
+		c.ipady = init ? 0 : -450;
 		c.gridheight = 1;
 		try
 		{
@@ -585,7 +593,52 @@ public class ClassicWindow extends JFrame
 		c.gridy = 1;
 		c.ipady = 450;
 		main.add(search(), c);
-		main.repaint();
+
+		SwingUtilities.updateComponentTreeUI(main);
+	}
+	
+	public void addPlaylistToGui()
+	{
+		main.removeAll();
+		GridBagConstraints c = new GridBagConstraints();	
+			
+		c.insets = new Insets(0, 3, 3, 3);
+		c.fill = GridBagConstraints.BOTH;
+		
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		main.setBackground(Color.darkGray);
+
+		main.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
+
+		
+		c.gridy = 1;
+		try
+		{
+			main.add(list("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
+		}
+		catch (ListException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		c.gridx = 1;
+		c.gridy = 0;
+		try
+		{
+			main.add(list("Wunschliste", listProvider.getDbList("Wunschliste"), ListDropMode.COPY_OR_MOVE), c);
+		}
+		catch (ListException e)
+		{
+			JOptionPane.showMessageDialog(this, "Konnte Wunschliste nicht erstellen!", "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+
+		c.gridy = 1;
+		main.add(search(), c);
+		
+		SwingUtilities.updateComponentTreeUI(main);
 	}
 	
 	class PlayState extends PlayStateAdapter
@@ -600,9 +653,9 @@ public class ClassicWindow extends JFrame
 				public void run()
 				{
 					if(playingCurrent != null)
-						classicWindow.setTitle(playingCurrent.name + "   -   PartyDJ");
+						ClassicWindow.this.setTitle(playingCurrent.name + "   -   PartyDJ");
 					else
-						classicWindow.setTitle("PartyDJ");
+						ClassicWindow.this.setTitle("PartyDJ");
 				}});
 			
 		}
