@@ -205,7 +205,7 @@ public class Controller
 			addSettingNode(new SettingNode("Listen", gui.settings.MainList.class), settingTree);
 			addSettingNode(new SettingNode("Shuffle", gui.settings.Shuffle.class), settingTree);
 			addSettingNode(new SettingNode("HotKeys", gui.settings.HotKeys.class), settingTree);
-			addSettingNode(new SettingNode("Verschiedenes", gui.settings.Miscellaneous.class), settingTree);
+			addSettingNode(new SettingNode("Verschiedenes", gui.settings.Misc.class), settingTree);
 			addSettingNode(new SettingNode("Zeug", gui.settings.Stuff.class), settingTree);
 			
 			if(windowsToLoad.size() == 0)
