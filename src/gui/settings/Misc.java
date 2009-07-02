@@ -83,13 +83,13 @@ public class Misc extends javax.swing.JPanel
 		playlistCheckB.setName("PLAYLIST");
 		masterlistCheckB.setName("MASTERLIST");
 		
-		ButtonListener bl = new ButtonListener();
+		ButtonListener bl = new ButtonListener(null);
 		yesRadioB.addActionListener(bl);
 		noRadioB.addActionListener(bl);
 		positionRadioB.addActionListener(bl);
 		startRadioB.addActionListener(bl);
-		playlistCheckB.addItemListener(bl);
-		masterlistCheckB.addItemListener(bl);
+		playlistCheckB.addItemListener(new ButtonListener(masterlistCheckB));
+		masterlistCheckB.addItemListener(new ButtonListener(playlistCheckB));
 	}
 	
 	private void initGUI() 
@@ -156,7 +156,7 @@ public class Misc extends javax.swing.JPanel
 			{
 				jLabel6 = new JLabel();
 				this.add(jLabel6, new GridBagConstraints(0, 7, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(3, 8, 3, 3), 0, 0));
-				jLabel6.setText("Welche Listen sollen nicht angezeigt werden?");
+				jLabel6.setText("Welche Listen sollen angezeigt werden?");
 			}
 			{
 				playlistCheckB = new JCheckBox();
@@ -184,6 +184,12 @@ public class Misc extends javax.swing.JPanel
 	
 	protected class ButtonListener implements ActionListener, ItemListener
 	{
+		private final JCheckBox partner;
+		
+		public ButtonListener(JCheckBox partner)
+		{
+			this.partner = partner;
+		}
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
@@ -197,19 +203,20 @@ public class Misc extends javax.swing.JPanel
 		@Override
 		public void itemStateChanged(ItemEvent e)
 		{
-			if(e.getSource() instanceof JCheckBox)
+			if(e.getSource() instanceof JCheckBox && partner != null)
 			{
 				JCheckBox cb = (JCheckBox) e.getSource();
 				if(e.getStateChange() == ItemEvent.SELECTED)
 				{
-					System.out.println(cb.getName());
-					Controller.getInstance().getData().writeSetting(cb.getName(), "false");	
-					ClassicWindow.getInstance().removeListFromGui(cb.getName(), false);
+					Controller.getInstance().getData().writeSetting(cb.getName(), "true");	
+					ClassicWindow.getInstance().restoreDefaultGUI();
 				}
 				if(e.getStateChange() == ItemEvent.DESELECTED)
 				{
-					Controller.getInstance().getData().writeSetting(cb.getName(), "true");	
-					ClassicWindow.getInstance().restoreDefaultGUI();
+					Controller.getInstance().getData().writeSetting(cb.getName(), "false");	
+					if(!partner.isSelected())
+						partner.setSelected(true);
+					ClassicWindow.getInstance().removeListFromGui(cb.getName());
 				}
 			}
 		}
