@@ -27,6 +27,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.lang.reflect.InvocationTargetException;
+import lists.DbClientListModel;
 import lists.ListException;
 import lists.ListProvider;
 import lists.SearchListModel;
@@ -738,33 +739,20 @@ public class ClassicWindow extends JFrame
 	
 	protected class TrayListener extends WindowAdapter implements MouseListener, PlayStateListener
 	{
-		protected SystemTray tray;
+		protected final SystemTray tray;
 		protected TrayIcon trayIcon;
 		protected String info;
 		
 		public TrayListener()
 		{
-			init();
-		}
-		
-		public void init()
-		{
 			if (SystemTray.isSupported()) 
 			{
-				if(player.getCurrentTrack() != null)
-					info = player.getCurrentTrack().name;
 	            tray = SystemTray.getSystemTray();
 	            Image icon = Toolkit.getDefaultToolkit().getImage("Resources/p32.gif");
-	            
-	            PopupMenu popup = new PopupMenu();
-	            MenuItem name = new MenuItem(info == null ? "PartyDJ" : info);
-	            name.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-	            popup.add(name);
-	            popup.addSeparator();
-	            
-	            trayIcon = new TrayIcon(icon, info == null ? "PartyDJ" : info, popup);
+	            trayIcon = new TrayIcon(icon, info == null ? "PartyDJ" : info, null);
 	            trayIcon.addMouseListener(this);
 	            trayIcon.setImageAutoSize(true);
+				init();
 			}
 			else
 			{
@@ -772,6 +760,69 @@ public class ClassicWindow extends JFrame
 				trayIcon = null;
 			}
 		}
+		
+		public void init()
+		{
+			if(player.getCurrentTrack() != null)
+				info = player.getCurrentTrack().name;
+            trayIcon.setToolTip(info == null ? "PartyDJ" : info);
+			
+            PopupMenu popup = new PopupMenu();
+            
+            MenuItem name = new MenuItem(info == null ? "PartyDJ" : info);
+            name.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+            name.setEnabled(false);
+            popup.add(name);
+            popup.addSeparator();
+            
+            try
+            {
+	            if(player.getCurrentTrack() != null)
+	            {
+					final DbClientListModel playlist = listProvider.getDbList("Playlist");
+					MenuItem wish = new MenuItem();
+
+					if(playlist.getIndex(player.getCurrentTrack()) < 0)
+						wish.setLabel("Lied auf Wunschliste setzen");
+					else
+						wish.setLabel("Lied von Wunschliste entfernen");
+	            	
+	            	wish.addActionListener(new ActionListener()
+	            	{
+						@Override
+						public void actionPerformed(ActionEvent e)
+						{
+							try
+							{
+								if(playlist.getIndex(player.getCurrentTrack()) < 0)
+									playlist.add(player.getCurrentTrack());
+								else
+									playlist.remove(playlist.getIndex(player.getCurrentTrack()));
+								init();
+							}
+							catch (ListException e1){e1.printStackTrace();}
+					}});
+		            popup.add(wish);
+	            }
+            }
+            catch(ListException le)
+            {
+            	//TODO
+            	le.printStackTrace();
+            }
+            MenuItem exit = new MenuItem("Schließen");
+            exit.addActionListener(new ActionListener()
+        	{
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					controller.closePartyDJ();
+			}});
+            popup.add(exit);
+            
+            trayIcon.setPopupMenu(popup);
+		}
+		
 		@Override
 		public void windowIconified(WindowEvent e)
 		{
@@ -789,7 +840,7 @@ public class ClassicWindow extends JFrame
 		@Override
 		public void mouseClicked(MouseEvent e)
 		{
-			if(e.getClickCount() == 2)
+			if(SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2)
 			{
 				ClassicWindow.this.setVisible(true);
 				ClassicWindow.this.setExtendedState(MAXIMIZED_BOTH);
@@ -823,7 +874,8 @@ public class ClassicWindow extends JFrame
 		@Override
 		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
-			trayIcon.displayMessage(null, player.getCurrentTrack().name, MessageType.INFO);
+			trayIcon.displayMessage(null, playingCurrent.name, MessageType.INFO);
+//			trayIcon.setToolTip(playingCurrent.name);
 			init();
 		}
 		@Override
