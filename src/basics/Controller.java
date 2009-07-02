@@ -4,6 +4,8 @@ import gui.KeyStrokeManager;
 import gui.SplashWindow;
 import gui.settings.SettingNode;
 import java.awt.Frame;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileWriter;
@@ -677,6 +679,9 @@ public class Controller
 		try
 		{
 			data.writeSetting("LastPosition", Double.toString(player.getPosition()));
+			TrayIcon[] icons = SystemTray.getSystemTray().getTrayIcons();
+			for(TrayIcon icon : icons)
+				SystemTray.getSystemTray().remove(icon);
 		}
 		catch (SettingException e){}
 		synchronized(closeListener)

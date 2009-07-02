@@ -14,6 +14,7 @@ import data.IData;
 import data.SettingException;
 import basics.Controller;
 import java.awt.*;
+import java.awt.TrayIcon.MessageType;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +22,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.lang.reflect.InvocationTargetException;
@@ -83,6 +86,9 @@ public class ClassicWindow extends JFrame
 	{
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setIconImage(Toolkit.getDefaultToolkit().createImage("Resources/p32.gif"));
+		TrayListener tl = new TrayListener();
+		addWindowListener(tl);
+		player.addPlayStateListener(tl);
 		assert Controller.getInstance() != null : "Controller nicht geladen!";
 		player.addPlayStateListener(new PlayState());
 
@@ -504,7 +510,7 @@ public class ClassicWindow extends JFrame
 		return button;
 	}
 	
-	private void manageSize()
+	protected void manageSize()
 	{
 		try
 		{
@@ -662,7 +668,7 @@ public class ClassicWindow extends JFrame
 		SwingUtilities.updateComponentTreeUI(main);
 	}
 	
-	class PlayState extends PlayStateAdapter
+	protected class PlayState extends PlayStateAdapter
 	{
 		public int duration;
 		
@@ -703,7 +709,7 @@ public class ClassicWindow extends JFrame
 		}
 	}
 	
-	class VolumeListener implements ChangeListener, PlayStateListener
+	protected class VolumeListener implements ChangeListener, PlayStateListener
 	{
 		public void stateChanged(ChangeEvent e)
 		{
@@ -728,6 +734,109 @@ public class ClassicWindow extends JFrame
 
 		@Override
 		public void playStateChanged(boolean playState){}
+	}
+	
+	protected class TrayListener extends WindowAdapter implements MouseListener, PlayStateListener
+	{
+		protected SystemTray tray;
+		protected TrayIcon trayIcon;
+		protected String info;
+		
+		public TrayListener()
+		{
+			init();
+		}
+		
+		public void init()
+		{
+			if (SystemTray.isSupported()) 
+			{
+				if(player.getCurrentTrack() != null)
+					info = player.getCurrentTrack().name;
+	            tray = SystemTray.getSystemTray();
+	            Image icon = Toolkit.getDefaultToolkit().getImage("Resources/p32.gif");
+	            
+	            PopupMenu popup = new PopupMenu();
+	            MenuItem name = new MenuItem(info == null ? "PartyDJ" : info);
+	            name.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+	            popup.add(name);
+	            popup.addSeparator();
+	            
+	            trayIcon = new TrayIcon(icon, info == null ? "PartyDJ" : info, popup);
+	            trayIcon.addMouseListener(this);
+	            trayIcon.setImageAutoSize(true);
+			}
+			else
+			{
+				tray = null;
+				trayIcon = null;
+			}
+		}
+		@Override
+		public void windowIconified(WindowEvent e)
+		{
+			ClassicWindow.this.setVisible(false);
+			try
+			{
+				tray.add(trayIcon);
+			}
+			catch (AWTException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		@Override
+		public void mouseClicked(MouseEvent e)
+		{
+			if(e.getClickCount() == 2)
+			{
+				ClassicWindow.this.setVisible(true);
+				ClassicWindow.this.setExtendedState(MAXIMIZED_BOTH);
+				tray.remove(trayIcon);
+			}
+		}
+		@Override
+		public void mouseEntered(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void mouseExited(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void mousePressed(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void mouseReleased(MouseEvent e)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+		{
+			trayIcon.displayMessage(null, player.getCurrentTrack().name, MessageType.INFO);
+			init();
+		}
+		@Override
+		public void playStateChanged(boolean playState)
+		{
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void volumeChanged(int vol)
+		{
+			// TODO Auto-generated method stub
+		}
 	}
 }
 
