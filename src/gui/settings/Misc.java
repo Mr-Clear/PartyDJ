@@ -37,7 +37,7 @@ public class Misc extends javax.swing.JPanel
 	private JLabel jLabel3;
 	private JLabel jLabel4;
 	private JLabel jLabel5;
-	private JCheckBox mainlistCheckB;
+	private JCheckBox masterlistCheckB;
 	private JCheckBox playlistCheckB;
 	private JLabel jLabel6;
 	private JRadioButton positionRadioB;
@@ -70,7 +70,7 @@ public class Misc extends javax.swing.JPanel
 		playlistCheckB.setSelected(isPlaylistEnabled);
 
 		boolean isMainlistEnabled = !Boolean.parseBoolean(Controller.getInstance().getData().readSetting("0", "true"));
-		mainlistCheckB.setSelected(isMainlistEnabled);
+		masterlistCheckB.setSelected(isMainlistEnabled);
 		
 		yesRadioB.setName("AUTO_PLAY");
 		yesRadioB.setActionCommand("true");
@@ -80,8 +80,8 @@ public class Misc extends javax.swing.JPanel
 		positionRadioB.setActionCommand("-1");
 		startRadioB.setName("POSITION");
 		startRadioB.setActionCommand("0");
-		playlistCheckB.setName("2");
-		mainlistCheckB.setName("0");
+		playlistCheckB.setName("PLAYLIST");
+		masterlistCheckB.setName("MASTERLIST");
 		
 		ButtonListener bl = new ButtonListener();
 		yesRadioB.addActionListener(bl);
@@ -89,7 +89,7 @@ public class Misc extends javax.swing.JPanel
 		positionRadioB.addActionListener(bl);
 		startRadioB.addActionListener(bl);
 		playlistCheckB.addItemListener(bl);
-		mainlistCheckB.addItemListener(bl);
+		masterlistCheckB.addItemListener(bl);
 	}
 	
 	private void initGUI() 
@@ -164,9 +164,9 @@ public class Misc extends javax.swing.JPanel
 				playlistCheckB.setText("Playlist");
 			}
 			{
-				mainlistCheckB = new JCheckBox();
-				this.add(mainlistCheckB, new GridBagConstraints(1, 8, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(3, 5, 3, 3), 0, 0));
-				mainlistCheckB.setText("Hauptliste");
+				masterlistCheckB = new JCheckBox();
+				this.add(masterlistCheckB, new GridBagConstraints(1, 8, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(3, 5, 3, 3), 0, 0));
+				masterlistCheckB.setText("Hauptliste");
 			}
 		} 
 		catch (Exception e) 
@@ -204,7 +204,7 @@ public class Misc extends javax.swing.JPanel
 				{
 					System.out.println(cb.getName());
 					Controller.getInstance().getData().writeSetting(cb.getName(), "false");	
-					ClassicWindow.getInstance().removeListFromGui(Integer.parseInt(cb.getName()), false);
+					ClassicWindow.getInstance().removeListFromGui(cb.getName(), false);
 				}
 				if(e.getStateChange() == ItemEvent.DESELECTED)
 				{
