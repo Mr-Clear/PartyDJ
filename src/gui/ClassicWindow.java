@@ -762,6 +762,8 @@ public class ClassicWindow extends JFrame
 		
 		public void init()
 		{
+			if(!Boolean.parseBoolean(data.readSetting("SYSTEM_TRAY", "true")))
+				return;
 			if(player.getCurrentTrack() != null)
 				info = player.getCurrentTrack().name;
             trayIcon.setToolTip(info == null ? "PartyDJ" : info);
@@ -825,6 +827,9 @@ public class ClassicWindow extends JFrame
 		@Override
 		public void windowIconified(WindowEvent e)
 		{
+			if(!Boolean.parseBoolean(data.readSetting("SYSTEM_TRAY", "true")))
+				return;
+			
 			ClassicWindow.this.setVisible(false);
 			try
 			{
@@ -867,12 +872,17 @@ public class ClassicWindow extends JFrame
 		@Override
 		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
-			trayIcon.displayMessage(null, playingCurrent.name, MessageType.INFO);
+			if(!Boolean.parseBoolean(data.readSetting("SYSTEM_TRAY", "true")))
+				return;
+			if(Boolean.parseBoolean(data.readSetting("TOOLTIP", "true")))
+				trayIcon.displayMessage(null, playingCurrent.name, MessageType.INFO);
 			init();
 		}
 		@Override
 		public void playStateChanged(boolean playState)
 		{
+			if(!Boolean.parseBoolean(data.readSetting("SYSTEM_TRAY", "true")))
+				return;
 			if(!playState)
 				trayIcon.setImage(Toolkit.getDefaultToolkit().getImage("Resources/Pause.png"));
 			else if(playState)

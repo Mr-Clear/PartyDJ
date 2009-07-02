@@ -14,6 +14,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
+import data.IData;
 import basics.Controller;
 
 
@@ -37,6 +38,9 @@ public class Misc extends javax.swing.JPanel
 	private JLabel jLabel3;
 	private JLabel jLabel4;
 	private JLabel jLabel5;
+	private JCheckBox tooltipCheckB;
+	private JCheckBox sysTrayCheckB;
+	private JLabel jLabel7;
 	private JCheckBox masterlistCheckB;
 	private JCheckBox playlistCheckB;
 	private JLabel jLabel6;
@@ -44,6 +48,7 @@ public class Misc extends javax.swing.JPanel
 	private JRadioButton startRadioB;
 	private JRadioButton noRadioB;
 	private JRadioButton yesRadioB;
+	protected IData data = Controller.getInstance().getData();
 	
 	public Misc()
 	{
@@ -54,23 +59,37 @@ public class Misc extends javax.swing.JPanel
 	
 	protected void initFuntions()
 	{
-		boolean autoPlay = Boolean.parseBoolean(Controller.getInstance().getData().readSetting("AUTO_PLAY", "true"));
+		ButtonGroup buttonGroup2 = new ButtonGroup();
+		buttonGroup2.add(yesRadioB);
+		buttonGroup2.add(noRadioB);
+
+		ButtonGroup buttonGroup1 = new ButtonGroup();
+		buttonGroup1.add(startRadioB);
+		buttonGroup1.add(positionRadioB);
+		
+		boolean autoPlay = Boolean.parseBoolean(data.readSetting("AUTO_PLAY", "true"));
 		if(autoPlay)
 			yesRadioB.setSelected(true);
 		else
 			noRadioB.setSelected(true);
 		
-		boolean fromStart = Controller.getInstance().getData().readSetting("POSITION", "-1").equalsIgnoreCase("-1");
+		boolean fromStart = data.readSetting("POSITION", "-1").equalsIgnoreCase("-1");
 		if(fromStart)
 			positionRadioB.setSelected(true);
 		else
 			startRadioB.setSelected(true);
 		
-		boolean isPlaylistEnabled = !Boolean.parseBoolean(Controller.getInstance().getData().readSetting("2", "true"));
+		boolean isPlaylistEnabled = Boolean.parseBoolean(data.readSetting("PLAYLIST", "true"));
 		playlistCheckB.setSelected(isPlaylistEnabled);
 
-		boolean isMainlistEnabled = !Boolean.parseBoolean(Controller.getInstance().getData().readSetting("0", "true"));
+		boolean isMainlistEnabled = Boolean.parseBoolean(data.readSetting("MASTERLIST", "true"));
 		masterlistCheckB.setSelected(isMainlistEnabled);
+		
+		boolean isSysTrayEnabled = Boolean.parseBoolean(data.readSetting("SYSTEM_TRAY", "true"));
+		sysTrayCheckB.setSelected(isSysTrayEnabled);
+		
+		boolean isTooltipEnabled = Boolean.parseBoolean(data.readSetting("TOOLTIP", "true"));
+		tooltipCheckB.setSelected(isTooltipEnabled);
 		
 		yesRadioB.setName("AUTO_PLAY");
 		yesRadioB.setActionCommand("true");
@@ -81,13 +100,21 @@ public class Misc extends javax.swing.JPanel
 		startRadioB.setName("POSITION");
 		startRadioB.setActionCommand("0");
 		playlistCheckB.setName("PLAYLIST");
+		playlistCheckB.setActionCommand("GUI");
 		masterlistCheckB.setName("MASTERLIST");
+		masterlistCheckB.setActionCommand("GUI");
+		tooltipCheckB.setName("TOOLTIP");
+		tooltipCheckB.setActionCommand("TRAY");
+		sysTrayCheckB.setName("SYSTEM_TRAY");
+		sysTrayCheckB.setActionCommand("TRAY");
 		
 		ButtonListener bl = new ButtonListener(null);
 		yesRadioB.addActionListener(bl);
 		noRadioB.addActionListener(bl);
 		positionRadioB.addActionListener(bl);
 		startRadioB.addActionListener(bl);
+		sysTrayCheckB.addItemListener(bl);
+		tooltipCheckB.addItemListener(bl);
 		playlistCheckB.addItemListener(new ButtonListener(masterlistCheckB));
 		masterlistCheckB.addItemListener(new ButtonListener(playlistCheckB));
 	}
@@ -97,10 +124,10 @@ public class Misc extends javax.swing.JPanel
 		try 
 		{
 			GridBagLayout thisLayout = new GridBagLayout();
-			thisLayout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1};
-			thisLayout.rowHeights = new int[] {49, 10, 10, 15, 10, 15, 10, 10, 15, 20};
-			thisLayout.columnWeights = new double[] {0.1, 0.1, 0.1, 0.1};
-			thisLayout.columnWidths = new int[] {7, 7, 7, 7};
+			thisLayout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.1};
+			thisLayout.rowHeights = new int[] {49, 10, 10, 15, 10, 15, 15, 10, 15, 15, 10, 10, 20, 20};
+			thisLayout.columnWeights = new double[] {0.0, 0.1, 0.1, 0.1};
+			thisLayout.columnWidths = new int[] {144, 7, 7, 7};
 			this.setLayout(thisLayout);
 			setPreferredSize(new Dimension(400, 300));
 			{
@@ -119,12 +146,12 @@ public class Misc extends javax.swing.JPanel
 			{
 				jLabel3 = new JLabel();
 				jLabel3.setFont(new Font("Tahoma", Font.PLAIN, 12));
-				this.add(jLabel3, new GridBagConstraints(0, 2, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(3, 8, 3, 3), 0, 0));
+				this.add(jLabel3, new GridBagConstraints(0, 2, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(3, 10, 3, 3), 0, 0));
 				jLabel3.setText("Soll nach dem Start die Wiedergabe automatisch gestartet werden?");
 			}
 			{
 				yesRadioB = new JRadioButton();
-				this.add(yesRadioB, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(3, 8, 3, 3), 0, 0));
+				this.add(yesRadioB, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(3, 10, 3, 3), 0, 0));
 				yesRadioB.setText("Ja");
 			}
 			{
@@ -134,12 +161,12 @@ public class Misc extends javax.swing.JPanel
 			}
 			{
 				jLabel4 = new JLabel();
-				this.add(jLabel4, new GridBagConstraints(0, 4, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(3, 8, 3, 3), 0, 0));
+				this.add(jLabel4, new GridBagConstraints(0, 4, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(3, 10, 3, 3), 0, 0));
 				jLabel4.setText("Von welcher Position soll abgespielt werden?");
 			}
 			{
 				startRadioB = new JRadioButton();
-				this.add(startRadioB, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(3, 8, 3, 3), 0, 0));
+				this.add(startRadioB, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(3, 10, 3, 3), 0, 0));
 				startRadioB.setText("Von Anfang an");
 			}
 			{
@@ -155,12 +182,12 @@ public class Misc extends javax.swing.JPanel
 			}
 			{
 				jLabel6 = new JLabel();
-				this.add(jLabel6, new GridBagConstraints(0, 7, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(3, 8, 3, 3), 0, 0));
+				this.add(jLabel6, new GridBagConstraints(0, 7, 4, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(3, 10, 3, 3), 0, 0));
 				jLabel6.setText("Welche Listen sollen angezeigt werden?");
 			}
 			{
 				playlistCheckB = new JCheckBox();
-				this.add(playlistCheckB, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(3, 8, 3, 3), 0, 0));
+				this.add(playlistCheckB, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(3, 10, 3, 3), 0, 0));
 				playlistCheckB.setText("Playlist");
 			}
 			{
@@ -168,23 +195,32 @@ public class Misc extends javax.swing.JPanel
 				this.add(masterlistCheckB, new GridBagConstraints(1, 8, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(3, 5, 3, 3), 0, 0));
 				masterlistCheckB.setText("Hauptliste");
 			}
+			{
+				jLabel7 = new JLabel();
+				this.add(jLabel7, new GridBagConstraints(0, 9, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(5, 8, 3, 3), 0, 0));
+				jLabel7.setText("SystemTray");
+				jLabel7.setFont(new Font("Tahoma",Font.BOLD,13));
+			}
+			{
+				sysTrayCheckB = new JCheckBox();
+				this.add(sysTrayCheckB, new GridBagConstraints(0, 10, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(3, 10, 3, 3), 0, 0));
+				sysTrayCheckB.setText("PartyDJ in das SystemTray minimieren");
+			}
+			{
+				tooltipCheckB = new JCheckBox();
+				this.add(tooltipCheckB, new GridBagConstraints(0, 11, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(3, 10, 3, 3), 0, 0));
+				tooltipCheckB.setText("Tooltip anzeigen, wenn neues Lied gespielt wird");
+			}
 		} 
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
-		ButtonGroup buttonGroup2 = new ButtonGroup();
-		buttonGroup2.add(yesRadioB);
-		buttonGroup2.add(noRadioB);
-
-		ButtonGroup buttonGroup1 = new ButtonGroup();
-		buttonGroup1.add(startRadioB);
-		buttonGroup1.add(positionRadioB);
 	}
 	
 	protected class ButtonListener implements ActionListener, ItemListener
 	{
-		private final JCheckBox partner;
+		protected final JCheckBox partner;
 		
 		public ButtonListener(JCheckBox partner)
 		{
@@ -196,28 +232,34 @@ public class Misc extends javax.swing.JPanel
 			if(e.getSource() instanceof JRadioButton)
 			{
 				JRadioButton radio = (JRadioButton)e.getSource();
-				Controller.getInstance().getData().writeSetting(radio.getName(), radio.getActionCommand());						
+				data.writeSetting(radio.getName(), radio.getActionCommand());						
 			}
 		}
 
 		@Override
 		public void itemStateChanged(ItemEvent e)
 		{
-			if(e.getSource() instanceof JCheckBox && partner != null)
+			if(e.getSource() instanceof JCheckBox && partner != null && ((JCheckBox)e.getSource()).getActionCommand().equalsIgnoreCase("GUI"))
 			{
 				JCheckBox cb = (JCheckBox) e.getSource();
 				if(e.getStateChange() == ItemEvent.SELECTED)
 				{
-					Controller.getInstance().getData().writeSetting(cb.getName(), "true");	
+					data.writeSetting(cb.getName(), "true");	
 					ClassicWindow.getInstance().restoreDefaultGUI();
 				}
 				if(e.getStateChange() == ItemEvent.DESELECTED)
 				{
-					Controller.getInstance().getData().writeSetting(cb.getName(), "false");	
+					data.writeSetting(cb.getName(), "false");	
 					if(!partner.isSelected())
 						partner.setSelected(true);
 					ClassicWindow.getInstance().removeListFromGui(cb.getName());
 				}
+			}
+			
+			if(e.getSource() instanceof JCheckBox && ((JCheckBox)e.getSource()).getActionCommand().equalsIgnoreCase("TRAY"))
+			{
+				JCheckBox cb = (JCheckBox) e.getSource();
+				data.writeSetting(cb.getName(), String.valueOf(cb.isSelected()));
 			}
 		}
 	}
