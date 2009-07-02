@@ -626,7 +626,6 @@ public class ClassicWindow extends JFrame
 	public void restoreDefaultGUI()
 	{
 		main.removeAll();
-//		main = mainPart();
 		
 		GridBagConstraints c = new GridBagConstraints();	
 			
@@ -848,47 +847,39 @@ public class ClassicWindow extends JFrame
 			}
 		}
 		@Override
-		public void mouseEntered(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
+		public void mouseEntered(MouseEvent e){}
 		@Override
-		public void mouseExited(MouseEvent e)
-		{
-			// TODO Auto-generated method stub
-			
-		}
+		public void mouseExited(MouseEvent e){}
 		@Override
 		public void mousePressed(MouseEvent e)
 		{
-			// TODO Auto-generated method stub
-			
+			if(SwingUtilities.isLeftMouseButton(e) && e.isShiftDown())
+			{
+				ClassicWindow.this.setVisible(true);
+				ClassicWindow.this.setExtendedState(MAXIMIZED_BOTH);
+			}
 		}
 		@Override
 		public void mouseReleased(MouseEvent e)
 		{
-			// TODO Auto-generated method stub
-			
+			ClassicWindow.this.setVisible(false);
 		}
 		@Override
 		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 		{
 			trayIcon.displayMessage(null, playingCurrent.name, MessageType.INFO);
-//			trayIcon.setToolTip(playingCurrent.name);
 			init();
 		}
 		@Override
 		public void playStateChanged(boolean playState)
 		{
-			// TODO Auto-generated method stub
-			
+			if(!playState)
+				trayIcon.setImage(Toolkit.getDefaultToolkit().getImage("Resources/Pause.png"));
+			else if(playState)
+				trayIcon.setImage(Toolkit.getDefaultToolkit().getImage("Resources/p32.gif"));
 		}
 		@Override
-		public void volumeChanged(int vol)
-		{
-			// TODO Auto-generated method stub
-		}
+		public void volumeChanged(int vol){}
 	}
 }
 
