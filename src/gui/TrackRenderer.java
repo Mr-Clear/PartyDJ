@@ -160,9 +160,6 @@ public class TrackRenderer extends DefaultListCellRenderer
 			//if(list.getFixedCellHeight() == -1)
 			//TODO Größe abhängig von fontSize
 			list.setFixedCellHeight((int)(fontSize * 1.3));
-			
-			/*if(Controller.instance.isLoadFinished() == true)
-				System.out.println(track.name);*/
 		}
 	}
 }

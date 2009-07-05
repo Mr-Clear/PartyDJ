@@ -45,7 +45,6 @@ public class PDJList extends JList
 	protected ListDropMode listDropMode;
 	protected final TrackListModel listModel;
 	protected int count = 0;
-	protected PDJList list = this;
 	protected final TrackRenderer renderer = new TrackRenderer();
 	protected boolean scrollToPlayed = true;
 	
@@ -66,7 +65,6 @@ public class PDJList extends JList
 			try
 			{
 				SwingUtilities.invokeAndWait(new Runnable(){
-
 					@Override
 					public void run()
 					{
@@ -83,7 +81,6 @@ public class PDJList extends JList
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
 	}
 	
 	private void initialise(ListDropMode ldMode, String name)
@@ -110,9 +107,9 @@ public class PDJList extends JList
 																	public void actionPerformed(ActionEvent e)
 																	{
 																		TrackTransfer transfer = new TrackTransfer();
-																		transfer.setClipboardContents(list.getSelectedValues());
+																		transfer.setClipboardContents(PDJList.this.getSelectedValues());
 																		
-																		new DragDropHandler().exportDone(list, new TrackSelection(list.getSelectedValues()),  javax.swing.TransferHandler.MOVE );
+																		new DragDropHandler().exportDone(PDJList.this, new TrackSelection(PDJList.this.getSelectedValues()),  javax.swing.TransferHandler.MOVE );
 																	}});
 		this.getActionMap().put(TransferHandler.getCopyAction().getValue(Action.NAME), TransferHandler.getCopyAction());
 		this.getActionMap().put(TransferHandler.getPasteAction().getValue(Action.NAME), TransferHandler.getPasteAction());
@@ -190,6 +187,7 @@ public class PDJList extends JList
 	public void setFontSize(int point)
 	{
 		renderer.setFontSize(point);
+		this.repaint();
 	}
 	
 	public Track getLastTrack()
@@ -236,7 +234,7 @@ public class PDJList extends JList
 				int index = listModel.getIndex(playingCurrent);
 				if(index != -1)
 				{
-					int span = list.getLastVisibleIndex() - list.getFirstVisibleIndex();
+					int span = PDJList.this.getLastVisibleIndex() - PDJList.this.getFirstVisibleIndex();
 					final Rectangle cellBound = getCellBounds(Math.max(index - span / 2, 0), Math.min(index + span / 2, listModel.getSize() - 1));
 			        if (cellBound != null)
 			        	scrollRectToVisible(cellBound);
@@ -252,7 +250,7 @@ public class PDJList extends JList
 			if(reason == Reason.RECEIVED_NEW_TRACK || reason == Reason.TRACK_LOADED && scrollToPlayed)
 			{
 				scrollToPlayed(playingCurrent);
-				list.repaint();
+				PDJList.this.repaint();
 			}
 		}
 	}

@@ -46,6 +46,7 @@ public class PDJSlider extends JPanel
 	private Track currentTrack;
 	private double duration = 0;
 	private double position = 0;
+	protected int fontSize = 26;
 
 	private Controller controller = Controller.getInstance();
 	private IPlayer player = controller.getPlayer();
@@ -80,6 +81,12 @@ public class PDJSlider extends JPanel
 			}
 	}
 	
+	public void setFontSize(int points)
+	{
+		fontSize = points;
+		this.repaint();
+	}
+	
 	public void init()
 	{
 		GridBagConstraints c = new GridBagConstraints();
@@ -90,7 +97,7 @@ public class PDJSlider extends JPanel
 
 		titel.setBackground(Color.darkGray);
 		titel.setForeground(Color.green);
-		titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, 26));
+		titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, fontSize));
 		
 		slider.setBackground(Color.darkGray);
 		

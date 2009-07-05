@@ -43,14 +43,14 @@ import lists.TrackListModel;
 
 public class ClassicWindow extends JFrame
 {	
-	private static final long serialVersionUID = 5672123337960808686L;
-	private final Controller controller = Controller.getInstance();
-	private final IPlayer player = controller.getPlayer();
-	private final ListProvider listProvider = controller.getListProvider();
-	private final IData data = controller.getData();
-	private JSlider volume;
+	protected static final long serialVersionUID = 5672123337960808686L;
+	protected final Controller controller = Controller.getInstance();
+	protected final IPlayer player = controller.getPlayer();
+	protected final ListProvider listProvider = controller.getListProvider();
+	protected final IData data = controller.getData();
+	protected JSlider volume;
 	protected JComponent main;
-	private JButton buttonPause;
+	protected JButton buttonPause;
 	protected static ClassicWindow instance;
 	
 	public ClassicWindow()
@@ -136,7 +136,7 @@ public class ClassicWindow extends JFrame
 	 * Lautstärkeregler, Fortschrittsbalken und Buttons werden zu einer Kontrolleinheit zusammengefügt.
 	 * @return JPanel mit GridBagLayout, welches alle Steuerungen enthält.
 	 */
-	private JPanel control()
+	protected JPanel control()
 	{
 		final JPanel control = new JPanel(new GridBagLayout());
 		
@@ -174,7 +174,7 @@ public class ClassicWindow extends JFrame
 	 * Alle Listen und die Suche werden zu einer Einheit zusammengefügt.
 	 * @return JPanel mit GridBagLayout, welches alle Listen und die Suche enthält.
 	 */
-	private JPanel mainPart()
+	protected JPanel mainPart()
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		JPanel mainPart = new JPanel(new GridBagLayout());	
@@ -221,7 +221,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt die Buttons und ordnet sie mit einem GridBagLayout an.
 	 * @return JPanel mit GridBagLayout, welches alle Buttons enthält.
 	 */
-	private JPanel buttons()
+	protected JPanel buttons()
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -331,7 +331,7 @@ public class ClassicWindow extends JFrame
 	 * @param title der Liste, Liste, DropMode
 	 * @return JPanel mit GridBagLayout, welches die Liste und Titel enthält.
 	 */
-	private JPanel list(String title, TrackListModel l, ListDropMode ldMode)
+	protected JPanel list(String title, TrackListModel l, ListDropMode ldMode)
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		
@@ -371,7 +371,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt eine Suchfunktion mit Ergebnisausgabe.
 	 * @return	JPanel mit GridBagLayout, welches das Suchfeld und die Ergebnisliste beinhaltet.
 	 */
-	private JPanel search()
+	protected JPanel search()
 	{
 		final JTextField textField = new JTextField();												// final damit die innere Klasse
 		final PDJList searchList = new PDJList(new SearchListModel(), ListDropMode.NONE, "Search");	// darauf zugreifen kann.
@@ -444,7 +444,7 @@ public class ClassicWindow extends JFrame
 	/**Erzeugt den Fortschrittsbalken.
 	 * @return JPanel mit GridBagLayout, welches den Titel und Slider beinhaltet.
 	 */
-	private JPanel slider()
+	protected JPanel slider()
 	{
 		PDJSlider slider = null;
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -474,7 +474,7 @@ public class ClassicWindow extends JFrame
 	 * Erzeugt den Lautstärkeregler.
 	 * @return	JPanel mit GridBagLayout, welches den Lautstärkeregler beinhaltet.
 	 */
-	private JPanel volume()
+	protected JPanel volume()
 	{
 		volume = new JSlider(SwingConstants.VERTICAL, 0, 100, player.getVolume());
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -498,7 +498,7 @@ public class ClassicWindow extends JFrame
 		return panel;
 	}
 	
-	private JButton customizeButton(String iconPath)
+	protected JButton customizeButton(String iconPath)
 	{
 		JButton button = new JButton(new ImageIcon(iconPath));
 		button.setMargin(new Insets(0 ,0, 0, 0));
@@ -555,7 +555,7 @@ public class ClassicWindow extends JFrame
 	}
 	
 	/** Wird aufgerufen wenn sich die Größe des Fensters ändert.*/
-	private void resize()
+	protected void resize()
 	{
         try
 		{

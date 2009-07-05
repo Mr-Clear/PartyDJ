@@ -29,10 +29,10 @@ public class KeyStrokeManager extends EventQueue
 	protected static final KeyStrokeManager instance = new KeyStrokeManager();
 	protected final InputMap keys = new InputMap();
 	protected final ActionMap actions = new ActionMap();
-	protected HashMap<Integer, String> regKeys = new HashMap<Integer, String>();
+	protected final HashMap<Integer, String> regKeys = new HashMap<Integer, String>();
 	protected final IData data = Controller.getInstance().getData();
-	protected StringBuilder global = new StringBuilder();
-	protected StringBuilder local = new StringBuilder();
+	protected final StringBuilder global = new StringBuilder();
+	protected final StringBuilder local = new StringBuilder();
 
 	static
 	{
@@ -59,7 +59,7 @@ public class KeyStrokeManager extends EventQueue
 		raw = data.readSetting("LocalHotKeys", "§0@102@PLAY_PAUSE§0@100@PREVIOUS§0@98@VOLUME_DOWN§0@104@VOLUME_UP§0@102@NEXT§0@101@PLAY_PAUSE§0@96@STOP");
 		if(raw != null && raw.length() > 1)
 		{
-			//Damit im Array erstes Element nicht leer (löscht nur das $)
+			//Damit im Array erstes Element nicht leer. (Löscht nur das $)
 			raw = raw.substring(1);
 			String[] rawKeys = raw.split("§");
 			for(String k : rawKeys)
@@ -216,7 +216,8 @@ public class KeyStrokeManager extends EventQueue
 	public void disableLocalHotKeys()
 	{
 		keys.clear();
-		local = new StringBuilder();
+		local.delete(0, local.length() - 1);
+//		XXX local = new StringBuilder();
 		data.writeSetting("LocalHotKeys", local.toString());
 	}
 }
