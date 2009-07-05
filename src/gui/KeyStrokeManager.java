@@ -31,8 +31,8 @@ public class KeyStrokeManager extends EventQueue
 	protected final ActionMap actions = new ActionMap();
 	protected final HashMap<Integer, String> regKeys = new HashMap<Integer, String>();
 	protected final IData data = Controller.getInstance().getData();
-	protected final StringBuilder global = new StringBuilder();
-	protected final StringBuilder local = new StringBuilder();
+	protected StringBuilder global = new StringBuilder();
+	protected StringBuilder local = new StringBuilder();
 
 	static
 	{
@@ -196,8 +196,11 @@ public class KeyStrokeManager extends EventQueue
 	public synchronized void disableGlobalHotKey(int id)
 	{
 		JIntellitype.getInstance().unregisterHotKey(id);
+		
 		regKeys.remove(id);
 		
+		if(regKeys.values().size() == 0)
+			global = new StringBuilder();
 		for(String s : regKeys.values())
 		{
 			global.append("$" + s);
@@ -216,8 +219,13 @@ public class KeyStrokeManager extends EventQueue
 	public void disableLocalHotKeys()
 	{
 		keys.clear();
-		local.delete(0, local.length() - 1);
-//		XXX local = new StringBuilder();
+
+		if(regKeys.values().size() == 0)
+			local = new StringBuilder();
+		for(String s : regKeys.values())
+		{
+			local.append("$" + s);
+		}
 		data.writeSetting("LocalHotKeys", local.toString());
 	}
 }
