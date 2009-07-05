@@ -80,7 +80,7 @@ public class ClassicWindow extends JFrame
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			instance = this;
+		instance = this;
 	}
 
 	protected void initGUI()
@@ -184,10 +184,9 @@ public class ClassicWindow extends JFrame
 		
 		c.weightx = 1.0;
 		c.weighty = 1.0;
+		
 		mainPart.setBackground(Color.darkGray);
-
 		mainPart.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
-
 		
 		c.gridy = 1;
 		try
@@ -344,6 +343,7 @@ public class ClassicWindow extends JFrame
 		getContentPane().add(scrollPane);
 		
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
+		scrollPane.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
 		list.setForeground(new Color(0, 255, 0));
 		panel.setBackground(Color.darkGray);
 		label.setBackground(Color.darkGray);
@@ -363,8 +363,6 @@ public class ClassicWindow extends JFrame
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		panel.add(scrollPane, c);
-
-		panel.setPreferredSize(new Dimension(20, 20));
 		
 		return panel;
 	}
@@ -590,7 +588,6 @@ public class ClassicWindow extends JFrame
 			main.add(list("Alle", listProvider.getMasterList(), ListDropMode.DELETE), c);
 		else if(!list.equalsIgnoreCase("PLAYLIST"))
 		{
-//			c.gridy = 1;
 			try
 			{
 				main.add(list("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
@@ -767,22 +764,26 @@ public class ClassicWindow extends JFrame
 			if(player.getCurrentTrack() != null)
 				info = player.getCurrentTrack().name;
             trayIcon.setToolTip(info == null ? "PartyDJ" : info);
-			
-            PopupMenu popup = new PopupMenu();
-            
-            MenuItem name = new MenuItem(info == null ? "PartyDJ" : info);
-            name.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-            name.setEnabled(false);
-            popup.add(name);
-            popup.addSeparator();
-            
-            try
-            {
+			initPopUp();
+		}
+		
+		public void initPopUp()
+		{
+	       	PopupMenu popup = new PopupMenu();
+	        
+	       	MenuItem name = new MenuItem(info == null ? "PartyDJ" : info);
+	        name.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+	        name.setEnabled(false);
+	        popup.add(name);
+	        popup.addSeparator();
+	        
+	        try
+	        {
 	            if(player.getCurrentTrack() != null)
 	            {
 					final DbClientListModel playlist = listProvider.getDbList("Playlist");
 					MenuItem wish = new MenuItem();
-
+	
 					if(playlist.getIndex(player.getCurrentTrack()) < 0)
 						wish.setLabel("Lied auf Wunschliste setzen");
 					else
@@ -805,22 +806,56 @@ public class ClassicWindow extends JFrame
 					}});
 		            popup.add(wish);
 	            }
-            }
-            catch(ListException le)
-            {
-            	//TODO
-            	le.printStackTrace();
-            }
-            MenuItem exit = new MenuItem("Schließen");
-            exit.addActionListener(new ActionListener()
-        	{
+		            
+	            MenuItem playPause = new MenuItem();
+	            if(player.getPlayState())
+	            	playPause.setLabel("Pause");
+	            else
+	            	playPause.setLabel("Play");
+	            
+	            playPause.addActionListener(new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent e)
+					{
+						if(player.getPlayState())
+							player.pause();
+						else if(player.getCurrentTrack() != null)
+							player.play();
+						else
+							player.playNext();
+					}});
+	            popup.add(playPause);
+	            popup.addSeparator();
+	        }
+	        catch(ListException le)
+	        {
+	        	//TODO
+	        	le.printStackTrace();
+	        }
+	        
+	        MenuItem maximize = new MenuItem("PartyDJ maximieren");
+	        maximize.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+	        maximize.addActionListener(new ActionListener()
+	    	{
+				@Override
+				public void actionPerformed(ActionEvent e)
+				{
+					ClassicWindow.this.setVisible(true);
+					ClassicWindow.this.setExtendedState(MAXIMIZED_BOTH);
+					tray.remove(trayIcon);
+			}});
+	        popup.add(maximize);
+	        
+	        MenuItem exit = new MenuItem("Schließen");
+	        exit.addActionListener(new ActionListener()
+	    	{
 				@Override
 				public void actionPerformed(ActionEvent e)
 				{
 					controller.closePartyDJ();
 			}});
-            popup.add(exit);
-            
+	        popup.add(exit);
+
             trayIcon.setPopupMenu(popup);
 		}
 		
@@ -875,12 +910,13 @@ public class ClassicWindow extends JFrame
 			if(!Boolean.parseBoolean(data.readSetting("SYSTEM_TRAY", "true")))
 				return;
 			if(Boolean.parseBoolean(data.readSetting("TOOLTIP", "true")))
-				trayIcon.displayMessage(null, playingCurrent.name, MessageType.INFO);
+				trayIcon.displayMessage(null, playingCurrent.name, MessageType.NONE);
 			init();
 		}
 		@Override
 		public void playStateChanged(boolean playState)
 		{
+			init();
 			if(!Boolean.parseBoolean(data.readSetting("SYSTEM_TRAY", "true")))
 				return;
 			if(!playState)
