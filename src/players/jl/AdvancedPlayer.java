@@ -129,8 +129,9 @@ public class AdvancedPlayer
 	 */
 	protected boolean decodeFrame() throws JavaLayerException
 	{
-		if (audio == null) 
-			return false;
+//		XXX Überspringen?
+//		if (audio == null) 
+//			return false;
 		
 		Header h = null;
 		try
@@ -289,7 +290,7 @@ public class AdvancedPlayer
 			
 			while (ftd)
 			{
-				if(audio == null)//XXX skip Problem ??? || !audio.isOpen())
+				if(audio == null)//XXX Überspringen ??? || !audio.isOpen())
 					break;
 				
 				double fadeElapsed = System.currentTimeMillis() - fadeStartTime;
