@@ -1,6 +1,7 @@
 package gui;
 
 import java.util.HashMap;
+import lists.ListException;
 import players.IPlayer;
 import basics.Controller;
 import com.melloware.jintellitype.HotkeyListener;
@@ -72,6 +73,20 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 			player.setVolume(player.getVolume() + 10);
 		else if(action.equalsIgnoreCase("VOLUME_DOWN"))
 			player.setVolume(player.getVolume() - 10);
+		else if(action.equalsIgnoreCase("SET_ON_PLAYLIST"))
+		{
+			try
+			{
+				lists.DbClientListModel wishList = Controller.getInstance().getListProvider().getDbList("Playlist");
+				if(wishList.getIndex(player.getCurrentTrack()) == -1)
+					wishList.add(player.getCurrentTrack());
+			}
+			catch (ListException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

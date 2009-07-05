@@ -394,6 +394,7 @@ public class ClassicWindow extends JFrame
 		label.setForeground(Color.green);
 		textField.setBackground(Color.black);
 		textField.setForeground(Color.green);
+		textField.setCaretColor(Color.WHITE);
 		
 		searchList.setForeground(new Color(0, 255, 0));
 		searchList.setBackground(Color.black);
@@ -785,9 +786,9 @@ public class ClassicWindow extends JFrame
 					MenuItem wish = new MenuItem();
 	
 					if(playlist.getIndex(player.getCurrentTrack()) < 0)
-						wish.setLabel("Lied auf Wunschliste setzen");
+						wish.setLabel("Lied auf Playlist setzen");
 					else
-						wish.setLabel("Lied von Wunschliste entfernen");
+						wish.setLabel("Lied von Playlist entfernen");
 	            	
 	            	wish.addActionListener(new ActionListener()
 	            	{
