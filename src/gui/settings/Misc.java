@@ -252,7 +252,7 @@ public class Misc extends javax.swing.JPanel
 					data.writeSetting(cb.getName(), "false");	
 					if(!partner.isSelected())
 						partner.setSelected(true);
-					ClassicWindow.getInstance().removeListFromGui(cb.getName());
+					ClassicWindow.getInstance().removeListFromGui(cb.getName(), false);
 				}
 			}
 			

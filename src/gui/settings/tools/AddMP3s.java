@@ -46,7 +46,6 @@ public class AddMP3s implements StatusSupportedFunction
 					if(!filePath.toLowerCase().endsWith(".mp3"))
 						break;
 					
-					
 					ListProvider listProvider = new ListProvider();
 					
 					if(list.getListDropMode() == null)

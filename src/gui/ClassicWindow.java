@@ -120,9 +120,9 @@ public class ClassicWindow extends JFrame
 		add(main = mainPart(), con);
 		
 		if(!Boolean.parseBoolean(Controller.getInstance().getData().readSetting("MASTERLIST", "true")))
-			removeListFromGui("MASTERLIST");
+			removeListFromGui("MASTERLIST", true);
 		if(!Boolean.parseBoolean(Controller.getInstance().getData().readSetting("PLAYLIST", "true")))
-			removeListFromGui("PLAYLIST");
+			removeListFromGui("PLAYLIST", true);
 		
 		setVisible(true);
 	}
@@ -573,7 +573,7 @@ public class ClassicWindow extends JFrame
 		}
 	}
 
-	public void removeListFromGui(String list)
+	public void removeListFromGui(String list, boolean init)
 	{	
 		main.removeAll();
 		GridBagConstraints c = new GridBagConstraints();
@@ -602,7 +602,7 @@ public class ClassicWindow extends JFrame
 		
 		c.gridx = 1;
 		c.gridy = 0;
-//		c.ipady = init ? 0 : -450;
+		c.ipady = init ? 618 : 0;
 		c.gridheight = 1;
 		try
 		{
@@ -615,7 +615,7 @@ public class ClassicWindow extends JFrame
 		}
 
 		c.gridy = 1;
-//		c.ipady = 450;
+		c.ipady = 1160;
 		main.add(search(), c);
 		
 		SwingUtilities.updateComponentTreeUI(main);
