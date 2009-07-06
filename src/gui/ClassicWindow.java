@@ -602,7 +602,7 @@ public class ClassicWindow extends JFrame
 		
 		c.gridx = 1;
 		c.gridy = 0;
-		c.ipady = init ? 618 : 0;
+		c.ipady = init ? (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 2) : 0;
 		c.gridheight = 1;
 		try
 		{
@@ -615,7 +615,7 @@ public class ClassicWindow extends JFrame
 		}
 
 		c.gridy = 1;
-		c.ipady = 1160;
+		c.ipady = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 		main.add(search(), c);
 		
 		SwingUtilities.updateComponentTreeUI(main);
