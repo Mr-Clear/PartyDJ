@@ -42,7 +42,7 @@ import data.derby.DerbyDB;
 public class Controller
 {
 	/** Version des PartyDJ */
-	public final String version = "3.0.0a";
+	public final String version = "3.0.1";
 	
 	/** Statischer Verweis auf diese Instanz. */
 	protected static Controller instance;

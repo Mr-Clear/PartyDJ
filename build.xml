@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project PartyDJ">
+<project default="zip" name="Create Runnable Jar for Project PartyDJ">
+	<target name="revision-info">
+		<echo>Lese SVN Revision Info</echo>
+		<java classname="svn.RepositoryInfo"
+			classpath="E:\Eclipse\Zeug\bin;C:\Program Files (x86)\Java\svnkit-1.3.0.5847\svnkit.jar">
+		</java>
+	</target>
+				
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
-    <target name="create_run_jar">
-        <jar destfile="O:/PartyDJ Export/PartyDJ.jar" filesetmanifest="mergewithoutmain">
+    <target name="create_run_jar" depends="revision-info">
+        <jar destfile="P:/PartyDJ/PartyDJ.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Built-By" value="Thomas Klier"/>
                 <attribute name="Main-Class" value="basics.Controller"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
@@ -14,6 +21,24 @@
             <zipfileset excludes="META-INF/*.SF" src="C:/Program Files (x86)/Java/JavaZoom/JLayer1.0.1/jl1.0.1.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="C:/Program Files (x86)/Java/JMF2.1.1e/lib/jmf.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="E:/Eclipse/PartyDJ/lib/forms.jar"/>
-        </jar>
+		</jar>
     </target>
+	
+	<target name="zip" depends="create_run_jar">
+		<copy file="E:/Eclipse/PartyDJ/Version.txt" tofile="P:/PartyDJ/Version.txt"/>
+		<copy file="E:/Eclipse/PartyDJ/JIntellitype.dll" tofile="P:/PartyDJ/JIntellitype.dll"/>
+    	
+    	<delete dir="P:/PartyDJ/Resources"/>
+		<copy todir="P:/PartyDJ/Resources">
+			<fileset dir="E:/Eclipse/PartyDJ/Resources"/>
+		</copy>
+		
+		<zip destfile="P:/PartyDJ/PartyDJ.zip" level="9">
+			<fileset file="P:/PartyDJ/PartyDJ.jar"/>
+			<fileset file="P:/PartyDJ/PartyDJ.exe"/>
+			<fileset file="P:/PartyDJ/Version.txt"/>
+			<fileset file="P:/PartyDJ/JIntellitype.dll"/>
+			<zipfileset dir="P:/PartyDJ/Resources" prefix="Resources"/>
+		</zip>
+	</target>
 </project>
