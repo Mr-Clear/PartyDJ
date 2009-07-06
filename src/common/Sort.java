@@ -25,6 +25,7 @@ public class Sort
 							break;
 			case DURATION:	comperator = new CompareDuration();
 							break;
+			case PATH:		comperator = new ComparePath();
 		}
 		qSort(0, list.getListModel().getSize() - 1, list, comperator);
 	}
@@ -147,5 +148,14 @@ class CompareDuration implements TrackComperator
 			return 1;
 		else
 			return 0;
+	}
+}
+
+class ComparePath implements TrackComperator
+{
+	@Override
+	public int compare(Track a, Track b)
+	{
+		return a.path.compareToIgnoreCase(b.path);
 	}
 }

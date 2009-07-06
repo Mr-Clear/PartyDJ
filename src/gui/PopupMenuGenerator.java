@@ -124,6 +124,11 @@ public class PopupMenuGenerator
 			newItem.addActionListener(listener);
 			menu.add(newItem);
 			
+			newItem = new JMenuItem("Nach Pfad sortieren");
+			newItem.setActionCommand("sortPath");
+			newItem.addActionListener(listener);
+			menu.add(newItem);
+			
 			newItem = new JMenuItem("Nach Dauer sortieren");
 			newItem.setActionCommand("sortDuration");
 			newItem.addActionListener(listener);
@@ -253,6 +258,9 @@ class ListMenuItemListener implements ActionListener
 			
 		else if(command.equals("sortDuration"))
 			Sort.quickSort(list, SortMode.DURATION);
+		
+		else if(command.equals("sortPath"))
+			Sort.quickSort(list, SortMode.PATH);
 		
 		else if(command.equals("shuffle"))
 			Sort.shuffle(list);

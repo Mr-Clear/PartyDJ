@@ -217,7 +217,7 @@ public class MainList extends JPanel
 			completeDuration = new JLabel();
 			songsSelected = new JLabel();
 			playDuration = new JLabel();
-			songsWithProblems = new JLabel();
+//			songsWithProblems = new JLabel();
 			CellConstraints cc = new CellConstraints();
 	
 			//======== this ========
@@ -296,7 +296,7 @@ public class MainList extends JPanel
 			add(completeDuration, cc.xywh(7, 15, 3, 1));
 	
 			//---- songsSelected ----
-			songsSelected.setText(list.getSelectedIndices().length + " Lieder ausgew\u00e4hlt    -->");
+			songsSelected.setText("        " + list.getSelectedIndices().length + " Lieder ausgew\u00e4hlt    -->");
 			add(songsSelected, cc.xywh(11, 15, 3, 1));
 	
 			//---- playDuration ----
@@ -305,8 +305,8 @@ public class MainList extends JPanel
 			add(playDuration, cc.xywh(15, 15, 3, 1));
 	
 			//---- songsWithProblems ----
-			songsWithProblems.setText("...Lieder mit Problemen");
-			add(songsWithProblems, cc.xywh(19, 15, 3, 1));
+//			songsWithProblems.setText("...Lieder mit Problemen");
+//			add(songsWithProblems, cc.xywh(19, 15, 3, 1));
 		}
 		catch (ListException e1)
 		{
@@ -345,7 +345,7 @@ public class MainList extends JPanel
 			if(e.getValueIsAdjusting())
 				return;
 			playDuration.setText("Spieldauer: " + common.Functions.formatTime(playTime(list.getSelectedValues())));
-			songsSelected.setText(list.getSelectedIndices().length + " Lieder ausgew\u00e4hlt");
+			songsSelected.setText("        " + list.getSelectedIndices().length + " Lieder ausgew\u00e4hlt");
 		}
 
 		@Override
@@ -394,6 +394,6 @@ public class MainList extends JPanel
 	private JLabel completeDuration;
 	private JLabel songsSelected;
 	private JLabel playDuration;
-	private JLabel songsWithProblems;
+//	private JLabel songsWithProblems;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }
