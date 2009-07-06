@@ -120,15 +120,12 @@ public class TrackRenderer extends DefaultListCellRenderer
 			Track currentTrack = Controller.getInstance().getPlayer().getCurrentTrack();
 			if(currentTrack != null && currentTrack.index == track.index)
 			{
+				titel.setForeground(new Color(64, 192, 255));
+				duration.setForeground(new Color(64, 192, 255));
+				
 				if(isSelected)
 				{
-					titel.setForeground(Color.BLUE);
-					duration.setForeground(Color.BLUE);
-				}
-				else
-				{
-					titel.setForeground(new Color(64, 192, 255));
-					duration.setForeground(new Color(64, 192, 255));
+					titel.setBackground(Color.BLUE);
 				}
 			}
 			if(track.problem != Track.Problem.NONE)
