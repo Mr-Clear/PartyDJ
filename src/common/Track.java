@@ -1,8 +1,14 @@
 package common;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import data.IData;
+import javazoom.jl.decoder.Bitstream;
+import javazoom.jl.decoder.BitstreamException;
+import lists.ListException;
 import players.PlayerException;
 import basics.Controller;
 
@@ -124,6 +130,52 @@ public class Track implements Serializable, Comparable<Track>
 		if(o == null)
 			throw new NullPointerException();
 		return file.compareTo(o.file);
+	}
+	
+	public Problem hasProblem()
+	{
+		Problem prob = null;
+		IData data = Controller.getInstance().getData();
+		boolean exists = new File(path).exists();
+		if(!exists)
+		{
+			prob = Problem.FILE_NOT_FOUND;
+		}
+		else
+		{
+			FileInputStream fis = null;
+			try
+			{
+				fis = new FileInputStream(path);
+			}
+			catch (FileNotFoundException impossible){}
+			Bitstream bs = new Bitstream(fis);
+			
+			try
+			{
+				for(int i = 0; i < 16; i++)
+					bs.readFrame();
+				prob = Problem.NONE;
+			}
+			catch (BitstreamException e)
+			{
+				prob = Problem.CANT_PLAY;
+			}
+		}
+		
+		if(problem == prob)
+			return problem;
+		problem = prob;
+		
+		try
+		{
+			data.updateTrack(this, TrackElement.PROBLEM);
+		}
+		catch (ListException le)
+		{
+			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, le, "Update eines Tracks fehlgeschlagen");
+		}
+		return problem;
 	}
 	
 	/**Stellt ein Problem mit einem Track dar.
