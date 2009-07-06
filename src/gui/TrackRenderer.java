@@ -104,10 +104,10 @@ public class TrackRenderer extends DefaultListCellRenderer
 					
 			if(isSelected)
 			{
-				titel.setBackground(list.getSelectionBackground());
-				duration.setBackground(list.getSelectionBackground());
-				titel.setForeground(list.getSelectionForeground());
-				duration.setForeground(list.getSelectionForeground());
+				titel.setForeground(list.getForeground());
+				duration.setForeground(list.getForeground());
+				titel.setBackground(Color.BLUE.darker().darker());
+				duration.setBackground(Color.BLUE.darker().darker());
 			}
 			else
 			{
@@ -122,11 +122,6 @@ public class TrackRenderer extends DefaultListCellRenderer
 			{
 				titel.setForeground(new Color(64, 192, 255));
 				duration.setForeground(new Color(64, 192, 255));
-				
-				if(isSelected)
-				{
-					titel.setBackground(Color.BLUE);
-				}
 			}
 			if(track.problem != Track.Problem.NONE)
 			{
