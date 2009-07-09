@@ -157,7 +157,7 @@ public class ForeignDrop extends DropTargetAdapter
 					case MOVE:			Controller.getInstance().logError(Controller.UNIMPORTANT_ERROR, this, null, "MOVE not supported.");
 										e.dropComplete(false);
 										break;
-					case DELETE:		if(DragListener.getList().getListModel() instanceof EditableListModel)
+					case DELETE:		if(DragListener.getList() != null && DragListener.getList().getListModel() instanceof EditableListModel)
 										{
 											new StatusDialog("Entferne MP3s", null, new RemoveMP3s(DragListener.getList()));
 											e.dropComplete(true);
@@ -207,7 +207,18 @@ public class ForeignDrop extends DropTargetAdapter
 				}
 				else if(e.getDropTargetContext().getComponent() instanceof JTextField)
 				{
-	    			if(DragListener.getList().getSelectedIndices().length == 1)
+					if(DragListener.getList() == null)
+					{
+	    				final JTextField txtField = (JTextField) e.getDropTargetContext().getComponent();
+						SwingUtilities.invokeLater(new Runnable(){
+							@Override
+							public void run()
+							{
+								txtField.setText(Controller.getInstance().getPlayer().getCurrentTrack().name);
+								e.dropComplete(true);
+							}});
+					}
+					else if(DragListener.getList().getSelectedIndices().length == 1)
 	    			{
 	    				final Track firstTrack = tracks[0];
 	    				final JTextField txtField = (JTextField) e.getDropTargetContext().getComponent();
@@ -239,7 +250,6 @@ public class ForeignDrop extends DropTargetAdapter
 				{
 					PDJList list = (PDJList) e.getDropTargetContext().getComponent();
 					list.ensureIndexIsVisible(e.getLocation().y / list.getFixedCellHeight());
-					DragListener.getList().setSelectedIndex(0);
 				}});
 		}
 	}

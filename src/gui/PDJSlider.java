@@ -1,5 +1,6 @@
 package gui;
 
+import gui.dnd.DragListener;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -41,7 +42,6 @@ public class PDJSlider extends JPanel
 	private JLabel end = new JLabel(" ");
 	private JLabel middle = new JLabel(" ");
 	private Slider slider = new Slider();
-	private PDJSlider me = this;
 	
 	private Track currentTrack;
 	private double duration = 0;
@@ -90,14 +90,15 @@ public class PDJSlider extends JPanel
 	public void init()
 	{
 		GridBagConstraints c = new GridBagConstraints();
-		me.setLayout(new GridBagLayout());
+		this.setLayout(new GridBagLayout());
 		Box vBox = Box.createVerticalBox();
 		
-		me.setBackground(Color.darkGray);
+		this.setBackground(Color.darkGray);
 
 		titel.setBackground(Color.darkGray);
 		titel.setForeground(Color.green);
 		titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, fontSize));
+		new DragListener(titel);
 		
 		slider.setBackground(Color.darkGray);
 		
@@ -129,7 +130,7 @@ public class PDJSlider extends JPanel
 		
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1.0;
-		me.add(vBox, c);
+		this.add(vBox, c);
 		
 
 		refreshTimer = new Timer(0, new ActionListener()
@@ -198,7 +199,7 @@ public class PDJSlider extends JPanel
 	
 	public void setDuration(final double duration)
 	{
-		me.duration = duration;
+		this.duration = duration;
 		slider.setMaximum(duration);
 		middle.setText(common.Functions.formatTime(duration));
 		end.setText("-" + common.Functions.formatTime(duration - position));		
@@ -206,7 +207,7 @@ public class PDJSlider extends JPanel
 	
 	public void setPosition(final double position)
 	{
-		me.position = position;
+		this.position = position;
 		slider.setValue(position);
 		start.setText(common.Functions.formatTime(position));
 		end.setText("-" + common.Functions.formatTime(duration - position));

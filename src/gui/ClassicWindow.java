@@ -379,6 +379,14 @@ public class ClassicWindow extends JFrame
 		JPanel panel = new JPanel(new GridBagLayout());
 		JLabel label = new JLabel("Suche");
 		
+		textField.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				textField.setSelectionStart(0);
+				textField.setSelectionEnd(textField.getText().length());
+			}});
+		
 		//DnD
 		textField.setDropMode(DropMode.INSERT);
 		new DropTarget(textField, new ForeignDrop());
