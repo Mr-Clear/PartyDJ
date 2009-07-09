@@ -148,6 +148,7 @@ public class KeyStrokeManager extends EventQueue
 		
 		if(save)
 		{
+			global.append(data.readSetting("GlobalHotKeys", ""));
 			global.append("§" + modifier + "@" + keyCode + "@" + command);
 			data.writeSetting("GlobalHotKeys", global.toString());
 		}
@@ -199,8 +200,7 @@ public class KeyStrokeManager extends EventQueue
 		
 		regKeys.remove(id);
 		
-		if(regKeys.values().size() == 0)
-			global = new StringBuilder();
+		global = new StringBuilder();
 		for(String s : regKeys.values())
 		{
 			global.append("$" + s);
