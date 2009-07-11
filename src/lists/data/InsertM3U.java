@@ -1,8 +1,9 @@
-package lists;
+package lists.data;
 
+import lists.EditableListModel;
+import lists.ListException;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
-import common.DbTrack;
 import common.Reporter;
 import common.Track;
 

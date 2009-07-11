@@ -20,10 +20,10 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileFilter;
 import basics.Controller;
-import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
-import common.DbTrack;
+import lists.data.DbMasterListModel;
+import lists.data.DbTrack;
 import common.PlaylistWriter;
 import common.Sort;
 import common.SortMode;
@@ -244,7 +244,7 @@ class ListMenuItemListener implements ActionListener
 	        
             File file = fileChooser.getSelectedFile();
             
-    		new StatusDialog("Lese M3U", null, new lists.InsertM3U(((EditableListModel)list.getListModel()), file.getPath()));
+    		new StatusDialog("Lese M3U", null, new lists.data.InsertM3U(((EditableListModel)list.getListModel()), file.getPath()));
    		}
 		
 		else if(command.equals("sortName"))
@@ -369,7 +369,7 @@ class FileMenuItemListener implements ActionListener
 	{
 		if(list.getListModel() instanceof EditableListModel)
 		{
-			new StatusDialog("Lese M3U", null, new lists.InsertM3U(((EditableListModel)list.getListModel()), e.getActionCommand()));
+			new StatusDialog("Lese M3U", null, new lists.data.InsertM3U(((EditableListModel)list.getListModel()), e.getActionCommand()));
 		}
 	}
 }

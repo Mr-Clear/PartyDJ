@@ -22,7 +22,6 @@ import javax.swing.event.ChangeListener;
 import players.IPlayer;
 import players.PlayStateAdapter;
 import players.PlayStateListener;
-import common.DbTrack;
 import common.Track;
 import data.IData;
 import data.SettingException;
@@ -53,11 +52,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.lang.reflect.InvocationTargetException;
-import lists.DbClientListModel;
 import lists.ListException;
-import lists.ListProvider;
-import lists.SearchListModel;
 import lists.TrackListModel;
+import lists.data.DbClientListModel;
+import lists.data.DbTrack;
+import lists.data.ListProvider;
+import lists.data.SearchListModel;
 
 
 /**

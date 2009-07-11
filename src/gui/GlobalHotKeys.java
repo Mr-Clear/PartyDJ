@@ -2,12 +2,12 @@ package gui;
 
 import java.util.HashMap;
 import lists.ListException;
+import lists.data.DbTrack;
 import players.IPlayer;
 import basics.Controller;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitypeConstants;
-import common.DbTrack;
 
 public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 {
@@ -81,7 +81,7 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 				DbTrack dbTrack = (DbTrack)player.getCurrentTrack();
 				try
 				{
-					lists.DbClientListModel wishList = Controller.getInstance().getListProvider().getDbList("Playlist");
+					lists.data.DbClientListModel wishList = Controller.getInstance().getListProvider().getDbList("Playlist");
 					if(wishList.getIndex(dbTrack) == -1)
 						wishList.add(dbTrack);
 				}

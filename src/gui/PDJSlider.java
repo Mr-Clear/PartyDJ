@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
-import common.DbTrack;
+import lists.data.DbTrack;
 import common.Track;
 import data.IData;
 import data.ListAdapter;

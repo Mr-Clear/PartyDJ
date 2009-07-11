@@ -7,8 +7,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import lists.ListException;
+import lists.data.DbTrack;
 
-import common.DbTrack;
 
 
 public class FillDB

@@ -1,12 +1,12 @@
 package gui.settings.tools;
 
 import javax.swing.JOptionPane;
-import common.DbTrack;
 import common.Reporter;
 import common.Track;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
 import lists.EditableListModel;
+import lists.data.DbTrack;
 
 /**
  * Liest eine M3U-Datei und fügt die Tracks der Hauptliste hinzu.

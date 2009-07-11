@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import basics.Controller;
 import lists.EditableListModel;
 import lists.ListException;
-import common.DbTrack;
+import lists.data.DbTrack;
 
 /**
  * Durchsucht einen Ordner nach MP3-Dateien und fügt sie in die Hauptliste ein.

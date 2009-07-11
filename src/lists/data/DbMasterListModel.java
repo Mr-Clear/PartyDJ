@@ -1,9 +1,10 @@
-package lists;
+package lists.data;
 
 import java.util.ArrayList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import common.DbTrack;
+import lists.BasicListModel;
+import lists.ListException;
 import common.Track;
 import basics.Controller;
 

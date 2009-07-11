@@ -25,7 +25,8 @@ import players.PlayerException;
 import common.*;
 import lists.EditableListModel;
 import lists.ListException;
-import lists.ListProvider;
+import lists.data.DbTrack;
+import lists.data.ListProvider;
 import data.*;
 import data.derby.DerbyDB;
 

@@ -1,9 +1,12 @@
-package lists;
+package lists.data;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import lists.BasicListModel;
+import lists.EditableListModel;
+import lists.ListException;
 import basics.Controller;
 import common.*;
 

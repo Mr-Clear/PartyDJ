@@ -23,7 +23,7 @@ import javax.swing.filechooser.FileFilter;
 import basics.Controller;
 import lists.EditableListModel;
 import lists.ListException;
-import common.DbTrack;
+import lists.data.DbTrack;
 import data.IData;
 
 /**

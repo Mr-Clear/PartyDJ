@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import common.DbTrack;
 import data.IData;
 import data.ListListener;
 import data.OpenDbException;
@@ -16,6 +15,7 @@ import data.SettingException;
 import data.SettingListener;
 import basics.CloseListener;
 import lists.ListException;
+import lists.data.DbTrack;
 
 /**
  * Speichert Einstellungen und Listen in einer Derby-Datenbank.

@@ -1,6 +1,6 @@
 package data;
 
-import common.DbTrack;
+import lists.data.DbTrack;
 
 /**
  * Empfängt Änderungen in den Listen.

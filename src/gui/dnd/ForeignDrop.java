@@ -20,10 +20,10 @@ import javax.swing.DropMode;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import basics.Controller;
-import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
 import lists.TrackListModel;
+import lists.data.DbMasterListModel;
 import common.Track;
 
 /**ForeignDrop kümmert sich um alle Drop-Importe.

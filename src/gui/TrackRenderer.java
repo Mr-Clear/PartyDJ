@@ -12,8 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import lists.data.DbTrack;
 import basics.Controller;
-import common.DbTrack;
 import common.Track;
 
 /**

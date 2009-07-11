@@ -13,7 +13,7 @@ import java.awt.event.WindowStateListener;
 import javax.swing.*;
 import players.PlayStateAdapter;
 import lists.ListException;
-import lists.ListProvider;
+import lists.data.ListProvider;
 import common.Track;
 import data.IData;
 import data.SettingException;

@@ -7,10 +7,10 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.util.List;
 import javax.swing.JOptionPane;
-import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
-import common.DbTrack;
+import lists.data.DbMasterListModel;
+import lists.data.DbTrack;
 import common.Track;
 
 /**Fügt Tracks in eine Liste ein.

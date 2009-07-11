@@ -4,7 +4,7 @@ import java.util.Stack;
 import java.util.TimerTask;
 import players.PlayerException;
 import lists.ListException;
-import common.DbTrack;
+import lists.data.DbTrack;
 
 /**
  * Liest die Dauer der Tracks ein.
