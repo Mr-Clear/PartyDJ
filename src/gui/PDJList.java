@@ -1,5 +1,8 @@
 package gui;
 
+import gui.TrackListAppearance.EntryState;
+import gui.TrackListAppearance.Part;
+import gui.TrackListAppearance.TrackState;
 import gui.dnd.DragDropHandler;
 import gui.dnd.DragListener;
 import gui.dnd.ForeignDrop;
@@ -44,6 +47,7 @@ public class PDJList extends JList
 	protected int count = 0;
 	protected final TrackRenderer renderer = new TrackRenderer();
 	protected boolean scrollToPlayed = true;
+	protected TrackListAppearance appearance;
 	
 	public PDJList(TrackListModel listModel)
 	{
@@ -71,7 +75,6 @@ public class PDJList extends JList
 		this.addMouseMotionListener(new DragMotionListener());
 		this.addMouseListener(new ClickListener());
 		controller.getPlayer().addPlayStateListener(new PlayerListenerForLists());
-
 		
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl X"),TransferHandler.getCutAction().getValue(Action.NAME));
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl C"),TransferHandler.getCopyAction().getValue(Action.NAME));
@@ -129,6 +132,8 @@ public class PDJList extends JList
 		dragSource.addDragSourceListener(dgl);
 		dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, dgl);
 		
+		setAppearance(TrackListAppearance.getSimpleAppearance());
+		
 		if(scrollToPlayed)
 			scrollToPlayed(controller.getPlayer().getCurrentTrack());
 	}
@@ -151,12 +156,6 @@ public class PDJList extends JList
 	public TrackListModel getListModel()
 	{
 		return listModel;
-	}
-	
-	public void setFontSize(int point)
-	{
-		renderer.setFontSize(point);
-		this.repaint();
 	}
 	
 	public Track getLastTrack()
@@ -189,6 +188,20 @@ public class PDJList extends JList
         Track[] rv = new Track[n];
         System.arraycopy(rvTmp, 0, rv, 0, n);
         return rv;
+    }
+    
+    public void setAppearance(TrackListAppearance appearance)
+    {
+    	this.appearance = appearance;
+    	setForeground(appearance.getColor(TrackState.Normal, EntryState.Normal, Part.Foreground));
+    	setBackground(appearance.getColor(TrackState.Normal, EntryState.Normal, Part.Background));
+    	setSelectionForeground(appearance.getColor(TrackState.Normal, EntryState.Selected, Part.Foreground));
+    	setSelectionBackground(appearance.getColor(TrackState.Normal, EntryState.Selected, Part.Background));
+    }
+    
+    public TrackListAppearance getAppearance()
+    {
+    	return appearance;
     }
     
     protected void scrollToPlayed(final Track playingCurrent)

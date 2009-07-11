@@ -370,12 +370,12 @@ public class ClassicWindow extends JFrame
 		
 		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 		scrollPane.setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
-		list.setForeground(new Color(0, 255, 0));
 		panel.setBackground(Color.darkGray);
 		label.setBackground(Color.darkGray);
 		label.setForeground(Color.green);
-		list.setBackground(Color.black);
 		scrollPane.setBackground(Color.black);
+		
+		list.setAppearance(TrackListAppearance.getGreenAppearance(22));
 		
 		c.insets = new Insets(5, 5, 5, 5);
 		c.weightx = 0.0;
@@ -430,8 +430,7 @@ public class ClassicWindow extends JFrame
 		textField.setForeground(Color.green);
 		textField.setCaretColor(Color.WHITE);
 		
-		searchList.setForeground(new Color(0, 255, 0));
-		searchList.setBackground(Color.black);
+		searchList.setAppearance(TrackListAppearance.getGreenAppearance(22));
 		
 		c.weightx = 0.0;
 		c.weighty = 0.0;

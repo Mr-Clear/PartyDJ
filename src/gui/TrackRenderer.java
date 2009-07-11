@@ -1,12 +1,12 @@
 package gui;
 
-import java.awt.Color;
+import gui.TrackListAppearance.EntryState;
+import gui.TrackListAppearance.Part;
+import gui.TrackListAppearance.TrackState;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.lang.reflect.InvocationTargetException;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -27,7 +27,6 @@ import common.Track;
 public class TrackRenderer extends DefaultListCellRenderer 
 {
 	private static final long serialVersionUID = 1791058448796268655L;
-	private int fontSize = 22;
 
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
@@ -36,8 +35,12 @@ public class TrackRenderer extends DefaultListCellRenderer
 			return new JLabel("null"); 
 		if(!(value instanceof Track))
 			return new JLabel("no Track: " + value);
-
+		
 		Track track = (Track)value;
+		if(!(list instanceof PDJList))
+			return new JLabel(track.toString());
+
+		PDJList pdjList = (PDJList)list;
 
 		// Liest Track-Dauer automatisch ein.
 		if(track instanceof DbTrack)
@@ -47,13 +50,8 @@ public class TrackRenderer extends DefaultListCellRenderer
 				Controller.getInstance().pushTrackToUpdate(dbTrack); 
 		}
 		
-		TrackRenderer.TrackListCellRendererComponent cell = new TrackListCellRendererComponent(list, track, index, isSelected, cellHasFocus);
+		TrackRenderer.TrackListCellRendererComponent cell = new TrackListCellRendererComponent(pdjList, track, index, isSelected, cellHasFocus);
 		return cell;
-	}
-	
-	public void setFontSize(int point)
-	{
-		fontSize = point;
 	}
 
 	private class TrackListCellRendererComponent extends JPanel
@@ -62,7 +60,7 @@ public class TrackRenderer extends DefaultListCellRenderer
 	
 		private JPanel me = this;
 		
-		public TrackListCellRendererComponent(final JList list, final Track track, final int index, final boolean isSelected, final boolean cellHasFocus)
+		public TrackListCellRendererComponent(final PDJList list, final Track track, final int index, final boolean isSelected, final boolean cellHasFocus)
 		{
 			if(SwingUtilities.isEventDispatchThread())
 				init(list, track, index, isSelected, cellHasFocus);
@@ -90,12 +88,28 @@ public class TrackRenderer extends DefaultListCellRenderer
 			}
 		}
 		
-		protected void init(final JList list, final Track track, @SuppressWarnings("unused") int index, final boolean isSelected, final boolean cellHasFocus)
+		protected void init(final PDJList list, final Track track, @SuppressWarnings("unused") int index, final boolean isSelected, final boolean cellHasFocus)
 		{
 			JLabel titel = new JLabel();
 			JLabel duration = new JLabel();
 			
-			me.setBackground(list.getBackground());
+			TrackListAppearance appearance = list.getAppearance();
+			
+			TrackState trackState;
+			if(track.equals(Controller.getInstance().getPlayer().getCurrentTrack()))
+				trackState = TrackState.Playing;
+			else if(track.getProblem() != Track.Problem.NONE)
+				trackState = TrackState.Problem;
+			else
+				trackState = TrackState.Normal;
+			
+			EntryState entryState;
+			if(isSelected)
+				entryState = EntryState.Selected;
+			else
+				entryState = EntryState.Normal;
+			
+			me.setBackground(appearance.getColor(trackState, entryState, Part.Background));
 			GridBagConstraints c = new GridBagConstraints();
 			
 			titel.setOpaque(true);
@@ -105,40 +119,17 @@ public class TrackRenderer extends DefaultListCellRenderer
 			if(track.getDuration() >= 0)
 				duration.setText(common.Functions.formatTime(track.getDuration()));
 			
-			titel.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, fontSize));
-			duration.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, fontSize));
+			titel.setFont(appearance.getFont());
+			duration.setFont(appearance.getFont());
 					
-			if(isSelected)
-			{
-				titel.setForeground(list.getForeground());
-				duration.setForeground(list.getForeground());
-				titel.setBackground(Color.BLUE.darker().darker());
-				duration.setBackground(Color.BLUE.darker().darker());
-			}
-			else
-			{
-				titel.setBackground(list.getBackground());
-				duration.setBackground(list.getBackground());
-				titel.setForeground(list.getForeground());
-				duration.setForeground(list.getForeground());
-			}
-			
-			Track currentTrack = Controller.getInstance().getPlayer().getCurrentTrack();
-			if(currentTrack != null && currentTrack.equals(track))
-			{
-				titel.setForeground(new Color(64, 192, 255));
-				duration.setForeground(new Color(64, 192, 255));
-			}
-			
-			if(track.getProblem() != Track.Problem.NONE)
-			{
-				titel.setForeground(Color.GRAY);
-				duration.setForeground(Color.GRAY);
-			}
-			
+			titel.setForeground(appearance.getColor(trackState, entryState, Part.Foreground));
+			duration.setForeground(appearance.getColor(trackState, entryState, Part.Foreground));
+			titel.setBackground(appearance.getColor(trackState, entryState, Part.Background));
+			duration.setBackground(appearance.getColor(trackState, entryState, Part.Background));
+
 			if(cellHasFocus)
 			{
-				setBorder(BorderFactory.createLineBorder(Color.BLUE));
+				setBorder(appearance.getFocusBorder());
 			}
 			
 			setLayout(new GridBagLayout());
@@ -158,7 +149,7 @@ public class TrackRenderer extends DefaultListCellRenderer
 
 			//if(list.getFixedCellHeight() == -1)
 			//TODO Größe abhängig von fontSize
-			list.setFixedCellHeight((int)(fontSize * 1.3));
+			list.setFixedCellHeight((int)(appearance.getFont().getSize() * 1.3));
 		}
 	}
 }

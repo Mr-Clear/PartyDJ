@@ -12,6 +12,7 @@ public class ListWindow extends JFrame
 	public ListWindow(String listName) throws ListException
 	{
 		list = new PDJScrollList(Controller.getInstance().getListProvider().getDbList(listName));
+		list.getList().setAppearance(TrackListAppearance.getGreenAppearance(22));
 		add(list);
 		setSize(800, 600);
 		setTitle(listName);
