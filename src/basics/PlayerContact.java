@@ -1,7 +1,7 @@
 package basics;
 
-import players.PlayerException;
 import common.Track;
+import players.PlayerException;
 
 /**
  * Ermöglicht es dem Player Daten an den PartyDJ zu senden.

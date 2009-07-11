@@ -1,13 +1,12 @@
 package gui.settings.tools;
 
 import javax.swing.JOptionPane;
+import common.DbTrack;
 import common.Reporter;
 import common.Track;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
 import lists.EditableListModel;
-import lists.ListException;
-import basics.Controller;
 
 /**
  * Liest eine M3U-Datei und fügt die Tracks der Hauptliste hinzu.
@@ -51,21 +50,10 @@ public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 		if(track == null)
 			return false;
 		
-		int newIndex;
-		try
-		{
-			newIndex = Controller.getInstance().getData().addTrack(track);
-			if(listModel != null)
-			{
-				listModel.add(Controller.getInstance().getListProvider().assignTrack(track));
-			}
-		}
-		catch (ListException ignored)
-		{
-			newIndex = -1;
-		}
+		new DbTrack(track);
 
-		return newIndex != -1;
+		//TODO herausfinden ob der Track neu ist.
+		return true;
 	}
 
 	public void stopTask()

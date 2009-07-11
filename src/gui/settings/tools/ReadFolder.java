@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import basics.Controller;
 import lists.EditableListModel;
 import lists.ListException;
-import common.Track;
+import common.DbTrack;
 
 /**
  * Durchsucht einen Ordner nach MP3-Dateien und fügt sie in die Hauptliste ein.
@@ -100,19 +100,19 @@ public class ReadFolder implements StatusSupportedFunction
 	{
 		try
 		{
-			Track newTrack = new Track(path, false);
-			Controller.getInstance().getData().addTrack(newTrack);
+			DbTrack track = new DbTrack(path, false);
 			if(listModel != null)
 			{
-				listModel.add(Controller.getInstance().getListProvider().assignTrack(newTrack));
+				listModel.add(track);
 			}
-			if(newTrack.index != -1 || listModel != null)
-			{
-				count++;
-				sd.setLabel(count + ": " + path);
-			}
+			
+			count++;
+			sd.setLabel(count + ": " + path);
 		}
-		catch (ListException e){e.printStackTrace();}
+		catch (ListException e)
+		{
+			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Neuer Track konnte nicht in Liste eingefügt werden.");
+		}
 	}
 	
 	public void stopTask()

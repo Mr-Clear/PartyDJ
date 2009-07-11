@@ -24,7 +24,6 @@ import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
 import lists.TrackListModel;
-
 import common.Track;
 
 /**ForeignDrop kümmert sich um alle Drop-Importe.
@@ -62,23 +61,23 @@ public class ForeignDrop extends DropTargetAdapter
 		    					{
 		    						if(e.getDropTargetContext().getComponent() instanceof PDJList)
 		    						{
-		    							TrackListModel tlm = ((PDJList) e.getDropTargetContext().getComponent()).getListModel();
-		    							if(tlm instanceof EditableListModel)
-		    								new StatusDialog("Lese Ordner", null, new gui.settings.tools.ReadFolder(filePath, true, (EditableListModel) tlm));
-		    							else if(tlm instanceof DbMasterListModel)
+		    							TrackListModel elm = ((PDJList) e.getDropTargetContext().getComponent()).getListModel();
+		    							if(elm instanceof EditableListModel)
+		    								new StatusDialog("Lese Ordner", null, new gui.settings.tools.ReadFolder(filePath, true, (EditableListModel) elm));
+		    							else if(elm instanceof DbMasterListModel)
 		    								new StatusDialog("Lese Ordner", null, new gui.settings.tools.ReadFolder(filePath, true));
 		    							e.dropComplete(true);
 		    						}
 		    					}
-		    			    	
+		    					
 		    					else if(filePath.toLowerCase().endsWith(".m3u"))
 						        {
 		    						if(e.getDropTargetContext().getComponent() instanceof PDJList)
 		    						{
-		    							TrackListModel tlm = ((PDJList) e.getDropTargetContext().getComponent()).getListModel();
-		    							if(tlm instanceof EditableListModel)
-		    								new StatusDialog("Lese M3U", null, new gui.settings.tools.AddM3U(filePath, (EditableListModel) tlm));
-		    							else if(tlm instanceof DbMasterListModel)
+		    							TrackListModel elm = ((PDJList)e.getDropTargetContext().getComponent()).getListModel();
+		    							if(elm instanceof EditableListModel)
+		    								new StatusDialog("Lese M3U", null, new gui.settings.tools.AddM3U(filePath, (EditableListModel) elm));
+		    							else if(elm instanceof DbMasterListModel)
 		    								new StatusDialog("Lese M3U", null, new gui.settings.tools.AddM3U(filePath));
 							        	e.dropComplete(true);
 							        	return;
@@ -214,7 +213,7 @@ public class ForeignDrop extends DropTargetAdapter
 							@Override
 							public void run()
 							{
-								txtField.setText(Controller.getInstance().getPlayer().getCurrentTrack().name);
+								txtField.setText(Controller.getInstance().getPlayer().getCurrentTrack().getName());
 								e.dropComplete(true);
 							}});
 					}
@@ -226,7 +225,7 @@ public class ForeignDrop extends DropTargetAdapter
 							@Override
 							public void run()
 							{
-								txtField.setText(firstTrack.name);
+								txtField.setText(firstTrack.getName());
 								e.dropComplete(true);
 							}});
 						

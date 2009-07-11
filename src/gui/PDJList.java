@@ -19,13 +19,11 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import players.PlayStateAdapter;
-import players.PlayerException;
 import basics.Controller;
 import lists.TrackListModel;
 import common.Track;
@@ -82,7 +80,7 @@ public class PDJList extends JList
 				e.printStackTrace();
 			}
 	}
-	
+
 	private void initialise(ListDropMode ldMode, String name)
 	{
 		final DragDropHandler handler = new DragDropHandler();
@@ -138,15 +136,7 @@ public class PDJList extends JList
 										Track track = ((Track)((PDJList)evt.getSource()).getSelectedValue());
 										if(track != null)
 										{
-											try
-											{
-												Controller.getInstance().getPlayer().start(track);
-											}
-											catch (PlayerException e)
-											{
-												e.printStackTrace();
-												JOptionPane.showMessageDialog(null, "Track kann nicht wiedergegeben werden:\n" + track, "PartyDJ", JOptionPane.ERROR_MESSAGE);
-											}
+											track.play();
 										}
 									}
 								});
@@ -386,16 +376,7 @@ public class PDJList extends JList
 					if(!(clickedList.getSelectedValue() instanceof Track))
 						return;
 					
-					Track track = (Track) clickedList.getSelectedValue();
-					try
-					{
-						Controller.getInstance().getPlayer().start(track);
-					}
-					catch (PlayerException e1)
-					{
-						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, "Track kann nicht wiedergegeben werden:\n" + track, "PartyDJ", JOptionPane.ERROR_MESSAGE);
-					}
+					((Track)clickedList.getSelectedValue()).play();
 				}
 			}
 		}

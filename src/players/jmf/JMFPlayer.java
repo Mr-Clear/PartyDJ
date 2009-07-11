@@ -166,7 +166,7 @@ public class JMFPlayer implements IPlayer
 		
 		try
 		{
-			player = getPlayer(track.path);
+			player = getPlayer(track.getPath());
 		
 			player.getGainControl().setLevel(volume / 100f);
 		}
@@ -229,9 +229,14 @@ public class JMFPlayer implements IPlayer
 	
 	public double getDuration(Track track) throws PlayerException
 	{
-		double duration = getDuration(track.path);
+		double duration = getDuration(track.getPath());
 		contact.trackDurationCalculated(currentTrack, duration);
 		return duration;
+	}
+	
+	public double getDuration(File file) throws PlayerException
+	{
+		return getDuration(file.getAbsolutePath());
 	}
 	
 	public double getDuration(String filePath) throws PlayerException
@@ -336,7 +341,7 @@ public class JMFPlayer implements IPlayer
 		try
 		{
 			currentTrack = track;
-			player = getPlayer(track.path);
+			player = getPlayer(track.getPath());
 		}
 		catch (PlayerException e)
 		{

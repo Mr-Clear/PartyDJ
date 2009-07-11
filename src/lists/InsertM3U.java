@@ -2,6 +2,7 @@ package lists;
 
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
+import common.DbTrack;
 import common.Reporter;
 import common.Track;
 
@@ -35,7 +36,7 @@ public class InsertM3U implements StatusSupportedFunction, Reporter<Track>
 	{
 		try
 		{
-			list.add(basics.Controller.getInstance().getListProvider().assignTrack(track));
+			list.add(basics.Controller.getInstance().getListProvider().assignTrack(new DbTrack(track)));
 			return true;
 		}
 		catch (ListException e)

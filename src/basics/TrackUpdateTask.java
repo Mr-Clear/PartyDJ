@@ -4,7 +4,7 @@ import java.util.Stack;
 import java.util.TimerTask;
 import players.PlayerException;
 import lists.ListException;
-import common.Track;
+import common.DbTrack;
 
 /**
  * Liest die Dauer der Tracks ein.
@@ -16,9 +16,9 @@ import common.Track;
  */
 class TrackUpdateTask extends TimerTask 
 {
-	private final Stack<Track> trackUpdateStack;
+	private final Stack<DbTrack> trackUpdateStack;
 	private final Controller controller = Controller.getInstance();
-	public TrackUpdateTask(Stack<Track> trackUpdateStack)
+	public TrackUpdateTask(Stack<DbTrack> trackUpdateStack)
 	{
 		this.trackUpdateStack = trackUpdateStack;
 	}
@@ -28,7 +28,7 @@ class TrackUpdateTask extends TimerTask
 	{
 		try
 		{
-			Track track = null;
+			DbTrack track = null;
 			synchronized(trackUpdateStack)
 			{
 				while(true)
@@ -40,7 +40,7 @@ class TrackUpdateTask extends TimerTask
 					}
 					track = trackUpdateStack.pop();
 	
-					if(track.duration == 0 && track.problem == Track.Problem.NONE)
+					if(track.getDuration() == 0 && track.getProblem() == DbTrack.Problem.NONE)
 					{
 						break;
 					}
@@ -54,18 +54,18 @@ class TrackUpdateTask extends TimerTask
 			}
 			else
 			{
-				if(track.duration == 0)
+				if(track.getDuration() == 0)
 				{
 					try
 					{
-						track.duration = controller.getPlayer().getDuration(track);
+						track.setDuration(controller.getPlayer().getDuration(track));
 					}
 					catch (PlayerException e)
 					{
-						track.problem = e.problem;
+						track.setProblem(e.problem);
 						try
 						{
-							controller.getData().updateTrack(track, Track.TrackElement.PROBLEM);
+							controller.getData().updateTrack(track, DbTrack.TrackElement.PROBLEM);
 						}
 						catch (ListException e1)
 						{}

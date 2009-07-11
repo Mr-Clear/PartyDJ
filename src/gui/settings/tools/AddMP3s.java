@@ -10,10 +10,14 @@ import javax.swing.JOptionPane;
 import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
-import lists.ListProvider;
-import basics.Controller;
+import common.DbTrack;
 import common.Track;
 
+/**Fügt Tracks in eine Liste ein.
+ * 
+ * @author Eraser
+ *
+ */
 public class AddMP3s implements StatusSupportedFunction
 {
 	protected final DropTargetDropEvent  dtde;
@@ -29,6 +33,7 @@ public class AddMP3s implements StatusSupportedFunction
 		j = toAdd;
 		list  = (PDJList)dtde.getDropTargetContext().getComponent();
 	}
+	
 	@Override
 	public synchronized void runFunction(StatusDialog sd)
 	{
@@ -46,24 +51,20 @@ public class AddMP3s implements StatusSupportedFunction
 					if(!filePath.toLowerCase().endsWith(".mp3"))
 						break;
 					
-					ListProvider listProvider = new ListProvider();
-					
 					if(list.getListDropMode() == null)
 					{
 						dtde.dropComplete(false);
 						return;
 					}
-
+					
 					if(list.getListModel() instanceof EditableListModel)
 					{
-						((EditableListModel)list.getListModel()).add(listProvider.assignTrack(new Track(filePath, false)));
+						((EditableListModel)list.getListModel()).add(new DbTrack(filePath, false));
 						count++;
 					}
 					else if(list.getListModel() instanceof DbMasterListModel)
 					{
-						int a = Controller.getInstance().getData().addTrack(new Track(filePath, false));
-						if(a != -1)
-							count++;
+						new DbTrack(filePath, false);
 					}
 
 					if(sd != null)
@@ -89,7 +90,7 @@ public class AddMP3s implements StatusSupportedFunction
 					
 					if(sd != null)
 					{
-						sd.setLabel(count + ": " + ((Track) data.get(i)).name);
+						sd.setLabel(count + ": " + ((Track) data.get(i)).getName());
 						sd.setBarPosition(count);
 					}
 				}

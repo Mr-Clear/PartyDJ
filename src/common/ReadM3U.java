@@ -13,7 +13,7 @@ import gui.StatusDialog;
 
 /**
  * Liest M3U-Dateien.
- * <p>Die gefundenen Tracks werden an ein Objekt vom Typ Reporter<Track> gesendet.
+ * <p>Die gefundenen Tracks werden an ein Objekt vom Typ Reporter<AudioTrack> gesendet.
  * <p>Der Status wird auf einem StatusDialog ausgegeben.
  * 
  * @author Eraser

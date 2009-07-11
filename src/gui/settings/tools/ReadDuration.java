@@ -51,7 +51,7 @@ public class ReadDuration implements StatusSupportedFunction
 			
 			if(status != null)
 			{
-				status.setLabel(track.name);
+				status.setLabel(track.getName());
 			}
 
 			try

@@ -1,6 +1,6 @@
 package lists;
 
-import common.Track;
+import common.DbTrack;
 import data.IData;
 import data.SortOrder;
 import basics.Controller;
@@ -32,16 +32,9 @@ public class DbClientListModel extends LightClientListModel
 	}
 	
 	@Override
-	public void add(Track track) throws ListException
+	public void add(DbTrack track) throws ListException
 	{
-		try
-		{
-			data.insertTrack(listName, track);
-		}
-		catch (ListException e)
-		{
-			throw e;
-		}
+		data.insertTrack(listName, track);
 		super.add(track);
 		
 	}
@@ -53,7 +46,7 @@ public class DbClientListModel extends LightClientListModel
 	}
 
 	@Override
-	public void add(int index, Track track) throws ListException
+	public void add(int index, DbTrack track) throws ListException
 	{
 		if(index < 0)
 			index = 0;

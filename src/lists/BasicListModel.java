@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import common.Track;
 import players.PlayStateListener;
 import basics.Controller;
-import common.Track;
+//import common.Track;
 import data.ListAdapter;
 
 /**
@@ -69,22 +70,6 @@ abstract class BasicListModel extends ListAdapter implements TrackListModel, Pla
 		}
 	}
 	public void playStateChanged(boolean playState){}
-	
-	@Override
-	public void trackChanged(Track track)
-	{
-		synchronized(list)
-		{
-			for(int i = 0; i < list.size(); i++)
-			{
-				if(list.get(i) == track)
-				{
-					for(ListDataListener listener : dataListener)
-						listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, i, i));
-				}
-			}
-		}		
-	}
-	
+		
 	public void volumeChanged(int volume){}
 }

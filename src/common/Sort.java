@@ -124,6 +124,15 @@ interface TrackComperator
 	int compare(Track a, Track b);
 }
 
+class CompareDirect implements TrackComperator
+{
+	@Override
+	public int compare(Track a, Track b)
+	{
+		return a.compareTo(b);
+	}
+}
+
 class CompareName implements TrackComperator
 {
 	@Override
@@ -142,12 +151,7 @@ class CompareDuration implements TrackComperator
 	 */
 	public int compare(Track a, Track b)
 	{
-		if(a.duration < b.duration)
-			return -1;
-		else if(a.duration > b.duration)
-			return 1;
-		else
-			return 0;
+		return (int)Math.round(a.getDuration() - b.getDuration());
 	}
 }
 
@@ -156,6 +160,6 @@ class ComparePath implements TrackComperator
 	@Override
 	public int compare(Track a, Track b)
 	{
-		return a.path.compareToIgnoreCase(b.path);
+		return a.getPath().compareToIgnoreCase(b.getPath());
 	}
 }

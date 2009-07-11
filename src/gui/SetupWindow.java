@@ -23,7 +23,7 @@ import javax.swing.filechooser.FileFilter;
 import basics.Controller;
 import lists.EditableListModel;
 import lists.ListException;
-import common.Track;
+import common.DbTrack;
 import data.IData;
 
 /**
@@ -95,16 +95,7 @@ public class SetupWindow extends javax.swing.JFrame
 			        }
 			        else
 				    {
-						Track track = new Track(filePath, true);
-						
-						try
-						{
-							data.addTrack(track);
-						}
-						catch (ListException ex)
-						{
-							JOptionPane.showMessageDialog(null, "Einfügen fehlgeschlagen:\n" + ex.getMessage(), "Datei einfügen", JOptionPane.ERROR_MESSAGE);
-						}
+						new DbTrack(filePath, true);
 				    }
 				}});
 		}
@@ -239,13 +230,7 @@ public class SetupWindow extends javax.swing.JFrame
 			        }
 			        else
 				    {
-						Track track = new Track(path, true);
-						
-						try
-						{
-							data.addTrack(track);
-						}
-						catch (ListException ignore){}
+			        	new DbTrack(path, true);
 				    }
 				}
 				else
@@ -341,7 +326,7 @@ public class SetupWindow extends javax.swing.JFrame
 					try
 					{
 						sd.setLabel(filePath);
-						list.add(basics.Controller.getInstance().getListProvider().assignTrack(new Track(filePath, false)));
+						list.add(new DbTrack(filePath, false));
 					}
 					catch (ListException ignored)
 					{
@@ -431,7 +416,7 @@ public class SetupWindow extends javax.swing.JFrame
 				sd.setLabel(fileList.get(i));
 				try
 				{
-					list.add(basics.Controller.getInstance().getListProvider().assignTrack(new Track(fileList.get(i), false)));
+					list.add(new DbTrack(fileList.get(i), false));
 				}
 				catch (ListException ignored)
 				{

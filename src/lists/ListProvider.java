@@ -3,7 +3,7 @@ package lists;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import common.Track;
+import common.DbTrack;
 import data.IData;
 import basics.Controller;
 
@@ -17,7 +17,7 @@ import basics.Controller;
  */
 public class ListProvider
 {
-	protected final Map<Integer, Track> masterList;
+	protected final Map<Integer, DbTrack> masterList;
 	protected final Controller controller = Controller.getInstance();
 	protected final IData data = controller.getData();
 	
@@ -29,8 +29,8 @@ public class ListProvider
 		masterList = data.readMasterList();
 		masterListModel = new DbMasterListModel();
 		
-		for(Track track : masterList.values())
-			if(track.duration == 0 && track.problem == Track.Problem.NONE)
+		for(DbTrack track : masterList.values())
+			if(track.getDuration() == 0 && track.getProblem() == DbTrack.Problem.NONE)
 				controller.pushTrackToUpdate(track);
 	}
 	
@@ -39,7 +39,7 @@ public class ListProvider
 		return masterListModel;
 	}
 	
-	public Track getTrackByIndex(int index)
+	public DbTrack getTrackByIndex(int index)
 	{
 		return masterList.get(index);
 	}
@@ -64,11 +64,11 @@ public class ListProvider
 	 * @return Synchronisierter Track.
 	 * @throws ListException 
 	 */
-	public Track assignTrack(Track track) throws ListException
+	public DbTrack assignTrack(DbTrack track) throws ListException
 	{
 		if(masterList.containsKey(track) && track == masterList.get(track))
 			return track;
-		for(Track t : masterList.values())
+		for(DbTrack t : masterList.values())
 		{
 			if(track.equals(t))
 				return t;

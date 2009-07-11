@@ -17,13 +17,12 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
 import players.PlayerException;
-import lists.ListException;
 import basics.Controller;
 import common.Track;
 import common.Track.Problem;
 
 /**
- * Kleiner Dialog über den die Eigenschaften eines Tracks angezeigt
+ * Kleiner Dialog über den die Eigenschaften eines AudioTracks angezeigt
  * und bearbeitet werden können.
  * 
  * @author Eraser
@@ -48,9 +47,9 @@ public class EditTrackWindow extends JDialog
 	public EditTrackWindow(Track track)
 	{
 		myTrack = track;
-		setTitle(track.name);
-		duration = track.duration;
-		size = track.size;
+		setTitle(track.getName());
+		duration = track.getDuration();
+		size = track.getSize();
 		
 		Insets insets = new Insets(4, 5, 4, 6);
 		
@@ -68,7 +67,7 @@ public class EditTrackWindow extends JDialog
 		c.anchor = GridBagConstraints.EAST;
 		add(lblPfad, c);
 		
-		txtPath = new JTextField(track.path);
+		txtPath = new JTextField(track.getPath());
 		txtPath.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e)
@@ -95,7 +94,7 @@ public class EditTrackWindow extends JDialog
 		c.anchor = GridBagConstraints.EAST;
 		add(lblName, c);
 		
-		txtName = new JTextField(track.name);
+		txtName = new JTextField(track.getName());
 		c = new GridBagConstraints();
 		c.insets = insets;
 		c.gridx = 1;
@@ -115,8 +114,8 @@ public class EditTrackWindow extends JDialog
 		c.anchor = GridBagConstraints.EAST;
 		add(lblProblem, c);
 		
-		cmbProblem = new JComboBox(Track.Problem.getStringArray());
-		cmbProblem.setSelectedIndex(Track.Problem.problemToArrayIndex(track.problem));
+		cmbProblem = new JComboBox(Problem.getStringArray());
+		cmbProblem.setSelectedIndex(Problem.problemToArrayIndex(track.getProblem()));
 		c = new GridBagConstraints();
 		c.insets = insets;
 		c.gridx = 1;
@@ -134,8 +133,8 @@ public class EditTrackWindow extends JDialog
 		c.anchor = GridBagConstraints.EAST;
 		add(lblDuration, c);
 		
-		txtDuration = new JTextField(track.name);
-		txtDuration.setText(common.Functions.formatTime(track.duration));
+		txtDuration = new JTextField(track.getName());
+		txtDuration.setText(common.Functions.formatTime(track.getDuration()));
 		txtDuration.setEditable(false);
 		txtDuration.setBorder(null);
 		c = new GridBagConstraints();
@@ -147,7 +146,7 @@ public class EditTrackWindow extends JDialog
 		c.weightx = 1d;
 		add(txtDuration, c);
 		
-		duration = track.duration;
+		duration = track.getDuration();
 		
 		JButton btnDuration = new JButton("Dauer einlesen");
 		c = new GridBagConstraints();
@@ -167,7 +166,7 @@ public class EditTrackWindow extends JDialog
 				catch (PlayerException e)
 				{
 					JOptionPane.showMessageDialog(null, e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
-					cmbProblem.setSelectedIndex(Track.Problem.problemToArrayIndex(e.problem));
+					cmbProblem.setSelectedIndex(Problem.problemToArrayIndex(e.problem));
 					duration = 0;
 				}
 				txtDuration.setText(common.Functions.formatTime(duration));
@@ -182,8 +181,8 @@ public class EditTrackWindow extends JDialog
 		c.anchor = GridBagConstraints.EAST;
 		add(lblSize, c);
 		
-		txtSize = new JTextField(track.name);
-		txtSize.setText(common.Functions.formatSize(track.size, 4, true));
+		txtSize = new JTextField(track.getName());
+		txtSize.setText(common.Functions.formatSize(track.getSize(), 4, true));
 		txtSize.setEditable(false);
 		txtSize.setBorder(null);
 		c = new GridBagConstraints();
@@ -195,7 +194,7 @@ public class EditTrackWindow extends JDialog
 		c.weightx = 1d;
 		add(txtSize, c);
 		
-		duration = track.duration;
+		duration = track.getDuration();
 		
 		JButton btnSize = new JButton("Größe einlesen");
 		c = new GridBagConstraints();
@@ -208,13 +207,13 @@ public class EditTrackWindow extends JDialog
 		btnSize.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0)
 			{
-				File file = new File(myTrack.path);
+				File file = new File(myTrack.getPath());
 				if(file.exists())
-					size = new File(myTrack.path).length();
+					size = new File(myTrack.getPath()).length();
 				else
 				{
 					size = 0;
-					cmbProblem.setSelectedIndex(Track.Problem.problemToArrayIndex(Track.Problem.FILE_NOT_FOUND));
+					cmbProblem.setSelectedIndex(Problem.problemToArrayIndex(Problem.FILE_NOT_FOUND));
 				}
 				txtSize.setText(common.Functions.formatSize(size, 4, true));
 			}});
@@ -228,7 +227,7 @@ public class EditTrackWindow extends JDialog
 		c.anchor = GridBagConstraints.NORTHEAST;
 		add(lblInfo, c);
 		
-		txtarInfo = new JTextArea(track.info);
+		txtarInfo = new JTextArea(track.getInfo());
 		txtarInfo.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		c = new GridBagConstraints();
 		c.insets = insets;
@@ -278,77 +277,24 @@ public class EditTrackWindow extends JDialog
 	{
 		public void actionPerformed(ActionEvent arg0)
 		{
-			int changeCount = 0;
-			Track.TrackElement change = Track.TrackElement.NAME;
+			myTrack.setName(txtName.getText());
 
-			if(!myTrack.name.equals(txtName.getText()))
-			{
-				changeCount++;
-				myTrack.name = txtName.getText();
-				change = Track.TrackElement.NAME;
-			}
-			if(!myTrack.path.equals(txtPath.getText()))
+			if(!myTrack.getPath().equals(txtPath.getText()))
 			{
 				if(!new File(txtPath.getText()).exists())
 				{
 					if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Datei wirklich umbennen bzw. verschieben?", "PartyDJ", JOptionPane.YES_NO_OPTION))
 						return;
 				}
-				changeCount++;
 
-				new File(myTrack.path).renameTo(new File(txtPath.getText()));
-				myTrack.path = txtPath.getText();
-				change = Track.TrackElement.PATH;
+				new File(myTrack.getPath()).renameTo(new File(txtPath.getText()));
+				myTrack.setPath(txtPath.getText());
 			}
-			if(myTrack.problem != Problem.arrayIndexToProblem(cmbProblem.getSelectedIndex()))
-			{
-				changeCount++;
-				myTrack.problem = Problem.arrayIndexToProblem(cmbProblem.getSelectedIndex());
-				change = Track.TrackElement.PROBLEM;
-			}
-			if(myTrack.duration != duration)
-			{
-				changeCount++;
-				myTrack.duration = duration;
-				change = Track.TrackElement.DURATION;
-			}
-			if(myTrack.size != size)
-			{
-				changeCount++;
-				myTrack.size = size;
-				change = Track.TrackElement.SIZE;
-			}
-			if(!(txtarInfo.getText().equals(myTrack.info) || (txtarInfo.getText().equals("") && myTrack.info == null)))
-			{
-				changeCount++;
-				myTrack.info = txtarInfo.getText();
-				change = Track.TrackElement.INFO;
-			}
-			
-			if(changeCount == 1)
-			{
-				try
-				{
-					Controller.getInstance().getData().updateTrack(myTrack, change);
-				}
-				catch (ListException e)
-				{
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Fehler bei Update:\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-			else if(changeCount > 1)
-			{
-				try
-				{
-					Controller.getInstance().getData().updateTrack(myTrack);
-				}
-				catch (ListException e)
-				{
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Fehler bei Update:\nExistiert die Datei im Zielverzeichnis bereits?\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
-				}
-			}
+
+			myTrack.setProblem(Problem.arrayIndexToProblem(cmbProblem.getSelectedIndex()));
+			myTrack.setDuration(duration);
+			myTrack.setSize(size);
+			myTrack.setInfo(txtarInfo.getText());
 		}
 	}
 }

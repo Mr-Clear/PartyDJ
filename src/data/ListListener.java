@@ -1,6 +1,6 @@
 package data;
 
-import common.Track;
+import common.DbTrack;
 
 /**
  * Empfängt Änderungen in den Listen.
@@ -13,17 +13,17 @@ public interface ListListener
 	 * 
 	 * @param track Hinzugefügter Track.
 	 */
-	void trackAdded (Track track);
+	void trackAdded (DbTrack track);
 	/**Ein Track wurde bearbeitet.
 	 * 
 	 * @param track Bearbeiteter Track.
 	 */
-	void trackChanged (Track track);
+	void trackChanged (DbTrack track);
 	/**Ein Track wurde aus der Hauptliste gelöscht.
 	 * 
 	 * @param track Gelöschter Track.
 	 */
-	void trackDeleted (Track track);
+	void trackDeleted (DbTrack track);
 	
 	/**Eine Liste wurde erstellt.
 	 * 
@@ -61,7 +61,7 @@ public interface ListListener
 	 * @param position Position in der Liste, an der der Track eingefügt wurde.
 	 * @param track Track der eingefügt wurde.
 	 */
-	void trackInserted(String listName, int position, Track track);
+	void trackInserted(String listName, int position, DbTrack track);
 	/**Ein Track wurde aus einer Liste entfernt.
 	 * 
 	 * @param listName Name der Liste.

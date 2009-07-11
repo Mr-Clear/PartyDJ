@@ -1,5 +1,6 @@
 package players.jl;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import players.IPlayer;
@@ -115,9 +116,16 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	{
 		if(track == null)
 			return 0;
-		double d = getDuration(track.path);
+		double d = getDuration(track.getPath());
 		contact.trackDurationCalculated(track, d);
 		return d;
+	}
+	
+
+	@Override
+	public double getDuration(File file) throws PlayerException
+	{
+		return AdvancedPlayer.getDuration(file.getAbsolutePath());
 	}
 
 	public double getDuration(String filePath) throws PlayerException
@@ -288,7 +296,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 		
 		close();
 		
-		p = getPlayer(track.path);
+		p = getPlayer(track.getPath());
 
 		currentTrackChanged(track, players.PlayStateListener.Reason.TRACK_LOADED);
 	}

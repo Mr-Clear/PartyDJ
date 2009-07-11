@@ -8,7 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import lists.ListException;
 
-import common.Track;
+import common.DbTrack;
 
 
 public class FillDB
@@ -46,21 +46,21 @@ public class FillDB
 				{
 					File file = new File(line);
 					long size;
-					Track.Problem problem;
+					DbTrack.Problem problem;
 					if(file.exists())
 					{
 						size = file.length();
-						problem = Track.Problem.NONE;
+						problem = DbTrack.Problem.NONE;
 					}
 					else
 					{
 						size = 0;
-						problem = Track.Problem.FILE_NOT_FOUND;
+						problem = DbTrack.Problem.FILE_NOT_FOUND;
 					}
-					data.addTrack(new Track(0, line, name, 0, size, problem, null));
+					data.addTrack(new DbTrack(0, line, name, 0, size, problem, null));
 				}
 				else
-					data.addTrack(new Track(0, line, name, 0, 0, Track.Problem.NONE, null));
+					data.addTrack(new DbTrack(0, line, name, 0, 0, DbTrack.Problem.NONE, null));
 			}
 			catch (ListException e)
 			{

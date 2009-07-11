@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import common.DbTrack;
+import data.IData;
+import data.ListListener;
+import data.OpenDbException;
+import data.SettingException;
+import data.SettingListener;
 import basics.CloseListener;
 import lists.ListException;
-
-import common.*;
-import data.*;
 
 /**
  * Speichert Einstellungen und Listen in einer Derby-Datenbank.
@@ -24,7 +27,7 @@ import data.*;
 public class DerbyDB implements IData, CloseListener
 {
 	Connection conn = null;
-	HashMap<Integer, Track> masterList;
+	HashMap<Integer, DbTrack> masterList;
 	final Map<String, Integer> listIndices = new HashMap<String, Integer>();
 	final Map<String, String> settings = new HashMap<String, String>();
 	final Set<SettingListener> settingListener = new HashSet<SettingListener>();
@@ -236,11 +239,11 @@ public class DerbyDB implements IData, CloseListener
 	}
 	
 	@Override
-	public HashMap<Integer, Track> readMasterList() throws ListException
+	public HashMap<Integer, DbTrack> readMasterList() throws ListException
 	{
 		if(masterList == null)
 		{
-			masterList = new HashMap<Integer, Track>();
+			masterList = new HashMap<Integer, DbTrack>();
 			synchronized(conn)
 			{
 				try
@@ -248,7 +251,7 @@ public class DerbyDB implements IData, CloseListener
 					ResultSet rs = queryRS("SELECT * FROM FILES");
 					while(rs.next())
 					{
-						masterList.put(rs.getInt("index"), new Track(	rs.getInt("INDEX"),
+						masterList.put(rs.getInt("index"), new DbTrack(	rs.getInt("INDEX"),
 																rs.getString("PATH"),
 																rs.getString("NAME"),
 																rs.getDouble("DURATION"),
@@ -269,7 +272,7 @@ public class DerbyDB implements IData, CloseListener
 	}
 	
 	@Override
-	public List<Track> readList(String listName, String searchString, data.SortOrder order) throws ListException
+	public List<DbTrack> readList(String listName, String searchString, data.SortOrder order) throws ListException
 	{
 		if(searchString != null)
 		{
@@ -341,7 +344,7 @@ public class DerbyDB implements IData, CloseListener
 					{
 						// Wenn nicht, Liste erstellen
 						addList(listName);
-						return new ArrayList<Track>();
+						return new ArrayList<DbTrack>();
 					}
 					
 					String statement;
@@ -383,7 +386,7 @@ public class DerbyDB implements IData, CloseListener
 						ps.setString(2, searchString);
 				}
 	
-				ArrayList<Track> list = new ArrayList<Track>();
+				ArrayList<DbTrack> list = new ArrayList<DbTrack>();
 				
 				synchronized(conn)
 				{
@@ -406,46 +409,48 @@ public class DerbyDB implements IData, CloseListener
 	}
 	
 	@Override
-	public int addTrack(Track track) throws ListException
+	public void addTrack(DbTrack track) throws ListException
 	{
+		String path = track.getPath();
+		
 		try
 		{
 			int index;
 			try
 			{
-				index = checkIndex(track.path);
+				index = checkIndex(path);
 			}
-			catch(ListException e)
+			catch(SQLException e)
 			{
-				index = -1;
+				throw new ListException(e);
 			}
 				
 			if(index == -1)
 			{
-				if(track.name == null)
-					track.name = track.path.substring(track.path.lastIndexOf("\\") + 1, track.path.lastIndexOf("."));
+				if(track.getName() == null)
+					track.setName(path.substring(path.lastIndexOf("\\") + 1, path.lastIndexOf(".")));
 				
 				synchronized(conn)
 				{
 					PreparedStatement ps = conn.prepareStatement("INSERT INTO FILES (PATH, SEARCHNAME, NAME, DURATION, SIZE, PROBLEM, INFO) VALUES(?, ?, ?, ?, ?, ?, ?)");
-					ps.setString(1, track.path);
-					ps.setString(2, makeSearchString(track.name));
-					ps.setString(3, track.name);
-					ps.setDouble(4, track.duration);
-					ps.setLong(5, track.size);
-					ps.setShort(6, problemToShort(track.problem));
-					ps.setString(7, track.info);
+					ps.setString(1, path);
+					ps.setString(2, makeSearchString(track.getName()));
+					ps.setString(3, track.getName());
+					ps.setDouble(4, track.getDuration());
+					ps.setLong(5, track.getSize());
+					ps.setShort(6, problemToShort(track.getProblem()));
+					ps.setString(7, track.getInfo());
 					ps.executeUpdate();
 					conn.commit();
 				}
 				
-				index = checkIndex(track.path);
+				index = checkIndex(path);
 				conn.commit();
-				track.index = index;
+				track.setIndex(index);
 				
 				if(masterList != null)
 				{
-					masterList.put(track.index, track);
+					masterList.put(track.getIndex(), track);
 				}
 					
 				synchronized(listListener)
@@ -454,12 +459,12 @@ public class DerbyDB implements IData, CloseListener
 						listener.trackAdded(track);
 				}
 				
-				track.index = index;
-				return index;
+				return;
 			}
 			
+			track.setIndex(index);
 			conn.commit(); //commit nach checkIndex()
-			return -1;
+			return;
 		}
 		catch (SQLException e)
 		{
@@ -468,13 +473,25 @@ public class DerbyDB implements IData, CloseListener
 	}
 	
 	@Override
-	public void updateTrack(Track track) throws ListException
+	public void updateTrack(DbTrack track) throws ListException
 	{
 		synchronized(conn)
 		{
+			if(track.getIndex() == -1)
+			{
+				try
+				{
+					track.setIndex(checkIndex(track.getPath()));
+				}
+				catch (SQLException e)
+				{
+					throw new ListException(e);
+				}
+			}
+			
 			try
 			{
-				queryInt("SELECT INDEX FROM FILES WHERE INDEX = ?", track.index);
+				queryInt("SELECT INDEX FROM FILES WHERE INDEX = ?", track.getIndex());
 			}
 			catch (SQLException e)
 			{
@@ -485,14 +502,14 @@ public class DerbyDB implements IData, CloseListener
 			try
 			{
 				ps = conn.prepareStatement("UPDATE FILES SET PATH = ?, SEARCHNAME = ?, NAME = ?, DURATION = ?, SIZE = ?, PROBLEM = ?, INFO = ? WHERE INDEX = ?");
-				ps.setString(1, track.path);
-				ps.setString(2, makeSearchString(track.name));
-				ps.setString(3, track.name);
-				ps.setDouble(4, track.duration);
-				ps.setLong(5, track.size);
-				ps.setShort(6, problemToShort(track.problem));
-				ps.setString(7, track.info);
-				ps.setInt(8, track.index);
+				ps.setString(1, track.getPath());
+				ps.setString(2, makeSearchString(track.getName()));
+				ps.setString(3, track.getName());
+				ps.setDouble(4, track.getDuration());
+				ps.setLong(5, track.getSize());
+				ps.setShort(6, problemToShort(track.getProblem()));
+				ps.setString(7, track.getInfo());
+				ps.setInt(8, track.getIndex());
 				ps.executeUpdate();
 				conn.commit();
 			}
@@ -504,7 +521,7 @@ public class DerbyDB implements IData, CloseListener
 		
 		if(masterList != null)
 		{
-			masterList.put(track.index, track);
+			masterList.put(track.getIndex(), track);
 		}
 		
 		synchronized(listListener)
@@ -515,13 +532,13 @@ public class DerbyDB implements IData, CloseListener
 	}
 	
 	@Override
-	public void updateTrack(Track track, Track.TrackElement element) throws ListException
+	public void updateTrack(DbTrack track, DbTrack.TrackElement element) throws ListException
 	{
 		synchronized(conn)
 		{
 			try
 			{
-				queryInt("SELECT INDEX FROM FILES WHERE INDEX = ?", track.index);
+				queryInt("SELECT INDEX FROM FILES WHERE INDEX = ?", track.getIndex());
 			}
 			catch (SQLException e)
 			{
@@ -536,35 +553,35 @@ public class DerbyDB implements IData, CloseListener
 				{
 				case PATH:
 					ps = conn.prepareStatement("UPDATE FILES SET PATH = ? WHERE INDEX = ?");
-					ps.setString(1, track.path);
+					ps.setString(1, track.getPath());
 					break;
 				case NAME:
 					ps = conn.prepareStatement("UPDATE FILES SET SEARCHNAME = ?, NAME = ? WHERE INDEX = ?");
-					ps.setString(1, makeSearchString(track.name));
-					ps.setString(2, track.name);
+					ps.setString(1, makeSearchString(track.getName()));
+					ps.setString(2, track.getName());
 					lastSet = 3;
 					break;
 				case DURATION:
 					ps = conn.prepareStatement("UPDATE FILES SET DURATION = ? WHERE INDEX = ?");
-					ps.setDouble(1, track.duration);
+					ps.setDouble(1, track.getDuration());
 					break;
 				case SIZE:
 					ps = conn.prepareStatement("UPDATE FILES SET SIZE = ? WHERE INDEX = ?");
-					ps.setLong(1, track.size);
+					ps.setLong(1, track.getSize());
 					break;
 				case PROBLEM:
 					ps = conn.prepareStatement("UPDATE FILES SET PROBLEM = ? WHERE INDEX = ?");
-					ps.setShort(1, problemToShort(track.problem));
+					ps.setShort(1, problemToShort(track.getProblem()));
 					break;
 				case INFO:
 					ps = conn.prepareStatement("UPDATE FILES SET INFO = ? WHERE INDEX = ?");
-					ps.setInt(1, track.index);
+					ps.setInt(1, track.getIndex());
 					break;
 					default:
 						throw new IllegalArgumentException("Unbekanntes Element");
 				}
 				
-				ps.setInt(lastSet, track.index);
+				ps.setInt(lastSet, track.getIndex());
 				ps.executeUpdate();
 				conn.commit();
 			}
@@ -576,7 +593,7 @@ public class DerbyDB implements IData, CloseListener
 		
 		if(masterList != null)
 		{
-			masterList.put(track.index, track);
+			masterList.put(track.getIndex(), track);
 		}
 		
 		synchronized(listListener)
@@ -587,7 +604,7 @@ public class DerbyDB implements IData, CloseListener
 	}
 	
 	@Override
-	public void deleteTrack(Track track) throws ListException
+	public void deleteTrack(DbTrack track) throws ListException
 	{
 		if(track == null)
 			throw new NullPointerException("Kein Track übergeben.");
@@ -596,8 +613,8 @@ public class DerbyDB implements IData, CloseListener
 			try
 			{
 
-				executeUpdate("DELETE FROM LISTS_CONTENT WHERE INDEX = ?", track.index);
-				executeUpdate("DELETE FROM FILES WHERE INDEX = ?", track.index);
+				executeUpdate("DELETE FROM LISTS_CONTENT WHERE INDEX = ?", track.getIndex());
+				executeUpdate("DELETE FROM FILES WHERE INDEX = ?", track.getIndex());
 				conn.commit();
 			}
 			catch (SQLException e)
@@ -617,7 +634,7 @@ public class DerbyDB implements IData, CloseListener
 		
 		if(masterList != null)
 		{
-			masterList.remove(track.index);
+			masterList.remove(track.getIndex());
 		}
 		
 		synchronized(listListener)
@@ -627,16 +644,9 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
-	int checkIndex(String trackPath) throws ListException
+	int checkIndex(String trackPath) throws SQLException
 	{
-		try
-		{
-			return queryInt("SELECT INDEX FROM FILES WHERE PATH = ?", trackPath);
-		}
-		catch (SQLException e)
-		{
-			throw new ListException(e);
-		}
+		return queryInt("SELECT INDEX FROM FILES WHERE PATH = ?", trackPath);
 	}
 	
 	@Override
@@ -932,10 +942,10 @@ public class DerbyDB implements IData, CloseListener
 	}
 
 	@Override
-	public void insertTrack(String listName, Track track) throws ListException
+	public void insertTrack(String listName, DbTrack track) throws ListException
 	{
-		if(track.index == -1)
-			throw new ListException("Track nicht in Hauptliste");
+		if(track.getIndex() == -1)
+			throw new ListException("Track nicht in Hauptliste: " + track);
 		int size;
 		synchronized(conn)
 		{
@@ -943,7 +953,7 @@ public class DerbyDB implements IData, CloseListener
 			{
 				int listIndex = getListIndex(listName);
 				size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", listIndex);
-				executeUpdate("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)", listIndex, track.index, size);
+				executeUpdate("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)", listIndex, track.getIndex(), size);
 				conn.commit();
 				
 			}
@@ -968,9 +978,9 @@ public class DerbyDB implements IData, CloseListener
 	}
 	
 	@Override
-	public void insertTrackAt(String listName, Track track, int trackPosition) throws ListException
+	public void insertTrackAt(String listName, DbTrack track, int trackPosition) throws ListException
 	{		
-		if(track.index == -1)
+		if(track.getIndex() == -1)
 			throw new ListException("Track nicht in Hauptliste");
 		synchronized(conn)
 		{
@@ -995,7 +1005,7 @@ public class DerbyDB implements IData, CloseListener
 				}
 
 				//System.out.println("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(" + listIndex + ", " + track.index + ", " + trackPosition + ")");
-				executeUpdate("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)", listIndex, track.index, trackPosition);
+				executeUpdate("INSERT INTO LISTS_CONTENT (LIST, INDEX, POSITION) VALUES(?, ?, ?)", listIndex, track.getIndex(), trackPosition);
 				conn.commit();
 			}
 			
@@ -1103,7 +1113,7 @@ public class DerbyDB implements IData, CloseListener
 		return original.toLowerCase(Locale.ENGLISH).replace('ä', 'a').replace('ö', 'o').replace('ü', 'u').replace('ß', 's');
 	}
 	
-	short problemToShort(Track.Problem problem)
+	short problemToShort(DbTrack.Problem problem)
 	{
 		switch(problem)
 		{
@@ -1119,18 +1129,18 @@ public class DerbyDB implements IData, CloseListener
 		}
 	}
 	
-	Track.Problem shortToProblem (short number)
+	DbTrack.Problem shortToProblem (short number)
 	{
 		switch(number)
 		{
 		case 0:
-			return Track.Problem.NONE;
+			return DbTrack.Problem.NONE;
 		case 1:
-			return Track.Problem.FILE_NOT_FOUND;
+			return DbTrack.Problem.FILE_NOT_FOUND;
 		case 2:
-			return Track.Problem.CANT_PLAY;
+			return DbTrack.Problem.CANT_PLAY;
 		default:
-			return Track.Problem.OTHER;
+			return DbTrack.Problem.OTHER;
 		}
 	}
 	

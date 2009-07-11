@@ -2,18 +2,44 @@ package gui;
 
 import gui.dnd.ForeignDrop;
 import gui.dnd.ListDropMode;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.DropMode;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import players.IPlayer;
 import players.PlayStateAdapter;
 import players.PlayStateListener;
+import common.DbTrack;
 import common.Track;
 import data.IData;
 import data.SettingException;
 import basics.Controller;
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.TrayIcon.MessageType;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
@@ -686,7 +712,7 @@ public class ClassicWindow extends JFrame
 				public void run()
 				{
 					if(playingCurrent != null)
-						ClassicWindow.this.setTitle(playingCurrent.name + "   -   PartyDJ");
+						ClassicWindow.this.setTitle(playingCurrent.getName() + "   -   PartyDJ");
 					else
 						ClassicWindow.this.setTitle("PartyDJ");
 				}});
@@ -771,7 +797,7 @@ public class ClassicWindow extends JFrame
 			if(!Boolean.parseBoolean(data.readSetting("SYSTEM_TRAY", "true")))
 				return;
 			if(player.getCurrentTrack() != null)
-				info = player.getCurrentTrack().name;
+				info = player.getCurrentTrack().getName();
             trayIcon.setToolTip(info == null ? "PartyDJ" : info);
 			initPopUp();
 		}
@@ -785,15 +811,17 @@ public class ClassicWindow extends JFrame
 	        name.setEnabled(false);
 	        popup.add(name);
 	        popup.addSeparator();
-	        
+
 	        try
 	        {
-	            if(player.getCurrentTrack() != null)
+	            if(player.getCurrentTrack() != null && player.getCurrentTrack() instanceof DbTrack)
 	            {
+	            	final DbTrack dbTrack = (DbTrack)player.getCurrentTrack();
+	            	
 					final DbClientListModel playlist = listProvider.getDbList("Playlist");
 					MenuItem wish = new MenuItem();
 	
-					if(playlist.getIndex(player.getCurrentTrack()) < 0)
+					if(playlist.getIndex(dbTrack) < 0)
 						wish.setLabel("Lied auf Playlist setzen");
 					else
 						wish.setLabel("Lied von Playlist entfernen");
@@ -805,10 +833,10 @@ public class ClassicWindow extends JFrame
 						{
 							try
 							{
-								if(playlist.getIndex(player.getCurrentTrack()) < 0)
-									playlist.add(player.getCurrentTrack());
+								if(playlist.getIndex(dbTrack) < 0)
+									playlist.add(dbTrack);
 								else
-									playlist.remove(playlist.getIndex(player.getCurrentTrack()));
+									playlist.remove(playlist.getIndex(dbTrack));
 								init();
 							}
 							catch (ListException e1){e1.printStackTrace();}
@@ -919,7 +947,7 @@ public class ClassicWindow extends JFrame
 			if(!Boolean.parseBoolean(data.readSetting("SYSTEM_TRAY", "true")))
 				return;
 			if(Boolean.parseBoolean(data.readSetting("TOOLTIP", "true")))
-				trayIcon.displayMessage(null, playingCurrent.name, MessageType.NONE);
+				trayIcon.displayMessage(null, playingCurrent.getName(), MessageType.NONE);
 			init();
 		}
 		@Override

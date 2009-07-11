@@ -3,12 +3,9 @@ package common;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Serializable;
-import data.IData;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
-import lists.ListException;
 import players.PlayerException;
 import basics.Controller;
 
@@ -20,28 +17,18 @@ import basics.Controller;
  */
 public class Track implements Serializable, Comparable<Track>
 {
-	private static final long serialVersionUID = -4142764593365608567L;
+	private static final long serialVersionUID = -7621302519719815302L;
 
-	/** Index in der Hauptliste */
-	public int index;
-	/** Absoluter Pfad der Datei */
-	public String path;
-	/** Angezeigter Name */
-	public String name;
-	/** Dauer des Tracks */
-	public double duration;
-	/** Größe der Datei */
-	public long size;
-	/** Bekannte Probleme mit dem Track */
-	public Problem problem;
-	/** Beliebige Info über den Track */
-	public String info;
+	protected transient final Controller controller = Controller.getInstance(); 
 	
-	/** File-Objekt */
-	private File file;
+	protected String name;
+	protected String info;
+	protected File file;
+	protected double duration;
+	protected long size;
+	protected Problem problem;
 	
 	/**Erstellt einen neuen Track mit den angegebenen Werten.
-	 * @param index Index in der Hauptliste.
 	 * @param path Pfad der Datei.
 	 * @param name Angezeigter Name.
 	 * @param duration Dauer in Sekunden.
@@ -49,10 +36,8 @@ public class Track implements Serializable, Comparable<Track>
 	 * @param problem Problem mit dem Track.
 	 * @param info Zusätzliche Info.
 	 */
-	public Track(int index, String path, String name, double duration, long size, Problem problem, String info)
+	public Track(String path, String name, double duration, long size, Problem problem, String info)
 	{
-		this.index = index;
-		this.path = path;
 		this.name = name;
 		this.duration = duration;
 		this.size = size;
@@ -70,14 +55,7 @@ public class Track implements Serializable, Comparable<Track>
 	public Track(String filePath, boolean readDuration)
 	{
 		file = new File(filePath);
-		try
-		{
-			filePath = file.getCanonicalPath();
-		}
-		catch (IOException ignore){}
 		
-		index = -1;
-		path = filePath;
 		name = file.getName();
 		name = name.substring(0, name.lastIndexOf('.'));
 		problem = Problem.NONE;
@@ -87,7 +65,7 @@ public class Track implements Serializable, Comparable<Track>
 			{
 				try
 				{
-					duration = Controller.getInstance().getPlayer().getDuration(path);
+					duration = controller.getPlayer().getDuration(file);
 				}
 				catch (PlayerException ignore)
 				{
@@ -104,10 +82,89 @@ public class Track implements Serializable, Comparable<Track>
 		info = null;
 	}
 	
+	/** @return Angezeigter Name. */
+	public String getName()
+	{
+		return name;
+	}
+	/** @param name Angezeigter Name. */
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	/** @return Beliebige Info über den Track. */
+	public String getInfo()
+	{
+		return info;
+	}
+	/** @param info Beliebige Info über den Track. */
+	public void setInfo(String info)
+	{
+		this.info = info;
+	}
+	
+	/** @return Pfad der Datei die dieser AudioTrack wiederspiegelt. */
+	public String getPath()
+	{
+		return file.getAbsolutePath();
+	}
+	/** @param path Pfad der Datei die dieser AudioTrack wiederspiegelt. */
+	public void setPath(String path)
+	{
+		this.file = new File(path);
+	}
+	
+	/** @return Dauer des Tracks in Sekunden. */
+	public double getDuration()
+	{
+		return duration;
+	}
+	/** @param duration Dauer des Tracks in Sekunden. */
+	public void setDuration(double duration)
+	{
+		this.duration = duration;
+	}
+	
+	/** @return Größe der Datei in Byte. */
+	public long getSize()
+	{
+		return size;
+	}
+	/** @param size Größe der Datei in Byte. */
+	public void setSize(long size)
+	{
+		this.size = size;
+	}
+	
+	/** @return Bekannte Probleme mit dem Track. */
+	public Problem getProblem()
+	{
+		return problem;
+	}
+	/** @param problem Bekannte Probleme mit dem Track. */
+	public void setProblem(Problem problem)
+	{
+		this.problem = problem;
+	}
+	
 	@Override
 	public String toString()
 	{
 		return name;
+	}
+
+	/** Spielt den Track ab. */
+	public void play()
+	{
+		try
+		{
+			controller.getPlayer().start(this);
+		}
+		catch (PlayerException e)
+		{
+			controller.logError(Controller.REGULAR_ERROR, this, e, "Track konnte nicht abgespielt werden.");
+		}
 	}
 	
 	@Override
@@ -119,63 +176,57 @@ public class Track implements Serializable, Comparable<Track>
 	}
 	
 	@Override
+	public int compareTo(Track o)
+	{
+		return file.compareTo(o.file);
+	}
+	
+	@Override
 	public int hashCode()
 	{
 		return file.hashCode();
 	}
 	
-	@Override
-	public int compareTo(Track o)
+	public Problem checkForProblem()
 	{
-		if(o == null)
-			throw new NullPointerException();
-		return file.compareTo(o.file);
-	}
-	
-	public Problem hasProblem()
-	{
-		Problem prob = null;
-		IData data = Controller.getInstance().getData();
-		boolean exists = new File(path).exists();
+		Problem prob = Problem.NONE;
+		boolean exists = file.exists();
 		if(!exists)
 		{
 			prob = Problem.FILE_NOT_FOUND;
 		}
 		else
 		{
+			//TODO Diese Version ist Player-Spezifisch.
 			FileInputStream fis = null;
 			try
 			{
-				fis = new FileInputStream(path);
+				fis = new FileInputStream(file);
+				
+				Bitstream bs = new Bitstream(fis);
+				
+				try
+				{
+					for(int i = 0; i < 16; i++)
+						bs.readFrame();
+				}
+				catch (BitstreamException e)
+				{
+					prob = Problem.CANT_PLAY;
+				}
 			}
-			catch (FileNotFoundException impossible){}
-			Bitstream bs = new Bitstream(fis);
-			
-			try
+			catch (FileNotFoundException impossible)
 			{
-				for(int i = 0; i < 16; i++)
-					bs.readFrame();
-				prob = Problem.NONE;
+				prob = Problem.OTHER;
 			}
-			catch (BitstreamException e)
-			{
-				prob = Problem.CANT_PLAY;
-			}
+
 		}
 		
 		if(problem == prob)
 			return problem;
-		problem = prob;
 		
-		try
-		{
-			data.updateTrack(this, TrackElement.PROBLEM);
-		}
-		catch (ListException le)
-		{
-			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, le, "Update eines Tracks fehlgeschlagen");
-		}
-		return problem;
+		setProblem(prob);
+		return prob;
 	}
 	
 	/**Stellt ein Problem mit einem Track dar.
@@ -228,20 +279,6 @@ public class Track implements Serializable, Comparable<Track>
 				return OTHER;
 			}
 		}
-	}
-	
-	/**Wählt ein Element aus dem Track aus.
-	 * 
-	 * @author Eraser
-	 */
-	public enum TrackElement
-	{
-		PATH,
-		NAME,
-		DURATION,
-		SIZE,
-		PROBLEM,
-		INFO;
 	}
 }
 

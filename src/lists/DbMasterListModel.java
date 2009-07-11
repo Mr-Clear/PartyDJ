@@ -1,9 +1,10 @@
 package lists;
 
+import java.util.ArrayList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import common.*;
-
+import common.DbTrack;
+import common.Track;
 import basics.Controller;
 
 /**
@@ -18,11 +19,11 @@ public class DbMasterListModel extends BasicListModel
 {
 	protected DbMasterListModel() throws ListException 
 	{
-		super(Controller.getInstance().getData().readList(null, null, data.SortOrder.NAME));
+		super(new ArrayList<Track>(Controller.getInstance().getData().readList(null, null, data.SortOrder.NAME)));
 	}
 
 	@Override
-	public void trackAdded(Track track)
+	public void trackAdded(DbTrack track)
 	{
 		list.add(track);
 		for(ListDataListener listener : dataListener)
@@ -30,7 +31,7 @@ public class DbMasterListModel extends BasicListModel
 	}
 
 	@Override
-	public void trackDeleted(Track track)
+	public void trackDeleted(DbTrack track)
 	{
 		synchronized(list)
 		{
@@ -40,12 +41,14 @@ public class DbMasterListModel extends BasicListModel
 				{
 					list.remove(i--); // Gelöschten Index zurück gehen.
 					for(ListDataListener listener : dataListener)
-						listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, track.index, track.index));
+						listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, track.getIndex(), track.getIndex()));
 				}
 			}
 		}	
 	}
 
+
+	@Override
 	public int getIndex(Track track)
 	{
 		for(int i = 0; i < getSize(); i++)
@@ -57,13 +60,11 @@ public class DbMasterListModel extends BasicListModel
 	}
 	
 	// Verschieben zum ListProvider
-	public Track getTrackByPath(String path)
+	public DbTrack getTrackByPath(String path)
 	{
 		for(Track track : list)
-		{
-			if(track.path.equals(path))
-				return track;
-		}
+			if(track.getPath().equals(path))
+				return (DbTrack)track;
 		return null;
 	}
 }

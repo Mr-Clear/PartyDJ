@@ -106,7 +106,7 @@ public class TestWindow extends JFrame
 		controller.getPlayer().addPlayStateListener(new PlayStateAdapter(){
 			@Override public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
 			{
-				setTitle(playingCurrent.name);			
+				setTitle(playingCurrent.getName());			
 			}});
 				
 		setVisible(true);

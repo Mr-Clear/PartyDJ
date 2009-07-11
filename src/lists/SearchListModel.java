@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import basics.Controller;
+import common.DbTrack;
 import common.Track;
 import data.SortOrder;
 
@@ -73,7 +74,7 @@ public class SearchListModel extends BasicListModel
 		int maxSize = getSize();
 		if(actualSearchString == null || actualSearchString.length() > 0)
 		{
-			list = Controller.getInstance().getData().readList(actualDbList, actualSearchString, actualSortOrder);
+			list = new ArrayList<Track>(Controller.getInstance().getData().readList(actualDbList, actualSearchString, actualSortOrder));
 			
 			if(list.size() > maxSize)
 			maxSize = list.size();
@@ -90,7 +91,7 @@ public class SearchListModel extends BasicListModel
 	}
 
 	@Override
-	public void trackAdded(Track track)
+	public void trackAdded(DbTrack track)
 	{
 		try
 		{
@@ -103,7 +104,7 @@ public class SearchListModel extends BasicListModel
 		}
 	}
 	@Override
-	public void trackDeleted(Track track)
+	public void trackDeleted(DbTrack track)
 	{
 		trackAdded(track);
 	}

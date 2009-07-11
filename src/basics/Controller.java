@@ -23,7 +23,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import players.IPlayer;
 import players.PlayerException;
 import common.*;
-import lists.DbClientListModel;
 import lists.EditableListModel;
 import lists.ListException;
 import lists.ListProvider;
@@ -54,7 +53,7 @@ public class Controller
 	/** Wunschliste aus derimmer der oberste Track gespielt und dabei gelöscht wird. */ 
 	protected EditableListModel playList;
 	/** Liste der zuletzt gespielten lieder. Hat maximal 100 Einträge */
-	protected DbClientListModel lastPlayedList;
+	protected EditableListModel lastPlayedList;
 	/** Zugriff auf Listen */
 	protected ListProvider listProvider;
 	/** Verwendeter Player */
@@ -69,7 +68,7 @@ public class Controller
 	/** Timer der im regelmäßigen Abstand die Dauer der Tracks aus trackUpdateStack einliest. */
 	protected Timer trackUpdateTimer; 
 	/** Stapel mit Liedern deren Dauer eingelesen werden soll. */
-	final protected Stack<Track> trackUpdateStack = new Stack<Track>();
+	final protected Stack<DbTrack> trackUpdateStack = new Stack<DbTrack>();
 	/** Wird am Ende des Konstruktors auf true gesetzt. */
 	protected boolean loadFinished = false;
 	protected final Scripter scripter;
@@ -104,7 +103,6 @@ public class Controller
 		
 		splash.setInfo("Lade Look And Feel");
 		{
-			//TODO an Anfang von Kontruktor setzen, ohne dass das ClassicWindow bäh aussieht.
 			//UI
 			try
 			{
@@ -258,14 +256,14 @@ public class Controller
 			{
 				firstTrackPath = data.readSetting("Playing");
 			}
-			catch (SettingException e1){logError(UNIMPORTANT_ERROR, this, e1, "data.readSetting(\"Playing\")");}
+			catch (SettingException e){logError(UNIMPORTANT_ERROR, this, e, "data.readSetting(\"Playing\")");}
 			if(firstTrackPath != null)
 			{
-				Track firstTrack = null;
+				DbTrack firstTrack = null;
 				firstTrack = listProvider.getMasterList().getTrackByPath(firstTrackPath);
 				if(firstTrack != null)
 				{
-					splash.setInfo("Starte " + firstTrack.name);
+					splash.setInfo("Starte " + firstTrack.getName());
 					try
 					{
 						double pos = 0;
@@ -288,7 +286,7 @@ public class Controller
 				}
 			}
 		}
-
+		
 		splash.setInfo("Lade Plugins");
 		{
 			try
@@ -385,7 +383,7 @@ public class Controller
 	 * Damit wird die länge des Tracks eingelesen, sobald er an der Reihe ist.
 	 * @param track Track dessen Dauer eingelesen werden soll.
 	 */
-	public void pushTrackToUpdate(Track track)
+	public void pushTrackToUpdate(DbTrack track)
 	{
 		trackUpdateStack.push(track);
 		
@@ -559,7 +557,7 @@ public class Controller
 		final int minimumShowException = IMPORTANT_ERROR;
 		
 		final java.text.SimpleDateFormat dateFormater = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-		
+
 		if(logStream == null)
 		{
 			try
@@ -568,7 +566,7 @@ public class Controller
 				logStream = new java.io.PrintWriter(new FileWriter(logFileName));
 				logStream.println("--------------");
 				logStream.println("New Session...");
-				System.out.println("Fehler werden gespeichert in " + logFileName);
+				System.out.println("Fehler werden gespeichert in " + logFileName + ".");
 			}
 			catch (IOException e)
 			{

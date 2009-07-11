@@ -26,8 +26,8 @@ public class TrackSelection implements Transferable
 		this.trackArray = trackArray;
 		for(Track track : trackArray)
 		{
-			files.add(new File(track.path));
-			names.add(track.name);
+			files.add(new File(track.getPath()));
+			names.add(track.getName());
 		}
 	}
 	

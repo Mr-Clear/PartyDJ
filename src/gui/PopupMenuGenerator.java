@@ -19,11 +19,11 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileFilter;
-import players.PlayerException;
 import basics.Controller;
 import lists.DbMasterListModel;
 import lists.EditableListModel;
 import lists.ListException;
+import common.DbTrack;
 import common.PlaylistWriter;
 import common.Sort;
 import common.SortMode;
@@ -172,30 +172,24 @@ class ListMenuItemListener implements ActionListener
 		String command = e.getActionCommand();
 		
 		if(command.equals("Play"))
-			try
-			{
-				Controller.getInstance().getPlayer().start(track);
-			}
-			catch (PlayerException e2)
-			{
-				e2.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Track kann nicht wiedergegeben werden:\n" + track, "PartyDJ", JOptionPane.ERROR_MESSAGE);
-			}
+			track.play();
 		else if(command.equals("Edit"))
 			new EditTrackWindow(track);
 		
 		else if(command.equals("DeleteFromMasterList"))
 		{
+			if(!(track instanceof DbTrack))
+				return;
 			if(JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(null, "Track wirklich vollständig aus PartyDJ entfernen?", "PartyDJ", JOptionPane.YES_NO_OPTION))
 				return;
 			try
 			{
-				Controller.getInstance().getData().deleteTrack(track);
+				Controller.getInstance().getData().deleteTrack((DbTrack)track);
 			}
 			catch (ListException e1)
 			{
 				e1.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Track konnte nicht entfernt werden:\n" + track.name + "\n\n" + e1.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Track konnte nicht entfernt werden:\n" + track.getName() + "\n\n" + e1.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 			}
 		}		
 		else if(command.equals("Delete"))
@@ -211,7 +205,7 @@ class ListMenuItemListener implements ActionListener
 				catch (ListException e1)
 				{
 					e1.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Track konnte nicht entfernt werden:\n" + track.name + "\n\n" + e1.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Track konnte nicht entfernt werden:\n" + track.getName() + "\n\n" + e1.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
 				}	
 		}
 		
@@ -271,6 +265,7 @@ class ListMenuItemListener implements ActionListener
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected void save()
 	{
 		class FormatFiler extends FileFilter
@@ -306,10 +301,10 @@ class ListMenuItemListener implements ActionListener
 				String filePath = chooser.getSelectedFile().getPath();
 				if(chooser.getSelectedFile().getName().indexOf('.') == -1)
 					filePath += format.extension;
-				PlaylistWriter.write(list.getListModel(), filePath, format);
+				PlaylistWriter.write((Iterable<Track>) list.getListModel(), filePath, format);
 			}
 			else
-				PlaylistWriter.write(list.getListModel(), chooser.getSelectedFile().getPath());
+				PlaylistWriter.write((Iterable<Track>) list.getListModel(), chooser.getSelectedFile().getPath());
 		}
 	}
 }

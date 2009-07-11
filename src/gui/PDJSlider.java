@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
+import common.DbTrack;
 import common.Track;
 import data.IData;
 import data.ListAdapter;
@@ -157,8 +158,8 @@ public class PDJSlider extends JPanel
 							if(currentTrack != playingCurrent)
 							{
 								currentTrack = playingCurrent;
-								titel.setText(playingCurrent.name);
-								setDuration(playingCurrent.duration);
+								titel.setText(playingCurrent.getName());
+								setDuration(playingCurrent.getDuration());
 							}
 						}
 						else
@@ -178,21 +179,21 @@ public class PDJSlider extends JPanel
 					}});
 		
 		data.addListListener(new ListAdapter(){
-			@Override public void trackChanged(Track track)
+			@Override public void trackChanged(DbTrack track)
 			{
-				if(track == currentTrack)
+				if(track.equals(currentTrack))
 				{
-					if(duration != track.duration)
+					if(duration != track.getDuration())
 					{
-						setDuration(track.duration);
+						setDuration(track.getDuration());
 					}
-					titel.setText(track.name);
+					titel.setText(track.getName());
 				}			
 			}});
 		
 		currentTrack = player.getCurrentTrack();
 		if(currentTrack != null)
-			titel.setText(currentTrack.name);
+			titel.setText(currentTrack.getName());
 		setDuration(player.getDuration());
 		setPosition(player.getPosition());
 	}

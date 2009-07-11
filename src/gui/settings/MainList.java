@@ -23,6 +23,7 @@ import lists.ListException;
 import lists.SearchListModel;
 import basics.Controller;
 import com.jgoodies.forms.layout.*;
+import common.DbTrack;
 import common.Track;
 import data.IData;
 import data.ListAdapter;
@@ -90,16 +91,7 @@ public class MainList extends JPanel
 		        }
 		        else
 			    {
-					Track track = new Track(filePath, true);
-					
-					try
-					{
-						data.addTrack(track);
-					}
-					catch (ListException e)
-					{
-						JOptionPane.showMessageDialog(null, "Einfügen fehlgeschlagen:\n" + e.getMessage(), "Datei einfügen", JOptionPane.ERROR_MESSAGE);
-					}
+					new DbTrack(filePath, true);
 			    }
 			}});
 		
@@ -321,7 +313,7 @@ public class MainList extends JPanel
 		for(int i = 0; i < listModel.getSize(); i++)
 		{
 			if(listModel.getElementAt(i) instanceof Track)
-				playTime += ((Track)listModel.getElementAt(i)).duration;
+				playTime += ((Track)listModel.getElementAt(i)).getDuration();
 				
 		}
 		return playTime;
@@ -332,7 +324,7 @@ public class MainList extends JPanel
 		int playTime = 0;
 		for(Track tr : tracks)
 		{
-			playTime += tr.duration;
+			playTime += tr.getDuration();
 		}
 		return playTime;
 	}
@@ -349,24 +341,24 @@ public class MainList extends JPanel
 		}
 
 		@Override
-		public void trackAdded(Track track)
+		public void trackAdded(DbTrack track)
 		{
-			mainPlayTime += track.duration;
+			mainPlayTime += track.getDuration();
 			completeDuration.setText("Gesamtspieldauer: " + common.Functions.formatTime(mainPlayTime));
 			completeDuration.repaint();
 		}
 
 		@Override
-		public void trackChanged(Track track)
+		public void trackChanged(DbTrack track)
 		{
 			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
-		public void trackDeleted(Track track)
+		public void trackDeleted(DbTrack track)
 		{
-			mainPlayTime -= track.duration;
+			mainPlayTime -= track.getDuration();
 			completeDuration.setText("Gesamtspieldauer: " + common.Functions.formatTime(mainPlayTime));
 			completeDuration.repaint();
 		}

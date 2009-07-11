@@ -3,14 +3,13 @@ package basics;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import javax.swing.JOptionPane;
 import lists.DbClientListModel;
 import lists.ListException;
 import players.PlayStateListener;
 import players.PlayerException;
 import common.Track;
+import common.DbTrack;
 import common.Track.Problem;
-import common.Track.TrackElement;
 import data.IData;
 import data.SettingException;
 
@@ -159,7 +158,8 @@ class PlayerListener implements PlayerContact, PlayStateListener
 		{
 			controller.lastPlayedList.remove(controller.lastPlayedList.getSize() - 1);
 			controller.lastPlayedList.remove(controller.lastPlayedList.getSize() - 1);
-			controller.playList.add(0, controller.getPlayer().getCurrentTrack());
+			if(controller.getPlayer().getCurrentTrack() instanceof DbTrack)
+				controller.playList.add(0, controller.getPlayer().getCurrentTrack());
 		}
 		catch (ListException e)
 		{
@@ -176,39 +176,20 @@ class PlayerListener implements PlayerContact, PlayStateListener
 	@Override
 	public void reportProblem(final PlayerException e, final Track track)
 	{
-		track.problem = e.problem;
-		Thread t = new Thread(){
-			@Override public void run()
-			{
-				JOptionPane.showMessageDialog(null, "Fehler beim Abspielen:\n" + track.name + "\n\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
-			}
-		};
-		t.start();
+		track.setProblem(e.problem);
+		controller.logError(Controller.REGULAR_ERROR, this, e, "Fehler beim Abspielen");
+		controller.getPlayer().playNext();
 	}
 
 	@Override
 	public void trackDurationCalculated(Track track, double duration)
 	{
-		if(duration > 0 && track.problem != Problem.NONE)
+		if(duration > 0)
 		{
-			track.problem = Problem.NONE;
-			try
-			{
-				data.updateTrack(track, TrackElement.PROBLEM);
-			}
-			catch (ListException e){}
+			track.setProblem(Problem.NONE);
 		}
 		
-		if(track.duration != duration)
-		{
-			track.duration = duration;
-			try
-			{
-				data.updateTrack(track, TrackElement.DURATION);
-			}
-			catch (ListException e){}
-		}
-		
+		track.setDuration(duration);
 	}
 
 	//--- PlayStateListener
@@ -221,22 +202,15 @@ class PlayerListener implements PlayerContact, PlayStateListener
 			{
 				try
 				{
-					data.writeSetting("Playing", playingCurrent.path);
+					data.writeSetting("Playing", playingCurrent.getPath());
 				}
 				catch (SettingException e){}
 				
-				if(playingCurrent.duration == 0)
+				if(playingCurrent.getDuration() == 0)
 					controller.player.getDuration();
 				
-				if(playingCurrent.duration > 0 && playingCurrent.problem != Problem.NONE)
-				{
-					playingCurrent.problem = Problem.NONE;
-					try
-					{
-						data.updateTrack(playingCurrent, TrackElement.PROBLEM);
-					}
-					catch (ListException e){}
-				}
+				if(playingCurrent.getDuration() > 0)
+					playingCurrent.setProblem(Problem.NONE);
 			}
 			
 			if(playedLast != null && reason != Reason.RECEIVED_BACKWARD)
@@ -245,7 +219,10 @@ class PlayerListener implements PlayerContact, PlayStateListener
 				{
 					while(controller.lastPlayedList.getSize() > 100)
 						controller.lastPlayedList.remove(0);
-					controller.lastPlayedList.add(controller.lastPlayedList.getSize(), playingCurrent);
+					if(playingCurrent instanceof DbTrack)
+					{
+						controller.lastPlayedList.add(controller.lastPlayedList.getSize(), playingCurrent);
+					}
 				}
 				catch (ListException e)
 				{

@@ -387,7 +387,7 @@ public class PlaylistWriter
 				pw.print(',');
 				pw.println(track.name);
 			}
-			pw.println(track.path);
+			pw.println(track.getPath());
 		}
 	}
 	
@@ -413,7 +413,7 @@ public class PlaylistWriter
 			pw.print("File");
 			pw.print(i);
 			pw.print('=');
-			pw.println(track.path);
+			pw.println(track.getPath());
 			
 			pw.print("Title");
 			pw.print(i);

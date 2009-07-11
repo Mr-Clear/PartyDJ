@@ -13,6 +13,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import basics.Controller;
+import common.DbTrack;
 import common.Track;
 
 /**
@@ -27,7 +28,7 @@ public class TrackRenderer extends DefaultListCellRenderer
 {
 	private static final long serialVersionUID = 1791058448796268655L;
 	private int fontSize = 22;
-	
+
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus)
 	{
@@ -38,9 +39,13 @@ public class TrackRenderer extends DefaultListCellRenderer
 
 		Track track = (Track)value;
 
-		/// Liest Track-Dauer automatisch ein. Deaktiviert da JList so lang mit Update braucht und Player ein Speicherleck hat.
-		if(track.duration == 0 && track.problem == Track.Problem.NONE)
-			Controller.getInstance().pushTrackToUpdate(track); //*/
+		// Liest Track-Dauer automatisch ein.
+		if(track instanceof DbTrack)
+		{
+			DbTrack dbTrack = (DbTrack)track;
+			if(dbTrack.getDuration() == 0 && dbTrack.getProblem() == DbTrack.Problem.NONE)
+				Controller.getInstance().pushTrackToUpdate(dbTrack); 
+		}
 		
 		TrackRenderer.TrackListCellRendererComponent cell = new TrackListCellRendererComponent(list, track, index, isSelected, cellHasFocus);
 		return cell;
@@ -88,7 +93,7 @@ public class TrackRenderer extends DefaultListCellRenderer
 		protected void init(final JList list, final Track track, @SuppressWarnings("unused") int index, final boolean isSelected, final boolean cellHasFocus)
 		{
 			JLabel titel = new JLabel();
-			JLabel duration = new JLabel();	
+			JLabel duration = new JLabel();
 			
 			me.setBackground(list.getBackground());
 			GridBagConstraints c = new GridBagConstraints();
@@ -97,7 +102,8 @@ public class TrackRenderer extends DefaultListCellRenderer
 			duration.setOpaque(true);
 			
 			titel.setText(track.toString());
-			duration.setText(common.Functions.formatTime(track.duration));
+			if(track.getDuration() >= 0)
+				duration.setText(common.Functions.formatTime(track.getDuration()));
 			
 			titel.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, fontSize));
 			duration.setFont(new Font(list.getFont().getFontName(), Font.PLAIN, fontSize));
@@ -118,12 +124,13 @@ public class TrackRenderer extends DefaultListCellRenderer
 			}
 			
 			Track currentTrack = Controller.getInstance().getPlayer().getCurrentTrack();
-			if(currentTrack != null && currentTrack.index == track.index)
+			if(currentTrack != null && currentTrack.equals(track))
 			{
 				titel.setForeground(new Color(64, 192, 255));
 				duration.setForeground(new Color(64, 192, 255));
 			}
-			if(track.problem != Track.Problem.NONE)
+			
+			if(track.getProblem() != Track.Problem.NONE)
 			{
 				titel.setForeground(Color.GRAY);
 				duration.setForeground(Color.GRAY);

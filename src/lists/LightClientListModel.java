@@ -25,17 +25,34 @@ public class LightClientListModel extends BasicListModel implements EditableList
 	{
 		super(new ArrayList<Track>());
 	}
-	
-	public LightClientListModel(List<Track> list)
+
+	public LightClientListModel(List<DbTrack> list)
 	{
-		super(list);
+		super(new ArrayList<Track>(list));
 	}
 	
-	public void add(Track track) throws ListException
+	/**Fügt einen Track zu der Liste hinzu.
+	 * 
+	 * @param track 
+	 * @throws ListException Kann von abgeleiteten Klasse geworfen werden.
+	 */
+	public void add(DbTrack track) throws ListException
 	{
 		list.add(track);
 		for(ListDataListener listener : dataListener)
 			listener.intervalAdded(new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, list.size(), list.size()));
+	}
+	
+	@Override
+	public void add(Track track) throws ListException
+	{
+		add(new DbTrack(track));
+	}
+
+	@Override
+	public void add(int index, Track track) throws ListException
+	{
+		add(index, new DbTrack(track));
 	}
 	
 	/**
@@ -46,7 +63,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 		list.add(listProvider.getTrackByIndex(trackIndex));
 	}
 
-	public void add(int index, Track track) throws ListException
+	public void add(int index, DbTrack track) throws ListException
 	{
 		if(index < 0)
 			index = 0;
@@ -94,7 +111,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 
 		synchronized(this)
 		{
-			add(toAdd, list.get(oldIndex));
+			add(toAdd, (DbTrack)list.get(oldIndex));
 			remove(toRemove);
 		}
 	}
@@ -113,10 +130,10 @@ public class LightClientListModel extends BasicListModel implements EditableList
 	}
 	
 	@Override
-	public void trackAdded(Track track)	{} // Erst interesant, wenn der Track in diese Liste eingefügt wird. 
+	public void trackAdded(DbTrack track)	{} // Erst interesant, wenn der Track in diese Liste eingefügt wird. 
 	
 	@Override
-	public void trackDeleted(Track track)
+	public void trackDeleted(DbTrack track)
 	{
 		synchronized(list)
 		{
@@ -128,7 +145,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 					{
 						this.remove(i--); // Gelöschten Index zurück gehen.
 						for(ListDataListener listener : dataListener)
-							listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, track.index, track.index));
+							listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, track.getIndex(), track.getIndex()));
 					}
 					catch (ListException e)
 					{

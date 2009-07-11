@@ -7,6 +7,7 @@ import basics.Controller;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitypeConstants;
+import common.DbTrack;
 
 public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 {
@@ -75,16 +76,19 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 			player.setVolume(player.getVolume() - 10);
 		else if(action.equalsIgnoreCase("SET_ON_PLAYLIST"))
 		{
-			try
+			if(player.getCurrentTrack() instanceof DbTrack)
 			{
-				lists.DbClientListModel wishList = Controller.getInstance().getListProvider().getDbList("Playlist");
-				if(wishList.getIndex(player.getCurrentTrack()) == -1)
-					wishList.add(player.getCurrentTrack());
-			}
-			catch (ListException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				DbTrack dbTrack = (DbTrack)player.getCurrentTrack();
+				try
+				{
+					lists.DbClientListModel wishList = Controller.getInstance().getListProvider().getDbList("Playlist");
+					if(wishList.getIndex(dbTrack) == -1)
+						wishList.add(dbTrack);
+				}
+				catch (ListException e)
+				{
+					Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei kopieren des Tracks in die Playlist.");
+				}
 			}
 		}
 	}

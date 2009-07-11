@@ -3,7 +3,7 @@ package data;
 import java.util.List;
 import java.util.Map;
 import lists.ListException;
-import common.Track;
+import common.DbTrack;
 
 /**
  * Schnittstelle zur Datenbank-Anbindung.
@@ -53,7 +53,7 @@ public interface IData
 	 * @return Die Liste vom Typ java.util.Map<Integer, Track>.
 	 * @throws ListException
 	 */
-	Map<Integer, Track> readMasterList() throws ListException;
+	Map<Integer, DbTrack> readMasterList() throws ListException;
 	
 	/**Liest eine in der Datenbank gespeicherte Liste ein.
 	 * 
@@ -63,34 +63,33 @@ public interface IData
 	 * @return Die Liste vom Typ List<Track>.
 	 * @throws ListException
 	 */
-	List<Track> readList(String listName, String searchString, data.SortOrder order) throws ListException;
+	List<DbTrack> readList(String listName, String searchString, data.SortOrder order) throws ListException;
 	
 	/**Fügt einen Track zur Hauptliste hinzu.
 	 * 
 	 * @param track Der einzufügende Track.
-	 * @return Der Index des Tracks.
 	 * @throws ListException
 	 */
-	int addTrack(Track track) throws ListException;
+	void addTrack(DbTrack track) throws ListException;
 	/**Speichert die Änderungen im Track in der Datenbank
 	 * 
 	 * @param track Der Track der geupdated werden soll.
 	 * @throws ListException
 	 */
-	void updateTrack(Track track) throws ListException;
+	void updateTrack(DbTrack track) throws ListException;
 	/**Speichert die Änderung an einem Bestimten Wert im Track in der Datenbank
 	 * 
 	 * @param track Der Track der geupdated werden soll.
 	 * @param element Das Element das geupdatet werden soll.
 	 * @throws ListException
 	 */
-	void updateTrack(Track track, Track.TrackElement element) throws ListException;
+	void updateTrack(DbTrack track, DbTrack.TrackElement element) throws ListException;
 	/**Löscht einen Track aus der Hauptliste.
 	 * 
 	 * @param track Der zu löschende Track.
 	 * @throws ListException
 	 */
-	void deleteTrack(Track track) throws ListException;
+	void deleteTrack(DbTrack track) throws ListException;
 	
 	/**Fügt einen MasterListListener hinzu, der Änderungen an der Hauptliste empfängt.
 	 * 
@@ -171,7 +170,7 @@ public interface IData
 	 * @param track Track der eingefügt wird.
 	 * @throws ListException
 	 */
-	void insertTrack(String listName, Track track) throws ListException;
+	void insertTrack(String listName, DbTrack track) throws ListException;
 	/**Fügt einen Track in eine Liste an der angegebenen Stelle ein.
 	 * 
 	 * @param listName Name der Liste.
@@ -179,7 +178,7 @@ public interface IData
 	 * @param trackPosition Position des Tracks.
 	 * @throws ListException
 	 */
-	void insertTrackAt(String listName, Track track, int trackPosition) throws ListException;
+	void insertTrackAt(String listName, DbTrack track, int trackPosition) throws ListException;
 	/**Entfernt einen Track aus der Liste.
 	 * 
 	 * @param listName Name der Liste.

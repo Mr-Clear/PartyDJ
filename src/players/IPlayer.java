@@ -1,5 +1,6 @@
 package players;
 
+import java.io.File;
 import common.Track;
 import basics.PlayerContact;
 
@@ -54,6 +55,11 @@ public interface IPlayer
 	 * @return Dauer des Tracks in der angegebenen Datei in Sekunden.
 	 * @throws PlayerException */
 	double getDuration(String filePath) throws PlayerException;
+	/** Gibt die Dauer des Tracks in der angegebenen Datei zurück.
+	 * @param file Datei.
+	 * @return Dauer des Tracks in der angegebenen Datei in Sekunden.
+	 * @throws PlayerException */
+	double getDuration(File file) throws PlayerException;
 	/** Gibt den aktuellen Track zurück.
 	 * @return Aktueller Track.*/
 	Track getCurrentTrack();
