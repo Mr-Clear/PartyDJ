@@ -428,7 +428,7 @@ public class DerbyDB implements IData, CloseListener
 			}
 			catch(SQLException e)
 			{
-				throw new ListException(e);
+				index = -1;
 			}
 				
 			if(index == -1)

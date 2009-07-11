@@ -1,6 +1,6 @@
 #PartyDJ Revision Info
-#Sat Jul 11 20:04:21 CEST 2009
-SVNRevision=398
-SVNDate=2009-07-11 20\:01\:33
-SVNAuthor=Sam
-SVNMessage=Im TrackManager nicht scrollen
+#Sat Jul 11 20:56:02 CEST 2009
+SVNRevision=399
+SVNDate=2009-07-11 20\:56\:05
+SVNAuthor=Eraser
+SVNMessage=Sortieren nach Problem
