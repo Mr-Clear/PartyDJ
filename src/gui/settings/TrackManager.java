@@ -73,6 +73,7 @@ public class TrackManager extends javax.swing.JPanel implements CloseListener
 		initGUI();
 		this.parent = parent;
 		list = scrollList.getList();
+		list.setScrollToPlayedEnabled(false);
 		statusListener = new StatusListener();
 		scrollList.getList().addListSelectionListener(statusListener);
 		data.addListListener(statusListener);
@@ -307,7 +308,6 @@ public class TrackManager extends javax.swing.JPanel implements CloseListener
 			    .addComponent(scrollList, GroupLayout.Alignment.LEADING, 0, 576, Short.MAX_VALUE)
 			    .addComponent(lblStatus, GroupLayout.Alignment.LEADING, 0, 576, Short.MAX_VALUE))
 			.addContainerGap());
-
 	}
 	
 	@Override
@@ -316,7 +316,6 @@ public class TrackManager extends javax.swing.JPanel implements CloseListener
 		scrollList.getList().removeListSelectionListener(statusListener);
 		data.removeListListener(statusListener);
 		// TODO Auto-generated method stub
-		
 	}
 
 	private class ListParameterActionListener implements ActionListener

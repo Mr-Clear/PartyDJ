@@ -133,9 +133,8 @@ public class PDJList extends JList
 		dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, dgl);
 		
 		setAppearance(TrackListAppearance.getSimpleAppearance());
-		
-		if(scrollToPlayed)
-			scrollToPlayed(controller.getPlayer().getCurrentTrack());
+
+		scrollToPlayed(controller.getPlayer().getCurrentTrack());
 	}
 	
 	public void setScrollToPlayedEnabled(boolean b)
