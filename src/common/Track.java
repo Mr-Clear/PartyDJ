@@ -14,6 +14,7 @@ import basics.Controller;
  * <p>Die eigenschaften sind veränderlich.
  * 
  * @author Eraser
+ * @author Sam
  */
 public class Track implements Serializable, Comparable<Track>
 {
@@ -187,7 +188,7 @@ public class Track implements Serializable, Comparable<Track>
 		return file.hashCode();
 	}
 	
-	public Problem checkForProblem()
+	public Problem checkForProblem(boolean chekPlayable)
 	{
 		Problem prob = Problem.NONE;
 		boolean exists = file.exists();
@@ -195,7 +196,7 @@ public class Track implements Serializable, Comparable<Track>
 		{
 			prob = Problem.FILE_NOT_FOUND;
 		}
-		else
+		else if(chekPlayable)
 		{
 			//TODO Diese Version ist Player-Spezifisch.
 			FileInputStream fis = null;

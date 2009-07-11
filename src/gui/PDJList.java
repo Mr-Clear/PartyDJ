@@ -15,7 +15,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.lang.reflect.InvocationTargetException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JList;
@@ -57,32 +56,13 @@ public class PDJList extends JList
 	{
 		super(listModel);
 		this.listModel = listModel;
-		if(SwingUtilities.isEventDispatchThread())
-			initialise(ldMode, name);
-		else
-			try
-			{
-				SwingUtilities.invokeAndWait(new Runnable(){
-					@Override
-					public void run()
-					{
-						initialise(ldMode, name);
-					}});
-			}
-			catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (InvocationTargetException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		initialise(ldMode, name);
 	}
 
 	private void initialise(ListDropMode ldMode, String name)
 	{
+		Controller controller = Controller.getInstance();
+		
 		final DragDropHandler handler = new DragDropHandler();
 		
 		this.setName(name);
@@ -92,7 +72,7 @@ public class PDJList extends JList
 		this.setDragEnabled(true);
 		this.addMouseMotionListener(new DragMotionListener());
 		this.addMouseListener(new ClickListener());
-		Controller.getInstance().getPlayer().addPlayStateListener(new PlayerListenerForLists());
+		controller.getPlayer().addPlayStateListener(new PlayerListenerForLists());
 
 		
 		this.getInputMap().put(KeyStroke.getKeyStroke("ctrl X"),TransferHandler.getCutAction().getValue(Action.NAME));
@@ -151,7 +131,7 @@ public class PDJList extends JList
 		dragSource.addDragSourceListener(dgl);
 		dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, dgl);
 		
-		scrollToPlayed(Controller.getInstance().getPlayer().getCurrentTrack());
+		scrollToPlayed(controller.getPlayer().getCurrentTrack());
 	}
 	
 	public void setScrollToPlayedEnabled(boolean b)

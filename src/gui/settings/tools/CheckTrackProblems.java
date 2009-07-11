@@ -1,27 +1,24 @@
 package gui.settings.tools;
 
-import basics.Controller;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
-import players.PlayerException;
 import common.Track;
 
 /**
- * Liest die Dauer von Tracks ein.
+ * Prüft ob die Tracks funktionieren.
  * <br>Die Tracks werden im Konstruktor in einem Array übergeben.
- * <br>List die Dauer auch ein, wenn die Tracks bereits eine Dauer > 0 haben.
  * 
- * @author Eraser, Sam
+ * @author Eraser
  * 
  * @see StatusSupportedFunction
  * @see StatusDialog
  */
-public class ReadDuration implements StatusSupportedFunction
+public class CheckTrackProblems implements StatusSupportedFunction
 {
 	private boolean goOn = true;
 	private final Track[] list;
 	
-	public ReadDuration(Track[] list)
+	public CheckTrackProblems(Track[] list)
 	{
 		this.list = list;
 	}
@@ -43,11 +40,7 @@ public class ReadDuration implements StatusSupportedFunction
 				status.setLabel(track.getName());
 			}
 
-			try
-			{					
-				Controller.getInstance().getPlayer().getDuration(track);
-			}
-			catch (PlayerException e){}
+			track.checkForProblem(true);
 			
 			if(status != null)
 			{

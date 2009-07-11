@@ -1,5 +1,6 @@
 package lists;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,18 +19,31 @@ import data.ListAdapter;
  *
  * @see TrackListModel
  */
-abstract class BasicListModel extends ListAdapter implements TrackListModel, PlayStateListener
+public class BasicListModel extends ListAdapter implements TrackListModel, PlayStateListener
 {
-	private final Controller controller = Controller.getInstance();
+	private Controller controller;
 	protected final Set<ListDataListener> dataListener = new HashSet<ListDataListener>();
 	protected List<Track> list;
 	
+	public BasicListModel()
+	{
+		this(new ArrayList<Track>());
+	}
+	
 	public BasicListModel(List<Track> list)
 	{
-		assert Controller.getInstance() != null : "Controller nicht geladen!";
 		this.list = list;
-		controller.getPlayer().addPlayStateListener(this);
-		controller.getData().addListListener(this);
+		try
+		{
+			controller = Controller.getInstance();
+			controller.getPlayer().addPlayStateListener(this);
+			controller.getData().addListListener(this);
+		}
+		catch(Error e)
+		{
+			System.out.println(e);
+			controller = null;
+		}
 	}
 	
 	public int getSize()
@@ -69,7 +83,24 @@ abstract class BasicListModel extends ListAdapter implements TrackListModel, Pla
 			}
 		}
 	}
+	
+	public int getIndex(Track track)
+	{
+		for(int i = 0; i < getSize(); i++)
+		{
+			if(this.getElementAt(i).equals(track))
+				return i;
+		}
+		return -1;
+	}
+	
 	public void playStateChanged(boolean playState){}
 		
 	public void volumeChanged(int volume){}
+
+	@Override
+	public List<Track> getList()
+	{
+		return java.util.Collections.unmodifiableList(list);
+	}
 }

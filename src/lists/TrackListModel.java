@@ -1,5 +1,6 @@
 package lists;
 
+import java.util.List;
 import javax.swing.ListModel;
 import common.Track;
 
@@ -23,4 +24,7 @@ public interface TrackListModel extends ListModel
 	 * @param track Track.
 	 * @return Erste Position des Tracks.*/
 	public int getIndex(Track track);
+	
+	/**@return Die Daten im ListModel.*/
+	public List<Track> getList();
 }

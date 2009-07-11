@@ -1,10 +1,9 @@
 package gui;
 
-import java.lang.reflect.InvocationTargetException;
 import gui.dnd.ListDropMode;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
-import javax.swing.SwingUtilities;
+import lists.BasicListModel;
 import lists.TrackListModel;
 
 /**
@@ -18,52 +17,24 @@ public class PDJScrollList extends JScrollPane
 {
 	private static final long serialVersionUID = -3341295051902533709L;
 	private PDJList list;
-	private JScrollPane me = this;
+	
+	public PDJScrollList()
+	{
+		this(new BasicListModel());
+	}
 	
 	public PDJScrollList(TrackListModel listModel)
 	{
-		super();
-		initialise(listModel, ListDropMode.COPY_OR_MOVE, null);
+		this(listModel, ListDropMode.COPY_OR_MOVE, null);
 	}
 	
 	public PDJScrollList(TrackListModel listModel, ListDropMode ldMode, String name)
 	{
 		super();
-		initialise(listModel, ldMode, name);
-	}
-	
-	private void initialise(final TrackListModel listModel, final ListDropMode ldMode, final String name)
-	{
-		if(SwingUtilities.isEventDispatchThread())
-		{
-			list = new PDJList(listModel, ldMode, name);
-			setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
-			me.setViewportView(list);
-		}
-		else
-		{
-			try
-			{
-				SwingUtilities.invokeAndWait(new Runnable(){
-					@Override
-					public void run()
-					{
-						list = new PDJList(listModel, ldMode, name);
-						setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
-						me.setViewportView(list);
-					}});
-			}
-			catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (InvocationTargetException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		
+		list = new PDJList(listModel, ldMode, name);
+		setBorder(new javax.swing.border.EmptyBorder(0,0,0,0));
+		setViewportView(list);
 	}
 	
 	public PDJList getList()
