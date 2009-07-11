@@ -405,12 +405,22 @@ public class ClassicWindow extends JFrame
 		JPanel panel = new JPanel(new GridBagLayout());
 		JLabel label = new JLabel("Suche");
 		
-		textField.addMouseListener(new MouseAdapter(){
+		textField.addMouseListener(new MouseAdapter()
+		{
+			protected boolean markEverything;
 			@Override
 			public void mouseClicked(MouseEvent e)
 			{
-				textField.setSelectionStart(0);
-				textField.setSelectionEnd(textField.getText().length());
+				if(!markEverything)
+				{
+					textField.setSelectionStart(0);
+					textField.setSelectionEnd(textField.getText().length());
+				}
+			}
+			@Override
+			public void mousePressed(MouseEvent e)
+			{
+				markEverything = textField.hasFocus();
 			}});
 		
 		//DnD
