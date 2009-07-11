@@ -6,6 +6,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.ListModel;
 import javax.swing.TransferHandler;
 import basics.Controller;
@@ -29,7 +30,7 @@ public class DragDropHandler extends TransferHandler
 		
         return true;
 	}
-
+	
 	public synchronized boolean importData(PDJList list, Transferable transferable)
 	{
 		if (!transferable.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
@@ -101,46 +102,86 @@ public class DragDropHandler extends TransferHandler
 	public synchronized boolean importData(TransferHandler.TransferSupport info)
 	{
 		Object[] data = null;
-					
+		
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 		{
 			Controller.getInstance().logError(Controller.INERESTING_INFO, this, null, "Drop mit unsupported flavor.");
 			return false;
 		}
 	
-		PDJList pdjList = (PDJList)info.getComponent();
-		ListModel listModel = pdjList.getModel();
+		if(info.getComponent() instanceof PDJList)
+		{
+			PDJList pdjList = (PDJList)info.getComponent();
+			ListModel listModel = pdjList.getModel();
+			
+			try
+			{
+				data = (Object[])info.getTransferable().getTransferData(new DataFlavor(Track.class, "Track flavor"));
+			}
+			catch (UnsupportedFlavorException e)
+			{
+				Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e, "Drop mit unsupported flavor.");
+				return false;
+			}
+			catch (IOException e)
+			{
+				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Drop.");
+				return false;
+			}
+			
+			if(!info.isDrop()) 
+	        {
+					for(int i = data.length; i > 0; i--)
+					{
+						try
+						{
+							((EditableListModel)listModel).add((Track)data[i-1]);
+						}
+						catch (ListException e)
+						{
+							e.printStackTrace();
+						}
+					} 
+					return true;
+	        }
+		}
 		
-		try
+		else if(info.getComponent() instanceof JPanel)
 		{
-			data = (Object[])info.getTransferable().getTransferData(new DataFlavor(Track.class, "Track flavor"));
-		}
-		catch (UnsupportedFlavorException e)
-		{
-			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e, "Drop mit unsupported flavor.");
-			return false;
-		}
-		catch (IOException e)
-		{
-			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Drop.");
-			return false;
-		}
-		
-		if(!info.isDrop()) 
-        {
-				for(int i = data.length; i > 0; i--)
+			Track[] tracks;
+			try
+			{
+				tracks = (Track[]) info.getTransferable().getTransferData(new DataFlavor(Track.class, "Track flavor"));
+				
+				for(int i = 0; i < tracks.length; i++)
 				{
-					try
+					if(i == 0)
 					{
-						((EditableListModel)listModel).add((Track)data[i-1]);
+						tracks[0].play();
 					}
-					catch (ListException e)
-					{
-						e.printStackTrace();
-					}
-				} 
-				return true;
-        }
+					else
+						try
+						{
+							Controller.getInstance().getListProvider().getDbList("Wunschliste").add(tracks[i]);
+						}
+						catch (ListException e1)
+						{
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+				}
+			}
+			catch (UnsupportedFlavorException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return true;
 			
 	}

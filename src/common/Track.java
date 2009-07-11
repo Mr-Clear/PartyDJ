@@ -19,8 +19,6 @@ import basics.Controller;
 public class Track implements Serializable, Comparable<Track>
 {
 	private static final long serialVersionUID = -7621302519719815302L;
-
-	protected transient final Controller controller = Controller.getInstance(); 
 	
 	protected String name;
 	protected String info;
@@ -66,7 +64,7 @@ public class Track implements Serializable, Comparable<Track>
 			{
 				try
 				{
-					duration = controller.getPlayer().getDuration(file);
+					duration = Controller.getInstance().getPlayer().getDuration(file);
 				}
 				catch (PlayerException ignore)
 				{
@@ -160,11 +158,12 @@ public class Track implements Serializable, Comparable<Track>
 	{
 		try
 		{
-			controller.getPlayer().start(this);
+			Controller.getInstance().getPlayer().start(this);
 		}
-		catch (PlayerException e)
+		catch (Throwable e)
 		{
-			controller.logError(Controller.REGULAR_ERROR, this, e, "Track konnte nicht abgespielt werden.");
+			e.printStackTrace();
+			Controller.getInstance().logError(Controller.REGULAR_ERROR, this, e, "Track konnte nicht abgespielt werden.");
 		}
 	}
 	

@@ -63,11 +63,9 @@ public class PDJList extends JList
 	{
 		Controller controller = Controller.getInstance();
 		
-		final DragDropHandler handler = new DragDropHandler();
-		
 		this.setName(name);
 		this.setListDropMode(ldMode);
-		this.setTransferHandler(handler);
+		this.setTransferHandler(new DragDropHandler());
 		this.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		this.setDragEnabled(true);
 		this.addMouseMotionListener(new DragMotionListener());
@@ -131,7 +129,8 @@ public class PDJList extends JList
 		dragSource.addDragSourceListener(dgl);
 		dragSource.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, dgl);
 		
-		scrollToPlayed(controller.getPlayer().getCurrentTrack());
+		if(scrollToPlayed)
+			scrollToPlayed(controller.getPlayer().getCurrentTrack());
 	}
 	
 	public void setScrollToPlayedEnabled(boolean b)

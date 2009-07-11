@@ -15,7 +15,7 @@ import basics.Controller;
 public class DbTrack extends Track
 {
 	private static final long serialVersionUID = -4142764593365608567L;
-	protected transient final IData data = controller.getData();
+	protected transient final IData data = Controller.getInstance().getData();
 	
 	/** Index in der Hauptliste */
 	protected int index = -1;
@@ -37,7 +37,7 @@ public class DbTrack extends Track
 		}
 		catch (ListException e)
 		{
-			controller.logError(Controller.NORMAL_ERROR, this, e, "Verbinden von Track mit Datenbank fehlgeschlagen.");
+			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Verbinden von Track mit Datenbank fehlgeschlagen.");
 		}
 		if(index == -1)
 			System.out.println(index);
@@ -52,7 +52,7 @@ public class DbTrack extends Track
 		}
 		catch (ListException e)
 		{
-			controller.logError(Controller.NORMAL_ERROR, this, e, "Verbinden von Track mit Datenbank fehlgeschlagen.");
+			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Verbinden von Track mit Datenbank fehlgeschlagen.");
 		}
 		if(index == -1)
 			System.out.println(index);
@@ -81,7 +81,7 @@ public class DbTrack extends Track
 			}
 			catch (ListException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
 				this.duration = d;
 			}
 		}
@@ -100,7 +100,7 @@ public class DbTrack extends Track
 			}
 			catch (ListException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
 				this.name = d;
 			}
 		}
@@ -120,7 +120,7 @@ public class DbTrack extends Track
 			}
 			catch (ListException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
 				this.file = d;
 			}
 		}
@@ -139,7 +139,7 @@ public class DbTrack extends Track
 			}
 			catch (ListException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
 				this.size = d;
 			}
 		}
@@ -158,7 +158,7 @@ public class DbTrack extends Track
 			}
 			catch (ListException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
 				this.problem = d;
 			}
 		}
@@ -177,7 +177,7 @@ public class DbTrack extends Track
 			}
 			catch (ListException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
 				this.info = d;
 			}
 		}

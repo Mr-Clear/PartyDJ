@@ -1,5 +1,6 @@
 package gui;
 
+import gui.dnd.DragDropHandler;
 import gui.dnd.DragListener;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -100,6 +101,7 @@ public class PDJSlider extends JPanel
 		titel.setForeground(Color.green);
 		titel.setFont(new Font(titel.getFont().getName(), Font.BOLD, fontSize));
 		new DragListener(titel);
+		this.setTransferHandler(new DragDropHandler());
 		
 		slider.setBackground(Color.darkGray);
 		
@@ -263,7 +265,6 @@ public class PDJSlider extends JPanel
 				player.setPosition((e.getX() - 1d) / (getSize().width - 3d) * sliderDuration);
 			}			
 		}
-
 		public void mouseEntered(MouseEvent e){}
 		public void mouseExited(MouseEvent e){}
 		public void mousePressed(MouseEvent e){}

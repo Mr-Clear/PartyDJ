@@ -41,6 +41,7 @@ public class ForeignDrop extends DropTargetAdapter
 		List<?> data = null;
 		Transferable tr = e.getTransferable();
 	    DataFlavor[] flavors = tr.getTransferDataFlavors();
+	    
 	    for(DataFlavor flav : flavors)
 	    {
 	    	if(flav.isFlavorJavaFileListType() && !e.isLocalTransfer())
@@ -148,7 +149,7 @@ public class ForeignDrop extends DropTargetAdapter
 						e.dropComplete(false);
 						return;
 					}
-					
+
 					switch(list.getListDropMode())
 					{
 					case NONE:			e.dropComplete(false);
