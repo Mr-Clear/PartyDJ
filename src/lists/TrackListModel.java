@@ -27,4 +27,7 @@ public interface TrackListModel extends ListModel
 	
 	/**@return Die Daten im ListModel.*/
 	public List<Track> getList();
+	
+	/**@return Die Daten im ListModel.*/
+	public Track[] getValues();
 }

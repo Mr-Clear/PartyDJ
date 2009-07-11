@@ -176,15 +176,18 @@ public class TrackManager extends javax.swing.JPanel implements CloseListener
 				btnReadDuration.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent e)
 					{
-						if(list.getSelectedValues() != null)
+						Track[] toRead;
+						if(list.getSelectedValues() == null || list.getSelectedValues().length == 0)
+							toRead = list.getListModel().getValues();
+						else
+							toRead = list.getSelectedValues();
+						
+						if(toRead.length > 2)
 						{
-							if(list.getSelectedValues().length > 2)
-							{
-								new StatusDialog("Dauer einlesen", parent, new ReadDuration(list.getSelectedValues()));
-							}
-							else
-								new ReadDuration(list.getSelectedValues()).runFunction(null);
+							new StatusDialog("Dauer einlesen", parent, new ReadDuration(toRead));
 						}
+						else
+							new ReadDuration(toRead).runFunction(null);
 					}});
 			}
 			{
@@ -252,15 +255,18 @@ public class TrackManager extends javax.swing.JPanel implements CloseListener
 				btnCheckTrack.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent evt)
 					{
-						if(list.getSelectedValues() != null)
+						Track[] toRead;
+						if(list.getSelectedValues() == null || list.getSelectedValues().length == 0)
+							toRead = list.getListModel().getValues();
+						else
+							toRead = list.getSelectedValues();
+						
+						if(toRead.length > 2)
 						{
-							if(list.getSelectedValues().length > 2)
-							{
-								new StatusDialog("Tracks überprüfen", parent, new CheckTrackProblems(list.getSelectedValues()));
-							}
-							else
-								new CheckTrackProblems(list.getSelectedValues()).runFunction(null);
+							new StatusDialog("Tracks überprüfen", parent, new CheckTrackProblems(toRead));
 						}
+						else
+							new CheckTrackProblems(toRead).runFunction(null);
 					}});
 			}
 		}

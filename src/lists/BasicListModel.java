@@ -103,4 +103,11 @@ public class BasicListModel extends ListAdapter implements TrackListModel, PlayS
 	{
 		return java.util.Collections.unmodifiableList(list);
 	}
+	
+	@Override
+	public Track[] getValues()
+	{
+		Track[] ret = new Track[list.size()];
+		return list.toArray(ret);
+	}
 }

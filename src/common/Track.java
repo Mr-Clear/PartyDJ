@@ -207,7 +207,7 @@ public class Track implements Serializable, Comparable<Track>
 				
 				try
 				{
-					for(int i = 0; i < 16; i++)
+					for(int i = 0; i < 2; i++)
 						bs.readFrame();
 				}
 				catch (BitstreamException e)
