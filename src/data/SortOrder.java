@@ -14,7 +14,8 @@ public enum SortOrder
 	NAME,
 	PATH,
 	DURATION,
-	SIZE;
+	SIZE,
+	PROBLEM;
 	
 	public static String[] getStringArray()
 	{
@@ -25,7 +26,8 @@ public enum SortOrder
 							"Nach Name",
 							"Nach Pfad",
 							"Nach Dauer",
-							"Nach Dateigröße"};
+							"Nach Dateigröße",
+							"Nach Problem"};
 	}
 	
 	public static int sortOrderToArrayIndex(SortOrder sortOrder)
@@ -49,6 +51,8 @@ public enum SortOrder
 			return 6;
 		case SIZE:
 			return 7;
+		case PROBLEM:
+			return 8;
 		}
 	}
 	
@@ -73,6 +77,8 @@ public enum SortOrder
 			return DURATION;
 		case 7:
 			return SIZE;
+		case 8:
+			return PROBLEM;
 		}
 	}
 }

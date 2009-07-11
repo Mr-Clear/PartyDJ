@@ -325,6 +325,9 @@ public class DerbyDB implements IData, CloseListener
 					case SIZE:
 						statement += " ORDER BY SIZE";
 						break;
+					case PROBLEM:
+						statement += " ORDER BY PROBLEM";
+						break;
 					case POSITION:
 						throw new ListException("SortOrder.POSITION wird von der Hauptliste nicht unterstützt.");
 					}
@@ -376,6 +379,9 @@ public class DerbyDB implements IData, CloseListener
 					case SIZE:
 						statement += " ORDER BY FILES.SIZE";
 						break;
+					case PROBLEM:
+						statement += " ORDER BY FILES.PROBLEM";
+						break;
 					}
 					
 					ps = conn.prepareStatement(statement);
@@ -409,7 +415,7 @@ public class DerbyDB implements IData, CloseListener
 	}
 	
 	@Override
-	public void addTrack(DbTrack track) throws ListException
+	public boolean addTrack(DbTrack track) throws ListException
 	{
 		String path = track.getPath();
 		
@@ -459,12 +465,12 @@ public class DerbyDB implements IData, CloseListener
 						listener.trackAdded(track);
 				}
 				
-				return;
+				return true;
 			}
 			
 			track.setIndex(index);
 			conn.commit(); //commit nach checkIndex()
-			return;
+			return false;
 		}
 		catch (SQLException e)
 		{

@@ -49,13 +49,19 @@ public class LightClientListModel extends BasicListModel implements EditableList
 	@Override
 	public void add(Track track) throws ListException
 	{
-		add(new DbTrack(track));
+		if(track instanceof DbTrack)
+			add((DbTrack)track);
+		else
+			add(new DbTrack(track));
 	}
 
 	@Override
 	public void add(int index, Track track) throws ListException
 	{
-		add(index, new DbTrack(track));
+		if(track instanceof DbTrack)
+			add(index, (DbTrack)track);
+		else
+			add(index, new DbTrack(track));
 	}
 	
 	/**

@@ -68,9 +68,10 @@ public interface IData
 	/**Fügt einen Track zur Hauptliste hinzu.
 	 * 
 	 * @param track Der einzufügende Track.
+	 * @return false, wenn ein Track mit gleichem Pfad schon vorhanden war.
 	 * @throws ListException
 	 */
-	void addTrack(DbTrack track) throws ListException;
+	boolean addTrack(DbTrack track) throws ListException;
 	/**Speichert die Änderungen im Track in der Datenbank
 	 * 
 	 * @param track Der Track der geupdated werden soll.

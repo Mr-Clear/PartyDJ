@@ -23,8 +23,6 @@ public class DbTrack extends Track
 	public DbTrack(int index, String path, String name, double duration, long size, Problem problem, String info)
 	{
 		super(path, name, duration, size, problem, info);
-		if(index == -1)
-			System.out.println(index);
 		setIndex(index);
 	}
 	
@@ -39,8 +37,6 @@ public class DbTrack extends Track
 		{
 			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Verbinden von Track mit Datenbank fehlgeschlagen.");
 		}
-		if(index == -1)
-			System.out.println(index);
 	}
 
 	public DbTrack(String path, String name, double duration, long size, Problem problem, String info)
@@ -54,18 +50,11 @@ public class DbTrack extends Track
 		{
 			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Verbinden von Track mit Datenbank fehlgeschlagen.");
 		}
-		if(index == -1)
-			System.out.println(index);
 	}
 	
 	public DbTrack(Track track)
 	{
 		this(track.getPath(), track.getName(), track.getDuration(), track.getSize(), track.getProblem(), track.getInfo());
-	}
-	
-	public DbTrack(DbTrack track)
-	{
-		this(track.getIndex(), track.getPath(), track.getName(), track.getDuration(), track.getSize(), track.getProblem(), track.getInfo());
 	}
 
 	@Override
