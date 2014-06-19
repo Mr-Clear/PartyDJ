@@ -62,11 +62,11 @@ public class About extends JPanel
 		}
 		catch (final FileNotFoundException e1)
 		{
-			controller.logError(Controller.NORMAL_ERROR, this, e1, "Kann Revision nicht ermitteln.");
+			controller.logError(Controller.INERESTING_INFO, this, e1, "Kann Revision nicht ermitteln.");
 		}
 		catch (final IOException e1)
 		{
-			controller.logError(Controller.NORMAL_ERROR, this, e1, "Kann Revision nicht ermitteln.");
+			controller.logError(Controller.INERESTING_INFO, this, e1, "Kann Revision nicht ermitteln.");
 		}
 				
 		box.add(Box.createVerticalGlue());

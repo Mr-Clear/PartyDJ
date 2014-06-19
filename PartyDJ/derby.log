@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Tue Jun 17 07:38:28 CEST 2014:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0146-a855-69cf-0000067cf6f0 
-on database directory C:\Users\Eraser\Documents\PartyDJ\DataBase with class loader sun.misc.Launcher$AppClassLoader@99c873d 
+Thu Jun 19 11:25:15 CEST 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0146-b371-c0e0-0000067e5818 
+on database directory C:\Users\Eraser\Documents\PartyDJ\DataBase with class loader sun.misc.Launcher$AppClassLoader@3d9713ea 
 Loaded from file:/C:/Users/Eraser/.m2/repository/org/apache/derby/derby/10.10.2.0/derby-10.10.2.0.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.7.0_51-b13
-user.dir=C:\Eclipse Workspace\PartyDJ
+user.dir=C:\Git\PartyDJ\PartyDJ
 os.name=Windows 7
 os.arch=amd64
 os.version=6.1
