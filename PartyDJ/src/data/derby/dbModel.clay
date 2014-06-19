@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<clay-model clay-version="2.0.0">
+<database-model alias="Party DJ Database Model" author="Eraser" begin-script="" end-script="INSERT INTO Problems (Index, Name) VALUES&#13;&#10;&#9;(0, 'kein Problem'),&#13;&#10;&#9;(1, 'Datei nicht gefunden'),&#13;&#10;&#9;(2, 'Datei kann nicht geöffnet werden'),&#13;&#10;&#9;(3, 'Datei kann nicht abgespielt werden'),&#13;&#10;&#9;(-1, 'Sonstige Probleme');" id="65a08d:1266a20f376:-8000" name="dbModel" sql-dialect-id="jp.azzurri.clay.dialect.Derby_10_2_Dialect" version="1.0">
+<schema-list>
+<schema alias="Default Schema" id="65a08d:1266a20f376:-7ffd" name="DEFAULT_SCHEMA">
+<domain-list>
+<domain alias="Problem" column-size="0" decimal-digits="0" default-value="0" id="65a08d:1266a20f376:-76cc" mandatory="true" name="Problem">
+<domain-description>0</domain-description>
+<data-type name="SMALLINT" selected-variant-pattern="SMALLINT"/>
+</domain>
+</domain-list>
+<table-list>
+<table alias="Settings" id="65a08d:1266a20f376:-7fff" name="Settings">
+<column-list>
+<column alias="Name" auto-increment="false" column-size="256" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7ffa" mandatory="true" name="Name">
+<data-type name="CHAR" selected-variant-pattern="CHAR(%n)"/>
+</column>
+<column alias="Value" auto-increment="false" column-size="0" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7ff9" mandatory="false" name="Value">
+<data-type name="LONG VARCHAR" selected-variant-pattern="LONG VARCHAR"/>
+</column>
+</column-list>
+<primary-key id="65a08d:1266a20f376:-7ffe" name="PK_SETTINGS">
+<primary-key-column name="Name"/>
+</primary-key>
+</table>
+<table alias="Files" id="65a08d:1266a20f376:-7ff6" name="Files">
+<column-list>
+<column alias="Index" auto-increment="true" column-size="0" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7ff2" mandatory="true" name="Index">
+<data-type name="INTEGER" selected-variant-pattern="INTEGER"/>
+</column>
+<column alias="Path" auto-increment="false" column-size="4092" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7fef" mandatory="true" name="Path">
+<data-type name="VARCHAR" selected-variant-pattern="VARCHAR(%n)"/>
+</column>
+<column alias="Search Name" auto-increment="false" column-size="1024" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7fee" mandatory="true" name="SearchName">
+<data-type name="VARCHAR" selected-variant-pattern="VARCHAR(%n)"/>
+</column>
+<column alias="Name" auto-increment="false" column-size="1024" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7fed" mandatory="true" name="Name">
+<data-type name="VARCHAR" selected-variant-pattern="VARCHAR(%n)"/>
+</column>
+<column alias="Duration" auto-increment="false" column-size="0" decimal-digits="0" default-value="0" id="65a08d:1266a20f376:-7fec" mandatory="true" name="Duration">
+<data-type name="DOUBLE" selected-variant-pattern="DOUBLE"/>
+</column>
+<column alias="Size" auto-increment="false" column-size="0" decimal-digits="0" default-value="0" id="65a08d:1266a20f376:-7feb" mandatory="true" name="Size">
+<data-type name="BIGINT" selected-variant-pattern="BIGINT"/>
+</column>
+<column alias="Problem" auto-increment="false" column-size="0" decimal-digits="0" default-value="0" id="65a08d:1266a20f376:-7fea" mandatory="true" name="Problem">
+<data-type name="SMALLINT" selected-variant-pattern="SMALLINT"/>
+</column>
+</column-list>
+<primary-key id="65a08d:1266a20f376:-7ff5" name="PK_FILES">
+<primary-key-column name="Index"/>
+</primary-key>
+<unique-key-list>
+<unique-key alias="Key Files Path" id="65a08d:1266a20f376:-7fd9" name="Key_Files_Path">
+<unique-key-column name="Path"/>
+</unique-key>
+</unique-key-list>
+<foreign-key-list>
+<foreign-key alias="Fk Files Problem" id="65a08d:1266a20f376:-764c" name="FK_Files_Problem" on-delete="RESTRICT" on-update="RESTRICT" referenced-key="PK_PROBLEMS" referenced-table="Problems" referenced-table-schema="DEFAULT_SCHEMA" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-column column-name="Problem" referenced-key-column-name="Index"/>
+</foreign-key>
+</foreign-key-list>
+<index-list>
+<index alias="Index Files Path" id="65a08d:1266a20f376:-7fe1" name="Index_Files_Path" unique="true">
+<index-column name="Path" sort="ASC"/>
+</index>
+<index alias="Index Files Search Name" id="65a08d:1266a20f376:-7fdb" name="Index_Files_SearchName" unique="false">
+<index-column name="SearchName" sort="ASC"/>
+</index>
+</index-list>
+</table>
+<table alias="Lists" id="65a08d:1266a20f376:-7fd6" name="Lists">
+<column-list>
+<column alias="Index" auto-increment="true" column-size="0" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7fd2" mandatory="true" name="Index">
+<data-type name="INTEGER" selected-variant-pattern="INTEGER"/>
+</column>
+<column alias="Name" auto-increment="false" column-size="64" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7fd1" mandatory="true" name="Name">
+<data-type name="VARCHAR" selected-variant-pattern="VARCHAR(%n)"/>
+</column>
+<column alias="Description" auto-increment="false" column-size="0" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7fd0" mandatory="false" name="Description">
+<data-type name="LONG VARCHAR" selected-variant-pattern="LONG VARCHAR"/>
+</column>
+<column alias="Priority" auto-increment="false" column-size="0" decimal-digits="0" default-value="0" id="65a08d:1266a20f376:-7fcf" mandatory="true" name="Priority">
+<data-type name="SMALLINT" selected-variant-pattern="SMALLINT"/>
+</column>
+</column-list>
+<primary-key id="65a08d:1266a20f376:-7fd5" name="PK_LISTS">
+<primary-key-column name="Index"/>
+</primary-key>
+<unique-key-list>
+<unique-key alias="Key Lists Name" id="65a08d:1266a20f376:-7fce" name="Key_Lists_Name">
+<unique-key-column name="Name"/>
+</unique-key>
+</unique-key-list>
+<index-list>
+<index alias="Index Lists Name" id="65a08d:1266a20f376:-76de" name="Index_Lists_Name" unique="true">
+<index-column name="Name" sort="ASC"/>
+</index>
+</index-list>
+</table>
+<table alias="Lists Content" id="65a08d:1266a20f376:-7fcb" name="ListsContent">
+<column-list>
+<column alias="List" auto-increment="false" column-size="0" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7fc7" mandatory="true" name="List">
+<data-type name="INTEGER" selected-variant-pattern="INTEGER"/>
+</column>
+<column auto-increment="false" column-size="0" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7fc6" mandatory="true" name="Index">
+<data-type name="INTEGER" selected-variant-pattern="INTEGER"/>
+</column>
+<column alias="Position" auto-increment="false" column-size="0" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-7fc5" mandatory="true" name="Position">
+<data-type name="INTEGER" selected-variant-pattern="INTEGER"/>
+</column>
+</column-list>
+<primary-key id="65a08d:1266a20f376:-7fca" name="PK_LISTSCONTENT">
+<primary-key-column name="List"/>
+<primary-key-column name="Index"/>
+</primary-key>
+<unique-key-list>
+<unique-key alias="Key Lists Content List+Position" id="65a08d:1266a20f376:-76c1" name="Key_ListsContent_List+Position">
+<unique-key-column name="List"/>
+<unique-key-column name="Position"/>
+</unique-key>
+</unique-key-list>
+<foreign-key-list>
+<foreign-key alias="Fk Lists Content Files" id="65a08d:1266a20f376:-77ac" name="FK_ListsContent_Files" on-delete="UNSPECIFIED" on-update="UNSPECIFIED" referenced-key="PK_FILES" referenced-table="Files" referenced-table-schema="DEFAULT_SCHEMA" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="0..*" target-relationship-type="">
+<foreign-key-column column-name="Index" referenced-key-column-name="Index"/>
+</foreign-key>
+<foreign-key alias="Fk Lists Content Lists" id="65a08d:1266a20f376:-7713" name="FK_ListsContent_Lists" on-delete="UNSPECIFIED" on-update="UNSPECIFIED" referenced-key="PK_LISTS" referenced-table="Lists" referenced-table-schema="DEFAULT_SCHEMA" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="0..*" target-relationship-type="">
+<foreign-key-column column-name="List" referenced-key-column-name="Index"/>
+</foreign-key>
+</foreign-key-list>
+<index-list>
+<index alias="Index Lists Content Position" id="65a08d:1266a20f376:-76c4" name="Index_ListsContent_Position" unique="true">
+<index-column name="List" sort="ASC"/>
+<index-column name="Position" sort="ASC"/>
+</index>
+</index-list>
+</table>
+<table alias="Problems" id="65a08d:1266a20f376:-76cb" name="Problems">
+<column-list>
+<column alias="Index" auto-increment="false" column-size="0" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-76c7" mandatory="true" name="Index">
+<data-type name="SMALLINT" selected-variant-pattern="SMALLINT"/>
+</column>
+<column alias="Name" auto-increment="false" column-size="256" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-76c6" mandatory="true" name="Name">
+<data-type name="VARCHAR" selected-variant-pattern="VARCHAR(%n)"/>
+</column>
+</column-list>
+<primary-key id="65a08d:1266a20f376:-76ca" name="PK_PROBLEMS">
+<primary-key-column name="Index"/>
+</primary-key>
+<unique-key-list>
+<unique-key alias="Key Problems Name" id="65a08d:1266a20f376:-76c5" name="Key_Problems_Name">
+<unique-key-column name="Name"/>
+</unique-key>
+</unique-key-list>
+</table>
+<table alias="Track Info" id="65a08d:1266a20f376:-75fd" name="TrackInfo">
+<column-list>
+<column alias="File" auto-increment="false" column-size="0" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-75f9" mandatory="true" name="File">
+<data-type name="INTEGER" selected-variant-pattern="INTEGER"/>
+</column>
+<column alias="Info" auto-increment="false" column-size="0" decimal-digits="0" default-value="" id="65a08d:1266a20f376:-75f8" mandatory="true" name="Info">
+<data-type name="LONG VARCHAR" selected-variant-pattern="LONG VARCHAR"/>
+</column>
+</column-list>
+<primary-key id="65a08d:1266a20f376:-75fc" name="PK_TRACKINFO">
+<primary-key-column name="File"/>
+</primary-key>
+<foreign-key-list>
+<foreign-key alias="Fk Track Info File" id="65a08d:1266a20f376:-748d" name="FK_TrackInfo_File" on-delete="UNSPECIFIED" on-update="UNSPECIFIED" referenced-key="PK_FILES" referenced-table="Files" referenced-table-schema="DEFAULT_SCHEMA" source-entity-role="" source-multiplicity="0..1" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-column column-name="File" referenced-key-column-name="Index"/>
+</foreign-key>
+</foreign-key-list>
+</table>
+</table-list>
+</schema>
+</schema-list>
+</database-model>
+<diagram>
+<table-figure height="55" refid="65a08d:1266a20f376:-7fff" width="144" x="283" y="43"/>
+<table-figure height="144" refid="65a08d:1266a20f376:-7ff6" width="222" x="383" y="249"/>
+<table-figure height="93" refid="65a08d:1266a20f376:-7fd6" width="186" x="36" y="36"/>
+<table-figure height="81" refid="65a08d:1266a20f376:-7fcb" width="142" x="46" y="226"/>
+<table-figure height="57" refid="65a08d:1266a20f376:-76cb" width="140" x="61" y="350"/>
+<table-figure height="126" refid="65a08d:1266a20f376:-75fd" width="266" x="467" y="47"/>
+</diagram>
+</clay-model>

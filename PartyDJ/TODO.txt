@@ -1,0 +1,15 @@
+Track-Info auslesen...
+PopupMenu verschönern.
+Add Liste..
+Autoplay zeitabhängig
+?Tasten
+Auto-Update
+Backup
+Tracks in Client-Listen updaten nicht richtig.
+Suchliste updatet nicht.
+Mit PlayerEvents aufräumen.
+Hassliste
+Konstanten für Setting-Namen.
+
+Bug:
+Einfügen aus M3U über Datei öffnen... show -> close
