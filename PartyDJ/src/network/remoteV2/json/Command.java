@@ -1,6 +1,36 @@
 package network.remoteV2.json;
 
-public enum Command implements Message
+import flexjson.JSON;
+
+public class Command implements Message
 {
-	TEST1, TEST2
+	String c;
+	
+	public Command()
+	{
+		// TODO Auto-generated constructor stub
+	}
+	
+	public Command(String c)
+	{
+		this.c = c;
+	}
+	
+	@JSON
+	public String getC()
+	{
+		return c;
+	}
+
+	@Override
+	public String getType()
+	{
+		return "Command";
+	}
+	
+	@Override
+	public String toString()
+	{
+		return c;
+	}
 }

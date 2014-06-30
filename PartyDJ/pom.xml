@@ -59,9 +59,9 @@
   		<version>10.10.2.0</version>
   	</dependency>
   	<dependency>
-  		<groupId>org.codehaus.jackson</groupId>
-  		<artifactId>jackson-jaxrs</artifactId>
-  		<version>1.9.13</version>
+  		<groupId>net.sf.flexjson</groupId>
+  		<artifactId>flexjson</artifactId>
+  		<version>3.2</version>
   	</dependency>
   </dependencies>
 </project>
