@@ -1,10 +1,13 @@
-package network.remoteV2;
+package network.remoteV2.server;
 
 import basics.Controller;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * Wartet auf ankommende Verbindungen.
+ */
 public class Listener extends Thread
 {
 	private volatile boolean running = true;

@@ -1,13 +1,15 @@
-package network.remoteV2;
+package network.remoteV2.server;
 
 import basics.Plugin;
 import java.util.HashSet;
 import java.util.Set;
 
+/** Ermöglicht es, den PartyDJ über Netzwerk zu bedienen. */
 public class Server implements Plugin
 {
 	public final static int PORT = 8080;
 
+	/** Jeder verbundene Client bekommt einen ServerHandler. */
 	private final Set<ServerHandler> serverHandlers = new HashSet<>();
 	private Listener listener;
 

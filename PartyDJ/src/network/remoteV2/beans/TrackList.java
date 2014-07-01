@@ -1,24 +1,24 @@
-package network.remoteV2.json;
+package network.remoteV2.beans;
 
 import flexjson.JSON;
 
-public class TrackList implements Message
+public class TrackList extends Message
 {
+	public final String name;
+	public final int[] tracks;
+	
 	public TrackList(String name, int[] tracks)
 	{
 		this.name = name;
 		this.tracks = tracks;
 	}
 	
-	/* Needed for flexjson. */
+	/* Required for flexjson. */
 	public TrackList()
 	{
 		name = null;
 		tracks = null;
 	}
-	
-	public final String name;
-	public final int[] tracks;
 
 	@JSON
 	public String getName()
