@@ -14,6 +14,7 @@ public interface InputHandler
 	
 	/**
 	 * InputHandler is closed.
+	 * @param externalReason true, if connection was closed.
 	 */
-	void inputHandlerClosed();
+	void inputHandlerClosed(boolean externalReason);
 }

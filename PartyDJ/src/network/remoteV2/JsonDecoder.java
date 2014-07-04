@@ -22,7 +22,7 @@ public class JsonDecoder
 	private final ReceiverThread receiverThread;
 	/** Wenn false, stoppt der decoder-Thread. */
 	private volatile boolean running = true;
-	
+
 	/**
 	 * @param inputStream Stream, aus dem die Json-Daten kommen.
 	 * @param inputHandler Empfänger der Nachrichten.
@@ -31,11 +31,11 @@ public class JsonDecoder
 	{
 		this.inputStream = inputStream;
 		this.inputHandler = inputHandler;
-		
+
 		receiverThread = new ReceiverThread();
 		receiverThread.start();
 	}
-	
+
 	/** Stoppt den ReceiverThread. */
 	public void stop()
 	{
@@ -49,7 +49,7 @@ public class JsonDecoder
 			/* Ignore */
 		}
 	}
-	
+
 	private class ReceiverThread extends Thread
 	{
 		public ReceiverThread()
@@ -57,7 +57,7 @@ public class JsonDecoder
 			setDaemon(true);
 			setName("NetworkReceiver");
 		}
-		
+
 		@Override
 		public void run()
 		{
@@ -73,13 +73,13 @@ public class JsonDecoder
 			}
 			catch(JSONException | IOException e)
 			{
-				if(!"Stepping back two steps is not supported".equals(e.getMessage())) // Stream closed.
+				if(!("Stepping back two steps is not supported".equals(e.getMessage()) || "java.net.SocketException: Connection reset".equals(e.getMessage()))) // Stream closed.
 					Controller.getInstance().logError(Controller.NORMAL_ERROR, e);
 				JsonDecoder.this.stop();
 			}
 			finally
 			{
-				inputHandler.inputHandlerClosed();
+				inputHandler.inputHandlerClosed(true);
 			}
 		}
 	}

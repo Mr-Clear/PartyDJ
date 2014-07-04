@@ -4,23 +4,23 @@ import flexjson.JSON;
 
 public class PdjCommand extends Message
 {
-	public final Command comm;
+	public final Command commmand;
 
 	/* Required for flexjson. */
 	public PdjCommand()
 	{
-		comm = null;
+		commmand = null;
 	}
 	
-	public PdjCommand(Command comm)
+	public PdjCommand(Command command)
 	{
-		this.comm = comm;
+		this.commmand = command;
 	}
 	
 	@JSON
-	public Command getComm()
+	public Command getCommmand()
 	{
-		return comm;
+		return commmand;
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class PdjCommand extends Message
 	@Override
 	public String toString()
 	{
-		return comm.toString();
+		return commmand.toString();
 	}
 	
 	public enum Command

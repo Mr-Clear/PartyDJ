@@ -14,7 +14,7 @@ public abstract class Message
 	public abstract String getType();
 	
 	/** Liste aller möglichen Nachrichten. */
-	private static final Class<?>[] CHILDREN = new Class<?>[]{TrackList.class, PdjCommand.class};
+	private static final Class<?>[] CHILDREN = new Class<?>[]{TrackList.class, PdjCommand.class, Test.class};
 	
 	/** Konfiguriert Felxjson, um mit der Typhirachie zurecht zu kommen. 
 	 * @param deserializer Zu konfigurierender JSONDeserializer.*/

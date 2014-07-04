@@ -4,14 +4,16 @@ import java.io.IOException;
 import java.net.Socket;
 import network.remoteV2.InputHandler;
 import network.remoteV2.JsonDecoder;
+import network.remoteV2.JsonEncoder;
 import network.remoteV2.beans.Message;
-import network.remoteV2.client.ClientTest;
+import network.remoteV2.beans.Test;
 
 public class ServerHandler implements InputHandler
 {
 	private final Server server;
 	private final Socket socket;
 	private final JsonDecoder jsonDecoder;
+	private JsonEncoder jsonEncoder;
 
 	public ServerHandler(Server server, Socket socket) throws IOException
 	{
@@ -19,7 +21,7 @@ public class ServerHandler implements InputHandler
 		this.socket = socket;
 
 		server.addServerHandler(this);
-
+		jsonEncoder = new JsonEncoder(socket.getOutputStream());
 		jsonDecoder = new JsonDecoder(socket.getInputStream(), this);
 	}
 
@@ -39,19 +41,34 @@ public class ServerHandler implements InputHandler
 	@Override
 	public void messageReceived(Message message)
 	{
-		System.out.println(message);
+		if(message instanceof Test)
+		{
+			Test test = (Test)message;
+			System.out.println((test.echo ? "Ping " : "Pong ") + test.content);
+			if(test.echo)
+				try
+				{
+					jsonEncoder.write(new Test(false, test.content));
+				}
+				catch(IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
 	}
 
 	@Override
-	public void inputHandlerClosed()
+	public void inputHandlerClosed(boolean externalReason)
 	{
 		server.removeServerHandler(this);
 	}
 
-	public static void main(String... args) throws InterruptedException, IOException
+	public static void main(String... args) throws InterruptedException
 	{
+		System.out.println("Server: Start");
 		new Server().start();
-		ClientTest.main();
-		Thread.sleep(1000);
+		Thread.sleep(5000);
+		System.out.println("Server: End");
 	}
 }
