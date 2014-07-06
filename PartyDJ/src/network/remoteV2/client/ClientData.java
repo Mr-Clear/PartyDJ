@@ -32,6 +32,7 @@ public class ClientData implements IData
     private Map<String, String> settings = new HashMap<>();
     private Set<SettingListener> settingListeners = new HashSet<>();
     private Set<ListListener> listListeners = new HashSet<>();
+    private final List<RemoteTrack> tracks = new ArrayList<>();
     
     public ClientData(Client client)
     {
@@ -50,6 +51,7 @@ public class ClientData implements IData
         for(network.remoteV2.beans.Track track : initialData.tracks)
         {
             RemoteTrack remoteTrack = new RemoteTrack(this, trackIndex, track);
+            tracks.add(remoteTrack);
             notifyTrackAdded(remoteTrack, true);
             trackIndex++;
         }
@@ -59,6 +61,26 @@ public class ClientData implements IData
     void connectionClosed()
     {
         settings.clear();
+        for(int i = tracks.size() - 1; i >= 0; i--)
+        {
+            RemoteTrack track = tracks.get(i);
+            tracks.remove(i);
+            synchronized(listListeners)
+            {
+                for(ListListener listener : listListeners)
+                {
+                    listener.trackDeleted(track, true);
+                }
+            }
+        }
+        tracks.clear();
+        synchronized(listListeners)
+        {
+            for(ListListener listener : listListeners)
+            {
+                listener.trackDeleted(null, false);
+            }
+        }
         
         // TODO: Notify listeners
     }

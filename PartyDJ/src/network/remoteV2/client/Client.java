@@ -79,6 +79,8 @@ public class Client extends Controller
         {
             loadWindow("gui.ClassicWindow");
         }
+
+        splash.close();
     }
 
     @Override

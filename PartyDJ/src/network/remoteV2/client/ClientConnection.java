@@ -106,5 +106,6 @@ public class ClientConnection implements InputHandler
 	public void inputHandlerClosed(boolean externalReason)
 	{
         client.setJsonEncoder(null);
+        connect(host, port);
 	}
 }
