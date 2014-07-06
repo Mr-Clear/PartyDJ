@@ -1,149 +1,165 @@
 package network.remoteV2.client;
 
 import basics.Controller;
+
+import data.IData;
+
+import lists.ListException;
+import lists.data.ListProvider;
+
+import gui.SplashWindow;
+
+import players.IPlayer;
+
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import network.remoteV2.InputHandler;
-import network.remoteV2.JsonDecoder;
+
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import network.remoteV2.JsonEncoder;
+import network.remoteV2.beans.InitialData;
 import network.remoteV2.beans.Message;
+import network.remoteV2.beans.Setting;
+import network.remoteV2.beans.DataRequest;
 import network.remoteV2.beans.Test;
-import network.remoteV2.server.Server;
 
-public class Client implements InputHandler
+public class Client extends Controller
 {
-	private volatile boolean running = true;
-	private int port;
-	private String host;
-	private JsonEncoder jsonEncoder;
-	
-	private Thread testThread;
+    final ClientData data;
+    final ClientPlayer player;
+    final ClientConnection clientConnection;
+    JsonEncoder jsonEncoder;
 
-	public void connect()
-	{
-		connect("localhost", Server.PORT);
-	}
+    protected Client(String[] args)
+    {
+        super(args);
+        
+        /* Splash Window laden. */
+        final SplashWindow splash = new SplashWindow();
+        
+        data = new ClientData(this);
+        player = new ClientPlayer();
+        try
+        {
+            listProvider = new ListProvider();
+        }
+        catch(ListException e1)
+        {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        
+        /* closeListenThread starten um Schließen-Ereignisse abzufangen. */
+        closeListenThread = new Thread()
+        {
+            @Override public void run()
+            {
+                closePartyDJ();
+            }
+        };
+        Runtime.getRuntime().addShutdownHook(closeListenThread);
 
-	public void connect(String connectHost)
-	{
-		connect(connectHost, Server.PORT);
-	}
+        /* Open connection. */
+        splash.setInfo("Öffne Verbindung");
+        clientConnection = new ClientConnection(this);
+        clientConnection.connect(); //TODO: Hostname
 
-	@SuppressWarnings("resource")
-	public void connect(String connectHost, int connectPort)
-	{
-		this.host = connectHost;
-		this.port = connectPort;
-		Thread connectThread = new Thread(){
-			@Override
-			public void run()
-			{
-				Socket socket = null;
-				boolean retry = true;
-				while(retry && running)
-				{
-					try
-					{
-						socket = new Socket();
-						socket.connect(new InetSocketAddress(host, port));
-						jsonEncoder = new JsonEncoder(socket.getOutputStream());
-						connectionOpened();
-						
-						new JsonDecoder(socket.getInputStream(), Client.this);
-						retry = false;
-					}
-					catch(IOException e)
-					{
-						if(e instanceof UnknownHostException || "Connection refused: connect".equals(e.getMessage()) || "Connection timed out: connect".equals(e.getMessage()))
-						{
-							try
-							{
-								Thread.sleep(1000);
-							}
-							catch(InterruptedException ignore)
-							{
-								/* ignore */
-							}
-							retry = true;
-						}
-						else
-						{
-							Controller.getInstance().logError(Controller.NORMAL_ERROR, e);
-						}
-					}
-				}
-			}
-		};
-		connectThread.setDaemon(true);
-		connectThread.setName("ConnectThread");
-		connectThread.start();
-		
-	}
+        splash.setInfo("Lade Look And Feel");
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch(ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
+        {
+            logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
+        }
+        
+        splash.setInfo("Lade Fenster");
+        splash.setOpacity(1);
+        {
+            loadWindow("gui.ClassicWindow");
+        }
+    }
 
-	public void stop()
-	{
-		running = false;
-	}
+    @Override
+    public IData getData()
+    {
+        return data;
+    }
 
-	@Override
-	public void messageReceived(Message message)
-	{
-		if(message instanceof Test)
-		{
-			Test test = (Test)message;
-			System.out.println((test.echo ? "Ping " : "Pong ") + test.content);
-			if(test.echo)
-				try
-				{
-					jsonEncoder.write(new Test(false, test.content));
-				}
-				catch(IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		}
-	}
+    @Override
+    public IPlayer getPlayer()
+    {
+        return player;
+    }
+    
+    synchronized void setJsonEncoder(JsonEncoder jsonEncoder)
+    {
+        this.jsonEncoder = jsonEncoder;
+        if(jsonEncoder == null)
+        {
+            data.connectionClosed();
+        }
+        else
+        {
+            try
+            {
+                send(new DataRequest());
+            }
+            catch(IOException e)
+            {
+                logError(IMPORTANT_ERROR, e);
+            }
+        }
+    }
+    
+    synchronized void send(Message message) throws IOException
+    {
+        if(jsonEncoder != null)
+        {
+            jsonEncoder.write(message);
+        }
+    }
+    
 
-	public void connectionOpened()
-	{
-		testThread = new Thread()
-		{
-			@Override
-			public void run()
-			{
-				while(running && testThread == this)
-				{
-					try
-					{
-						jsonEncoder.write(new Test(true, "Test"));
-						Thread.sleep(2000);
-					}
-					catch(IOException | InterruptedException e)
-					{
-						e.printStackTrace();
-						Client.this.stop();
-					}
-				}
-			}
-		};
-		testThread.start();
-	}
+    public void messageReceived(Message message)
+    {
+        try
+        {
+            switch(message.getType())
+            {
+            case Setting:
+                data.updateSetting((Setting)message);
+                break;
+            case Test:
+                if(((Test)message).echo)
+                    send(new Test(false, ((Test)message).content));
+                break;
+            case TrackList:
+                break;
+            case InitialData:
+                data.initialDate((InitialData)message);
+                break;
+            case PdjCommand:
+            case DataRequest:
+                /* Only for server. */
+                Controller.getInstance().logError(Controller.INERESTING_INFO, this, null, "Should not be received by client: " + message);
+                break;
+            case Track:
+                /* No stand alone. */
+                Controller.getInstance().logError(Controller.INERESTING_INFO, this, null, "Should not be received by client: " + message);
+                break;
+            }
+        }
+        catch(IOException e)
+        {
+            logError(IMPORTANT_ERROR, this, e);
+        }
+        
+    }
 
-	@Override
-	public void inputHandlerClosed(boolean externalReason)
-	{
-		testThread = null;
-		if(running)
-			connect(host, port);
-	}
-
-	public static void main(String... args) throws InterruptedException
-	{
-		Client client = new Client();
-		client.connect();
-		Thread.sleep(100000);
-	}
+    public static void main(String[] args)
+    {
+        new Client(args);
+    }
 }

@@ -31,16 +31,10 @@ public class TrackList extends Message
 	{
 		return tracks;
 	}
-	
-	@Override
-	public String toString()
-	{
-		return name + " (" + tracks.length + ")";
-	}
 
 	@Override
-	public String getType()
+	public Child getType()
 	{
-		return "TrackList";
+		return Message.Child.TrackList;
 	}
 }

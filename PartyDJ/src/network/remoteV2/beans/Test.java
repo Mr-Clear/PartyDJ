@@ -19,9 +19,9 @@ public class Test extends Message
 	}
 	
 	@Override
-	public String getType()
+	public Child getType()
 	{
-		return "Test";
+		return Message.Child.Test;
 	}
 	
 	public boolean getEcho()

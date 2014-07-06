@@ -8,7 +8,7 @@ import java.io.File;
 
 /**
  * Audio-Track der in der Datenbank gespeichert ist..
- * <p>Die eigenschaften sind veränderlich.
+ * <p>Die Eigenschaften sind veränderlich.
  * 
  * @author Eraser
  */

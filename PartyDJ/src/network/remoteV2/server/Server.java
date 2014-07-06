@@ -1,13 +1,14 @@
 package network.remoteV2.server;
 
 import basics.Plugin;
+
 import java.util.HashSet;
 import java.util.Set;
 
 /** Ermöglicht es, den PartyDJ über Netzwerk zu bedienen. */
 public class Server implements Plugin
 {
-	public final static int PORT = 8080;
+	public final static int PORT = 2804;
 
 	/** Jeder verbundene Client bekommt einen ServerHandler. */
 	private final Set<ServerHandler> serverHandlers = new HashSet<>();
@@ -74,11 +75,8 @@ public class Server implements Plugin
 		}
 	}
 
-	public static void main(String... args) throws InterruptedException
+	public static void main(String... args)
 	{
-		System.out.println("Server Start");
-		new Server().start();
-		Thread.sleep(10000);
-		System.out.println("Server End");
+	    new basics.PartyDJ(args);
 	}
 }

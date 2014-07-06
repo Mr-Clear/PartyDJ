@@ -1,9 +1,12 @@
 package data;
 
 import common.Track;
+
 import lists.ListException;
 import lists.data.DbTrack;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * Schnittstelle zur Datenbank-Anbindung.
@@ -36,6 +39,13 @@ public interface IData
 	 * @throws SettingException
 	 */
 	String readSetting(String name, String defaultValue) throws SettingException;
+	
+	/**Gibt alle gespeicherten Einstellungen zurück.
+	 * 
+	 * @return Map mit allen gespeicherten Einstellungen.
+	 * @throws SettingException 
+	 */
+	Map<String, String> readAllSettings() throws SettingException;
 	
 	/**Fügt einen SettingListener hinzu, der Änderungen an den Einstellungen empfängt.
 	 * 

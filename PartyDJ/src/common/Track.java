@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * Stellt einen Titel mit seinen Eigenschaften dar.
- * <p>Die eigenschaften sind veränderlich.
+ * <p>Die Eigenschaften sind veränderlich.
  * 
  * @author Eraser
  * @author Sam

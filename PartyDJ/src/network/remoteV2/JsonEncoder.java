@@ -9,7 +9,7 @@ import java.io.Writer;
 import network.remoteV2.beans.Message;
 
 /**
- * Schreibt Kind-Klassen von Message als Json-Steram.
+ * Schreibt Kind-Klassen von Message als Json-Stream.
  */
 public class JsonEncoder
 {
@@ -18,7 +18,7 @@ public class JsonEncoder
 	private final JSONSerializer jsonSerializer;
 
 	/** 
-	 * @param outputStream Ziel, in das Json geschriben wird. 
+	 * @param outputStream Ziel, in das Json geschrieben wird. 
 	 */
 	public JsonEncoder(OutputStream outputStream)
 	{
@@ -31,11 +31,21 @@ public class JsonEncoder
 	 * @param message Zu schreibende Nachricht.
 	 * @throws IOException
 	 */
-	public void write(Message message) throws IOException
+	public synchronized void write(Message message) throws IOException
 	{
-		try
+	    /* For debug. Set len = 0 to disable. */
+	    final int len = 200;
+	    if(len > 0)
+	    {
+	        String string = jsonSerializer.serialize(message);
+	        if(string.length() > len)
+	            string = string.substring(0, len);
+	        System.out.println(string);
+	    }
+	    
+	    try
 		{
-			jsonSerializer.serialize(message, writer);
+		    jsonSerializer.serialize(message, writer);
 		}
 		catch(JSONException e)
 		{

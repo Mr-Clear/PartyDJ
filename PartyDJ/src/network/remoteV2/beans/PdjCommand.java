@@ -24,9 +24,9 @@ public class PdjCommand extends Message
 	}
 
 	@Override
-	public String getType()
+	public Child getType()
 	{
-		return "Command";
+		return Message.Child.PdjCommand;
 	}
 	
 	@Override

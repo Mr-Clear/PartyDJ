@@ -1,14 +1,17 @@
 package network.remote;
 
 import common.Track;
+
 import data.IData;
 import data.ListListener;
 import data.SettingException;
 import data.SettingListener;
 import data.SortOrder;
+
 import lists.ListException;
 import lists.data.DbTrack;
 import lists.data.DbTrack.TrackElement;
+
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -231,6 +234,12 @@ public class NetworkData extends NetworkInterface implements IData
 		if(answer instanceof SettingException)
 			throw (SettingException)answer;
 		return (String)answer;
+	}
+	
+	@Override
+	public Map<String, String> readAllSettings() throws SettingException
+	{
+	    return null;
 	}
 
 	@Override

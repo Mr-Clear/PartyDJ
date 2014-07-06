@@ -1,21 +1,29 @@
 package basics;
 import common.Functions;
+
 import data.IData;
 import data.OpenDbException;
 import data.SettingException;
 import data.derby.DerbyDB;
+
 import lists.ListException;
 import lists.data.DbTrack;
 import lists.data.ListProvider;
+
 import gui.KeyStrokeManager;
 import gui.SplashWindow;
+
 import players.IPlayer;
 import players.PlayerException;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import network.remote.RemoteServer;
+import network.remoteV2.server.Server;
 
 /**
  * Hauptklasse vom PartyDJ.
@@ -107,6 +115,7 @@ public class PartyDJ extends Controller
 				//new network.ClassicUdpReceiver().start();
 				//new network.WinLircReceiver().initialise();
 				new RemoteServer().initialise();
+				new Server().start();
 			}
 			catch(final Throwable t)
 			{
