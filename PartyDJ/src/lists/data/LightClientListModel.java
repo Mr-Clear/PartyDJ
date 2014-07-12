@@ -1,14 +1,19 @@
 package lists.data;
 
 import basics.Controller;
+
 import common.Track;
+
 import data.IData;
 import data.ListAdapter;
+
 import lists.BasicListModel;
 import lists.EditableListModel;
 import lists.ListException;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -31,7 +36,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 		Controller.getInstance().getData().addListListener(new TracksListener());
 	}
 
-	public LightClientListModel(final List<DbTrack> list)
+	public LightClientListModel(final List<? extends DbTrack> list)
 	{
 		super(new ArrayList<Track>(list));
 		Controller.getInstance().getData().addListListener(new TracksListener());

@@ -2,10 +2,12 @@ package network.remoteV2;
 
 import flexjson.JSONException;
 import flexjson.JSONSerializer;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
+
 import network.remoteV2.beans.Message;
 
 /**
@@ -34,10 +36,11 @@ public class JsonEncoder
 	public synchronized void write(Message message) throws IOException
 	{
 	    /* For debug. Set len = 0 to disable. */
-	    final int len = 200;
+	    final int len = 100;
 	    if(len > 0)
 	    {
 	        String string = jsonSerializer.serialize(message);
+	        System.out.print(string.length() + "\t");
 	        if(string.length() > len)
 	            string = string.substring(0, len);
 	        System.out.println(string);

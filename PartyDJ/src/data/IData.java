@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * Schnittstelle zur Datenbank-Anbindung.
- * <p>Ermöglich Zugriff auf Einstellungen und Listen.
+ * <p>Ermöglicht Zugriff auf Einstellungen und Listen.
  * 
  * @author Eraser
  */
@@ -66,7 +66,7 @@ public interface IData
 	 * @return Die Liste vom Typ List<Track>.
 	 * @throws ListException
 	 */
-	List<DbTrack> readList(String listName, String searchString, data.SortOrder order) throws ListException;
+	List<? extends DbTrack> readList(String listName, String searchString, data.SortOrder order) throws ListException;
 	
 	/**Prüft ob eine Datei in der Datenbank ist.
 	 * 
@@ -85,7 +85,7 @@ public interface IData
 	 */
 	DbTrack addTrack(Track track, boolean eventsFollowing) throws ListException;
 
-	/**Speichert die Änderung an einem Bestimten Wert im Track in der Datenbank
+	/**Speichert die Änderung an einem Bestimmten Wert im Track in der Datenbank
 	 * 
 	 * @param track Der Track der geupdated werden soll.
 	 * @param element Das Element das geupdatet werden soll.

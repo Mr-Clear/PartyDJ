@@ -33,6 +33,8 @@ public class ClientData implements IData
     private Set<SettingListener> settingListeners = new HashSet<>();
     private Set<ListListener> listListeners = new HashSet<>();
     private final List<RemoteTrack> tracks = new ArrayList<>();
+    private final Map<String, RemoteTrack> trackMap = new HashMap<>();
+    private final Map<String, List<RemoteTrack>> lists = new HashMap<>();
     
     public ClientData(Client client)
     {
@@ -52,10 +54,46 @@ public class ClientData implements IData
         {
             RemoteTrack remoteTrack = new RemoteTrack(this, trackIndex, track);
             tracks.add(remoteTrack);
+            trackMap.put(remoteTrack.getPath(), remoteTrack);
             notifyTrackAdded(remoteTrack, true);
             trackIndex++;
         }
         notifyTrackAdded(null, false);
+        
+        System.out.println(initialData.lists.size());
+        for(Entry<String, List<Integer>> list : initialData.lists.entrySet())
+        {
+            System.out.println(list.getKey());
+            List<RemoteTrack> newList = new ArrayList<>(list.getValue().size());
+            lists.put(list.getKey(), newList);
+            synchronized(listListeners)
+            {
+                for(ListListener listener : listListeners)
+                {
+                    listener.listAdded(list.getKey());
+                }
+            }
+            
+            for(int trackId : list.getValue())
+            {
+                newList.add(tracks.get(trackId));
+                System.out.println(list.getKey() + ": " + tracks.get(trackId));
+                synchronized(listListeners)
+                {
+                    for(ListListener listener : listListeners)
+                    {
+                        listener.trackInserted(list.getKey(), trackId, tracks.get(trackId), true);
+                    }
+                }
+            }
+            synchronized(listListeners)
+            {
+                for(ListListener listener : listListeners)
+                {
+                    listener.trackInserted(null, 0, null, false);
+                }
+            }
+        }
     }
     
     void connectionClosed()
@@ -74,6 +112,7 @@ public class ClientData implements IData
             }
         }
         tracks.clear();
+        trackMap.clear();
         synchronized(listListeners)
         {
             for(ListListener listener : listListeners)
@@ -82,7 +121,28 @@ public class ClientData implements IData
             }
         }
         
-        // TODO: Notify listeners
+
+        for(Entry<String, List<RemoteTrack>> list : lists.entrySet())
+        {
+            for(int i = list.getValue().size() - 1; i >= 0; i--)
+                synchronized(listListeners)
+                {
+                    for(ListListener listener : listListeners)
+                    {
+                        listener.trackRemoved(list.getKey(), i, true);
+                    }
+                }
+
+            synchronized(listListeners)
+            {
+                for(ListListener listener : listListeners)
+                {
+                    listener.trackRemoved(null, 0, false);
+                    listener.listRemoved(list.getKey());
+                }
+            }
+        }
+        lists.clear();
     }
 
     @Override
@@ -155,17 +215,17 @@ public class ClientData implements IData
     }
 
     @Override
-    public List<DbTrack> readList(String listName, String searchString, SortOrder order) throws ListException
+    public List<? extends DbTrack> readList(String listName, String searchString, SortOrder order) throws ListException
     {
-        // TODO Auto-generated method stub
-        return new ArrayList<>();
+        if(!lists.containsKey(listName))
+            return new ArrayList<>();
+        return Collections.unmodifiableList(lists.get(listName));
     }
 
     @Override
     public boolean isInDb(String trackPath) throws ListException
     {
-        // TODO Auto-generated method stub
-        return false;
+        return trackMap.containsKey(trackPath);
     }
 
     @Override
@@ -195,7 +255,8 @@ public class ClientData implements IData
     @Override
     public DbTrack getTrack(String path, boolean autoCreate) throws ListException
     {
-        // TODO Auto-generated method stub
+        if(trackMap.containsKey(path))
+            return trackMap.get(path);
         if(autoCreate)
             return new DbTrack(this, new Track(path, false))
             {
@@ -207,8 +268,7 @@ public class ClientData implements IData
     @Override
     public DbTrack getTrack(int index)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return tracks.get(index);
     }
 
     @Override
@@ -299,8 +359,7 @@ public class ClientData implements IData
     @Override
     public List<String> getLists() throws ListException
     {
-        // TODO Auto-generated method stub
-        return new ArrayList<>();
+        return new ArrayList<>(lists.keySet());
     }
 
     @Override

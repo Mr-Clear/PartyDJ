@@ -5,11 +5,15 @@ import basics.Controller;
 import data.IData;
 import data.SettingListener;
 
+import lists.ListException;
+import lists.data.DbClientListModel;
+import lists.data.DbTrack;
 import lists.data.ListProvider;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +61,14 @@ public class ServerHandler implements InputHandler, SettingListener
 		switch(message.getType())
 		{
         case DataRequest:
-            sendData();
+            try
+            {
+                sendData();
+            }
+            catch(ListException e)
+            {
+                Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e);
+            }
             break;
         case PdjCommand:
             break;
@@ -105,7 +116,7 @@ public class ServerHandler implements InputHandler, SettingListener
         }
     }
     
-    void sendData()
+    void sendData() throws ListException
     {
         //TODO: Nebenläufig
         final IData data = Controller.getInstance().getData();
@@ -116,7 +127,25 @@ public class ServerHandler implements InputHandler, SettingListener
         final List<Track> tracks = new ArrayList<>(allTracks.size());
         for(common.Track track : allTracks)
             tracks.add(new Track(track));
-        InitialData initialData = new InitialData(settings, tracks);
+        
+        Map<String, List<Integer>> lists = new HashMap<>();
+        List<String> listList = data.getLists();
+        for(String listName : listList)
+        {
+            DbClientListModel dbClientListModel = listProvider.getDbList(listName);
+            List<Integer> list = new ArrayList<>(dbClientListModel.getSize());
+            for(common.Track track : dbClientListModel.getValues())
+            {
+                if(track instanceof DbTrack)
+                {
+                    DbTrack dbTrack = (DbTrack)track;
+                    list.add(dbTrack.getIndex());
+                }
+            }
+            lists.put(listName, list);
+        }
+        
+        InitialData initialData = new InitialData(settings, tracks, lists);
         try
         {
             jsonEncoder.write(initialData);

@@ -10,17 +10,20 @@ public class InitialData extends Message
 {
     public final Map<String, String> settings;
     public final List<Track> tracks;
+    public final Map<String, List<Integer>> lists;
 
     public InitialData()
     {
         this.settings = null;
         this.tracks = null;
+        lists = null;
     }
 
-    public InitialData(Map<String, String> settings, List<Track> tracks)
+    public InitialData(Map<String, String> settings, List<Track> tracks, Map<String, List<Integer>> lists)
     {
         this.settings = settings;
         this.tracks = tracks;
+        this.lists = lists;
     }
     
     @JSON
@@ -33,6 +36,12 @@ public class InitialData extends Message
     public List<Track> getTracks()
     {
         return tracks;
+    }
+
+    @JSON
+    public Map<String, List<Integer>> getLists()
+    {
+        return lists;
     }
 
     @Override

@@ -721,7 +721,7 @@ public interface Invocation extends Serializable
 		{
 			try
 			{
-				List<DbTrack> list = Controller.getInstance().getData().readList(listName, searchString, order);
+				List<? extends DbTrack> list = Controller.getInstance().getData().readList(listName, searchString, order);
 				DbTrack[] answer = new DbTrack[list.size()];
 				list.toArray(answer);
 				server.sendAnswer(invocationId, answer, client);
