@@ -33,13 +33,14 @@ public class JsonEncoder
 	 * @param message Zu schreibende Nachricht.
 	 * @throws IOException
 	 */
-	public synchronized void write(Message message) throws IOException
+	@SuppressWarnings("unused")
+    public synchronized void write(Message message) throws IOException
 	{
 	    /* For debug. Set len = 0 to disable. */
-	    final int len = 100;
+	    final int len = 0;
 	    if(len > 0)
 	    {
-	        String string = jsonSerializer.serialize(message);
+	        String string = jsonSerializer.deepSerialize(message);
 	        System.out.print(string.length() + "\t");
 	        if(string.length() > len)
 	            string = string.substring(0, len);
@@ -48,7 +49,7 @@ public class JsonEncoder
 	    
 	    try
 		{
-		    jsonSerializer.serialize(message, writer);
+		    jsonSerializer.deepSerialize(message, writer);
 		}
 		catch(JSONException e)
 		{
