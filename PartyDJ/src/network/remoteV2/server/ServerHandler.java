@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 
 import network.remoteV2.InputHandler;
 import network.remoteV2.JsonDecoder;
@@ -61,14 +62,7 @@ public class ServerHandler implements InputHandler, SettingListener
 		switch(message.getType())
 		{
         case DataRequest:
-            try
-            {
-                sendData();
-            }
-            catch(ListException e)
-            {
-                Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e);
-            }
+            sendData();
             break;
         case PdjCommand:
             break;
@@ -116,43 +110,59 @@ public class ServerHandler implements InputHandler, SettingListener
         }
     }
     
-    void sendData() throws ListException
+    void sendData()
     {
-        //TODO: Nebenläufig
-        final IData data = Controller.getInstance().getData();
-        final ListProvider listProvider = Controller.getInstance().getListProvider();
-        final Map<String, String> settings = data.readAllSettings();
-
-        List<common.Track> allTracks = listProvider.getMasterList().getValues();
-        final List<Track> tracks = new ArrayList<>(allTracks.size());
-        for(common.Track track : allTracks)
-            tracks.add(new Track(track));
-        
-        Map<String, List<Integer>> lists = new HashMap<>();
-        List<String> listList = data.getLists();
-        for(String listName : listList)
+        server.executor.execute(new Runnable()
         {
-            DbClientListModel dbClientListModel = listProvider.getDbList(listName);
-            List<Integer> list = new ArrayList<>(dbClientListModel.getSize());
-            for(common.Track track : dbClientListModel.getValues())
+            @Override
+            public void run()
             {
-                if(track instanceof DbTrack)
+                try
                 {
-                    DbTrack dbTrack = (DbTrack)track;
-                    list.add(dbTrack.getIndex());
+                    final IData data = Controller.getInstance().getData();
+                    final ListProvider listProvider = Controller.getInstance().getListProvider();
+                    final Map<String, String> settings = data.readAllSettings();
+    
+                    List<common.Track> allTracks = listProvider.getMasterList().getValues();
+                    final List<Track> tracks = new ArrayList<>(allTracks.size());
+                    for(common.Track track : allTracks)
+                        tracks.add(new Track(track));
+                    
+                    Map<String, List<Integer>> lists = new HashMap<>();
+                    List<String> listList = data.getLists();
+                    for(String listName : listList)
+                    {
+                        DbClientListModel dbClientListModel = listProvider.getDbList(listName);
+                        List<Integer> list = new ArrayList<>(dbClientListModel.getSize());
+                        for(common.Track track : dbClientListModel.getValues())
+                        {
+                            if(track instanceof DbTrack)
+                            {
+                                DbTrack dbTrack = (DbTrack)track;
+                                list.add(dbTrack.getIndex());
+                            }
+                        }
+                        lists.put(listName, list);
+                    }
+                    
+                    InitialData initialData = new InitialData(settings, tracks, lists);
+                    jsonEncoder.write(initialData);
+                }
+                catch(ListException e)
+                {
+                    Controller.getInstance().logError(Controller.NORMAL_ERROR, ServerHandler.this, e);
+                }
+                catch(IOException e)
+                {
+                    Controller.getInstance().logError(Controller.NORMAL_ERROR, e);
                 }
             }
-            lists.put(listName, list);
-        }
-        
-        InitialData initialData = new InitialData(settings, tracks, lists);
-        try
-        {
-            jsonEncoder.write(initialData);
-        }
-        catch(IOException e)
-        {
-            Controller.getInstance().logError(Controller.NORMAL_ERROR, e);
-        }
+        });
+    }
+
+    @Override
+    public Executor getExecutor()
+    {
+        return server.executor;
     }
 }

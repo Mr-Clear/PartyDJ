@@ -4,11 +4,14 @@ import basics.Plugin;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /** Ermöglicht es, den PartyDJ über Netzwerk zu bedienen. */
 public class Server implements Plugin
 {
 	public final static int PORT = 2804;
+	final ExecutorService executor = Executors.newCachedThreadPool();
 
 	/** Jeder verbundene Client bekommt einen ServerHandler. */
 	private final Set<ServerHandler> serverHandlers = new HashSet<>();

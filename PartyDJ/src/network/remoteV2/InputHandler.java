@@ -1,5 +1,7 @@
 package network.remoteV2;
 
+import java.util.concurrent.Executor;
+
 import network.remoteV2.beans.Message;
 
 /**
@@ -17,4 +19,6 @@ public interface InputHandler
 	 * @param externalReason true, if connection was closed.
 	 */
 	void inputHandlerClosed(boolean externalReason);
+	
+	Executor getExecutor();
 }

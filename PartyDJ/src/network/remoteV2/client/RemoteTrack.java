@@ -1,4 +1,4 @@
-package network.remoteV2;
+package network.remoteV2.client;
 
 import data.IData;
 

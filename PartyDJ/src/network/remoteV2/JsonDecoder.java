@@ -18,8 +18,6 @@ public class JsonDecoder
 	private final InputStream inputStream;
 	/** Empfänger der Nachrichten. */
 	private final InputHandler inputHandler;
-	/** Thread, der auf dem inputstream sitzt. */
-	private final ReceiverThread receiverThread;
 	/** Wenn false, stoppt der decoder-Thread. */
 	private volatile boolean running = true;
 
@@ -32,8 +30,7 @@ public class JsonDecoder
 		this.inputStream = inputStream;
 		this.inputHandler = inputHandler;
 
-		receiverThread = new ReceiverThread();
-		receiverThread.start();
+		inputHandler.getExecutor().execute(new Receiver());
 	}
 
 	/** Stoppt den ReceiverThread. */
@@ -50,15 +47,9 @@ public class JsonDecoder
 		}
 	}
 
-	private class ReceiverThread extends Thread
+	private class Receiver implements Runnable
 	{
-		public ReceiverThread()
-		{
-			setDaemon(true);
-			setName("NetworkReceiver");
-		}
-
-		@Override
+	    @Override
 		public void run()
 		{
 			JSONDeserializer<Message> deserializer = new JSONDeserializer<>();
