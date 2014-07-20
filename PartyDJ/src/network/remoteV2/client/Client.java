@@ -12,17 +12,15 @@ import gui.SplashWindow;
 import players.IPlayer;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import network.remoteV2.JsonEncoder;
+import network.remoteV2.beans.DataRequest;
 import network.remoteV2.beans.InitialData;
 import network.remoteV2.beans.Message;
 import network.remoteV2.beans.Setting;
-import network.remoteV2.beans.DataRequest;
 import network.remoteV2.beans.Test;
 
 public class Client extends Controller
@@ -31,7 +29,6 @@ public class Client extends Controller
     final ClientPlayer player;
     final ClientConnection clientConnection;
     JsonEncoder jsonEncoder;
-    final ExecutorService executor = Executors.newCachedThreadPool();
 
     protected Client(String[] args)
     {

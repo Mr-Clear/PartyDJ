@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.Executor;
 
 import network.remoteV2.InputHandler;
 import network.remoteV2.JsonDecoder;
@@ -42,7 +41,7 @@ public class ClientConnection implements InputHandler
 	{
 		this.host = connectHost;
 		this.port = connectPort;
-		client.executor.execute(new Runnable()
+		Controller.getInstance().getExecutor().execute(new Runnable()
         {
             @Override
             public void run()
@@ -107,10 +106,4 @@ public class ClientConnection implements InputHandler
         client.setJsonEncoder(null);
         connect(host, port);
 	}
-
-    @Override
-    public Executor getExecutor()
-    {
-        return client.executor;
-    }
 }

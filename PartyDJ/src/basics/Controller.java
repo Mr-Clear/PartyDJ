@@ -2,11 +2,16 @@ package basics;
 
 import common.Functions;
 import common.Track;
+
 import data.IData;
+
 import lists.EditableListModel;
 import lists.data.ListProvider;
+
 import gui.settings.SettingNode;
+
 import players.IPlayer;
+
 import java.awt.Frame;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
@@ -19,6 +24,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 import java.util.Timer;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -39,7 +47,7 @@ public abstract class Controller
 	/** Dieser Thread überwacht ob der PartyDJ geschlossen wird. */
 	protected Thread closeListenThread;
 
-	/** Wunschliste aus derimmer der oberste Track gespielt und dabei gelöscht wird. */
+	/** Wunschliste aus der immer der oberste Track gespielt und dabei gelöscht wird. */
 	protected EditableListModel playList;
 	/** Liste der zuletzt gespielten lieder. Hat maximal 100 Einträge. */
 	protected EditableListModel lastPlayedList;
@@ -60,12 +68,14 @@ public abstract class Controller
 	protected final Stack<Track> trackUpdateStack = new Stack<>();
 	/** Wird am Ende des Konstruktors auf true gesetzt. */
 	protected boolean loadFinished = false;
-	/** Erböglicht es einfache Befehle auszuführen. */
+	/** Ermöglicht es einfache Befehle auszuführen. */
 	protected final Scripter scripter;
 
 	/** Stream der Fehlermeldungen in eine Datei schreibt. */
 	protected java.io.PrintWriter logStream;
-
+	/** Executor service für das gesamte Programm. */
+	protected final Executor executor = Executors.newCachedThreadPool();
+	
 	/**
 	 * @param args Befehlszeilenargumente.
 	 */
@@ -322,6 +332,11 @@ public abstract class Controller
 	public static String getVersion()
 	{
 		return version;
+	}
+	
+	public Executor getExecutor()
+	{
+	    return executor;
 	}
 
 	/**Information, die normalerweise nicht beachtet wird.

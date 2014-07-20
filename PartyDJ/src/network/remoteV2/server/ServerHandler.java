@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
 
 import network.remoteV2.InputHandler;
 import network.remoteV2.JsonDecoder;
@@ -112,7 +111,7 @@ public class ServerHandler implements InputHandler, SettingListener
     
     void sendData()
     {
-        server.executor.execute(new Runnable()
+        Controller.getInstance().getExecutor().execute(new Runnable()
         {
             @Override
             public void run()
@@ -158,11 +157,5 @@ public class ServerHandler implements InputHandler, SettingListener
                 }
             }
         });
-    }
-
-    @Override
-    public Executor getExecutor()
-    {
-        return server.executor;
     }
 }

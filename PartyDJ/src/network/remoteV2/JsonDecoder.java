@@ -30,7 +30,7 @@ public class JsonDecoder
 		this.inputStream = inputStream;
 		this.inputHandler = inputHandler;
 
-		inputHandler.getExecutor().execute(new Receiver());
+		Controller.getInstance().getExecutor().execute(new Receiver());
 	}
 
 	/** Stoppt den ReceiverThread. */
