@@ -40,7 +40,7 @@ public class ClientData implements IData
         this.client = client;
     }
     
-    void initialDate(InitialData initialData)
+    void initialData(InitialData initialData)
     {
         settings.putAll(initialData.settings);
         for(Entry<String, String> entry : initialData.settings.entrySet())

@@ -140,7 +140,7 @@ public class Client extends Controller
             case TrackList:
                 break;
             case InitialData:
-                data.initialDate((InitialData)message);
+                data.initialData((InitialData)message);
                 break;
             case PdjCommand:
             case DataRequest:

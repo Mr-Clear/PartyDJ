@@ -25,11 +25,11 @@ public class DbClientListModel extends LightClientListModel
 	
 	protected DbClientListModel(final String listName) throws ListException
 	{
-		super(Controller.getInstance().getData().readList(listName, null, SortOrder.POSITION));
+		super(listName, Controller.getInstance().getData().readList(listName, null, SortOrder.POSITION));
 		this.listName = listName;
 	}
 	
-	@Override
+	//@Override
 	public void add(final DbTrack track, final boolean eventsFollowing) throws ListException
 	{		
 		data.insertTrack(listName, track, eventsFollowing);
