@@ -51,7 +51,8 @@ public class DerbyDB implements IData, CloseListener
 
 	protected final String version = "0.4";
 
-	/** Verbindet zur Datenbank.
+	/**
+	 * Verbindet zur Datenbank.
 	 *
 	 * @param dbPath Verzeichnispfad der Datenbank.
 	 * @throws OpenDbException Tritt auf, wenn keine Verbindung möglich ist.
@@ -64,9 +65,9 @@ public class DerbyDB implements IData, CloseListener
 
 		try
 		{
-		    Class.forName(driver);
+			Class.forName(driver);
 		}
-		catch(final java.lang.ClassNotFoundException e)
+		catch (final java.lang.ClassNotFoundException e)
 		{
 			throw new OpenDbException("Datenbanksystem Derby nicht gefunden.", e);
 		}
@@ -85,9 +86,9 @@ public class DerbyDB implements IData, CloseListener
 				throw new OpenDbException(e);
 			}
 
-			if(!version.equals(dbVersion))
+			if (!version.equals(dbVersion))
 			{
-				if(!UpdateDB.update(this, dbVersion, version))
+				if (!UpdateDB.update(this, dbVersion, version))
 					throw new OpenDbException("Update der Datenbank fehlgeschlagen.\nAlte Verion: " + dbVersion + "\nNeue Version: " + version);
 			}
 		}
@@ -109,14 +110,15 @@ public class DerbyDB implements IData, CloseListener
 		{
 			readMasterList();
 		}
-		catch(ListException e)
+		catch (ListException e)
 		{
 			throw new OpenDbException(e);
 		}
 	}
 
-	/** Erstellt eine neue Datenbank.
-	 *	Wird vom Konstruktor aufgerufen, wenn Datenbank noch nicht existiert.
+	/**
+	 * Erstellt eine neue Datenbank. Wird vom Konstruktor aufgerufen, wenn
+	 * Datenbank noch nicht existiert.
 	 */
 	protected static Connection createDb(final String name) throws OpenDbException
 	{
@@ -125,9 +127,9 @@ public class DerbyDB implements IData, CloseListener
 
 		try
 		{
-		    Class.forName(driver);
+			Class.forName(driver);
 		}
-		catch(final java.lang.ClassNotFoundException e)
+		catch (final java.lang.ClassNotFoundException e)
 		{
 			throw new OpenDbException(e);
 		}
@@ -138,34 +140,18 @@ public class DerbyDB implements IData, CloseListener
 			newConn = DriverManager.getConnection(connectionURL);
 			newConn.setAutoCommit(false);
 
-			try(Statement s = newConn.createStatement())
+			try (Statement s = newConn.createStatement())
 			{
 				s.executeUpdate("CREATE TABLE SETTINGS (NAME VARCHAR(64) NOT NULL, VALUE LONG VARCHAR, PRIMARY KEY (NAME))");
 				s.executeUpdate("CREATE INDEX SETTING ON SETTINGS (NAME)");
-	
-				s.executeUpdate("CREATE TABLE FILES ("
-					+ "INDEX INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY, "
-					+ "PATH VARCHAR(1024) NOT NULL, "
-					+ "SEARCHNAME VARCHAR(256) NOT NULL, "
-					+ "NAME VARCHAR(256) NOT NULL,"
-					+ "DURATION DOUBLE DEFAULT 0,"
-					+ "SIZE BIGINT DEFAULT 0, "
-					+ "PROBLEM SMALLINT DEFAULT 0, "
-					+ "INFO LONG VARCHAR, "
-					+ "PRIMARY KEY (INDEX), "
-					+ "UNIQUE (PATH))");
+
+				s.executeUpdate("CREATE TABLE FILES (" + "INDEX INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY, " + "PATH VARCHAR(1024) NOT NULL, " + "SEARCHNAME VARCHAR(256) NOT NULL, " + "NAME VARCHAR(256) NOT NULL," + "DURATION DOUBLE DEFAULT 0," + "SIZE BIGINT DEFAULT 0, " + "PROBLEM SMALLINT DEFAULT 0, " + "INFO LONG VARCHAR, " + "PRIMARY KEY (INDEX), " + "UNIQUE (PATH))");
 				s.executeUpdate("CREATE UNIQUE INDEX PATH ON FILES (PATH)");
 				s.executeUpdate("CREATE INDEX SEARCHNAME ON FILES (SEARCHNAME)");
-	
-				s.executeUpdate("CREATE TABLE LISTS "
-						+ "(INDEX INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY, "
-						+ "NAME VARCHAR(32) NOT NULL, "
-						+ "DESCRIPTION LONG VARCHAR, "
-						+ "PRIORITY SMALLINT DEFAULT 0, "
-						+ "PRIMARY KEY (INDEX), "
-						+ "UNIQUE (NAME))");
+
+				s.executeUpdate("CREATE TABLE LISTS " + "(INDEX INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY, " + "NAME VARCHAR(32) NOT NULL, " + "DESCRIPTION LONG VARCHAR, " + "PRIORITY SMALLINT DEFAULT 0, " + "PRIMARY KEY (INDEX), " + "UNIQUE (NAME))");
 				s.executeUpdate("CREATE INDEX LIST_NAMES ON LISTS (NAME)");
-	
+
 				s.executeUpdate("CREATE TABLE LISTS_CONTENT (LIST INTEGER NOT NULL, INDEX INTEGER NOT NULL, POSITION INTEGER NOT NULL, PRIMARY KEY (LIST, POSITION))");
 			}
 			newConn.commit();
@@ -174,7 +160,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 		catch (final SQLException e)
 		{
-			if(newConn != null)
+			if (newConn != null)
 			{
 				try
 				{
@@ -191,22 +177,15 @@ public class DerbyDB implements IData, CloseListener
 
 	protected Map<Integer, DbTrack> readMasterList() throws ListException
 	{
-		if(tracksByIndex.isEmpty())
+		if (tracksByIndex.isEmpty())
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
-				try(ResultSet rs = queryRS("SELECT * FROM FILES"))
+				try (ResultSet rs = queryRS("SELECT * FROM FILES"))
 				{
-					while(rs.next())
+					while (rs.next())
 					{
-						final DerbyDbTrack newTrack =  new DerbyDbTrack(this,
-																rs.getInt("INDEX"),
-																rs.getString("PATH"),
-																rs.getString("NAME"),
-																rs.getDouble("DURATION"),
-																rs.getLong("SIZE"),
-																shortToProblem(rs.getShort("PROBLEM")),
-																rs.getString("INFO"));
+						final DerbyDbTrack newTrack = new DerbyDbTrack(this, rs.getInt("INDEX"), rs.getString("PATH"), rs.getString("NAME"), rs.getDouble("DURATION"), rs.getLong("SIZE"), shortToProblem(rs.getShort("PROBLEM")), rs.getString("INFO"));
 						tracksByIndex.put(rs.getInt("index"), newTrack);
 						tracksByPath.put(rs.getString("PATH"), newTrack);
 					}
@@ -225,25 +204,25 @@ public class DerbyDB implements IData, CloseListener
 	protected PreparedStatement prepareStatement(final String sql, final Object... parameters) throws SQLException
 	{
 		final PreparedStatement ps = conn.prepareStatement(sql);
-		for(int i = 0; i < parameters.length; i++)
+		for (int i = 0; i < parameters.length; i++)
 		{
 			final Class<?> c = parameters[i].getClass();
-			if(c == Boolean.class)
-				ps.setBoolean(i + 1, (Boolean)parameters[i]);
-			else if(c == Byte.class)
-				ps.setByte(i + 1, (Byte)parameters[i]);
-			else if(c == Double.class)
-				ps.setDouble(i + 1, (Double)parameters[i]);
-			else if(c == Float.class)
-				ps.setFloat(i + 1, (Float)parameters[i]);
-			else if(c == Integer.class)
-				ps.setInt(i + 1, (Integer)parameters[i]);
-			else if(c == Long.class)
-				ps.setLong(i + 1, (Long)parameters[i]);
-			else if(c == String.class)
-				ps.setString(i + 1, (String)parameters[i]);
-			else if(c == Short.class)
-				ps.setShort(i + 1, (Short)parameters[i]);
+			if (c == Boolean.class)
+				ps.setBoolean(i + 1, (Boolean) parameters[i]);
+			else if (c == Byte.class)
+				ps.setByte(i + 1, (Byte) parameters[i]);
+			else if (c == Double.class)
+				ps.setDouble(i + 1, (Double) parameters[i]);
+			else if (c == Float.class)
+				ps.setFloat(i + 1, (Float) parameters[i]);
+			else if (c == Integer.class)
+				ps.setInt(i + 1, (Integer) parameters[i]);
+			else if (c == Long.class)
+				ps.setLong(i + 1, (Long) parameters[i]);
+			else if (c == String.class)
+				ps.setString(i + 1, (String) parameters[i]);
+			else if (c == Short.class)
+				ps.setShort(i + 1, (Short) parameters[i]);
 			else
 				ps.setObject(i + 1, parameters[i]);
 		}
@@ -252,7 +231,7 @@ public class DerbyDB implements IData, CloseListener
 
 	protected int executeUpdate(final String sql, final Object... parameters) throws SQLException
 	{
-		synchronized(conn)
+		synchronized (conn)
 		{
 			final int ret = prepareStatement(sql, parameters).executeUpdate();
 			return ret;
@@ -264,10 +243,9 @@ public class DerbyDB implements IData, CloseListener
 		return prepareStatement(sql, parameters).executeQuery();
 	}
 
-
 	protected int queryInt(final String sql, final Object... parameters) throws SQLException
 	{
-		synchronized(conn)
+		synchronized (conn)
 		{
 			final int ret = queryInt(queryRS(sql, parameters));
 			return ret;
@@ -276,14 +254,14 @@ public class DerbyDB implements IData, CloseListener
 
 	protected static int queryInt(final ResultSet rs) throws SQLException
 	{
-		if(rs.next())
+		if (rs.next())
 			return rs.getInt(1);
 		throw new SQLException("Kein Eintag gefunden:");
 	}
 
 	protected String queryString(final String sql, final Object... parameters) throws SQLException
 	{
-		synchronized(conn)
+		synchronized (conn)
 		{
 			final String ret = queryString(queryRS(sql, parameters));
 			return ret;
@@ -292,7 +270,7 @@ public class DerbyDB implements IData, CloseListener
 
 	protected static String queryString(final ResultSet rs) throws SQLException
 	{
-		if(rs.next())
+		if (rs.next())
 			return rs.getString(1);
 		return null;
 	}
@@ -301,38 +279,38 @@ public class DerbyDB implements IData, CloseListener
 	@Override
 	public List<DbTrack> readList(final String listName, String searchString, data.SortOrder order) throws ListException
 	{
-		if(searchString != null)
+		if (searchString != null)
 		{
 			searchString = makeSearchString(searchString.replace("*", "%"));
-			if(searchString.charAt(0) == '^')
+			if (searchString.charAt(0) == '^')
 				searchString = searchString.substring(1);
 			else
 				searchString = "%" + searchString;
 
-			if(searchString.charAt(searchString.length() - 1) == '$')
+			if (searchString.charAt(searchString.length() - 1) == '$')
 				searchString = searchString.substring(0, searchString.length() - 1);
 			else
 				searchString = searchString + "%";
 		}
 
-		if(order == null)
+		if (order == null)
 			order = data.SortOrder.DEFAULT;
 
 		try
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				PreparedStatement ps;
-				if(listName == null)	// Inhalt aus MasterList
+				if (listName == null) // Inhalt aus MasterList
 				{
 
 					String statement;
-					if(searchString == null)
+					if (searchString == null)
 						statement = "SELECT INDEX FROM FILES";
 					else
 						statement = "SELECT INDEX FROM FILES WHERE SEARCHNAME LIKE ?";
 
-					switch(order)
+					switch (order)
 					{
 					case NONE:
 						break;
@@ -361,16 +339,17 @@ public class DerbyDB implements IData, CloseListener
 
 					ps = conn.prepareStatement(statement);
 
-					if(searchString != null)
+					if (searchString != null)
 					{
 						ps.setString(1, searchString);
 					}
 				}
-				else					// Inhalt aus ClientList
+				else
+				// Inhalt aus ClientList
 				{
 					final int listIndex = getListIndex(listName);
 					// Testen ob Liste existiert
-					if(listIndex == -1)
+					if (listIndex == -1)
 					{
 						// Wenn nicht, Liste erstellen
 						addList(listName);
@@ -378,12 +357,12 @@ public class DerbyDB implements IData, CloseListener
 					}
 
 					String statement;
-					if(searchString == null)
+					if (searchString == null)
 						statement = "SELECT FILES.INDEX FROM FILES, LISTS_CONTENT WHERE LIST = ? AND FILES.INDEX = LISTS_CONTENT.INDEX";
 					else
 						statement = "SELECT FILES.INDEX FROM FILES, LISTS_CONTENT WHERE LIST = ? AND FILES.INDEX = LISTS_CONTENT.INDEX AND FILES.SEARCHNAME LIKE ?";
 
-					switch(order)
+					switch (order)
 					{
 					case NONE:
 						break;
@@ -415,14 +394,14 @@ public class DerbyDB implements IData, CloseListener
 
 					ps.setInt(1, listIndex);
 
-					if(searchString != null)
+					if (searchString != null)
 						ps.setString(2, searchString);
 				}
 
 				final ArrayList<DbTrack> list = new ArrayList<>();
 
 				final ResultSet rs = ps.executeQuery();
-				while(rs.next())
+				while (rs.next())
 					list.add(tracksByIndex.get(rs.getInt(1)));
 
 				rs.close();
@@ -444,20 +423,20 @@ public class DerbyDB implements IData, CloseListener
 		boolean trackIsNew = false;
 		DerbyDbTrack ret = null;
 
-		if(track != null)
+		if (track != null)
 		{
 			final String path = track.getPath();
 			ret = tracksByPath.get(track.getPath());
 
-			if(ret == null)
+			if (ret == null)
 			{
-				if(track.getName() == null)
+				if (track.getName() == null)
 					track.setName(path.substring(path.lastIndexOf("\\") + 1, path.lastIndexOf(".")));
 
 				final int index;
-				synchronized(conn)
+				synchronized (conn)
 				{
-					try(PreparedStatement ps = conn.prepareStatement("INSERT INTO FILES (PATH, SEARCHNAME, NAME, DURATION, SIZE, PROBLEM, INFO) VALUES(?, ?, ?, ?, ?, ?, ?)");)
+					try (PreparedStatement ps = conn.prepareStatement("INSERT INTO FILES (PATH, SEARCHNAME, NAME, DURATION, SIZE, PROBLEM, INFO) VALUES(?, ?, ?, ?, ?, ?, ?)");)
 					{
 						ps.setString(1, path);
 						ps.setString(2, makeSearchString(track.getName()));
@@ -473,7 +452,7 @@ public class DerbyDB implements IData, CloseListener
 						index = checkIndex(path);
 						conn.commit();
 					}
-					catch(SQLException e)
+					catch (SQLException e)
 					{
 						throw new ListException(e);
 					}
@@ -489,17 +468,18 @@ public class DerbyDB implements IData, CloseListener
 			}
 		}
 
-		if(trackIsNew || track == null)
+		if (trackIsNew || track == null)
 		{
-			synchronized(listListener)
+			synchronized (listListener)
 			{
 				final DbTrack newTrack = ret;
-				for(final ListListener listener : listListener)
+				for (final ListListener listener : listListener)
 				{
 					//XXX Glaub nicht dass das Starten eines Threads so toll ist. Können ganz schön viele werden.
 					final Thread t = new Thread()
 					{
-						@Override public void run()
+						@Override
+						public void run()
 						{
 							listener.trackAdded(newTrack, eventsFollowing);
 						}
@@ -519,9 +499,9 @@ public class DerbyDB implements IData, CloseListener
 	{
 		final common.Track oldTrack = new common.Track(track);
 
-		if(track != null)
+		if (track != null)
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				try
 				{
@@ -537,7 +517,7 @@ public class DerbyDB implements IData, CloseListener
 				try
 				{
 					int lastSet = 2;
-					switch(element)
+					switch (element)
 					{
 					case PATH:
 						ps = conn.prepareStatement("UPDATE FILES SET PATH = ? WHERE INDEX = ?");
@@ -579,32 +559,33 @@ public class DerbyDB implements IData, CloseListener
 				}
 				finally
 				{
-					if(ps != null)
+					if (ps != null)
 						try
 						{
 							ps.close();
 						}
-						catch(final SQLException e1)
+						catch (final SQLException e1)
 						{
 							Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e1, "Konnte SQL-Statement nicht schließen.");
 						}
 				}
 			}
 
-			/*if(masterList != null)
-			{
-				masterList.put(track.getIndex(), track);
-			}*/
+			/*
+			 * if(masterList != null) { masterList.put(track.getIndex(), track);
+			 * }
+			 */
 		}
 
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				//XXX Glaub nicht dass das Starten eines Threads so toll ist. Können ganz schön viele werden.
 				final Thread t = new Thread()
 				{
-					@Override public void run()
+					@Override
+					public void run()
 					{
 						listener.trackChanged(track, oldTrack, eventsFollowing);
 					}
@@ -619,9 +600,9 @@ public class DerbyDB implements IData, CloseListener
 	@Override
 	public void deleteTrack(final DbTrack track, final boolean eventsFollowing) throws ListException
 	{
-		if(track != null)
+		if (track != null)
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				try
 				{
@@ -644,19 +625,19 @@ public class DerbyDB implements IData, CloseListener
 				}
 			}
 
-
 			tracksByIndex.remove(track.getIndex());
 			tracksByPath.remove(track.getPath());
 		}
 
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				//XXX Glaub nicht dass das Starten eines Threads so toll ist. Können ganz schön viele werden.
 				final Thread t = new Thread()
 				{
-					@Override public void run()
+					@Override
+					public void run()
 					{
 						listener.trackDeleted(track, eventsFollowing);
 					}
@@ -672,9 +653,9 @@ public class DerbyDB implements IData, CloseListener
 	public DbTrack getTrack(String path, boolean autoCreate) throws ListException
 	{
 		DbTrack ret = tracksByPath.get(path);
-		if(ret != null)
+		if (ret != null)
 			return ret;
-		if(autoCreate)
+		if (autoCreate)
 		{
 			return addTrack(new Track(path, false), false);
 		}
@@ -691,7 +672,7 @@ public class DerbyDB implements IData, CloseListener
 	protected int checkIndex(final String trackPath) throws SQLException
 	{
 		DbTrack track = tracksByPath.get(trackPath);
-		if(track != null)
+		if (track != null)
 			return track.getIndex();
 		return queryInt("SELECT INDEX FROM FILES WHERE PATH = ?", trackPath);
 	}
@@ -701,6 +682,7 @@ public class DerbyDB implements IData, CloseListener
 	{
 		listListener.add(listener);
 	}
+
 	@Override
 	public void removeListListener(final ListListener listener)
 	{
@@ -716,11 +698,11 @@ public class DerbyDB implements IData, CloseListener
 	@Override
 	public void addList(final String listName, final String description) throws ListException
 	{
-		synchronized(conn)
+		synchronized (conn)
 		{
 			try
 			{
-				if(description != null)
+				if (description != null)
 					executeUpdate("INSERT INTO LISTS (NAME, DESCRIPTION) VALUES (?, ?)", listName, description);
 				else
 					executeUpdate("INSERT INTO LISTS (NAME) VALUES (?)", listName);
@@ -728,14 +710,14 @@ public class DerbyDB implements IData, CloseListener
 			}
 			catch (final SQLException e)
 			{
-				if(e instanceof SQLIntegrityConstraintViolationException)
+				if (e instanceof SQLIntegrityConstraintViolationException)
 					throw new ListException("Liste " + listName + " existiert bereits.", e);
 				throw new ListException(e);
 			}
 		}
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				try
 				{
@@ -751,10 +733,10 @@ public class DerbyDB implements IData, CloseListener
 
 	protected int getListIndex(final String listName)
 	{
-		synchronized(listIndices)
+		synchronized (listIndices)
 		{
 			//Wenn möglich aus temporärer Liste lesen
-			if(listIndices.containsKey(listName))
+			if (listIndices.containsKey(listName))
 			{
 				return listIndices.get(listName);
 			}
@@ -778,7 +760,7 @@ public class DerbyDB implements IData, CloseListener
 	{
 		try
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				final int listIndex = getListIndex(listName);
 				executeUpdate("DELETE FROM LISTS WHERE NAME = ?", listName);
@@ -799,9 +781,9 @@ public class DerbyDB implements IData, CloseListener
 			throw new ListException(e);
 		}
 
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				try
 				{
@@ -815,7 +797,7 @@ public class DerbyDB implements IData, CloseListener
 		}
 
 		// Aus temporärer Liste löschen
-		if(listIndices.containsKey(listName))
+		if (listIndices.containsKey(listName))
 			listIndices.remove(listName);
 	}
 
@@ -824,7 +806,7 @@ public class DerbyDB implements IData, CloseListener
 	{
 		try
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				return queryInt("SELECT PRIORITY FROM LISTS WHERE NAME = ?", listName);
 			}
@@ -840,7 +822,7 @@ public class DerbyDB implements IData, CloseListener
 	{
 		try
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				executeUpdate("UPDATE LISTS SET PRIORITY = ? WHERE NAME = ?", priority, listName);
 			}
@@ -849,9 +831,9 @@ public class DerbyDB implements IData, CloseListener
 		{
 			throw new ListException(e);
 		}
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				try
 				{
@@ -892,9 +874,9 @@ public class DerbyDB implements IData, CloseListener
 		{
 			throw new ListException(e);
 		}
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				try
 				{
@@ -915,7 +897,7 @@ public class DerbyDB implements IData, CloseListener
 		{
 			executeUpdate("UPDATE LISTS SET NAME = ? WHERE NAME = ?", newName, oldName);
 			conn.commit();
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				try
 				{
@@ -931,9 +913,9 @@ public class DerbyDB implements IData, CloseListener
 		{
 			throw new ListException(e);
 		}
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				try
 				{
@@ -951,9 +933,9 @@ public class DerbyDB implements IData, CloseListener
 	public List<String> getLists() throws ListException
 	{
 		final List<String> lists = new ArrayList<>();
-		try(ResultSet rs = queryRS("SELECT NAME FROM LISTS ORDER BY NAME"))
+		try (ResultSet rs = queryRS("SELECT NAME FROM LISTS ORDER BY NAME"))
 		{
-			while(rs.next())
+			while (rs.next())
 				lists.add(rs.getString(1));
 		}
 		catch (final SQLException e)
@@ -966,14 +948,14 @@ public class DerbyDB implements IData, CloseListener
 	@Override
 	public void writeSetting(final String name, final String value) throws SettingException
 	{
-		synchronized(settings)
+		synchronized (settings)
 		{
-			if(!value.equals(readSetting(name)))	// Prüfen ob Einstellung tatsächlich verändert wurde
+			if (!value.equals(readSetting(name))) // Prüfen ob Einstellung tatsächlich verändert wurde
 			{
 				// In Datenbank speichern
 				try
 				{
-					if(readSetting(name) == null)
+					if (readSetting(name) == null)
 						executeUpdate("INSERT INTO SETTINGS VALUES(?, ?)", name, value);
 					else
 						executeUpdate("UPDATE SETTINGS SET VALUE = ? WHERE NAME = ?", value, name);
@@ -987,9 +969,9 @@ public class DerbyDB implements IData, CloseListener
 				// In temporäre Liste schreiben
 				settings.put(name, value);
 
-				synchronized(settingListener)
+				synchronized (settingListener)
 				{
-					for(final SettingListener listener : settingListener)
+					for (final SettingListener listener : settingListener)
 					{
 						try
 						{
@@ -1010,13 +992,14 @@ public class DerbyDB implements IData, CloseListener
 	{
 		return readSetting(name, null);
 	}
+
 	@Override
 	public String readSetting(final String name, final String defaultValue) throws SettingException
 	{
-		synchronized(settings)
+		synchronized (settings)
 		{
 			//Wenn möglich aus temporärer Liste lesen
-			if(settings.containsKey(name))
+			if (settings.containsKey(name))
 			{
 				return settings.get(name);
 			}
@@ -1024,7 +1007,7 @@ public class DerbyDB implements IData, CloseListener
 			try
 			{
 				String value = queryString("SELECT VALUE FROM SETTINGS WHERE NAME = ?", name);
-				if(value != null)
+				if (value != null)
 					settings.put(name, value);
 				else
 					value = defaultValue;
@@ -1059,14 +1042,14 @@ public class DerbyDB implements IData, CloseListener
 		{
 			size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", listIndex);
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new ListException(e);
 		}
 
-		if(track != null && track.getIndex() >= 0)
+		if (track != null && track.getIndex() >= 0)
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				try
 				{
@@ -1089,14 +1072,15 @@ public class DerbyDB implements IData, CloseListener
 			}
 		}
 
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				//XXX Glaub nicht dass das Starten eines Threads so toll ist. Können ganz schön viele werden.
 				final Thread t = new Thread()
 				{
-					@Override public void run()
+					@Override
+					public void run()
 					{
 						listener.trackInserted(listName, size, track, eventsFollowing);
 					}
@@ -1111,9 +1095,9 @@ public class DerbyDB implements IData, CloseListener
 	@Override
 	public void insertTrackAt(final String listName, final DbTrack track, int trackPosition, final boolean eventsFollowing) throws ListException
 	{
-		if(track != null && track.getIndex() >= 0)
+		if (track != null && track.getIndex() >= 0)
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				try
 				{
@@ -1121,9 +1105,9 @@ public class DerbyDB implements IData, CloseListener
 					final int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", listIndex);
 
 					// trackPosition korrigieren.
-					if(trackPosition < 0)
+					if (trackPosition < 0)
 						trackPosition = 0;
-					if(trackPosition > size)
+					if (trackPosition > size)
 						trackPosition = size;
 
 					executeUpdate("UPDATE LISTS_CONTENT SET POSITION = POSITION + 1 WHERE LIST = ? AND POSITION >= ?", listIndex, trackPosition);
@@ -1147,14 +1131,15 @@ public class DerbyDB implements IData, CloseListener
 		}
 
 		final int finalTrackPosition = trackPosition;
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				//XXX Glaub nicht dass das Starten eines Threads so toll ist. Können ganz schön viele werden.
 				final Thread t = new Thread()
 				{
-					@Override public void run()
+					@Override
+					public void run()
 					{
 						listener.trackInserted(listName, finalTrackPosition, track, eventsFollowing);
 					}
@@ -1169,9 +1154,9 @@ public class DerbyDB implements IData, CloseListener
 	@Override
 	public void removeTrack(final String listName, final int trackPosition, final boolean eventsFollowing) throws ListException
 	{
-		if(trackPosition >= 0)
+		if (trackPosition >= 0)
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				try
 				{
@@ -1179,9 +1164,8 @@ public class DerbyDB implements IData, CloseListener
 
 					final int size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", listIndex);
 
-
 					// Wenn trackPosition ausserhalb der Liste, nichts löschen.
-					if(trackPosition < 0 || trackPosition >= size)
+					if (trackPosition < 0 || trackPosition >= size)
 						return;
 
 					executeUpdate("DELETE FROM LISTS_CONTENT WHERE LIST = ? AND POSITION = ?", listIndex, trackPosition);
@@ -1204,14 +1188,15 @@ public class DerbyDB implements IData, CloseListener
 			}
 		}
 
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				//XXX Glaub nicht dass das Starten eines Threads so toll ist. Können ganz schön viele werden.
 				final Thread t = new Thread()
 				{
-					@Override public void run()
+					@Override
+					public void run()
 					{
 						listener.trackRemoved(listName, trackPosition, eventsFollowing);
 					}
@@ -1226,9 +1211,9 @@ public class DerbyDB implements IData, CloseListener
 	@Override
 	public void swapTrack(final String listName, final int trackA, final int trackB, final boolean eventsFollowing) throws ListException
 	{
-		if(trackA >= 0 && trackB >= 0 && trackA != trackB)
+		if (trackA >= 0 && trackB >= 0 && trackA != trackB)
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				try
 				{
@@ -1238,7 +1223,7 @@ public class DerbyDB implements IData, CloseListener
 					executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE LIST = ? AND POSITION = -1", trackB, listIndex);
 					conn.commit();
 				}
-				catch(final SQLException e)
+				catch (final SQLException e)
 				{
 					try
 					{
@@ -1253,14 +1238,15 @@ public class DerbyDB implements IData, CloseListener
 			}
 		}
 
-		synchronized(listListener)
+		synchronized (listListener)
 		{
-			for(final ListListener listener : listListener)
+			for (final ListListener listener : listListener)
 			{
 				//XXX Glaub nicht dass das Starten eines Threads so toll ist. Können ganz schön viele werden.
 				final Thread t = new Thread()
 				{
-					@Override public void run()
+					@Override
+					public void run()
 					{
 						listener.tracksSwaped(listName, trackA, trackB, eventsFollowing);
 					}
@@ -1292,7 +1278,7 @@ public class DerbyDB implements IData, CloseListener
 
 	protected static short problemToShort(final DbTrack.Problem problem)
 	{
-		switch(problem)
+		switch (problem)
 		{
 		case NONE:
 			return 0;
@@ -1308,7 +1294,7 @@ public class DerbyDB implements IData, CloseListener
 
 	protected static DbTrack.Problem shortToProblem(final short number)
 	{
-		switch(number)
+		switch (number)
 		{
 		case 0:
 			return DbTrack.Problem.NONE;
@@ -1326,7 +1312,7 @@ public class DerbyDB implements IData, CloseListener
 	{
 		try
 		{
-			synchronized(conn)
+			synchronized (conn)
 			{
 				conn.close();
 			}
@@ -1355,5 +1341,35 @@ public class DerbyDB implements IData, CloseListener
 	public String getDbPath()
 	{
 		return dbPath;
+	}
+
+	/**
+	 * Repariert Fehler in den Listen, wenn Lücken in der Reihenfolge auftreten.
+	 * @throws SQLException
+	 */
+	public void fixDb() throws SQLException
+	{
+		synchronized (conn)
+		{
+			try (ResultSet rsList = queryRS("SELECT INDEX FROM LISTS ORDER BY INDEX"))
+			{
+				while (rsList.next())
+				{
+					final int list = rsList.getInt(1);
+					int position = 0;
+					try (ResultSet rsTrack = queryRS("SELECT POSITION FROM LISTS_CONTENT WHERE LIST = ? ORDER BY POSITION", list))
+					{
+						while (rsTrack.next())
+						{
+							final int oldPos = rsTrack.getInt(1);
+							if (position != oldPos)
+								executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE LIST = ? AND POSITION = ?", position, list, oldPos);
+							position++;
+						}
+					}
+					conn.commit();
+				}
+			}
+		}
 	}
 }

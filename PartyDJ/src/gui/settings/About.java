@@ -5,10 +5,6 @@ import data.SettingException;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -48,29 +44,6 @@ public class About extends JPanel
 		}
 		lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
 		box.add(lbl);
-
-		String revision = "";
-		try
-		{
-			final Properties p = new Properties();
-			
-			try(FileInputStream fis = new FileInputStream("Version.txt"))
-			{
-				p.load(fis);
-			}
-			revision = " Revision " + p.getProperty("SVNRevision");
-		}
-		catch (final FileNotFoundException e1)
-		{
-			controller.logError(Controller.INERESTING_INFO, this, e1, "Kann Revision nicht ermitteln.");
-		}
-		catch (final IOException e1)
-		{
-			controller.logError(Controller.INERESTING_INFO, this, e1, "Kann Revision nicht ermitteln.");
-		}
-				
-		box.add(Box.createVerticalGlue());
-		addText("PartyDJ Version " + Controller.getVersion() + revision, box);
 		
 		box.add(Box.createVerticalStrut(8));
 		addText("Entwickelt von Thomas Klier und Samantha Vordermeier", box);
