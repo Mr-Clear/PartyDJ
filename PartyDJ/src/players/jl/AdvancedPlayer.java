@@ -182,6 +182,7 @@ public class AdvancedPlayer
 		return position;
 	}
 	
+	@SuppressWarnings("resource")
 	public static double getDuration(final String filePath) throws PlayerException
 	{
 		if(durationPath != null && durationPath.equals(filePath))
