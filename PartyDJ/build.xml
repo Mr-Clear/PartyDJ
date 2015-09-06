@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project PartyDJ with Jar-in-Jar Loader">
+<project default="create_run_jar" name="Create Runnable Jar for Project PartyDJ">
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value="C:/eclipse 4.5 Mars workspace"/>
+    <property name="dir.jarfile" value="C:/Git/PartyDJ/export"/>
     <target name="create_run_jar">
-        <jar destfile="C:/Git/PartyDJ/export/PartyDJ.jar">
+        <jar destfile="${dir.jarfile}/PartyDJ.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
-                <attribute name="Rsrc-Main-Class" value="PartyDJ"/>
+                <attribute name="Main-Class" value="PartyDJ"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ jintellitype-1.3.9.jar jlayer-1.0.1.jar jaudiotagger-2.0.3.jar jgoodies-forms-1.7.2.jar jgoodies-common-1.7.0.jar derby-10.10.2.0.jar"/>
             </manifest>
-            <zipfileset src="jar-in-jar-loader.zip"/>
-            <fileset dir="C:/Git/PartyDJ/PartyDJ/target/classes"/>
-            <zipfileset dir="C:\Users\Eraser\.m2\repository\com\melloware\jintellitype\1.3.9" includes="jintellitype-1.3.9.jar"/>
-            <zipfileset dir="C:\Users\Eraser\.m2\repository\javazoom\jlayer\1.0.1" includes="jlayer-1.0.1.jar"/>
-            <zipfileset dir="C:\Users\Eraser\.m2\repository\org\jaudiotagger\2.0.3" includes="jaudiotagger-2.0.3.jar"/>
-            <zipfileset dir="C:\Users\Eraser\.m2\repository\com\jgoodies\jgoodies-forms\1.7.2" includes="jgoodies-forms-1.7.2.jar"/>
-            <zipfileset dir="C:\Users\Eraser\.m2\repository\com\jgoodies\jgoodies-common\1.7.0" includes="jgoodies-common-1.7.0.jar"/>
-            <zipfileset dir="C:\Users\Eraser\.m2\repository\org\apache\derby\derby\10.10.2.0" includes="derby-10.10.2.0.jar"/>
+            <fileset dir="${dir.buildfile}/target/classes"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Users/Eraser/.m2/repository/com/melloware/jintellitype/1.3.9/jintellitype-1.3.9.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Users/Eraser/.m2/repository/javazoom/jlayer/1.0.1/jlayer-1.0.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Users/Eraser/.m2/repository/org/jaudiotagger/2.0.3/jaudiotagger-2.0.3.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Users/Eraser/.m2/repository/com/jgoodies/jgoodies-forms/1.7.2/jgoodies-forms-1.7.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Users/Eraser/.m2/repository/com/jgoodies/jgoodies-common/1.7.0/jgoodies-common-1.7.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Users/Eraser/.m2/repository/org/apache/derby/derby/10.10.2.0/derby-10.10.2.0.jar"/>
         </jar>
     </target>
 </project>

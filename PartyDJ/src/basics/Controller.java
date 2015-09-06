@@ -5,6 +5,7 @@ import common.Track;
 import data.IData;
 import lists.EditableListModel;
 import lists.data.ListProvider;
+import gui.ErrorLogWindow;
 import gui.settings.SettingNode;
 import players.IPlayer;
 import java.awt.Frame;
@@ -65,6 +66,9 @@ public abstract class Controller
 
 	/** Stream der Fehlermeldungen in eine Datei schreibt. */
 	protected java.io.PrintWriter logStream;
+	
+	/** Fenster zum Anzeigen von Fehlern. */
+	protected final ErrorLogWindow errorLogWindow = new ErrorLogWindow(this);
 
 	/**
 	 * @param args Befehlszeilenargumente.
@@ -390,6 +394,10 @@ public abstract class Controller
 		final int minimumPrintStackTrace = REGULAR_ERROR;
 		final int minimumShowMessage = NORMAL_ERROR;
 		final int minimumShowException = IMPORTANT_ERROR;
+		
+		errorLogWindow.addError(new LoggedError(priority, sender, exception, message));
+		if(priority >= minimumShowMessage)
+			errorLogWindow.setVisible(true);
 
 		final java.text.SimpleDateFormat dateFormater = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -536,6 +544,12 @@ public abstract class Controller
 	public void logError(final int priority, final Throwable exception)
 	{
 		logError(priority, null, exception, null);
+	}
+	
+	/** Öffnet das Fenster zum Anzeigen von Fehlern. */
+	public void showErrorWindow()
+	{
+		errorLogWindow.setVisible(true);
 	}
 
 	/** Beendet den PartyDJ komplett. */
