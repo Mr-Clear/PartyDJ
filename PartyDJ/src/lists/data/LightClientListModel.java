@@ -55,7 +55,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 			}
 			catch (Exception e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+				controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + dataListener);
 			}
 		}
 	}
@@ -111,7 +111,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 			}
 			catch (Exception e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+				controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + dataListener);
 			}
 		}
 	}
@@ -135,7 +135,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 			}
 			catch (Exception e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+				controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + dataListener);
 			}
 		}
 	}
@@ -186,7 +186,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 			}
 			catch (Exception e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+				controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + dataListener);
 			}
 		}
 
@@ -216,7 +216,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
 				    				}
 				    				catch (Exception e)
 				    				{
-				    					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+				    					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + dataListener);
 				    				}
 				    			}
 							}

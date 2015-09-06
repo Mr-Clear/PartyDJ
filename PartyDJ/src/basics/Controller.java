@@ -555,7 +555,7 @@ public abstract class Controller
 			}
 			catch (Exception e)
 			{
-				logError(Controller.UNIMPORTANT_ERROR, this, e, "Fehler in Plugin");
+				logError(Controller.UNIMPORTANT_ERROR, this, e, "Fehler bei Schließen von Tray Icon");
 			}
 		}
 
@@ -569,7 +569,7 @@ public abstract class Controller
 				}
 				catch (Exception e)
 				{
-					logError(Controller.UNIMPORTANT_ERROR, listener, e, "Fehler in Plugin");
+					logError(Controller.UNIMPORTANT_ERROR, listener, e, "Fehler bei Schließen von Plugin: " + closeListener);
 				}
 			}
 		}

@@ -725,7 +725,7 @@ public class DerbyDB implements IData, CloseListener
 				}
 				catch (Exception e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + listListener);
 				}
 			}
 		}
@@ -791,7 +791,7 @@ public class DerbyDB implements IData, CloseListener
 				}
 				catch (Exception e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + listener);
 				}
 			}
 		}
@@ -841,7 +841,7 @@ public class DerbyDB implements IData, CloseListener
 				}
 				catch (Exception e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + listListener);
 				}
 			}
 		}
@@ -884,7 +884,7 @@ public class DerbyDB implements IData, CloseListener
 				}
 				catch (Exception e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + listListener);
 				}
 			}
 		}
@@ -905,7 +905,7 @@ public class DerbyDB implements IData, CloseListener
 				}
 				catch (Exception e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + listListener);
 				}
 			}
 		}
@@ -923,7 +923,7 @@ public class DerbyDB implements IData, CloseListener
 				}
 				catch (Exception e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + listListener);
 				}
 			}
 		}
@@ -979,7 +979,7 @@ public class DerbyDB implements IData, CloseListener
 						}
 						catch (Exception e)
 						{
-							controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+							controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + settingListener);
 						}
 					}
 				}
