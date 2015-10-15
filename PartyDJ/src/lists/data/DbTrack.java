@@ -32,6 +32,8 @@ public abstract class DbTrack extends Track
 	protected DbTrack(IData data, final int index, final String filePath, final String name, final double duration, final long size, final Problem problem, final String info)
 	{
 		super(filePath, name, duration, size, problem, info);
+		if(data == null)
+			throw new NullPointerException("Data must not be null.");
 		this.data = data;
 		setIndex(index);
 	}
