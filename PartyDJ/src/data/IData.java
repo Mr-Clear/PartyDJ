@@ -1,12 +1,10 @@
 package data;
 
 import common.Track;
-
-import lists.ListException;
-import lists.data.DbTrack;
-
 import java.util.List;
 import java.util.Map;
+import lists.ListException;
+import lists.data.DbTrack;
 
 /**
  * Schnittstelle zur Datenbank-Anbindung.

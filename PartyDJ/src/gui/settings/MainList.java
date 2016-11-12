@@ -9,10 +9,6 @@ import common.Track;
 import data.IData;
 import data.ListAdapter;
 import data.SortOrder;
-import lists.ListException;
-import lists.data.DbMasterListModel;
-import lists.data.DbTrack;
-import lists.data.SearchListModel;
 import gui.EditTrackWindow;
 import gui.PDJList;
 import gui.PDJScrollList;
@@ -41,6 +37,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import lists.ListException;
+import lists.data.DbMasterListModel;
+import lists.data.DbTrack;
+import lists.data.SearchListModel;
 
 /**
  * @author Sam Meier
@@ -111,7 +111,7 @@ public class MainList extends JPanel
 					{
 						data.addTrack(new Track(filePath, false), false);
 					}
-					catch(ListException e)
+					catch(final ListException e)
 					{
 						controller.logError(Controller.NORMAL_ERROR, this, e, "Track einfügen fehlgeschlagen.");
 					}
@@ -148,7 +148,7 @@ public class MainList extends JPanel
 			@Override
 			public void actionPerformed(final ActionEvent e)
 			{
-				List<Track> selectedValues = list.getSelectedValuesList();
+				final List<Track> selectedValues = list.getSelectedValuesList();
 				if(selectedValues != null)
 				{
 					if(selectedValues.size() > 2)
@@ -339,7 +339,7 @@ public class MainList extends JPanel
 	protected static int playTime(final List<Track> tracks)
 	{
 		int playTime = 0;
-		for(Track track : tracks)
+		for(final Track track : tracks)
 			playTime += track.getDuration();
 		return playTime;
 	}
@@ -367,7 +367,7 @@ public class MainList extends JPanel
 		private long lastRepaint = System.currentTimeMillis();
 		private final Timer repaintTimer = new Timer(1000, new ActionListener()
 		{
-			@Override public void actionPerformed(ActionEvent e)
+			@Override public void actionPerformed(final ActionEvent e)
 			{
 				completeDuration.repaint();
 			}
@@ -394,11 +394,11 @@ public class MainList extends JPanel
 						}
 					});
 				}
-				catch(InterruptedException e)
+				catch(final InterruptedException e)
 				{
 					controller.logError(Controller.UNIMPORTANT_ERROR, this, e, "Update der Gesamt-Dauer fehlgeschlagen.");
 				}
-				catch(InvocationTargetException e)
+				catch(final InvocationTargetException e)
 				{
 					controller.logError(Controller.UNIMPORTANT_ERROR, this, e, "Update der Gesamt-Dauer fehlgeschlagen.");
 				}

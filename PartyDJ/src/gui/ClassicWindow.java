@@ -4,12 +4,6 @@ import basics.Controller;
 import common.Track;
 import data.IData;
 import data.SettingException;
-import lists.ListException;
-import lists.TrackListModel;
-import lists.data.DbClientListModel;
-import lists.data.DbTrack;
-import lists.data.ListProvider;
-import lists.data.SearchListModel;
 import gui.dnd.ForeignDrop;
 import gui.dnd.ListDropMode;
 import players.IPlayer;
@@ -58,6 +52,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import lists.ListException;
+import lists.TrackListModel;
+import lists.data.DbClientListModel;
+import lists.data.DbTrack;
+import lists.data.ListProvider;
+import lists.data.SearchListModel;
 
 /**
  * Grafische Benutzeroberfläche für Party DJ.

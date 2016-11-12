@@ -1,7 +1,6 @@
 package common;
 
 import basics.Controller;
-import lists.TrackListModel;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lists.TrackListModel;
 
 /**Bietet Funktionen zum Schreiben von Playlists an.
  * 
@@ -491,7 +491,7 @@ public final class PlaylistWriter
 	 */
 	private static List<String> getPathList(final File f)
 	{
-		List<String> l = new ArrayList<>();
+		final List<String> l = new ArrayList<>();
 		File r;
 		
 		for(r = f.getAbsoluteFile(); r != null; r = r.getParentFile())
@@ -524,7 +524,7 @@ public final class PlaylistWriter
 			j--;
 		}
 
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		// for each remaining level in the home path, add a ..
 		for(; i >= 0; i--)
 		{

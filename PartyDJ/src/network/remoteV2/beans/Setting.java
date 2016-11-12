@@ -11,7 +11,7 @@ public class Setting extends Message
         value = null;
     }
     
-    public Setting(String name, String value)
+    public Setting(final String name, final String value)
     {
         super();
         this.name = name;

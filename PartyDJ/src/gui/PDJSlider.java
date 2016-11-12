@@ -1,7 +1,14 @@
 package gui;
 
+import basics.Controller;
+import basics.ErrorListener;
+import common.Track;
+import data.IData;
+import data.ListAdapter;
 import gui.dnd.DragDropHandler;
 import gui.dnd.DragListener;
+import players.IPlayer;
+import players.PlayStateAdapter;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -24,13 +31,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 import lists.data.DbTrack;
-import common.Track;
-import data.IData;
-import data.ListAdapter;
-import players.IPlayer;
-import players.PlayStateAdapter;
-import basics.Controller;
-import basics.ErrorListener;
 
 /**
  * Zeigt den aktuelen Titel + Zeiten + Fortschrittsbalken an.
@@ -86,11 +86,11 @@ public class PDJSlider extends JPanel
 					}
 				});
 			}
-			catch (InterruptedException e)
+			catch (final InterruptedException e)
 			{
 				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Erstellen vom Slider.");
 			}
-			catch (InvocationTargetException e)
+			catch (final InvocationTargetException e)
 			{
 				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Erstellen vom Slider.");
 			}
@@ -98,7 +98,7 @@ public class PDJSlider extends JPanel
 		
 		controller.addErrorListener(new ErrorListener()
 		{
-			@Override public void errorOccurred(final int priority, Object sender, Throwable exception, final String message, Date date)
+			@Override public void errorOccurred(final int priority, final Object sender, final Throwable exception, final String message, final Date date)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
@@ -121,7 +121,7 @@ public class PDJSlider extends JPanel
 								{
 									Thread.sleep(priority * 1000);
 								}
-								catch (InterruptedException ignored)
+								catch (final InterruptedException ignored)
 								{
 									return;
 								}
@@ -147,7 +147,7 @@ public class PDJSlider extends JPanel
 		});
 	}
 	
-	public void setFontSize(int points)
+	public void setFontSize(final int points)
 	{
 		fontSize = points;
 		this.repaint();
@@ -203,7 +203,7 @@ public class PDJSlider extends JPanel
 		refreshTimer = new Timer(0, new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent evt)
+			public void actionPerformed(final ActionEvent evt)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
@@ -219,7 +219,7 @@ public class PDJSlider extends JPanel
 		
 		player.addPlayStateListener(new PlayStateAdapter()
 		{
-			@Override public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+			@Override public void currentTrackChanged(final Track playedLast, final Track playingCurrent, final Reason reason)
 			{
 				if(playingCurrent != null)
 				{
@@ -240,7 +240,7 @@ public class PDJSlider extends JPanel
 					setDuration(0);
 				}
 			}
-			@Override public void playStateChanged(boolean playState)
+			@Override public void playStateChanged(final boolean playState)
 			{
 				if(playState)
 					refreshTimer.start();
@@ -304,7 +304,7 @@ public class PDJSlider extends JPanel
 		}
 		
 		@Override 
-		protected void paintComponent(Graphics g) 
+		protected void paintComponent(final Graphics g) 
 		{ 
 			super.paintComponent(g);
 			
@@ -317,7 +317,7 @@ public class PDJSlider extends JPanel
 			g.fill3DRect(mid - 2, 1, 4, getSize().height - 3, true);
 		}
 		
-		public void setMaximum(double max)
+		public void setMaximum(final double max)
 		{
 			sliderDuration = max;
 		}
@@ -329,7 +329,7 @@ public class PDJSlider extends JPanel
 		}
 		
 		@Override 
-		public void mouseClicked(MouseEvent e)
+		public void mouseClicked(final MouseEvent e)
 		{
 			if(sliderDuration > sliderPosition)
 			{
@@ -337,12 +337,12 @@ public class PDJSlider extends JPanel
 			}			
 		}
 		@Override
-		public void mouseEntered(MouseEvent e) { /* not to implement */ }
+		public void mouseEntered(final MouseEvent e) { /* not to implement */ }
 		@Override
-		public void mouseExited(MouseEvent e) { /* not to implement */ }
+		public void mouseExited(final MouseEvent e) { /* not to implement */ }
 		@Override
-		public void mousePressed(MouseEvent e) { /* not to implement */ }
+		public void mousePressed(final MouseEvent e) { /* not to implement */ }
 		@Override
-		public void mouseReleased(MouseEvent e) { /* not to implement */ }
+		public void mouseReleased(final MouseEvent e) { /* not to implement */ }
 	}
 }

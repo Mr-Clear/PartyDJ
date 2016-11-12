@@ -1,13 +1,13 @@
 package gui;
 
 import basics.Controller;
-import lists.ListException;
-import lists.data.DbTrack;
 import players.IPlayer;
 import java.util.HashMap;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitypeConstants;
+import lists.ListException;
+import lists.data.DbTrack;
 
 public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 {

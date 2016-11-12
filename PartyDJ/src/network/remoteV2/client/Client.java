@@ -1,21 +1,14 @@
 package network.remoteV2.client;
 
 import basics.Controller;
-
 import data.IData;
-
-import lists.ListException;
-import lists.data.ListProvider;
-
 import gui.SplashWindow;
-
 import players.IPlayer;
-
 import java.io.IOException;
-
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
+import lists.ListException;
+import lists.data.ListProvider;
 import network.remoteV2.JsonEncoder;
 import network.remoteV2.beans.DataRequest;
 import network.remoteV2.beans.InitialData;
@@ -30,7 +23,7 @@ public class Client extends Controller
     final ClientConnection clientConnection;
     JsonEncoder jsonEncoder;
 
-    protected Client(String[] args)
+    protected Client(final String[] args)
     {
         super(args);
         
@@ -43,7 +36,7 @@ public class Client extends Controller
         {
             listProvider = new ListProvider();
         }
-        catch(ListException e1)
+        catch(final ListException e1)
         {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -95,7 +88,7 @@ public class Client extends Controller
         return player;
     }
     
-    synchronized void setJsonEncoder(JsonEncoder jsonEncoder)
+    synchronized void setJsonEncoder(final JsonEncoder jsonEncoder)
     {
         this.jsonEncoder = jsonEncoder;
         if(jsonEncoder == null)
@@ -108,14 +101,14 @@ public class Client extends Controller
             {
                 send(new DataRequest());
             }
-            catch(IOException e)
+            catch(final IOException e)
             {
                 logError(IMPORTANT_ERROR, e);
             }
         }
     }
     
-    synchronized void send(Message message) throws IOException
+    synchronized void send(final Message message) throws IOException
     {
         if(jsonEncoder != null)
         {
@@ -124,7 +117,7 @@ public class Client extends Controller
     }
     
 
-    public void messageReceived(Message message)
+    public void messageReceived(final Message message)
     {
         try
         {
@@ -153,14 +146,14 @@ public class Client extends Controller
                 break;
             }
         }
-        catch(IOException e)
+        catch(final IOException e)
         {
             logError(IMPORTANT_ERROR, this, e);
         }
         
     }
 
-    public static void main(String[] args)
+    public static void main(final String[] args)
     {
         new Client(args);
     }

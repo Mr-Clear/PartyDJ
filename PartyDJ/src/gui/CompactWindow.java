@@ -76,7 +76,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 	
 	private void initGUI()
 	{
-		GroupLayout thisLayout = new GroupLayout(getContentPane());
+		final GroupLayout thisLayout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(thisLayout);
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -97,7 +97,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 			btnBack.setFocusPainted(false);
 			btnBack.addActionListener(new ActionListener()
 			{
-				@Override public void actionPerformed(ActionEvent e)
+				@Override public void actionPerformed(final ActionEvent e)
 				{
 					player.playPrevious();
 				}
@@ -112,7 +112,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 			btnPlay.setFocusPainted(false);
 			btnPlay.addActionListener(new ActionListener()
 			{
-				@Override public void actionPerformed(ActionEvent e)
+				@Override public void actionPerformed(final ActionEvent e)
 				{
 					player.playPause();
 				}
@@ -130,7 +130,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 			btnForward.setFocusPainted(false);
 			btnForward.addActionListener(new ActionListener()
 			{
-				@Override public void actionPerformed(ActionEvent e)
+				@Override public void actionPerformed(final ActionEvent e)
 				{
 					player.playNext();
 				}
@@ -145,7 +145,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 		}
 		{
 			timePanel = new JPanel();
-			BoxLayout jPanel1Layout = new BoxLayout(timePanel, javax.swing.BoxLayout.X_AXIS);
+			final BoxLayout jPanel1Layout = new BoxLayout(timePanel, javax.swing.BoxLayout.X_AXIS);
 			timePanel.setLayout(jPanel1Layout);
 			{
 				lblTimeLeft = new JLabel();
@@ -206,12 +206,12 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 	}
 
 	@Override
-	public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+	public void currentTrackChanged(final Track playedLast, final Track playingCurrent, final Reason reason)
 	{
 		currentTrack = playingCurrent;
 		if(currentTrack != null)
 		{
-			Runnable r = new Runnable()
+			final Runnable r = new Runnable()
 			{
 				@Override public void run()
 				{
@@ -229,7 +229,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 	}
 
 	@Override
-	public void playStateChanged(boolean playState)
+	public void playStateChanged(final boolean playState)
 	{
 		currentPlayState = playState;
 		if(currentPlayState)
@@ -247,13 +247,13 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 	}
 
 	@Override
-	public void volumeChanged(int volume)
+	public void volumeChanged(final int volume)
 	{
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e)
+	public void actionPerformed(final ActionEvent e)
 	{
 		final double position = player.getPosition();
 		progressBar.setValue((int)(position * 100));
@@ -326,7 +326,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 			return active;
 		}
 
-		public void setActive(boolean active)
+		public void setActive(final boolean active)
 		{
 			if(this.active != active)
 			{
@@ -340,7 +340,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 
 		protected void update()
 		{
-			Runnable r = new Runnable()
+			final Runnable r = new Runnable()
 			{
 				@Override public void run()
 				{
@@ -358,11 +358,11 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 		}
 
 		@Override
-		public void mouseClicked(MouseEvent e)
+		public void mouseClicked(final MouseEvent e)
 		{ /* not to implement */ }
 
 		@Override
-		public void mouseEntered(MouseEvent e)
+		public void mouseEntered(final MouseEvent e)
 		{
 			if(pressed)
 			{
@@ -372,7 +372,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 		}
 
 		@Override
-		public void mouseExited(MouseEvent e)
+		public void mouseExited(final MouseEvent e)
 		{
 			if(pressed)
 			{
@@ -382,7 +382,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 		}
 
 		@Override
-		public void mousePressed(MouseEvent e)
+		public void mousePressed(final MouseEvent e)
 		{
 			if(e.getButton() == MouseEvent.BUTTON1)
 			{
@@ -393,7 +393,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 		}
 
 		@Override
-		public void mouseReleased(MouseEvent e)
+		public void mouseReleased(final MouseEvent e)
 		{
 			if(e.getButton() == MouseEvent.BUTTON1)
 			{

@@ -2,8 +2,6 @@ package gui.dnd;
 
 import basics.Controller;
 import common.Track;
-import lists.EditableListModel;
-import lists.ListException;
 import gui.PDJList;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -14,6 +12,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
 import javax.swing.TransferHandler;
+import lists.EditableListModel;
+import lists.ListException;
 
 /**
  * 

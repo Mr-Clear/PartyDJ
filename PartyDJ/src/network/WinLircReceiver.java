@@ -226,7 +226,7 @@ public class WinLircReceiver implements Plugin
 				{
 					socket.close();
 				}
-				catch (IOException e1)
+				catch (final IOException e1)
 				{
 					/* ignore */
 				}

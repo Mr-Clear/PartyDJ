@@ -1,21 +1,16 @@
 package lists.data;
 
 import basics.Controller;
-
 import common.Track;
-
 import data.IData;
 import data.ListAdapter;
-
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import lists.BasicListModel;
 import lists.EditableListModel;
 import lists.ListException;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
 /**
  * Einfache konkrete Implementierung von BasicListModel.
@@ -33,14 +28,14 @@ public class LightClientListModel extends BasicListModel implements EditableList
     protected static final IData data = Controller.getInstance().getData();
     protected String name;
 
-    public LightClientListModel(String name)
+    public LightClientListModel(final String name)
     {
         super(new ArrayList<Track>());
         this.name = name;
         Controller.getInstance().getData().addListListener(new TracksListener());
     }
 
-    public LightClientListModel(String name, final List<? extends DbTrack> list)
+    public LightClientListModel(final String name, final List<? extends DbTrack> list)
     {
         super(new ArrayList<Track>(list));
         this.name = name;
@@ -124,7 +119,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
             {
                 listener.intervalAdded(new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, index, index));
             }
-            catch(Exception e)
+            catch(final Exception e)
             {
                 controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
             }
@@ -148,7 +143,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
             {
                 listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, index, index));
             }
-            catch(Exception e)
+            catch(final Exception e)
             {
                 controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
             }
@@ -201,7 +196,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
             {
                 listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, indexA, indexB));
             }
-            catch(Exception e)
+            catch(final Exception e)
             {
                 controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
             }
@@ -212,7 +207,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
     protected class TracksListener extends ListAdapter
     {
         @Override
-        public void trackInserted(String listName, int position, DbTrack track, boolean eventsFollowing)
+        public void trackInserted(final String listName, final int position, final DbTrack track, final boolean eventsFollowing)
         {
             if(name.equals(listName))
             {
@@ -233,7 +228,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
                                 {
                                     listener.intervalAdded(new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, min, max));
                                 }
-                                catch(Exception e)
+                                catch(final Exception e)
                                 {
                                     controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                                 }
@@ -272,7 +267,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
                                                 listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, track.getIndex(), track
                                                         .getIndex()));
                                             }
-                                            catch(Exception e)
+                                            catch(final Exception e)
                                             {
                                                 controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                                             }

@@ -3,10 +3,10 @@ package lists.data;
 import basics.Controller;
 import common.Track;
 import data.IData;
-import lists.ListException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lists.ListException;
 
 /**
  * Gibt Zugriff auf die Listen des PartyDJ.
@@ -32,7 +32,7 @@ public class ListProvider
 			@Override
 			public void run()
 			{
-				for(Track track : masterListModel.getList())
+				for(final Track track : masterListModel.getList())
 					if(track.getDuration() == 0)
 						controller.pushTrackToUpdate(track);
 			}

@@ -5,7 +5,6 @@ import basics.Plugin;
 import common.Track;
 import data.ListListener;
 import data.SettingListener;
-import lists.data.DbTrack;
 import players.PlayStateListener;
 import java.io.EOFException;
 import java.io.IOException;
@@ -21,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import lists.data.DbTrack;
 
 /**
  * RemoteServer soll alle Funktionen und Events über Netzwerk verfügbar machen.
@@ -77,13 +77,13 @@ public class RemoteServer implements Plugin
 		controller.getData().removeListListener(listener);
 		controller.getData().removeSettingListener(listener);
 		
-		for(Socket socket : clientList.keySet())
+		for(final Socket socket : clientList.keySet())
 		{
 			try
 			{
 				socket.close();
 			}
-			catch(IOException e)
+			catch(final IOException e)
 			{
 				controller.logError(Controller.NORMAL_ERROR, this, e, "Remote Server Verbindung nicht beednen.");
 			}
@@ -95,21 +95,21 @@ public class RemoteServer implements Plugin
 	{
 		synchronized(clientList)
 		{
-			List<Socket> toRemove = new ArrayList<>();
-			for(Entry<Socket, ObjectOutputStream> entry : clientList.entrySet())
+			final List<Socket> toRemove = new ArrayList<>();
+			for(final Entry<Socket, ObjectOutputStream> entry : clientList.entrySet())
 			{
 				try
 				{
 					entry.getValue().writeObject(event);
 				}
-				catch(IOException e)
+				catch(final IOException e)
 				{
 					controller.logError(Controller.NORMAL_ERROR, this, e, "Senden von Remote Server fehlgeschlagen.\nClient wird getrennt.");
 					try
 					{
 						entry.getKey().close();
 					}
-					catch(IOException e1)
+					catch(final IOException e1)
 					{
 						controller.logError(Controller.NORMAL_ERROR, this, e, "Remote Server konnte Verbindung nicht beednen.");
 					}
@@ -118,7 +118,7 @@ public class RemoteServer implements Plugin
 				}
 			}
 			
-			for(Socket socket : toRemove)
+			for(final Socket socket : toRemove)
 			{
 				clientList.remove(socket);
 			}
@@ -133,7 +133,7 @@ public class RemoteServer implements Plugin
 			{
 				clientList.get(client).writeObject(new Answer(invocationId, data));
 			}
-			catch(IOException e)
+			catch(final IOException e)
 			{
 				controller.logError(Controller.NORMAL_ERROR, this, e, "Antwort an Client von Remote Server fehlgeschlagen.");
 			}
@@ -143,7 +143,7 @@ public class RemoteServer implements Plugin
 	protected class ClientListener extends Thread
 	{
 		final Socket client;
-		public ClientListener(Socket client)
+		public ClientListener(final Socket client)
 		{
 			this.client = client;
 			setDaemon(true);
@@ -158,7 +158,7 @@ public class RemoteServer implements Plugin
 			{
 				ois = new ObjectInputStream(client.getInputStream());
 			}
-			catch(IOException e)
+			catch(final IOException e)
 			{
 				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler in Verbindung von Remote Server.");
 				clientList.remove(client);
@@ -169,22 +169,22 @@ public class RemoteServer implements Plugin
 			{
 				while(running)
 				{
-					Object o = ois.readObject();
+					final Object o = ois.readObject();
 					if(o instanceof Invocation)
 						((Invocation)o).invoke(RemoteServer.this, client);
 					else
 						controller.logError(Controller.NORMAL_ERROR, this, null, "Remote Server hat unbekannte Daten empfangen:\n\t" + o.getClass().getName() + "\n\t" + o.toString());
 				}
 			}
-			catch(SocketException e)
+			catch(final SocketException e)
 			{ /* Vermutlich Verbindung geschlossen. */ }
-			catch(EOFException e)
+			catch(final EOFException e)
 			{ /* Vermutlich Verbindung geschlossen. */ }
-			catch(IOException e)
+			catch(final IOException e)
 			{
 				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler in Verbindung von Remote Server.");
 			}
-			catch(ClassNotFoundException e)
+			catch(final ClassNotFoundException e)
 			{
 				controller.logError(Controller.IMPORTANT_ERROR, this, e, "Remote Server hat Danten unbekannten Typs empfangen.");
 			}
@@ -193,7 +193,7 @@ public class RemoteServer implements Plugin
 			{
 				client.close();
 			}
-			catch(IOException e)
+			catch(final IOException e)
 			{
 				controller.logError(Controller.NORMAL_ERROR, this, e, "Remote Server konnte Verbindung nicht beednen.");
 			}
@@ -225,9 +225,9 @@ public class RemoteServer implements Plugin
 						clientList.put(client, new ObjectOutputStream(client.getOutputStream()));
 						new ClientListener(client);
 					}
-					catch(SocketTimeoutException ignored)
+					catch(final SocketTimeoutException ignored)
 					{ /* Tritt alle 10 Sekunden auf. */ }
-					catch(IOException e)
+					catch(final IOException e)
 					{
 						controller.logError(Controller.IMPORTANT_ERROR, this, e, "Verbindung mit Remote Server fehlgeschlagen.\nRemote Server beendet sich.");
 						RemoteServer.this.stop();
@@ -236,7 +236,7 @@ public class RemoteServer implements Plugin
 				
 				serverListener.setSoTimeout(10000);
 			}
-			catch(IOException e)
+			catch(final IOException e)
 			{
 				controller.logError(Controller.IMPORTANT_ERROR, this, e, "Remote Server kann keinen Socket öffnen.");
 				return;
@@ -247,91 +247,91 @@ public class RemoteServer implements Plugin
 	protected class Listener implements PlayStateListener, ListListener, SettingListener
 	{		
 		@Override
-		public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+		public void currentTrackChanged(final Track playedLast, final Track playingCurrent, final Reason reason)
 		{
 			sendEvent(new Event.CurrentTrackChanged(playedLast, playingCurrent, reason));
 		}
 
 		@Override
-		public void playStateChanged(boolean playState)
+		public void playStateChanged(final boolean playState)
 		{
 			sendEvent(new Event.PlayStateChanged(playState));
 		}
 
 		@Override
-		public void volumeChanged(int volume)
+		public void volumeChanged(final int volume)
 		{
 			sendEvent(new Event.VolumeChanged(volume));
 		}
 
 		@Override
-		public void listAdded(String listName)
+		public void listAdded(final String listName)
 		{
 			sendEvent(new Event.ListAdded(listName));
 		}
 
 		@Override
-		public void listCommentChanged(String listName, String newComment)
+		public void listCommentChanged(final String listName, final String newComment)
 		{
 			sendEvent(new Event.ListCommentChanged(listName, newComment));
 		}
 
 		@Override
-		public void listPriorityChanged(String listName, int newPriority)
+		public void listPriorityChanged(final String listName, final int newPriority)
 		{
 			sendEvent(new Event.ListPriorityChanged(listName, newPriority));
 		}
 
 		@Override
-		public void listRemoved(String listName)
+		public void listRemoved(final String listName)
 		{
 			sendEvent(new Event.ListRemoved(listName));
 		}
 
 		@Override
-		public void listRenamed(String oldName, String newName)
+		public void listRenamed(final String oldName, final String newName)
 		{
 			sendEvent(new Event.ListRenamed(oldName, newName));
 		}
 
 		@Override
-		public void trackAdded(DbTrack track, boolean eventsFollowing)
+		public void trackAdded(final DbTrack track, final boolean eventsFollowing)
 		{
 			sendEvent(new Event.TrackAdded(track, eventsFollowing));
 		}
 
 		@Override
-		public void trackChanged(DbTrack newTrack, Track oldTrack, boolean eventsFollowing)
+		public void trackChanged(final DbTrack newTrack, final Track oldTrack, final boolean eventsFollowing)
 		{
 			sendEvent(new Event.TrackChanged(newTrack, oldTrack, eventsFollowing));
 		}
 
 		@Override
-		public void trackDeleted(DbTrack track, boolean eventsFollowing)
+		public void trackDeleted(final DbTrack track, final boolean eventsFollowing)
 		{
 			sendEvent(new Event.TrackDeleted(track, eventsFollowing));
 		}
 
 		@Override
-		public void trackInserted(String listName, int position, DbTrack track, boolean eventsFollowing)
+		public void trackInserted(final String listName, final int position, final DbTrack track, final boolean eventsFollowing)
 		{
 			sendEvent(new Event.TrackInserted(listName, position, track, eventsFollowing));
 		}
 
 		@Override
-		public void trackRemoved(String listName, int position, boolean eventsFollowing)
+		public void trackRemoved(final String listName, final int position, final boolean eventsFollowing)
 		{
 			sendEvent(new Event.TrackRemoved(listName, position, eventsFollowing));
 		}
 
 		@Override
-		public void tracksSwaped(String listName, int positionA, int positionB, boolean eventsFollowing)
+		public void tracksSwaped(final String listName, final int positionA, final int positionB, final boolean eventsFollowing)
 		{
 			sendEvent(new Event.TracksSwaped(listName, positionA, positionB, eventsFollowing));
 		}
 
 		@Override
-		public void settingChanged(String name, String value)
+		public void settingChanged(final String name, final String value)
 		{
 			sendEvent(new Event.SettingChanged(name, value));
 		}

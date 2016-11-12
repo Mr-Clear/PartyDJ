@@ -2,8 +2,6 @@ package network.remote;
 
 import basics.Controller;
 import data.IData;
-import lists.ListException;
-import lists.data.ListProvider;
 import gui.SplashWindow;
 import players.IPlayer;
 import java.io.IOException;
@@ -18,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import lists.ListException;
+import lists.data.ListProvider;
 
 /**
  * Controller der sich über Netzwerk mit RemoteServer verbindet.
@@ -35,7 +35,7 @@ public class LightNetworkRemote extends Controller implements AnswerListener
 	protected final Map<Long, Thread> invocationThreads = Collections.synchronizedMap(new HashMap<Long, Thread>());
 	protected final Map<Long, Serializable> invocationAnswers = Collections.synchronizedMap(new HashMap<Long, Serializable>());
 
-	public LightNetworkRemote(String[] args)
+	public LightNetworkRemote(final String[] args)
 	{
 		super(args);
 		
@@ -43,12 +43,12 @@ public class LightNetworkRemote extends Controller implements AnswerListener
 		{
 			server = new Socket("merkur", RemoteServer.PORT);
 		}
-		catch(UnknownHostException e)
+		catch(final UnknownHostException e)
 		{
 			e.printStackTrace();
 			return;
 		}
-		catch(IOException e)
+		catch(final IOException e)
 		{
 			e.printStackTrace();
 			return;
@@ -59,7 +59,7 @@ public class LightNetworkRemote extends Controller implements AnswerListener
 		{
 			oos = new ObjectOutputStream(server.getOutputStream());
 		}
-		catch(IOException e)
+		catch(final IOException e)
 		{
 			e.printStackTrace();
 			return;
@@ -213,7 +213,7 @@ public class LightNetworkRemote extends Controller implements AnswerListener
 		{
 			server.close();
 		}
-		catch(IOException e)
+		catch(final IOException e)
 		{
 			e.printStackTrace();
 		}

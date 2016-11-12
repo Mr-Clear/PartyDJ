@@ -3,8 +3,8 @@ package lists.data;
 import basics.Controller;
 import common.Track;
 import data.IData;
-import lists.ListException;
 import java.io.File;
+import lists.ListException;
 
 /**
  * Audio-Track der in der Datenbank gespeichert ist..
@@ -29,7 +29,7 @@ public abstract class DbTrack extends Track
 	 * @param problem Problem mit dem Track.
 	 * @param info Zusätzliche Info.
 	 */
-	protected DbTrack(IData data, final int index, final String filePath, final String name, final double duration, final long size, final Problem problem, final String info)
+	protected DbTrack(final IData data, final int index, final String filePath, final String name, final double duration, final long size, final Problem problem, final String info)
 	{
 		super(filePath, name, duration, size, problem, info);
 		if(data == null)
@@ -43,7 +43,7 @@ public abstract class DbTrack extends Track
 	 * 
 	 * @param track Track aus dem die Daten kopiert werden.
 	 */
-	protected DbTrack(IData data, final Track track)
+	protected DbTrack(final IData data, final Track track)
 	{
 		this(data, -1, track.getPath(), track.getName(), track.getDuration(), track.getSize(), track.getProblem(), track.getInfo());
 	}
@@ -91,7 +91,7 @@ public abstract class DbTrack extends Track
 	@Override
 	public void setPath(final String path)
 	{
-		File oldFile = file;
+		final File oldFile = file;
 		super.setPath(path);
 		
 		if(!file.equals(oldFile))
@@ -170,7 +170,7 @@ public abstract class DbTrack extends Track
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(final Object o)
 	{
 		return super.equals(o);
 	}

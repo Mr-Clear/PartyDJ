@@ -7,7 +7,7 @@ public class TrackList extends Message
 	public final String name;
 	public final int[] tracks;
 	
-	public TrackList(String name, int[] tracks)
+	public TrackList(final String name, final int[] tracks)
 	{
 		this.name = name;
 		this.tracks = tracks;

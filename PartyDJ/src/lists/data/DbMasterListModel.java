@@ -5,14 +5,14 @@ import common.Track;
 import data.IData;
 import data.ListAdapter;
 import data.SortOrder;
-import lists.BasicListModel;
-import lists.ListException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.Timer;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import lists.BasicListModel;
+import lists.ListException;
 
 /**
  * ListModel das die Hauptliste ausgibt.
@@ -45,7 +45,7 @@ public class DbMasterListModel extends BasicListModel
      *             Wenn auf die Liste in der Datenbank nicht zugegriffen werden
      *             kann.
      */
-    public void setSortOrder(SortOrder sortOrder) throws ListException
+    public void setSortOrder(final SortOrder sortOrder) throws ListException
     {
         this.sortOrder = sortOrder;
         synchronized(list)
@@ -60,7 +60,7 @@ public class DbMasterListModel extends BasicListModel
                 {
                     listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Math.max(oldSize, list.size())));
                 }
-                catch(Exception e)
+                catch(final Exception e)
                 {
                     controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                 }
@@ -100,7 +100,7 @@ public class DbMasterListModel extends BasicListModel
             trackAddedUpdateTimer = new Timer(1000, new ActionListener()
             {
                 @Override
-                public void actionPerformed(ActionEvent e)
+                public void actionPerformed(final ActionEvent e)
                 {
                     trackAddedUpdate(false);
                 }
@@ -110,7 +110,7 @@ public class DbMasterListModel extends BasicListModel
             trackDeletedUpdateTimer = new Timer(1000, new ActionListener()
             {
                 @Override
-                public void actionPerformed(ActionEvent e)
+                public void actionPerformed(final ActionEvent e)
                 {
                     trackDeletedUpdate(false);
                 }
@@ -120,7 +120,7 @@ public class DbMasterListModel extends BasicListModel
             trackChangedUpdateTimer = new Timer(1000, new ActionListener()
             {
                 @Override
-                public void actionPerformed(ActionEvent e)
+                public void actionPerformed(final ActionEvent e)
                 {
                     trackChangedUpdate(false);
                 }
@@ -129,7 +129,7 @@ public class DbMasterListModel extends BasicListModel
         }
 
         @Override
-        public void trackAdded(final DbTrack track, boolean eventsFollowing)
+        public void trackAdded(final DbTrack track, final boolean eventsFollowing)
         {
             if(track != null)
                 list.add(track);
@@ -137,7 +137,7 @@ public class DbMasterListModel extends BasicListModel
         }
 
         @Override
-        public void trackDeleted(final DbTrack track, boolean eventsFollowing)
+        public void trackDeleted(final DbTrack track, final boolean eventsFollowing)
         {
             if(track != null)
             {
@@ -165,7 +165,7 @@ public class DbMasterListModel extends BasicListModel
             }
         }
 
-        protected void trackAddedUpdate(boolean wait)
+        protected void trackAddedUpdate(final boolean wait)
         {
             if(wait)
             {
@@ -183,7 +183,7 @@ public class DbMasterListModel extends BasicListModel
                     {
                         listener.intervalAdded(new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, pos, pos));
                     }
-                    catch(Exception e)
+                    catch(final Exception e)
                     {
                         controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                     }
@@ -191,7 +191,7 @@ public class DbMasterListModel extends BasicListModel
             }
         }
 
-        protected void trackDeletedUpdate(boolean wait)
+        protected void trackDeletedUpdate(final boolean wait)
         {
             if(wait)
             {
@@ -207,7 +207,7 @@ public class DbMasterListModel extends BasicListModel
                     {
                         listener.intervalRemoved(new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, 0, Math.max(0, list.size() - 1)));
                     }
-                    catch(Exception e)
+                    catch(final Exception e)
                     {
                         controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                     }
@@ -215,7 +215,7 @@ public class DbMasterListModel extends BasicListModel
             }
         }
 
-        protected void trackChangedUpdate(boolean wait)
+        protected void trackChangedUpdate(final boolean wait)
         {
             if(wait)
             {
@@ -230,7 +230,7 @@ public class DbMasterListModel extends BasicListModel
                     {
                         listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, list.size() - 1));
                     }
-                    catch(Exception e)
+                    catch(final Exception e)
                     {
                         controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                     }

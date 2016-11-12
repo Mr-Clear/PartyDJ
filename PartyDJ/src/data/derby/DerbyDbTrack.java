@@ -20,7 +20,7 @@ public class DerbyDbTrack extends DbTrack
 	 * @param problem Problem mit dem Track.
 	 * @param info Zusätzliche Info.
 	 */
-	protected DerbyDbTrack(DerbyDB data, final int index, final String path, final String name, final double duration, final long size, final Problem problem, final String info)
+	protected DerbyDbTrack(final DerbyDB data, final int index, final String path, final String name, final double duration, final long size, final Problem problem, final String info)
 	{
 		super(data, index, path, name, duration, size, problem, info);
 	}
@@ -30,7 +30,7 @@ public class DerbyDbTrack extends DbTrack
 	 * 
 	 * @param track Track aus dem die Daten kopiert werden.
 	 */
-	protected DerbyDbTrack(DerbyDB data, Track track)
+	protected DerbyDbTrack(final DerbyDB data, final Track track)
 	{
 		super(data, track);
 	}

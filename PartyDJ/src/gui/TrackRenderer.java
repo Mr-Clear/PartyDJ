@@ -2,7 +2,6 @@ package gui;
 
 import basics.Controller;
 import common.Track;
-import lists.data.DbTrack;
 import gui.TrackListAppearance.EntryState;
 import gui.TrackListAppearance.Part;
 import gui.TrackListAppearance.TrackState;
@@ -15,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import lists.data.DbTrack;
 
 /**
  * Zeichnet einen Track in eine JList.

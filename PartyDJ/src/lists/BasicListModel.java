@@ -82,7 +82,7 @@ public class BasicListModel implements TrackListModel, PlayStateListener
 						{
 							listener.contentsChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, i, i));
 						}
-						catch (Exception e)
+						catch (final Exception e)
 						{
 							controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + dataListener);
 						}

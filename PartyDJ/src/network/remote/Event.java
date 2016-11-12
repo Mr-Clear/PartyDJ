@@ -3,11 +3,11 @@ package network.remote;
 import common.Track;
 import data.ListListener;
 import data.SettingListener;
-import lists.data.DbTrack;
 import players.PlayStateListener;
 import players.PlayStateListener.Reason;
 import java.io.Serializable;
 import java.util.List;
+import lists.data.DbTrack;
 
 /**
  * Ein Ereigniss das von RemoteServer an die Clients gesendet wird.  
@@ -42,7 +42,7 @@ public interface Event extends Serializable
 		{
 			synchronized(playStateListener)
 			{
-				for(PlayStateListener listener : playStateListener)
+				for(final PlayStateListener listener : playStateListener)
 					listener.currentTrackChanged(playedLast, playingCurrent, reason);
 			}
 		}
@@ -61,7 +61,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(PlayStateListener listener : playStateListener)
+			for(final PlayStateListener listener : playStateListener)
 				listener.playStateChanged(playState);
 		}
 	}
@@ -79,7 +79,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(PlayStateListener listener : playStateListener)
+			for(final PlayStateListener listener : playStateListener)
 				listener.volumeChanged(volume);
 		}
 	}
@@ -97,7 +97,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.listAdded(listName);
 		}
 	}
@@ -117,7 +117,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.listCommentChanged(listName, newComment);
 		}
 	}
@@ -137,7 +137,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.listPriorityChanged(listName, newPriority);
 		}
 	}
@@ -155,7 +155,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.listRemoved(listName);
 		}
 	}
@@ -175,7 +175,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.listRenamed(oldName, newName);
 		}
 	}
@@ -195,7 +195,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.trackAdded(track, eventsFollowing);
 		}
 	}
@@ -217,7 +217,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.trackChanged(newTrack, oldTrack, eventsFollowing);
 		}
 	}
@@ -237,7 +237,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.trackDeleted(track, eventsFollowing);
 		}
 	}
@@ -250,7 +250,7 @@ public interface Event extends Serializable
 		protected final DbTrack track;
 		protected final boolean eventsFollowing;
 		
-		public TrackInserted(final String listName, int position, final DbTrack track, final boolean eventsFollowing)
+		public TrackInserted(final String listName, final int position, final DbTrack track, final boolean eventsFollowing)
 		{
 			this.listName = listName;
 			this.position = position;
@@ -261,7 +261,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.trackInserted(listName, position, track, eventsFollowing);
 		}
 	}
@@ -273,7 +273,7 @@ public interface Event extends Serializable
 		protected final int position;
 		protected final boolean eventsFollowing;
 		
-		public TrackRemoved(final String listName, int position, final boolean eventsFollowing)
+		public TrackRemoved(final String listName, final int position, final boolean eventsFollowing)
 		{
 			this.listName = listName;
 			this.position = position;
@@ -283,7 +283,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.trackRemoved(listName, position, eventsFollowing);
 		}
 	}
@@ -296,7 +296,7 @@ public interface Event extends Serializable
 		protected final int positionB;
 		protected final boolean eventsFollowing;
 		
-		public TracksSwaped(final String listName, int positionA, int positionB, final boolean eventsFollowing)
+		public TracksSwaped(final String listName, final int positionA, final int positionB, final boolean eventsFollowing)
 		{
 			this.listName = listName;
 			this.positionA = positionA;
@@ -307,7 +307,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(ListListener listener : listListener)
+			for(final ListListener listener : listListener)
 				listener.tracksSwaped(listName, positionA, positionB, eventsFollowing);
 		}
 	}
@@ -327,7 +327,7 @@ public interface Event extends Serializable
 		@Override
 		public void invoke(final List<PlayStateListener> playStateListener, final List<ListListener> listListener, final List<SettingListener> settingListener)
 		{
-			for(SettingListener listener : settingListener)
+			for(final SettingListener listener : settingListener)
 				listener.settingChanged(name, value);
 		}
 	}

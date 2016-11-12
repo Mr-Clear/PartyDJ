@@ -1,27 +1,20 @@
 package basics;
 import common.Functions;
-
 import data.IData;
 import data.OpenDbException;
 import data.SettingException;
 import data.derby.DerbyDB;
-
+import gui.KeyStrokeManager;
+import gui.SplashWindow;
+import players.IPlayer;
+import players.PlayerException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import lists.ListException;
 import lists.data.DbTrack;
 import lists.data.ListProvider;
-
-import gui.KeyStrokeManager;
-import gui.SplashWindow;
-
-import players.IPlayer;
-import players.PlayerException;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import network.remote.RemoteServer;
 import network.remoteV2.server.Server;
 
@@ -38,7 +31,7 @@ public class PartyDJ extends Controller
 	/** Verwendeter Player. */
 	protected IPlayer player;
 	
-	public PartyDJ(String[] args)
+	public PartyDJ(final String[] args)
 	{
 		super(args);
 		
@@ -294,7 +287,7 @@ public class PartyDJ extends Controller
 			{
 				firstTrack = data.getTrack(firstTrackPath, false);
 			}
-			catch(ListException e1)
+			catch(final ListException e1)
 			{
 				logError(NORMAL_ERROR, this, e1, "Erster Track konnte nicht ermittelt werden.");
 			}

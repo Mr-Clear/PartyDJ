@@ -2,16 +2,10 @@ package basics;
 
 import common.Functions;
 import common.Track;
-
 import data.IData;
-
-import lists.EditableListModel;
-import lists.data.ListProvider;
 import gui.ErrorLogWindow;
 import gui.settings.SettingNode;
-
 import players.IPlayer;
-
 import java.awt.Frame;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
@@ -26,10 +20,11 @@ import java.util.Stack;
 import java.util.Timer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import lists.EditableListModel;
+import lists.data.ListProvider;
 
 /**
  * Bietet Zugriff auf alle anderen wichtigen Elemente des PartyDJ.
@@ -175,14 +170,14 @@ public abstract class Controller
 	 * @param windowClassName Name des Fensters.
 	 * @return true, wenn erfolgreich.
 	 */
-	public boolean loadWindow(String windowClassName)
+	public boolean loadWindow(final String windowClassName)
 	{
 		class WindowLoader implements Runnable
 		{
 			private boolean result;
 			private String className;
 
-			public WindowLoader(String className)
+			public WindowLoader(final String className)
 			{
 				this.className = className;
 			}
@@ -221,7 +216,7 @@ public abstract class Controller
 
 		}
 
-		WindowLoader windowLoader = new WindowLoader(windowClassName);
+		final WindowLoader windowLoader = new WindowLoader(windowClassName);
 		if(SwingUtilities.isEventDispatchThread())
 			windowLoader.run();
 		else
@@ -229,7 +224,7 @@ public abstract class Controller
 			{
 				SwingUtilities.invokeAndWait(windowLoader);
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				logError(IMPORTANT_ERROR, this, e, "Fenster kann nicht geladen werden: " + windowClassName);
 				return false;
@@ -423,7 +418,7 @@ public abstract class Controller
 				{
 					listener.errorOccurred(priority, sender, exception, message, new java.util.Date());
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					// Kein Fehler beim melden eines Fehlers melden.
 				}
@@ -581,7 +576,7 @@ public abstract class Controller
 			{
 				SystemTray.getSystemTray().remove(icon);
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
 				logError(Controller.UNIMPORTANT_ERROR, this, e, "Fehler bei Schließen von Tray Icon");
 			}
@@ -595,7 +590,7 @@ public abstract class Controller
 				{
 					listener.closing();
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					logError(Controller.UNIMPORTANT_ERROR, listener, e, "Fehler bei Schließen von Plugin: " + closeListener);
 				}

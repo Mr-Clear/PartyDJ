@@ -1,12 +1,10 @@
 package network.remoteV2.client;
 
 import basics.Controller;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
 import network.remoteV2.InputHandler;
 import network.remoteV2.JsonDecoder;
 import network.remoteV2.JsonEncoder;
@@ -20,7 +18,7 @@ public class ClientConnection implements InputHandler
 	private String host;
 	private final Client client;
 	
-	public ClientConnection(Client client)
+	public ClientConnection(final Client client)
     {
         super();
         this.client = client;
@@ -31,13 +29,13 @@ public class ClientConnection implements InputHandler
 		connect("localhost", Server.PORT);
 	}
 
-	public void connect(String connectHost)
+	public void connect(final String connectHost)
 	{
 		connect(connectHost, Server.PORT);
 	}
 
 	@SuppressWarnings("resource")
-	public void connect(String connectHost, int connectPort)
+	public void connect(final String connectHost, final int connectPort)
 	{
 		this.host = connectHost;
 		this.port = connectPort;
@@ -59,7 +57,7 @@ public class ClientConnection implements InputHandler
 						new JsonDecoder(socket.getInputStream(), ClientConnection.this);
 						retry = false;
 					}
-					catch(IOException e)
+					catch(final IOException e)
 					{
 						if(e instanceof UnknownHostException || "Connection refused: connect".equals(e.getMessage()) || "Connection timed out: connect".equals(e.getMessage()))
 						{
@@ -67,7 +65,7 @@ public class ClientConnection implements InputHandler
 							{
 								Thread.sleep(1000);
 							}
-							catch(InterruptedException ignore)
+							catch(final InterruptedException ignore)
 							{
 								/* ignore */
 							}
@@ -90,18 +88,18 @@ public class ClientConnection implements InputHandler
 	}
 
 	@Override
-	public void messageReceived(Message message)
+	public void messageReceived(final Message message)
 	{
 		client.messageReceived(message);
 	}
 
-	public void connectionOpened(JsonEncoder jsonEncoder)
+	public void connectionOpened(final JsonEncoder jsonEncoder)
 	{
 		client.setJsonEncoder(jsonEncoder);
 	}
 
 	@Override
-	public void inputHandlerClosed(boolean externalReason)
+	public void inputHandlerClosed(final boolean externalReason)
 	{
         client.setJsonEncoder(null);
         connect(host, port);

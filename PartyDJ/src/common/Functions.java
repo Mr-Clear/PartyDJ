@@ -99,7 +99,7 @@ public final class Functions
 		if(full && magnitude > 0)
 			sb.append(" (" + Long.toString(size) + " Byte)");
 		
-		String ret = sb.toString();
+		final String ret = sb.toString();
 		if(ret != null)
 			return ret;
 		return "0";

@@ -1,13 +1,11 @@
 package network.remoteV2;
 
-import flexjson.JSONException;
-import flexjson.JSONSerializer;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
-
+import flexjson.JSONException;
+import flexjson.JSONSerializer;
 import network.remoteV2.beans.Message;
 
 /**
@@ -22,7 +20,7 @@ public class JsonEncoder
 	/** 
 	 * @param outputStream Ziel, in das Json geschrieben wird. 
 	 */
-	public JsonEncoder(OutputStream outputStream)
+	public JsonEncoder(final OutputStream outputStream)
 	{
 		writer = new PrintWriter(outputStream);
 		jsonSerializer = new JSONSerializer();
@@ -34,7 +32,7 @@ public class JsonEncoder
 	 * @throws IOException
 	 */
 	@SuppressWarnings("unused")
-    public synchronized void write(Message message) throws IOException
+    public synchronized void write(final Message message) throws IOException
 	{
 	    /* For debug. Set len = 0 to disable. */
 	    final int len = 0;
@@ -51,7 +49,7 @@ public class JsonEncoder
 		{
 		    jsonSerializer.deepSerialize(message, writer);
 		}
-		catch(JSONException e)
+		catch(final JSONException e)
 		{
 			throw new IOException(e);
 		}

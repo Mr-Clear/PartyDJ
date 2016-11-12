@@ -1,8 +1,8 @@
 package gui;
 
 import basics.Controller;
-import lists.ListException;
 import javax.swing.JFrame;
+import lists.ListException;
 
 public class ListWindow extends JFrame
 {

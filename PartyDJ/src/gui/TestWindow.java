@@ -3,8 +3,6 @@ import basics.Controller;
 import common.Track;
 import data.IData;
 import data.SettingException;
-import lists.ListException;
-import lists.data.ListProvider;
 import gui.dnd.ListDropMode;
 import players.PlayStateAdapter;
 import java.awt.BorderLayout;
@@ -21,6 +19,8 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import lists.ListException;
+import lists.data.ListProvider;
 
 /**
  * Testfenster zum Testen neuer Funktionen.

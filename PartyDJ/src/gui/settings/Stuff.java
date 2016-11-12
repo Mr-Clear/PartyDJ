@@ -53,7 +53,7 @@ public class Stuff extends javax.swing.JPanel
 			btnErrorWindow.addActionListener(new ActionListener()
 			{
 				@Override
-				public void actionPerformed(ActionEvent e)
+				public void actionPerformed(final ActionEvent e)
 				{
 					controller.showErrorWindow();
 				}
@@ -102,7 +102,7 @@ public class Stuff extends javax.swing.JPanel
 				});
 			}
 		}
-		GroupLayout groupLayout = new GroupLayout(this);
+		final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()

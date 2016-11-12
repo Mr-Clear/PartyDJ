@@ -3,15 +3,15 @@ package gui.settings.tools;
 import basics.Controller;
 import common.Track;
 import data.IData;
-import lists.EditableListModel;
-import lists.ListException;
-import lists.data.DbMasterListModel;
-import lists.data.DbTrack;
 import gui.PDJList;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
 import java.util.List;
 import javax.swing.JOptionPane;
+import lists.EditableListModel;
+import lists.ListException;
+import lists.data.DbMasterListModel;
+import lists.data.DbTrack;
 
 public class RemoveMP3s implements StatusSupportedFunction
 {

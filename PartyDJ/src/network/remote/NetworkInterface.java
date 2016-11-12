@@ -16,7 +16,7 @@ public abstract class NetworkInterface implements CloseListener
 	protected boolean closed;
 	protected long nextInvocationId = new Random().nextLong();
 	
-	public NetworkInterface(final ObjectOutputStream oos, final Map<Long, Thread> invocationThreads, Map<Long, Serializable> invocationAnswers)
+	public NetworkInterface(final ObjectOutputStream oos, final Map<Long, Thread> invocationThreads, final Map<Long, Serializable> invocationAnswers)
 	{
 		this.oos = oos;
 		this.invocationThreads = invocationThreads;
@@ -24,7 +24,7 @@ public abstract class NetworkInterface implements CloseListener
 		Controller.getInstance().addCloseListener(this);
 	}
 	
-	protected void sendInvocation(Serializable data)
+	protected void sendInvocation(final Serializable data)
 	{
 		if(!closed)
 			synchronized(oos)
@@ -33,7 +33,7 @@ public abstract class NetworkInterface implements CloseListener
 				{
 					oos.writeObject(data);
 				}
-				catch(IOException e)
+				catch(final IOException e)
 				{
 					Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Anfrage konnte nicht über Netzwerk gesendet werden.");
 				}
@@ -46,7 +46,7 @@ public abstract class NetworkInterface implements CloseListener
 			{
 				Thread.sleep(5000);
 			}
-			catch(InterruptedException ignored)
+			catch(final InterruptedException ignored)
 			{ /* Wird geweckt wenn eine Antwort kommt. */ }
 		
 		synchronized(invocationAnswers)

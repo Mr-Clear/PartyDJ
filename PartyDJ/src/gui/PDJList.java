@@ -2,7 +2,6 @@ package gui;
 
 import basics.Controller;
 import common.Track;
-import lists.TrackListModel;
 import gui.TrackListAppearance.EntryState;
 import gui.TrackListAppearance.Part;
 import gui.TrackListAppearance.TrackState;
@@ -31,6 +30,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import lists.TrackListModel;
 
 /**
  * Von JList abgeleitete Liste, die Tracks aufnimmt.
@@ -178,7 +178,7 @@ public class PDJList extends JList<Track>
             return new ArrayList<>(0);
         }
 
-        ArrayList<Track> ret = new ArrayList<>();
+        final ArrayList<Track> ret = new ArrayList<>();
         for(int i = iMin; i <= iMax; i++)
         {
             if (sm.isSelectedIndex(i))

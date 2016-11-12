@@ -2,10 +2,6 @@ package gui.dnd;
 
 import basics.Controller;
 import common.Track;
-import lists.EditableListModel;
-import lists.ListException;
-import lists.TrackListModel;
-import lists.data.DbMasterListModel;
 import gui.PDJList;
 import gui.StatusDialog;
 import gui.settings.tools.AddMP3s;
@@ -24,6 +20,10 @@ import java.util.List;
 import javax.swing.DropMode;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import lists.EditableListModel;
+import lists.ListException;
+import lists.TrackListModel;
+import lists.data.DbMasterListModel;
 
 /**ForeignDrop kümmert sich um alle Drop-Importe.
  * Innerhalb der VM, sowie auch von außerhalb.

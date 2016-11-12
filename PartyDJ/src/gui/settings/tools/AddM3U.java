@@ -4,11 +4,11 @@ import basics.Controller;
 import common.Reporter;
 import common.Track;
 import data.IData;
-import lists.EditableListModel;
-import lists.ListException;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
 import javax.swing.JOptionPane;
+import lists.EditableListModel;
+import lists.ListException;
 
 /**
  * Liest eine M3U-Datei und fügt die Tracks der Hauptliste hinzu.
@@ -49,7 +49,7 @@ public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 		{
 			Controller.getInstance().getData().addTrack(null, false);
 		}
-		catch(ListException e)
+		catch(final ListException e)
 		{
 			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Datei eingelesen aber Update der Hauptliste fehlgeschlagen.");
 		}
@@ -69,7 +69,7 @@ public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 			count = data.getTrack(track.getPath(), false) == null;
 			data.addTrack(track, true);
 		}
-		catch(ListException e)
+		catch(final ListException e)
 		{
 			stopTask();
 			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Track einfügen fehlgeschlagen.");

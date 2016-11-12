@@ -38,7 +38,7 @@ public class Mp3TagTableModel extends AbstractTableModel
 		{
 			LogManager.getLogManager().readConfiguration(new ByteArrayInputStream("org.jaudiotagger.level = OFF".getBytes()));
 		} 
-		catch (Exception ignored)
+		catch (final Exception ignored)
 		{ /* Dann halt nicht. */ }
 		
 		// id3v2TagTypes füllen.
@@ -128,7 +128,7 @@ public class Mp3TagTableModel extends AbstractTableModel
 		id3v2TagTypes.put("WOAF", "WWWAUDIOFILE");
 	}
 		
-	public Mp3TagTableModel(Track track)
+	public Mp3TagTableModel(final Track track)
 	{
 		// Aus Track
 		addData("Name", track.getName());
@@ -144,25 +144,25 @@ public class Mp3TagTableModel extends AbstractTableModel
 		{
 			file = new MP3File(new File(track.getPath()), MP3File.LOAD_ALL, true);
 		}
-		catch(IOException e)
+		catch(final IOException e)
 		{
 			addData("Kann Datei nicht öffnen.", null);
 			controller.logError(Controller.NORMAL_ERROR, this, e, "Kann Datei nicht öffnen.");
 			return;
 		}
-		catch(TagException e)
+		catch(final TagException e)
 		{
 			addData("Kein Tag gefunden.", null);
 			controller.logError(Controller.NORMAL_ERROR, this, e, "Kein Tag gefunden.");
 			return;
 		}
-		catch(ReadOnlyFileException e)
+		catch(final ReadOnlyFileException e)
 		{
 			addData("Unerwarteter Fehler.", null);
 			controller.logError(Controller.NORMAL_ERROR, this, e, "Datei kann nicht zum Schreiben geöffnet werden.");
 			return;
 		}
-		catch(InvalidAudioFrameException e)
+		catch(final InvalidAudioFrameException e)
 		{
 			addData("Ungültiger Frame in Datei.", null);
 			controller.logError(Controller.NORMAL_ERROR, this, e, "Ungültiger Frame in Datei.");
@@ -199,7 +199,7 @@ public class Mp3TagTableModel extends AbstractTableModel
 		addField("Jahr", FieldKey.YEAR, tag1, tag2);
 		
 		// Audiodaten
-		AudioHeader header = file.getAudioHeader();
+		final AudioHeader header = file.getAudioHeader();
 		addData("Audiodaten:", null);
 		addData("Bit Rate", header.getBitRate() + " Kbps");
 		addData("Kanäle", header.getChannels());
@@ -212,9 +212,9 @@ public class Mp3TagTableModel extends AbstractTableModel
 		if(tag1 != null)
 		{
 			addData("ID3v1 Tag:", null);
-			for(FieldKey key : FieldKey.values())
+			for(final FieldKey key : FieldKey.values())
 			{
-				String value = tag1.getFirst(key);
+				final String value = tag1.getFirst(key);
 				if(value.length() > 0)
 					addData(key.name(), value);
 			}
@@ -226,9 +226,9 @@ public class Mp3TagTableModel extends AbstractTableModel
 		if(tag2 != null)
 		{
 			addData("ID3v2 Tag:", null);
-			for(Iterator<TagField> iterator =  tag2.getFields(); iterator.hasNext();)
+			for(final Iterator<TagField> iterator =  tag2.getFields(); iterator.hasNext();)
 			{
-				TagField field = iterator.next();
+				final TagField field = iterator.next();
 				if(id3v2TagTypes.containsKey(field.getId()))
 					addData(field.getId() + " (" + id3v2TagTypes.get(field.getId()) + ")", tag2.getFirst(field.getId()));
 				else
@@ -252,7 +252,7 @@ public class Mp3TagTableModel extends AbstractTableModel
 	}
 
 	@Override
-	public String getColumnName(int columnIndex)
+	public String getColumnName(final int columnIndex)
 	{
 
 		if(columnIndex == 0)
@@ -261,26 +261,26 @@ public class Mp3TagTableModel extends AbstractTableModel
 	}
 
 	@Override
-	public Class<?> getColumnClass(int columnIndex)
+	public Class<?> getColumnClass(final int columnIndex)
 	{
 		return String.class;
 	}
 
 	@Override
-	public Object getValueAt(int rowIndex, int columnIndex)
+	public Object getValueAt(final int rowIndex, final int columnIndex)
 	{
 		if(columnIndex == 0)
 			return names.get(rowIndex);
 		return values.get(rowIndex);
 	}
 	
-	protected void addData(String name, String value)
+	protected void addData(final String name, final String value)
 	{
 		names.add(name);
 		values.add(value);
 	}
 	
-	protected static String getField(FieldKey key, ID3v1Tag tag1, AbstractID3v2Tag tag2)
+	protected static String getField(final FieldKey key, final ID3v1Tag tag1, final AbstractID3v2Tag tag2)
 	{
 		String val = null;
 		if(tag2 != null)
@@ -290,14 +290,14 @@ public class Mp3TagTableModel extends AbstractTableModel
 		return val;
 	}
 	
-	protected void addField(String name, FieldKey key, ID3v1Tag tag1, AbstractID3v2Tag tag2)
+	protected void addField(final String name, final FieldKey key, final ID3v1Tag tag1, final AbstractID3v2Tag tag2)
 	{
-		String value = getField(key, tag1, tag2);
+		final String value = getField(key, tag1, tag2);
 		if(hatContent(value))
 			addData(name, value);
 	}
 	
-	protected static boolean hatContent(String value)
+	protected static boolean hatContent(final String value)
 	{
 		return value != null && value.length() > 0 && !value.equalsIgnoreCase("null");
 	}

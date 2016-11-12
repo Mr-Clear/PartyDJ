@@ -6,6 +6,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;
@@ -20,15 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class ErrorLogWindow extends JFrame
 {
@@ -55,7 +55,7 @@ public class ErrorLogWindow extends JFrame
 	 * Launch the application.
 	 * @param args Ignored
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		EventQueue.invokeLater(new Runnable()
 		{
@@ -64,10 +64,10 @@ public class ErrorLogWindow extends JFrame
 			{
 				try
 				{
-					ErrorLogWindow frame = new ErrorLogWindow(null);
+					final ErrorLogWindow frame = new ErrorLogWindow(null);
 					frame.setVisible(true);
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					e.printStackTrace();
 				}
@@ -79,14 +79,14 @@ public class ErrorLogWindow extends JFrame
 	 * Create the frame.
 	 * @param controller 
 	 */
-	public ErrorLogWindow(Controller controller)
+	public ErrorLogWindow(final Controller controller)
 	{
 		setTitle("Keine Fehler");
 		this.controller = controller;
 		
 		addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowClosing(WindowEvent e)
+			public void windowClosing(final WindowEvent e)
 			{
 				if(ErrorLogWindow.this.controller == null)
 					dispose();
@@ -94,7 +94,7 @@ public class ErrorLogWindow extends JFrame
 					ErrorLogWindow.this.controller.unregisterWindow(ErrorLogWindow.this);
 			}
 			@Override
-			public void windowOpened(WindowEvent e)
+			public void windowOpened(final WindowEvent e)
 			{
 				if(ErrorLogWindow.this.controller != null)
 					ErrorLogWindow.this.controller.registerWindow(ErrorLogWindow.this);
@@ -106,19 +106,19 @@ public class ErrorLogWindow extends JFrame
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 
-		JScrollPane scrollPaneErrors = new JScrollPane();
+		final JScrollPane scrollPaneErrors = new JScrollPane();
 
-		JLabel lblTimestamp = new JLabel("Timestamp:");
+		final JLabel lblTimestamp = new JLabel("Timestamp:");
 
-		JLabel lblMessage = new JLabel("Message:");
+		final JLabel lblMessage = new JLabel("Message:");
 
-		JLabel lblPriority = new JLabel("Priority:");
+		final JLabel lblPriority = new JLabel("Priority:");
 
-		JLabel lblSender = new JLabel("Sender:");
+		final JLabel lblSender = new JLabel("Sender:");
 
-		JLabel lblSenderType = new JLabel("Sender type:");
+		final JLabel lblSenderType = new JLabel("Sender type:");
 
-		JLabel lblException = new JLabel("Exception:");
+		final JLabel lblException = new JLabel("Exception:");
 
 		txtSenderType = new JTextField();
 		txtSenderType.setEditable(false);
@@ -145,7 +145,7 @@ public class ErrorLogWindow extends JFrame
 		txtTimestamp.setColumns(10);
 
 		scrollPaneStackTrace = new JScrollPane();
-		GroupLayout gl_contentPane = new GroupLayout(contentPane);
+		final GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane.createSequentialGroup().addContainerGap().addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addComponent(scrollPaneErrors, GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE).addGroup(gl_contentPane.createSequentialGroup().addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addComponent(lblSenderType).addComponent(lblException).addComponent(lblSender).addComponent(lblPriority).addComponent(lblMessage).addComponent(lblTimestamp)).addPreferredGap(ComponentPlacement.UNRELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false).addComponent(txtMessage, Alignment.LEADING).addComponent(txtTimestamp, Alignment.LEADING).addComponent(txtException, Alignment.LEADING).addComponent(txtSender, Alignment.LEADING).addComponent(txtPriority, Alignment.LEADING).addComponent(txtSenderType, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addComponent(scrollPaneStackTrace, GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE))).addContainerGap()));
 		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING).addGroup(gl_contentPane.createSequentialGroup().addContainerGap().addComponent(scrollPaneErrors, GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane.createSequentialGroup().addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblMessage).addComponent(txtMessage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblTimestamp).addComponent(txtTimestamp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblPriority).addComponent(txtPriority, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblSender).addComponent(txtSender, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblSenderType).addComponent(txtSenderType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblException).addComponent(txtException, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))).addComponent(scrollPaneStackTrace, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)).addContainerGap()));
 
@@ -159,9 +159,9 @@ public class ErrorLogWindow extends JFrame
 		lstErrors.addListSelectionListener(new ListSelectionListener()
 		{
 			@Override
-			public void valueChanged(ListSelectionEvent e)
+			public void valueChanged(final ListSelectionEvent e)
 			{
-				LoggedError error = lstErrors.getSelectedValue();
+				final LoggedError error = lstErrors.getSelectedValue();
 				txtMessage.setText(error.getMessage());
 				txtSender.setText(error.getSender());
 				txtSenderType.setText(error.getSenderType());
@@ -170,8 +170,8 @@ public class ErrorLogWindow extends JFrame
 				if (error.getException() != null)
 				{
 					txtException.setText(error.getException().toString());
-					StringWriter sw = new StringWriter();
-					PrintWriter pw = new PrintWriter(sw);
+					final StringWriter sw = new StringWriter();
+					final PrintWriter pw = new PrintWriter(sw);
 					error.getException().printStackTrace(pw);
 					txtStackTrace.setText(sw.toString());
 					txtStackTrace.setCaretPosition(0);
@@ -188,9 +188,9 @@ public class ErrorLogWindow extends JFrame
 		lstErrors.setCellRenderer(new ListCellRenderer<LoggedError>()
 		{
 			@Override
-			public Component getListCellRendererComponent(JList<? extends LoggedError> list, LoggedError value, int index, boolean isSelected, boolean cellHasFocus)
+			public Component getListCellRendererComponent(final JList<? extends LoggedError> list, final LoggedError value, final int index, final boolean isSelected, final boolean cellHasFocus)
 			{
-				JLabel lbl = new JLabel(isoDateFormat.format(value.getTimestamp()) + " [" + value.getPriority() + "] " + value.getMessage());
+				final JLabel lbl = new JLabel(isoDateFormat.format(value.getTimestamp()) + " [" + value.getPriority() + "] " + value.getMessage());
 				lbl.setOpaque(true);
 				switch(value.getPriority())
 				{
@@ -224,7 +224,7 @@ public class ErrorLogWindow extends JFrame
 		contentPane.setLayout(gl_contentPane);
 	}
 
-	public void addError(LoggedError error)
+	public void addError(final LoggedError error)
 	{
 		lstErrorsListModel.addElement(error);
 		lstErrors.ensureIndexIsVisible(lstErrorsListModel.size() - 1);

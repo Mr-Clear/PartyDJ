@@ -19,7 +19,7 @@ public class Track extends Message
         this.problem = null;
     }
 
-    public Track(common.Track track)
+    public Track(final common.Track track)
     {
         this.name = track.getName();
         this.info = track.getInfo();

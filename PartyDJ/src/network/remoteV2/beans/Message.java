@@ -15,14 +15,14 @@ public abstract class Message
 	
 	/** Konfiguriert Felxjson, um mit der Typhirachie zurecht zu kommen. 
 	 * @param deserializer Zu konfigurierender JSONDeserializer.*/
-	public static void configureDeserializer(JSONDeserializer<Message> deserializer)
+	public static void configureDeserializer(final JSONDeserializer<Message> deserializer)
 	{
-		TypeLocator<String> typeLocator = new TypeLocator<>("type");
-		for(Child child : Child.values())
+		final TypeLocator<String> typeLocator = new TypeLocator<>("type");
+		for(final Child child : Child.values())
 		{
 			try
 			{
-			    Class<? extends Message> c = Child.childToClass(child);
+			    final Class<? extends Message> c = Child.childToClass(child);
 				typeLocator.add((c.newInstance()).getType().toString(), c);
 			}
 			catch(InstantiationException | IllegalAccessException e)
@@ -45,7 +45,7 @@ public abstract class Message
 	    Track,
 	    ;
 	    
-	    static Class<? extends Message> childToClass(Child child)
+	    static Class<? extends Message> childToClass(final Child child)
 	    {
 	        switch(child)
 	        {

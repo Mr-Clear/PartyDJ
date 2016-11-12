@@ -5,9 +5,6 @@ import common.Track;
 import data.IData;
 import data.ListAdapter;
 import data.SortOrder;
-import lists.ListException;
-import lists.data.DbTrack;
-import lists.data.SearchListModel;
 import gui.EditTrackWindow;
 import gui.PDJList;
 import gui.PDJScrollList;
@@ -40,6 +37,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import lists.ListException;
+import lists.data.DbTrack;
+import lists.data.SearchListModel;
 
 public class TrackManager extends javax.swing.JPanel implements Closeable
 {
@@ -128,7 +128,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 				controller.logError(Controller.NORMAL_ERROR, this, e, "Suchen der Listen fehlgeschlagen.");
 			}
 			listBoxContent.add(0, "Hauptliste");
-			String[] listBoxArray = new String[listBoxContent.size()];
+			final String[] listBoxArray = new String[listBoxContent.size()];
 			listBoxContent.toArray(listBoxArray);
 			cmbList.setModel(new DefaultComboBoxModel<>(listBoxArray));
 			cmbList.addActionListener(searchConditionsListener);
@@ -186,7 +186,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 					public void actionPerformed(final ActionEvent e)
 					{
 						List<Track> toRead;
-						List<Track> selectedValues = list.getSelectedValuesList();
+						final List<Track> selectedValues = list.getSelectedValuesList();
 						if(selectedValues == null || selectedValues.size() == 0)
 							toRead = list.getListModel().getValues();
 						else
@@ -268,7 +268,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 							{
 								data.addTrack(new Track(filePath, false), false);
 							}
-							catch(ListException e)
+							catch(final ListException e)
 							{
 								controller.logError(Controller.NORMAL_ERROR, this, e, "Track einfügen fehlgeschlagen.");
 							}
@@ -286,7 +286,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 					public void actionPerformed(final ActionEvent evt)
 					{
 						List<Track> toRead;
-						List<Track> selectedValues = list.getSelectedValuesList();
+						final List<Track> selectedValues = list.getSelectedValuesList();
 						if(selectedValues == null || selectedValues.size() == 0)
 							toRead = list.getListModel().getValues();
 						else
@@ -383,7 +383,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 		protected long lastUpdate = 0;
 		protected final Timer updateTimer = new Timer(1000, new ActionListener()
 		{	
-			@Override public void actionPerformed(ActionEvent e)
+			@Override public void actionPerformed(final ActionEvent e)
 			{
 				update();
 			}
@@ -414,11 +414,11 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 							}
 						});
 					}
-					catch(InterruptedException e)
+					catch(final InterruptedException e)
 					{
 						controller.logError(Controller.UNIMPORTANT_ERROR, this, e, "GUI-Update fehlgeschlagen.");
 					}
-					catch(InvocationTargetException e)
+					catch(final InvocationTargetException e)
 					{
 						controller.logError(Controller.UNIMPORTANT_ERROR, this, e, "GUI-Update fehlgeschlagen.");
 					}
@@ -486,7 +486,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 		}
 
 		@Override
-		public void trackAdded(final DbTrack track, boolean eventsFollowing)
+		public void trackAdded(final DbTrack track, final boolean eventsFollowing)
 		{
 			if(track != null)
 			{
@@ -497,14 +497,14 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 		}
 
 		@Override
-		public void trackChanged(final DbTrack newTrack, final Track oldTrack, boolean eventsFollowing)
+		public void trackChanged(final DbTrack newTrack, final Track oldTrack, final boolean eventsFollowing)
 		{
 			readValues(controller.getListProvider().getMasterList().getList(), 0);
 			refresh(eventsFollowing);
 		}
 
 		@Override
-		public void trackDeleted(final DbTrack track, boolean eventsFollowing)
+		public void trackDeleted(final DbTrack track, final boolean eventsFollowing)
 		{
 			if(track != null)
 			{

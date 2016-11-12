@@ -4,10 +4,10 @@ import basics.Controller;
 import common.Reporter;
 import common.Track;
 import data.IData;
-import lists.EditableListModel;
-import lists.ListException;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
+import lists.EditableListModel;
+import lists.ListException;
 
 /**
  * Fügt eine M3U-Datei in eine Liste ein.
@@ -40,7 +40,7 @@ public class InsertM3U implements StatusSupportedFunction, Reporter<Track>
 			list.add(null, false);
 			data.addTrack(null, false);
 		}
-		catch(ListException e)
+		catch(final ListException e)
 		{
 			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Datei eingelesen, aber Update der Liste fehlgeschlagen.");
 		}

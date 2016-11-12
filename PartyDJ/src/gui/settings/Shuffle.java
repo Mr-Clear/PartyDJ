@@ -4,7 +4,6 @@ import basics.Controller;
 import data.IData;
 import data.ListAdapter;
 import data.SettingListener;
-import lists.ListException;
 import java.awt.Component;
 import java.awt.Font;
 import java.util.HashMap;
@@ -29,6 +28,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import lists.ListException;
 
 public class Shuffle extends JPanel implements Closeable
 {

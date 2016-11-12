@@ -1,20 +1,17 @@
 package network.remoteV2.client;
 
 import basics.PlayerContact;
-
 import common.Track;
-
 import players.IPlayer;
 import players.PlayStateListener;
 import players.PlayerException;
-
 import java.io.File;
 
 public class ClientPlayer implements IPlayer
 {
 
     @Override
-    public void load(Track track) throws PlayerException
+    public void load(final Track track) throws PlayerException
     {
         // TODO Auto-generated method stub
 
@@ -28,7 +25,7 @@ public class ClientPlayer implements IPlayer
     }
 
     @Override
-    public void start(Track track) throws PlayerException
+    public void start(final Track track) throws PlayerException
     {
         // TODO Auto-generated method stub
 
@@ -105,7 +102,7 @@ public class ClientPlayer implements IPlayer
     }
 
     @Override
-    public boolean checkPlayable(Track track)
+    public boolean checkPlayable(final Track track)
     {
         // TODO Auto-generated method stub
         return false;
@@ -119,21 +116,21 @@ public class ClientPlayer implements IPlayer
     }
 
     @Override
-    public double getDuration(Track track) throws PlayerException
+    public double getDuration(final Track track) throws PlayerException
     {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public double getDuration(String filePath) throws PlayerException
+    public double getDuration(final String filePath) throws PlayerException
     {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public double getDuration(File file) throws PlayerException
+    public double getDuration(final File file) throws PlayerException
     {
         // TODO Auto-generated method stub
         return 0;
@@ -168,42 +165,42 @@ public class ClientPlayer implements IPlayer
     }
 
     @Override
-    public void setPosition(double seconds)
+    public void setPosition(final double seconds)
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void setPosition(double seconds, boolean autoPlay)
+    public void setPosition(final double seconds, final boolean autoPlay)
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void setVolume(int volume)
+    public void setVolume(final int volume)
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void setContact(PlayerContact contact)
+    public void setContact(final PlayerContact contact)
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void addPlayStateListener(PlayStateListener listener)
+    public void addPlayStateListener(final PlayStateListener listener)
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void removePlayStateListener(PlayStateListener listener)
+    public void removePlayStateListener(final PlayStateListener listener)
     {
         // TODO Auto-generated method stub
 

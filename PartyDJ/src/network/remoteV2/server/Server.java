@@ -1,7 +1,6 @@
 package network.remoteV2.server;
 
 import basics.Plugin;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,7 +47,7 @@ public class Server implements Plugin
 		listener = null;
 		synchronized (serverHandlers)
 		{
-			for(ServerHandler serverHandler : serverHandlers)
+			for(final ServerHandler serverHandler : serverHandlers)
 				serverHandler.stop();
 		}
 	}
@@ -59,7 +58,7 @@ public class Server implements Plugin
 		return listener != null;
 	}
 	
-	void addServerHandler(ServerHandler serverHandler)
+	void addServerHandler(final ServerHandler serverHandler)
 	{
 		synchronized (serverHandlers)
 		{
@@ -67,7 +66,7 @@ public class Server implements Plugin
 		}
 	}
 	
-	void removeServerHandler(ServerHandler serverHandler)
+	void removeServerHandler(final ServerHandler serverHandler)
 	{
 		synchronized (serverHandlers)
 		{
@@ -75,7 +74,7 @@ public class Server implements Plugin
 		}
 	}
 
-	public static void main(String... args)
+	public static void main(final String... args)
 	{
 	    new basics.PartyDJ(args);
 	}

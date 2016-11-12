@@ -21,7 +21,7 @@ public class NetworkPlayer extends NetworkInterface implements IPlayer, PlayStat
 	protected volatile double lastPosition;
 	protected volatile boolean playState;
 	
-	public NetworkPlayer(final ObjectOutputStream oos, final Map<Long, Thread> invocationThreads, Map<Long, Serializable> invocationAnswers)
+	public NetworkPlayer(final ObjectOutputStream oos, final Map<Long, Thread> invocationThreads, final Map<Long, Serializable> invocationAnswers)
 	{
 		super(oos, invocationThreads, invocationAnswers);
 		addPlayStateListener(this);
@@ -48,7 +48,7 @@ public class NetworkPlayer extends NetworkInterface implements IPlayer, PlayStat
 	}
 
 	@Override
-	public boolean checkPlayable(Track track)
+	public boolean checkPlayable(final Track track)
 	{
 		final long invocationId = generateInvocationId();
 		invocationThreads.put(invocationId, Thread.currentThread());
@@ -102,39 +102,39 @@ public class NetworkPlayer extends NetworkInterface implements IPlayer, PlayStat
 	}
 
 	@Override
-	public double getDuration(Track track) throws PlayerException
+	public double getDuration(final Track track) throws PlayerException
 	{
 		final long invocationId = generateInvocationId();
 		invocationThreads.put(invocationId, Thread.currentThread());
 		sendInvocation(new Invocation.GetDuration(invocationId, track));
 		
-		Serializable answer = waitForAnswer(invocationId);
+		final Serializable answer = waitForAnswer(invocationId);
 		if(answer instanceof PlayerException)
 			throw (PlayerException)answer;
 		return (Double)answer;
 	}
 
 	@Override
-	public double getDuration(String filePath) throws PlayerException
+	public double getDuration(final String filePath) throws PlayerException
 	{
 		final long invocationId = generateInvocationId();
 		invocationThreads.put(invocationId, Thread.currentThread());
 		sendInvocation(new Invocation.GetDuration(invocationId, filePath));
 		
-		Serializable answer = waitForAnswer(invocationId);
+		final Serializable answer = waitForAnswer(invocationId);
 		if(answer instanceof PlayerException)
 			throw (PlayerException)answer;
 		return (Double)answer;
 	}
 
 	@Override
-	public double getDuration(File file) throws PlayerException
+	public double getDuration(final File file) throws PlayerException
 	{
 		final long invocationId = generateInvocationId();
 		invocationThreads.put(invocationId, Thread.currentThread());
 		sendInvocation(new Invocation.GetDuration(invocationId, file));
 		
-		Serializable answer = waitForAnswer(invocationId);
+		final Serializable answer = waitForAnswer(invocationId);
 		if(answer instanceof PlayerException)
 			throw (PlayerException)answer;
 		return (Double)answer;
@@ -152,7 +152,7 @@ public class NetworkPlayer extends NetworkInterface implements IPlayer, PlayStat
 		invocationThreads.put(invocationId, Thread.currentThread());
 		sendInvocation(new Invocation.GetPlayState(invocationId));
 		
-		Serializable ret = waitForAnswer(invocationId);
+		final Serializable ret = waitForAnswer(invocationId);
 		if(ret instanceof Boolean)
 		{
 			playState = (Boolean)ret;
@@ -192,13 +192,13 @@ public class NetworkPlayer extends NetworkInterface implements IPlayer, PlayStat
 	}
 	
 	@Override
-	public void load(Track track) throws PlayerException
+	public void load(final Track track) throws PlayerException
 	{
 		final long invocationId = generateInvocationId();
 		invocationThreads.put(invocationId, Thread.currentThread());
 		sendInvocation(new Invocation.Load(invocationId, track));
 		
-		Serializable answer = waitForAnswer(invocationId);
+		final Serializable answer = waitForAnswer(invocationId);
 		if(answer instanceof PlayerException)
 			throw (PlayerException)answer;
 	}
@@ -235,25 +235,25 @@ public class NetworkPlayer extends NetworkInterface implements IPlayer, PlayStat
 
 	@Override
 	@Deprecated
-	public void setContact(PlayerContact contact)
+	public void setContact(final PlayerContact contact)
 	{
 		throw new UnsupportedOperationException("NetworkPlayer kann setContact nicht aufrufen.");
 	}
 
 	@Override
-	public void setPosition(double seconds)
+	public void setPosition(final double seconds)
 	{
 		sendInvocation(new Invocation.SetPosition(seconds, false, false));
 	}
 
 	@Override
-	public void setPosition(double seconds, boolean autoPlay)
+	public void setPosition(final double seconds, final boolean autoPlay)
 	{
 		sendInvocation(new Invocation.SetPosition(seconds, autoPlay, true));
 	}
 
 	@Override
-	public void setVolume(int volume)
+	public void setVolume(final int volume)
 	{
 		sendInvocation(new Invocation.SetVolume(volume));
 	}
@@ -265,13 +265,13 @@ public class NetworkPlayer extends NetworkInterface implements IPlayer, PlayStat
 	}
 
 	@Override
-	public void start(Track track) throws PlayerException
+	public void start(final Track track) throws PlayerException
 	{
 		final long invocationId = generateInvocationId();
 		invocationThreads.put(invocationId, Thread.currentThread());
 		sendInvocation(new Invocation.Start(invocationId, track));
 
-		Serializable answer = waitForAnswer(invocationId);
+		final Serializable answer = waitForAnswer(invocationId);
 		if(answer instanceof PlayerException)
 			throw (PlayerException)answer;
 	}	
@@ -284,7 +284,7 @@ public class NetworkPlayer extends NetworkInterface implements IPlayer, PlayStat
 	
 	protected void updatePositionAsynchronous()
 	{
-		Thread updateThread = new Thread(){
+		final Thread updateThread = new Thread(){
 			@Override public void run()
 			{
 				updatePosition();
@@ -301,7 +301,7 @@ public class NetworkPlayer extends NetworkInterface implements IPlayer, PlayStat
 		invocationThreads.put(invocationId, Thread.currentThread());
 		sendInvocation(new Invocation.GetPosition(invocationId));
 		
-		double position = (Double)waitForAnswer(invocationId);
+		final double position = (Double)waitForAnswer(invocationId);
 		final long requestAnswered = System.currentTimeMillis();
 		final long requestAverengeTime = (requestStart + requestAnswered) >> 1;
 		
@@ -315,20 +315,20 @@ public class NetworkPlayer extends NetworkInterface implements IPlayer, PlayStat
 	}
 
 	@Override
-	public void currentTrackChanged(Track playedLast, Track playingCurrent, Reason reason)
+	public void currentTrackChanged(final Track playedLast, final Track playingCurrent, final Reason reason)
 	{
 		updatePositionAsynchronous();
 	}
 
 	@Override
-	public void playStateChanged(boolean newPlayState)
+	public void playStateChanged(final boolean newPlayState)
 	{
 		playState = newPlayState;
 		updatePositionAsynchronous();
 	}
 
 	@Override
-	public void volumeChanged(int volume) { /* not to implement */ }
+	public void volumeChanged(final int volume) { /* not to implement */ }
 	
 	public boolean updatePlayState()
 	{

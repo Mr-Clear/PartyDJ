@@ -68,7 +68,7 @@ public class SettingWindow extends JFrame
 		addWindowListener(new WindowAdapter()
 		{
 			@Override
-			public void windowClosed(WindowEvent e)
+			public void windowClosed(final WindowEvent e)
 			{
 				panel.setSettingComponent(null);
 			}

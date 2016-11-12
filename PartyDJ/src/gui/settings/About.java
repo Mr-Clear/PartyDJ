@@ -69,7 +69,7 @@ public class About extends JPanel
 		add(box);
 	}
 	
-	JTextField addText(String text, Box box)
+	JTextField addText(final String text, final Box box)
 	{
 		final JTextField txt = new JTextField(text);
 		txt.setEditable(false);

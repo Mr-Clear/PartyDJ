@@ -27,7 +27,7 @@ public class TrackWindow extends JFrame
 		this(controller.getPlayer().getCurrentTrack());
 	}
 	
-	public TrackWindow(Track track)
+	public TrackWindow(final Track track)
 	{
 		super("Track Details");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -74,7 +74,7 @@ public class TrackWindow extends JFrame
 		table.getColumnModel().getColumn(0).setCellRenderer(new TableCellRenderer()
 		{
 			@Override
-			public Component getTableCellRendererComponent(JTable table1, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+			public Component getTableCellRendererComponent(final JTable table1, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column)
 			{
 				final JLabel lbl = new JLabel(value.toString());
 				final Font tableFont = table1.getFont();
@@ -90,7 +90,7 @@ public class TrackWindow extends JFrame
 					fontStyle = Font.PLAIN;
 					fontSize = tableFont.getSize();
 				}
-				Font font = new Font(tableFont.getName(), fontStyle, fontSize);
+				final Font font = new Font(tableFont.getName(), fontStyle, fontSize);
 				lbl.setFont(font);
 				return lbl;
 			}
@@ -107,7 +107,7 @@ public class TrackWindow extends JFrame
 		setVisible(true);
 	}
 	
-	public void loadTrack(Track track) 
+	public void loadTrack(final Track track) 
 	{
 		tableModel = new Mp3TagTableModel(track);
 		table.setModel(tableModel);

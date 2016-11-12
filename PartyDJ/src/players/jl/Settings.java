@@ -30,20 +30,20 @@ public class Settings extends JPanel
 
 	public Settings()
 	{
-		JLabel lblSeundDevice = new JLabel("Seund device:");
+		final JLabel lblSeundDevice = new JLabel("Seund device:");
 
-		JButton btnOk = new JButton("Übernehmen");
+		final JButton btnOk = new JButton("Übernehmen");
 		btnOk.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				apply();
 			}
 		});
 		
-		JScrollPane scrollPane = new JScrollPane();
-		GroupLayout groupLayout = new GroupLayout(this);
+		final JScrollPane scrollPane = new JScrollPane();
+		final GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
@@ -68,12 +68,12 @@ public class Settings extends JPanel
 					.addContainerGap())
 		);
 		
-		Info[] infos = AudioSystem.getMixerInfo();
-		List<String> mixers = new ArrayList<>();
-		for(Info info : infos)
+		final Info[] infos = AudioSystem.getMixerInfo();
+		final List<String> mixers = new ArrayList<>();
+		for(final Info info : infos)
 			if(SoundAudioDevice.test(info))
 				mixers.add(info.getName());
-		String[] mixerArray = new String[mixers.size()];
+		final String[] mixerArray = new String[mixers.size()];
 		mixers.toArray(mixerArray);
 		final JList<String> list = new JList<>(mixerArray);
 		String currentMixer =  data.readSetting("JLPlayer.Mixer");
@@ -92,7 +92,7 @@ public class Settings extends JPanel
 		list.addListSelectionListener(new ListSelectionListener()
 		{
 			@Override
-			public void valueChanged(ListSelectionEvent e)
+			public void valueChanged(final ListSelectionEvent e)
 			{
 				data.writeSetting("JLPlayer.Mixer", list.getSelectedValue());
 			}
@@ -101,7 +101,7 @@ public class Settings extends JPanel
 		list.addMouseListener(new MouseAdapter()
 		{
 			@Override
-			public void mouseClicked(MouseEvent e)
+			public void mouseClicked(final MouseEvent e)
 			{
 				if(e.getClickCount() == 1)
 					apply();

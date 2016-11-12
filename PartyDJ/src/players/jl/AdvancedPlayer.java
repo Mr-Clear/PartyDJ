@@ -294,7 +294,7 @@ public class AdvancedPlayer
 			setUncaughtExceptionHandler(new UncaughtExceptionHandler()
 			{
 				@Override
-				public void uncaughtException(Thread t, Throwable e)
+				public void uncaughtException(final Thread t, final Throwable e)
 				{
 					closeThread(Reason.ERROR);
 				}
@@ -347,7 +347,7 @@ public class AdvancedPlayer
 			closeThread(paused ? Reason.RECEIVED_STOP : Reason.END_OF_TRACK);
 		}
 
-		private void closeThread(Reason reason)
+		private void closeThread(final Reason reason)
 		{
 			if (audio != null)
 			{

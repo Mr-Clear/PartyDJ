@@ -1,12 +1,12 @@
 package network.remoteV2;
 
 import basics.Controller;
-import flexjson.JSONDeserializer;
-import flexjson.JSONException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import flexjson.JSONDeserializer;
+import flexjson.JSONException;
 import network.remoteV2.beans.Message;
 
 /**
@@ -25,7 +25,7 @@ public class JsonDecoder
 	 * @param inputStream Stream, aus dem die Json-Daten kommen.
 	 * @param inputHandler Empfänger der Nachrichten.
 	 */
-	public JsonDecoder(InputStream inputStream, InputHandler inputHandler)
+	public JsonDecoder(final InputStream inputStream, final InputHandler inputHandler)
 	{
 		this.inputStream = inputStream;
 		this.inputHandler = inputHandler;
@@ -41,7 +41,7 @@ public class JsonDecoder
 		{
 			inputStream.close();
 		}
-		catch(IOException ignore)
+		catch(final IOException ignore)
 		{
 			/* Ignore */
 		}
@@ -52,13 +52,13 @@ public class JsonDecoder
 	    @Override
 		public void run()
 		{
-			JSONDeserializer<Message> deserializer = new JSONDeserializer<>();
+			final JSONDeserializer<Message> deserializer = new JSONDeserializer<>();
 			Message.configureDeserializer(deserializer);
 			try(Reader reader = new InputStreamReader(inputStream))
 			{
 				while(running)
 				{
-					Message message = deserializer.deserialize(reader);
+					final Message message = deserializer.deserialize(reader);
 					inputHandler.messageReceived(message);
 				}
 			}

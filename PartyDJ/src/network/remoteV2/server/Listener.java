@@ -16,7 +16,7 @@ public class Listener extends Thread
 	private final Object serverSocketMonitor = new Object();
 	private ServerSocket serverSocket;
 
-	public Listener(Server server)
+	public Listener(final Server server)
 	{
 		this.server = server;
 		setDaemon(true);
@@ -40,10 +40,11 @@ public class Listener extends Thread
 				try
 				{
 					@SuppressWarnings("resource")
+					final
 					Socket socket = serverSocket.accept();
 					new ServerHandler(server, socket);
 				}
-				catch (IOException e)
+				catch (final IOException e)
 				{
 					Controller.getInstance().logError(Controller.INERESTING_INFO, e);
 				}
@@ -53,7 +54,7 @@ public class Listener extends Thread
 				serverSocket = null;
 			}
 		}
-		catch (IOException e)
+		catch (final IOException e)
 		{
 			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, e);
 		}
@@ -69,7 +70,7 @@ public class Listener extends Thread
 				{
 					serverSocket.close();
 				}
-				catch (IOException e)
+				catch (final IOException e)
 				{
 					/* OMG STFU! */
 				}

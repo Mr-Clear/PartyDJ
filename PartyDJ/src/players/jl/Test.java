@@ -8,10 +8,10 @@ import javax.sound.sampled.Mixer.Info;
 public class Test
 {
 
-	public static void main(String[] args) 
+	public static void main(final String[] args) 
 	{
-		Info[] infos = AudioSystem.getMixerInfo();
-		for(Info info : infos)
+		final Info[] infos = AudioSystem.getMixerInfo();
+		for(final Info info : infos)
 		{
 			System.out.println(SoundAudioDevice.test(info) + "\t" + info.getName());
 		}

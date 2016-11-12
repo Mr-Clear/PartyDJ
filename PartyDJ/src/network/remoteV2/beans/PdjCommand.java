@@ -12,7 +12,7 @@ public class PdjCommand extends Message
 		commmand = null;
 	}
 	
-	public PdjCommand(Command command)
+	public PdjCommand(final Command command)
 	{
 		this.commmand = command;
 	}

@@ -4,15 +4,15 @@ import common.Track;
 import common.Track.Problem;
 import data.IData;
 import data.SettingException;
-import lists.ListException;
-import lists.TrackListModel;
-import lists.data.DbClientListModel;
-import lists.data.DbTrack;
 import players.PlayStateListener;
 import players.PlayerException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import lists.ListException;
+import lists.TrackListModel;
+import lists.data.DbClientListModel;
+import lists.data.DbTrack;
 
 public class PlayerListener implements PlayerContact, PlayStateListener
 {
@@ -55,7 +55,7 @@ public class PlayerListener implements PlayerContact, PlayStateListener
 			
 			// Prüfen ob Lied vor kurzem gespielt wurde.
 			final DbClientListModel lastPlayed = controller.listProvider.getDbList("LastPlayed");
-			int indexOnLastPlayed = lastPlayed.getIndex(predictedTrack);
+			final int indexOnLastPlayed = lastPlayed.getIndex(predictedTrack);
 			if(indexOnLastPlayed >= lastPlayed.getSize() - ignoreCount(listNames))
 				return predictNextTrack();
 		}

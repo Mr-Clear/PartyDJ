@@ -73,7 +73,7 @@ public class SoundAudioDevice extends AudioDeviceBase
 
 
 	// createSource fix.
-	protected void createSource(String mixerName) throws JavaLayerException
+	protected void createSource(final String mixerName) throws JavaLayerException
     {
         Throwable t = null;
         try
@@ -114,10 +114,10 @@ public class SoundAudioDevice extends AudioDeviceBase
 		if (source == null) throw new JavaLayerException("cannot obtain source audio line", t);
     }
 	
-	protected Line getLine(String mixerName) throws LineUnavailableException
+	protected Line getLine(final String mixerName) throws LineUnavailableException
 	{
 		if(mixerName != null)
-			for(Info info : AudioSystem.getMixerInfo())
+			for(final Info info : AudioSystem.getMixerInfo())
 				if(mixerName.equals(info.getName()))
 					return AudioSystem.getMixer(info).getLine(getSourceLineInfo());
 		return AudioSystem.getLine(getSourceLineInfo());
@@ -218,7 +218,7 @@ public class SoundAudioDevice extends AudioDeviceBase
 
 	}
 	
-	public static boolean test(Info mixerInfo) 
+	public static boolean test(final Info mixerInfo) 
 	{
 		try(Mixer mixer = AudioSystem.getMixer(mixerInfo); Line line = mixer.getLine(new DataLine.Info(SourceDataLine.class, new AudioFormat(22050, 16, 1, true, false))))
 		{

@@ -5,7 +5,7 @@ public class Test extends Message
 	public final boolean echo;
 	public final String content;
 	
-	public Test(boolean echo, String content)
+	public Test(final boolean echo, final String content)
 	{
 		this.echo = echo;
 		this.content = content;

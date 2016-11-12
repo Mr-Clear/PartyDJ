@@ -2,8 +2,6 @@ package gui;
 import basics.Controller;
 import common.Track;
 import data.IData;
-import lists.EditableListModel;
-import lists.ListException;
 import gui.StatusDialog.StatusSupportedFunction;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +21,8 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
+import lists.EditableListModel;
+import lists.ListException;
 
 /**
  * Fenster das beim ersten Start des PartyDJ angezeigt wird.
@@ -99,7 +99,7 @@ public class SetupWindow extends javax.swing.JFrame
 						{
 							data.addTrack(new Track(filePath, false), false);
 						}
-						catch(ListException e1)
+						catch(final ListException e1)
 						{
 							controller.logError(Controller.NORMAL_ERROR, this, e1, "Track konnte nicht eingefügt werden.");
 						}
@@ -245,7 +245,7 @@ public class SetupWindow extends javax.swing.JFrame
 							{
 								data.addTrack(new Track(path, false), false);
 							}
-							catch(ListException e1)
+							catch(final ListException e1)
 							{
 								controller.logError(Controller.NORMAL_ERROR, this, e1, "Track konnte nicht eingefügt werden.");
 							}
@@ -270,7 +270,7 @@ public class SetupWindow extends javax.swing.JFrame
 			{
 				data.addTrack(null, false);
 			}
-			catch(ListException e1)
+			catch(final ListException e1)
 			{
 				controller.logError(Controller.NORMAL_ERROR, this, e1, "Tracks eingefügt, aber Update der Hauptliste fehlgeschlagen.");
 			}
@@ -358,7 +358,7 @@ public class SetupWindow extends javax.swing.JFrame
 					data.addTrack(null, false);
 					list.add(null, false);
 				}
-				catch(ListException e)
+				catch(final ListException e)
 				{
 					controller.logError(Controller.UNIMPORTANT_ERROR, this, e, "Update der Darstellung nach Hinzufügen von Tracks fehlgeschlagen.");
 				}

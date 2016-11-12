@@ -15,18 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.WindowConstants;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
 /**
  * Ermöglicht es vom PartyDJ aus direkt auf die Derby Datenbank zuzugreifen.
@@ -135,7 +135,7 @@ public class DebugWindow extends javax.swing.JFrame
 							new DataOutputDialog(DebugWindow.this, content.toString());
 						}
 					}
-					catch (SQLException e2)
+					catch (final SQLException e2)
 					{
 						// TODO Auto-generated catch block
 						e2.printStackTrace();
@@ -172,20 +172,20 @@ public class DebugWindow extends javax.swing.JFrame
 		fixDB.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				try
 				{
 					data.fixDb();
 					JOptionPane.showMessageDialog(null, "Fertig", "Datenbank reparieren.", JOptionPane.INFORMATION_MESSAGE);
 				}
-				catch (SQLException e1)
+				catch (final SQLException e1)
 				{
 					new DataOutputDialog(DebugWindow.this, e1);
 				}
 			}
 		});
-		GroupLayout groupLayout = new GroupLayout(getContentPane());
+		final GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addGap(10).addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(listsScrollPane, GroupLayout.PREFERRED_SIZE, 590, GroupLayout.PREFERRED_SIZE).addComponent(listsContentScrollPane, GroupLayout.PREFERRED_SIZE, 590, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(fixDB).addComponent(settingsScrollPane, GroupLayout.PREFERRED_SIZE, 343, GroupLayout.PREFERRED_SIZE))).addGroup(groupLayout.createSequentialGroup().addComponent(sqlText, GroupLayout.PREFERRED_SIZE, 709, GroupLayout.PREFERRED_SIZE).addGap(6).addComponent(executeQuery).addGap(10).addComponent(executeUpdate))).addContainerGap()));
 		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addGap(11).addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addComponent(listsScrollPane, GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE).addGap(11).addComponent(listsContentScrollPane, GroupLayout.PREFERRED_SIZE, 379, GroupLayout.PREFERRED_SIZE)).addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup().addComponent(settingsScrollPane, GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.RELATED).addComponent(fixDB))).addGap(11).addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addGap(1).addComponent(sqlText, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)).addComponent(executeQuery).addComponent(executeUpdate))));
 		getContentPane().setLayout(groupLayout);

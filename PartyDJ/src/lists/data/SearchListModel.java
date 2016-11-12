@@ -4,8 +4,6 @@ import basics.Controller;
 import common.Track;
 import data.ListAdapter;
 import data.SortOrder;
-import lists.BasicListModel;
-import lists.ListException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,6 +11,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import lists.BasicListModel;
+import lists.ListException;
 
 /**
  * Gibt Suchergebnise aus der Hauptliste aus.
@@ -30,13 +30,13 @@ public class SearchListModel extends BasicListModel
 	
 	private final Timer updateTimer = new Timer(3000, new ActionListener()
 	{
-		@Override public void actionPerformed(ActionEvent e)
+		@Override public void actionPerformed(final ActionEvent e)
 		{
 			try
 			{
 				search();
 			}
-			catch(ListException e1)
+			catch(final ListException e1)
 			{
 				Controller.getInstance().logError(Controller.NORMAL_ERROR, SearchListModel.this, e1, "Update der Suchliste fehlgeschlagen.");
 			}

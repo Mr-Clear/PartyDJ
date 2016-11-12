@@ -6,9 +6,6 @@ import common.Track;
 import data.IData;
 import data.ListAdapter;
 import data.SettingListener;
-import lists.ListException;
-import lists.TrackListModel;
-import lists.data.DbTrack;
 import gui.PDJScrollList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +26,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import lists.ListException;
+import lists.TrackListModel;
+import lists.data.DbTrack;
 
 public class Lists extends JSplitPane implements Closeable
 {
@@ -50,22 +50,22 @@ public class Lists extends JSplitPane implements Closeable
 	{
 		setResizeWeight(0.9);
 		
-		JPanel right = new JPanel();
+		final JPanel right = new JPanel();
 		this.setRightComponent(right);
 		
-		JButton btnAdd = new JButton("Hinzufügen");
+		final JButton btnAdd = new JButton("Hinzufügen");
 		
-		JButton btnDelete = new JButton("Löschen");
+		final JButton btnDelete = new JButton("Löschen");
 		
-		JButton btnRename = new JButton("Umbenennen");
+		final JButton btnRename = new JButton("Umbenennen");
 		
-		JLabel lblPriority = new JLabel("Priorität:");
+		final JLabel lblPriority = new JLabel("Priorität:");
 		
 		spinnerPriority = new JSpinner();
 		
-		JLabel lblDuration = new JLabel("Dauer:");
+		final JLabel lblDuration = new JLabel("Dauer:");
 		
-		JLabel lblTracks = new JLabel("Tracks:");
+		final JLabel lblTracks = new JLabel("Tracks:");
 		
 		lblTracksPercent = new JLabel("0 / 0 = 0%");
 		
@@ -73,8 +73,8 @@ public class Lists extends JSplitPane implements Closeable
 		
 		lblPriorityPercent = new JLabel("0 / 0 = 0%");
 		
-		JScrollPane scrollPaneLists = new JScrollPane();
-		GroupLayout gl_panel = new GroupLayout(right);
+		final JScrollPane scrollPaneLists = new JScrollPane();
+		final GroupLayout gl_panel = new GroupLayout(right);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
@@ -136,9 +136,9 @@ public class Lists extends JSplitPane implements Closeable
 		{
 			
 			@Override
-			public void valueChanged(ListSelectionEvent e)
+			public void valueChanged(final ListSelectionEvent e)
 			{
-				int index = listLists.getSelectedIndex();
+				final int index = listLists.getSelectedIndex();
 				TrackListModel newList;
 				if(index == 0)
 					newList = controller.getListProvider().getMasterList();
@@ -147,7 +147,7 @@ public class Lists extends JSplitPane implements Closeable
 					{
 						newList = controller.getListProvider().getDbList(listLists.getSelectedValue());
 					}
-					catch (ListException ex)
+					catch (final ListException ex)
 					{
 						controller.logError(Controller.UNIMPORTANT_ERROR, Lists.this, ex);
 						newList = null;
@@ -167,7 +167,7 @@ public class Lists extends JSplitPane implements Closeable
 		btnAdd.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				final String name = JOptionPane.showInputDialog(Lists.this, "Name der Liste: ", "Party DJ", JOptionPane.PLAIN_MESSAGE);
 				if(name != null && name.length() > 0)
@@ -180,7 +180,7 @@ public class Lists extends JSplitPane implements Closeable
 							return;
 						}
 					}
-					catch (ListException ex)
+					catch (final ListException ex)
 					{
 						controller.logError(Controller.NORMAL_ERROR, Lists.this, ex, "Liste einfügen fehlgeschlagen.");
 						return;
@@ -191,7 +191,7 @@ public class Lists extends JSplitPane implements Closeable
 						data.addList(name);
 						listLists.setSelectedValue(name, true);
 					}
-					catch (ListException ex)
+					catch (final ListException ex)
 					{
 						controller.logError(Controller.NORMAL_ERROR, Lists.this, ex, "Liste einfügen fehlgeschlagen.");
 					}
@@ -202,7 +202,7 @@ public class Lists extends JSplitPane implements Closeable
 		btnDelete.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				final String name = listLists.getSelectedValue();
 				if(JOptionPane.showConfirmDialog(Lists.this, name + " wirklich löschen?", "Party DJ", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
@@ -210,7 +210,7 @@ public class Lists extends JSplitPane implements Closeable
 					{
 						data.removeList(name);
 					}
-					catch (ListException ex)
+					catch (final ListException ex)
 					{
 						controller.logError(Controller.NORMAL_ERROR, Lists.this, ex, "Liste löschen fehlgeschlagen.");
 					}
@@ -220,7 +220,7 @@ public class Lists extends JSplitPane implements Closeable
 		btnRename.addActionListener(new ActionListener()
 		{
 			@Override
-			public void actionPerformed(ActionEvent e)
+			public void actionPerformed(final ActionEvent e)
 			{
 				final String oldName = listLists.getSelectedValue();
 				final String newName = (String) JOptionPane.showInputDialog(Lists.this, "Name der Liste: ", "Party DJ", JOptionPane.PLAIN_MESSAGE, null, null, oldName);
@@ -234,7 +234,7 @@ public class Lists extends JSplitPane implements Closeable
 							return;
 						}
 					}
-					catch (ListException ex)
+					catch (final ListException ex)
 					{
 						controller.logError(Controller.NORMAL_ERROR, Lists.this, ex, "Liste umbenennen fehlgeschlagen.");
 						return;
@@ -245,7 +245,7 @@ public class Lists extends JSplitPane implements Closeable
 						data.renameList(oldName, newName);
 						listLists.setSelectedValue(newName, true);
 					}
-					catch (ListException ex)
+					catch (final ListException ex)
 					{
 						controller.logError(Controller.NORMAL_ERROR, Lists.this, ex, "Liste umbenennen fehlgeschlagen.");
 					}
@@ -256,7 +256,7 @@ public class Lists extends JSplitPane implements Closeable
 		spinnerPriority.addChangeListener(new ChangeListener()
 		{
 			@Override
-			public void stateChanged(ChangeEvent e)
+			public void stateChanged(final ChangeEvent e)
 			{
 				if(listLists.getSelectedIndex() == 0)
 					data.writeSetting("MasterListPriority", spinnerPriority.getValue().toString());
@@ -265,7 +265,7 @@ public class Lists extends JSplitPane implements Closeable
 					{
 						data.setListPriority(listLists.getSelectedValue(), (Integer)spinnerPriority.getValue());
 					}
-					catch (ListException ex)
+					catch (final ListException ex)
 					{
 						controller.logError(Controller.UNIMPORTANT_ERROR, Lists.this, ex);
 					}
@@ -281,7 +281,7 @@ public class Lists extends JSplitPane implements Closeable
 			public void run()
 			{
 				double duration = 0;
-				for(Track track : controller.getListProvider().getMasterList().getList())
+				for(final Track track : controller.getListProvider().getMasterList().getList())
 					duration += track.getDuration();
 				durationTotal = duration;
 				updateStatistics();
@@ -296,14 +296,14 @@ public class Lists extends JSplitPane implements Closeable
 			@Override
 			public void run()
 			{
-				int tracksTotal = controller.getListProvider().getMasterList().getSize();
-				int tracks = currentList.getSize();
+				final int tracksTotal = controller.getListProvider().getMasterList().getSize();
+				final int tracks = currentList.getSize();
 				lblTracksPercent.setText(tracks + " / " + tracksTotal + " = " + (tracksTotal > 0 ? tracks * 100 / tracksTotal : 0) + "%");
 				
 				if(durationCurrent == -1)
 				{
 					double duration = 0;
-					for(Track track : currentList.getList())
+					for(final Track track : currentList.getList())
 						duration += track.getDuration();
 					durationCurrent = duration;
 				}
@@ -324,12 +324,12 @@ public class Lists extends JSplitPane implements Closeable
 				prio = data.getListPriority(listLists.getSelectedValue());
 			spinnerPriority.setValue(prio);
 			int totalPrio = masterPrio;
-			for(String list : data.getLists())
+			for(final String list : data.getLists())
 				totalPrio += data.getListPriority(list);
 			
 			lblPriorityPercent.setText(prio + " / " + totalPrio + " = " + (totalPrio > 0 ? prio * 100 / totalPrio : 0) + "%");
 		}
-		catch (ListException e)
+		catch (final ListException e)
 		{
 			controller.logError(Controller.UNIMPORTANT_ERROR, Lists.this, e);
 		}
@@ -353,7 +353,7 @@ public class Lists extends JSplitPane implements Closeable
 			{
 				return data.getLists().size() + 1;
 			}
-			catch (ListException e)
+			catch (final ListException e)
 			{
 				controller.logError(Controller.UNIMPORTANT_ERROR, Lists.this, e);
 				return 1;
@@ -361,7 +361,7 @@ public class Lists extends JSplitPane implements Closeable
 		}
 
 		@Override
-		public String getElementAt(int index)
+		public String getElementAt(final int index)
 		{
 			if(index == 0)
 				return "Hauptliste";
@@ -370,7 +370,7 @@ public class Lists extends JSplitPane implements Closeable
 			{
 				return data.getLists().get(index - 1);
 			}
-			catch (ListException e)
+			catch (final ListException e)
 			{
 				controller.logError(Controller.UNIMPORTANT_ERROR, Lists.this, e);
 				return null;
@@ -405,7 +405,7 @@ public class Lists extends JSplitPane implements Closeable
 		public void trackChanged(final DbTrack newTrack, final common.Track oldTrack, final boolean eventsFollowing)
 		{
 			double duration = 0;
-			for(Track track : controller.getListProvider().getMasterList().getList())
+			for(final Track track : controller.getListProvider().getMasterList().getList())
 				duration += track.getDuration();
 			durationTotal = duration;
 			if(listLists.getSelectedIndex() == 0)
@@ -467,7 +467,7 @@ public class Lists extends JSplitPane implements Closeable
 		}
 
 		@Override
-		public void settingChanged(String name, String value)
+		public void settingChanged(final String name, final String value)
 		{
 			if(name.equals("MasterListPriority"))
 				updatePriority();

@@ -1,9 +1,9 @@
 package common;
 
-import lists.EditableListModel;
-import lists.ListException;
 import gui.PDJList;
 import java.util.Random;
+import lists.EditableListModel;
+import lists.ListException;
 
 /**
  * Sortiert eine PDJList mit dem Quick-Sort-Verfahren.

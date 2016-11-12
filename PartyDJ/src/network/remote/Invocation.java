@@ -4,14 +4,14 @@ import basics.Controller;
 import common.Track;
 import data.SettingException;
 import data.SortOrder;
-import lists.ListException;
-import lists.data.DbTrack;
-import lists.data.DbTrack.TrackElement;
 import players.PlayerException;
 import java.io.File;
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.List;
+import lists.ListException;
+import lists.data.DbTrack;
+import lists.data.DbTrack.TrackElement;
 
 public interface Invocation extends Serializable
 {
@@ -147,7 +147,7 @@ public interface Invocation extends Serializable
 				{
 					server.sendAnswer(invocationId, Controller.getInstance().getPlayer().getDuration(track), client);
 				}
-				catch(PlayerException e)
+				catch(final PlayerException e)
 				{
 					server.sendAnswer(invocationId, e, client);
 				}
@@ -158,7 +158,7 @@ public interface Invocation extends Serializable
 				{
 					server.sendAnswer(invocationId, Controller.getInstance().getPlayer().getDuration(filePath), client);
 				}
-				catch(PlayerException e)
+				catch(final PlayerException e)
 				{
 					server.sendAnswer(invocationId, e, client);
 				}
@@ -169,7 +169,7 @@ public interface Invocation extends Serializable
 				{
 					server.sendAnswer(invocationId, Controller.getInstance().getPlayer().getDuration(file), client);
 				}
-				catch(PlayerException e)
+				catch(final PlayerException e)
 				{
 					server.sendAnswer(invocationId, e, client);
 				}
@@ -252,7 +252,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getPlayer().load(track);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(PlayerException e)
+			catch(final PlayerException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -383,7 +383,7 @@ public interface Invocation extends Serializable
 					Controller.getInstance().getPlayer().start(track);
 					server.sendAnswer(invocationId, null, client);
 				}
-				catch(PlayerException e)
+				catch(final PlayerException e)
 				{
 					server.sendAnswer(invocationId, e, client);
 				}
@@ -432,7 +432,7 @@ public interface Invocation extends Serializable
 						Controller.getInstance().getData().addList(listName, description);
 					server.sendAnswer(invocationId, null, client);
 				}
-				catch(ListException e)
+				catch(final ListException e)
 				{
 					server.sendAnswer(invocationId, e, client);
 				}
@@ -460,7 +460,7 @@ public interface Invocation extends Serializable
 			{
 				server.sendAnswer(invocationId, Controller.getInstance().getData().addTrack(track, eventsFollowing), client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -485,7 +485,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().close();
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -514,7 +514,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().deleteTrack(track, eventsFollowing);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -557,7 +557,7 @@ public interface Invocation extends Serializable
 			{
 				server.sendAnswer(invocationId, Controller.getInstance().getData().getListDescription(listName), client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -583,7 +583,7 @@ public interface Invocation extends Serializable
 			{
 				server.sendAnswer(invocationId, Controller.getInstance().getData().getListPriority(listName), client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -605,12 +605,12 @@ public interface Invocation extends Serializable
 		{
 			try
 			{
-				List<String> list = Controller.getInstance().getData().getLists();
-				String[] answer = new String[list.size()];
+				final List<String> list = Controller.getInstance().getData().getLists();
+				final String[] answer = new String[list.size()];
 				list.toArray(answer);
 				server.sendAnswer(invocationId, answer, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -660,7 +660,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().insertTrack(listName, track, eventsFollowing);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -693,7 +693,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().insertTrackAt(listName, track, trackPosition, eventsFollowing);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -721,12 +721,12 @@ public interface Invocation extends Serializable
 		{
 			try
 			{
-				List<? extends DbTrack> list = Controller.getInstance().getData().readList(listName, searchString, order);
-				DbTrack[] answer = new DbTrack[list.size()];
+				final List<? extends DbTrack> list = Controller.getInstance().getData().readList(listName, searchString, order);
+				final DbTrack[] answer = new DbTrack[list.size()];
 				list.toArray(answer);
 				server.sendAnswer(invocationId, answer, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -758,7 +758,7 @@ public interface Invocation extends Serializable
 				else
 					server.sendAnswer(invocationId, Controller.getInstance().getData().readSetting(name, defaultValue), client);
 			}
-			catch(SettingException e)
+			catch(final SettingException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -785,7 +785,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().removeList(listName);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -816,7 +816,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().removeTrack(listName, trackPosition, eventsFollowing);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -845,7 +845,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().renameList(oldName, newName);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -874,7 +874,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().setListDescription(listName, description);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -903,7 +903,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().setListPriority(listName, priority);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -936,7 +936,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().swapTrack(listName, positionA, positionB, eventsFollowing);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -967,7 +967,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().updateTrack(track, element, eventsFollowing);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(ListException e)
+			catch(final ListException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}
@@ -996,7 +996,7 @@ public interface Invocation extends Serializable
 				Controller.getInstance().getData().writeSetting(name, value);
 				server.sendAnswer(invocationId, null, client);
 			}
-			catch(SettingException e)
+			catch(final SettingException e)
 			{
 				server.sendAnswer(invocationId, e, client);
 			}

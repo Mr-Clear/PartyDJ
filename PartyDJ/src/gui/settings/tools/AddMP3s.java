@@ -3,9 +3,6 @@ package gui.settings.tools;
 import basics.Controller;
 import common.Track;
 import data.IData;
-import lists.EditableListModel;
-import lists.ListException;
-import lists.data.DbMasterListModel;
 import gui.PDJList;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
@@ -13,6 +10,9 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.util.List;
 import javax.swing.JOptionPane;
+import lists.EditableListModel;
+import lists.ListException;
+import lists.data.DbMasterListModel;
 
 /**Fügt Tracks in eine Liste ein.
  * 

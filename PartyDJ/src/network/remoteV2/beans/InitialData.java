@@ -1,9 +1,8 @@
 package network.remoteV2.beans;
 
-import flexjson.JSON;
-
 import java.util.List;
 import java.util.Map;
+import flexjson.JSON;
 
 /** Contains all current data of the PDJ. */
 public class InitialData extends Message
@@ -19,7 +18,7 @@ public class InitialData extends Message
         lists = null;
     }
 
-    public InitialData(Map<String, String> settings, List<Track> tracks, Map<String, List<Integer>> lists)
+    public InitialData(final Map<String, String> settings, final List<Track> tracks, final Map<String, List<Integer>> lists)
     {
         this.settings = settings;
         this.tracks = tracks;

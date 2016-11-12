@@ -2,18 +2,12 @@ package data.derby;
 
 import basics.CloseListener;
 import basics.Controller;
-
 import common.Track;
-
 import data.IData;
 import data.ListListener;
 import data.OpenDbException;
 import data.SettingException;
 import data.SettingListener;
-
-import lists.ListException;
-import lists.data.DbTrack;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -29,6 +23,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import lists.ListException;
+import lists.data.DbTrack;
 
 /**
  * Speichert Einstellungen und Listen in einer Derby-Datenbank.
@@ -116,7 +112,7 @@ public class DerbyDB implements IData, CloseListener
         {
             readMasterList();
         }
-        catch(ListException e)
+        catch(final ListException e)
         {
             throw new OpenDbException(e);
         }
@@ -463,7 +459,7 @@ public class DerbyDB implements IData, CloseListener
                         index = checkIndex(path);
                         conn.commit();
                     }
-                    catch(SQLException e)
+                    catch(final SQLException e)
                     {
                         throw new ListException(e);
                     }
@@ -664,9 +660,9 @@ public class DerbyDB implements IData, CloseListener
     }
 
     @Override
-    public DbTrack getTrack(String path, boolean autoCreate) throws ListException
+    public DbTrack getTrack(final String path, final boolean autoCreate) throws ListException
     {
-        DbTrack ret = tracksByPath.get(path);
+        final DbTrack ret = tracksByPath.get(path);
         if(ret != null)
             return ret;
         if(autoCreate)
@@ -678,14 +674,14 @@ public class DerbyDB implements IData, CloseListener
     }
 
     @Override
-    public DbTrack getTrack(int index)
+    public DbTrack getTrack(final int index)
     {
         return tracksByIndex.get(index);
     }
 
     protected int checkIndex(final String trackPath) throws SQLException
     {
-        DbTrack track = tracksByPath.get(trackPath);
+        final DbTrack track = tracksByPath.get(trackPath);
         if(track != null)
             return track.getIndex();
         return queryInt("SELECT INDEX FROM FILES WHERE PATH = ?", trackPath);
@@ -737,7 +733,7 @@ public class DerbyDB implements IData, CloseListener
                 {
                     listener.listAdded(listName);
                 }
-                catch(Exception e)
+                catch(final Exception e)
                 {
                     controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                 }
@@ -803,7 +799,7 @@ public class DerbyDB implements IData, CloseListener
                 {
                     listener.listRemoved(listName);
                 }
-                catch(Exception e)
+                catch(final Exception e)
                 {
                     controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                 }
@@ -853,7 +849,7 @@ public class DerbyDB implements IData, CloseListener
                 {
                     listener.listPriorityChanged(listName, priority);
                 }
-                catch(Exception e)
+                catch(final Exception e)
                 {
                     controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                 }
@@ -896,7 +892,7 @@ public class DerbyDB implements IData, CloseListener
                 {
                     listener.listCommentChanged(listName, description);
                 }
-                catch(Exception e)
+                catch(final Exception e)
                 {
                     controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                 }
@@ -917,7 +913,7 @@ public class DerbyDB implements IData, CloseListener
                 {
                     listener.listRenamed(oldName, newName);
                 }
-                catch(Exception e)
+                catch(final Exception e)
                 {
                     controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                 }
@@ -935,7 +931,7 @@ public class DerbyDB implements IData, CloseListener
                 {
                     listener.listRenamed(oldName, newName);
                 }
-                catch(Exception e)
+                catch(final Exception e)
                 {
                     controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                 }
@@ -992,7 +988,7 @@ public class DerbyDB implements IData, CloseListener
                         {
                             listener.settingChanged(name, value);
                         }
-                        catch(Exception e)
+                        catch(final Exception e)
                         {
                             controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
                         }
@@ -1073,7 +1069,7 @@ public class DerbyDB implements IData, CloseListener
         {
             size = queryInt("SELECT COUNT(LIST) FROM LISTS_CONTENT WHERE LIST = ?", listIndex);
         }
-        catch(SQLException e)
+        catch(final SQLException e)
         {
             throw new ListException(e);
         }

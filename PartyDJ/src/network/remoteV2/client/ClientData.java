@@ -1,17 +1,11 @@
 package network.remoteV2.client;
 
 import common.Track;
-
 import data.IData;
 import data.ListListener;
 import data.SettingException;
 import data.SettingListener;
 import data.SortOrder;
-
-import lists.ListException;
-import lists.data.DbTrack;
-import lists.data.DbTrack.TrackElement;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,37 +15,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
+import lists.ListException;
+import lists.data.DbTrack;
+import lists.data.DbTrack.TrackElement;
 import network.remoteV2.beans.InitialData;
 import network.remoteV2.beans.Setting;
 
 public class ClientData implements IData
 {
     private final Client client;
-    private Map<String, String> settings = new HashMap<>();
-    private Set<SettingListener> settingListeners = new HashSet<>();
-    private Set<ListListener> listListeners = new HashSet<>();
+    private final Map<String, String> settings = new HashMap<>();
+    private final Set<SettingListener> settingListeners = new HashSet<>();
+    private final Set<ListListener> listListeners = new HashSet<>();
     private final List<RemoteTrack> tracks = new ArrayList<>();
     private final Map<String, RemoteTrack> trackMap = new HashMap<>();
     private final Map<String, List<RemoteTrack>> lists = new HashMap<>();
     
-    public ClientData(Client client)
+    public ClientData(final Client client)
     {
         this.client = client;
     }
     
-    void initialData(InitialData initialData)
+    void initialData(final InitialData initialData)
     {
         settings.putAll(initialData.settings);
-        for(Entry<String, String> entry : initialData.settings.entrySet())
+        for(final Entry<String, String> entry : initialData.settings.entrySet())
         {
             noitfySettingListeners(entry.getKey(), entry.getValue());
         }
         
         int trackIndex = 0;
-        for(network.remoteV2.beans.Track track : initialData.tracks)
+        for(final network.remoteV2.beans.Track track : initialData.tracks)
         {
-            RemoteTrack remoteTrack = new RemoteTrack(this, trackIndex, track);
+            final RemoteTrack remoteTrack = new RemoteTrack(this, trackIndex, track);
             tracks.add(remoteTrack);
             trackMap.put(remoteTrack.getPath(), remoteTrack);
             notifyTrackAdded(remoteTrack, true);
@@ -60,26 +56,26 @@ public class ClientData implements IData
         notifyTrackAdded(null, false);
         
         System.out.println(initialData.lists.size());
-        for(Entry<String, List<Integer>> list : initialData.lists.entrySet())
+        for(final Entry<String, List<Integer>> list : initialData.lists.entrySet())
         {
             System.out.println(list.getKey());
-            List<RemoteTrack> newList = new ArrayList<>(list.getValue().size());
+            final List<RemoteTrack> newList = new ArrayList<>(list.getValue().size());
             lists.put(list.getKey(), newList);
             synchronized(listListeners)
             {
-                for(ListListener listener : listListeners)
+                for(final ListListener listener : listListeners)
                 {
                     listener.listAdded(list.getKey());
                 }
             }
             
-            for(int trackId : list.getValue())
+            for(final int trackId : list.getValue())
             {
                 newList.add(tracks.get(trackId));
                 System.out.println(list.getKey() + ": " + tracks.get(trackId));
                 synchronized(listListeners)
                 {
-                    for(ListListener listener : listListeners)
+                    for(final ListListener listener : listListeners)
                     {
                         listener.trackInserted(list.getKey(), trackId, tracks.get(trackId), true);
                     }
@@ -87,7 +83,7 @@ public class ClientData implements IData
             }
             synchronized(listListeners)
             {
-                for(ListListener listener : listListeners)
+                for(final ListListener listener : listListeners)
                 {
                     listener.trackInserted(null, 0, null, false);
                 }
@@ -100,11 +96,11 @@ public class ClientData implements IData
         settings.clear();
         for(int i = tracks.size() - 1; i >= 0; i--)
         {
-            RemoteTrack track = tracks.get(i);
+            final RemoteTrack track = tracks.get(i);
             tracks.remove(i);
             synchronized(listListeners)
             {
-                for(ListListener listener : listListeners)
+                for(final ListListener listener : listListeners)
                 {
                     listener.trackDeleted(track, true);
                 }
@@ -114,19 +110,19 @@ public class ClientData implements IData
         trackMap.clear();
         synchronized(listListeners)
         {
-            for(ListListener listener : listListeners)
+            for(final ListListener listener : listListeners)
             {
                 listener.trackDeleted(null, false);
             }
         }
         
 
-        for(Entry<String, List<RemoteTrack>> list : lists.entrySet())
+        for(final Entry<String, List<RemoteTrack>> list : lists.entrySet())
         {
             for(int i = list.getValue().size() - 1; i >= 0; i--)
                 synchronized(listListeners)
                 {
-                    for(ListListener listener : listListeners)
+                    for(final ListListener listener : listListeners)
                     {
                         listener.trackRemoved(list.getKey(), i, true);
                     }
@@ -134,7 +130,7 @@ public class ClientData implements IData
 
             synchronized(listListeners)
             {
-                for(ListListener listener : listListeners)
+                for(final ListListener listener : listListeners)
                 {
                     listener.trackRemoved(null, 0, false);
                     listener.listRemoved(list.getKey());
@@ -145,27 +141,27 @@ public class ClientData implements IData
     }
 
     @Override
-    public void writeSetting(String name, String value) throws SettingException
+    public void writeSetting(final String name, final String value) throws SettingException
     {
         if(value != settings.get(name))
             try
             {
                 client.send(new Setting(name, value));
             }
-            catch(IOException e)
+            catch(final IOException e)
             {
                 throw new SettingException(e);
             }
     }
     
     @Override
-    public String readSetting(String name) throws SettingException
+    public String readSetting(final String name) throws SettingException
     {
         return readSetting(name, null);
     }
 
     @Override
-    public String readSetting(String name, String defaultValue) throws SettingException
+    public String readSetting(final String name, final String defaultValue) throws SettingException
     {
         if(settings.containsKey(name))
             return settings.get(name);
@@ -179,7 +175,7 @@ public class ClientData implements IData
     }
 
     @Override
-    public void addSettingListener(SettingListener listener)
+    public void addSettingListener(final SettingListener listener)
     {
         synchronized(settingListeners)
         {
@@ -188,7 +184,7 @@ public class ClientData implements IData
     }
 
     @Override
-    public void removeSettingListener(SettingListener listener)
+    public void removeSettingListener(final SettingListener listener)
     {
         synchronized(settingListeners)
         {
@@ -196,17 +192,17 @@ public class ClientData implements IData
         }
     }
     
-    void updateSetting(Setting setting)
+    void updateSetting(final Setting setting)
     {
         settings.put(setting.name, setting.value);
         noitfySettingListeners(setting.name, setting.value);
     }
     
-    private void noitfySettingListeners(String name, String value)
+    private void noitfySettingListeners(final String name, final String value)
     {
         synchronized(settingListeners)
         {
-            for(SettingListener listener : settingListeners)
+            for(final SettingListener listener : settingListeners)
             {
                 listener.settingChanged(name, value);
             }
@@ -214,7 +210,7 @@ public class ClientData implements IData
     }
 
     @Override
-    public List<? extends DbTrack> readList(String listName, String searchString, SortOrder order) throws ListException
+    public List<? extends DbTrack> readList(final String listName, final String searchString, final SortOrder order) throws ListException
     {
         if(!lists.containsKey(listName))
             return new ArrayList<>();
@@ -222,13 +218,13 @@ public class ClientData implements IData
     }
 
     @Override
-    public boolean isInDb(String trackPath) throws ListException
+    public boolean isInDb(final String trackPath) throws ListException
     {
         return trackMap.containsKey(trackPath);
     }
 
     @Override
-    public DbTrack addTrack(Track track, boolean eventsFollowing) throws ListException
+    public DbTrack addTrack(final Track track, final boolean eventsFollowing) throws ListException
     {
         // TODO Auto-generated method stub
         return new DbTrack(this, track)
@@ -238,21 +234,21 @@ public class ClientData implements IData
     }
 
     @Override
-    public void updateTrack(DbTrack track, TrackElement element, boolean eventsFollowing) throws ListException
+    public void updateTrack(final DbTrack track, final TrackElement element, final boolean eventsFollowing) throws ListException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void deleteTrack(DbTrack track, boolean eventsFollowing) throws ListException
+    public void deleteTrack(final DbTrack track, final boolean eventsFollowing) throws ListException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public DbTrack getTrack(String path, boolean autoCreate) throws ListException
+    public DbTrack getTrack(final String path, final boolean autoCreate) throws ListException
     {
         if(trackMap.containsKey(path))
             return trackMap.get(path);
@@ -265,13 +261,13 @@ public class ClientData implements IData
     }
 
     @Override
-    public DbTrack getTrack(int index)
+    public DbTrack getTrack(final int index)
     {
         return tracks.get(index);
     }
 
     @Override
-    public void addListListener(ListListener listener)
+    public void addListListener(final ListListener listener)
     {
         synchronized(listListeners)
         {
@@ -280,7 +276,7 @@ public class ClientData implements IData
     }
 
     @Override
-    public void removeListListener(ListListener listener)
+    public void removeListListener(final ListListener listener)
     {
         synchronized(listListeners)
         {
@@ -288,11 +284,11 @@ public class ClientData implements IData
         }
     }
     
-    private void notifyTrackAdded(DbTrack track, boolean eventsFollowing)
+    private void notifyTrackAdded(final DbTrack track, final boolean eventsFollowing)
     {
         synchronized(listListeners)
         {
-            for(ListListener listener : listListeners)
+            for(final ListListener listener : listListeners)
             {
                 listener.trackAdded(track, eventsFollowing);
             }
@@ -300,56 +296,56 @@ public class ClientData implements IData
     }
 
     @Override
-    public void addList(String listName) throws ListException
+    public void addList(final String listName) throws ListException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void addList(String listName, String description) throws ListException
+    public void addList(final String listName, final String description) throws ListException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void removeList(String listName) throws ListException
+    public void removeList(final String listName) throws ListException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public int getListPriority(String listName) throws ListException
+    public int getListPriority(final String listName) throws ListException
     {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public void setListPriority(String listName, int priority) throws ListException
+    public void setListPriority(final String listName, final int priority) throws ListException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public String getListDescription(String listName) throws ListException
+    public String getListDescription(final String listName) throws ListException
     {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void setListDescription(String listName, String description) throws ListException
+    public void setListDescription(final String listName, final String description) throws ListException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void renameList(String oldName, String newName) throws ListException
+    public void renameList(final String oldName, final String newName) throws ListException
     {
         // TODO Auto-generated method stub
 
@@ -362,28 +358,28 @@ public class ClientData implements IData
     }
 
     @Override
-    public void insertTrack(String listName, DbTrack track, boolean eventsFollowing) throws ListException
+    public void insertTrack(final String listName, final DbTrack track, final boolean eventsFollowing) throws ListException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void insertTrackAt(String listName, DbTrack track, int trackPosition, boolean eventsFollowing) throws ListException
+    public void insertTrackAt(final String listName, final DbTrack track, final int trackPosition, final boolean eventsFollowing) throws ListException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void removeTrack(String listName, int trackPosition, boolean eventsFollowing) throws ListException
+    public void removeTrack(final String listName, final int trackPosition, final boolean eventsFollowing) throws ListException
     {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void swapTrack(String listName, int positionA, int positionB, boolean eventsFollowing) throws ListException
+    public void swapTrack(final String listName, final int positionA, final int positionB, final boolean eventsFollowing) throws ListException
     {
         // TODO Auto-generated method stub
 

@@ -13,7 +13,7 @@ public class ServerListener extends Thread
 	final protected Socket server;
 	final protected AnswerListener answerListener;
 
-	public ServerListener(Socket server, NetworkData data, NetworkPlayer player, AnswerListener answerListener)
+	public ServerListener(final Socket server, final NetworkData data, final NetworkPlayer player, final AnswerListener answerListener)
 	{
 		setDaemon(true);
 		setName("ServerListener");
@@ -32,7 +32,7 @@ public class ServerListener extends Thread
 		{
 			ois = new ObjectInputStream(server.getInputStream());
 		}
-		catch(IOException e)
+		catch(final IOException e)
 		{
 			e.printStackTrace();
 			return;
@@ -45,22 +45,22 @@ public class ServerListener extends Thread
 			{
 				o = ois.readObject();
 			}
-			catch(SocketException e)
+			catch(final SocketException e)
 			{
 				/* Vermutlich Verbindung geschlossen. */
 				break;
 			}
-			catch(EOFException e)
+			catch(final EOFException e)
 			{
 				/* Vermutlich Verbindung geschlossen. */
 				break;
 			}
-			catch(IOException e)
+			catch(final IOException e)
 			{
 				e.printStackTrace();
 				break;
 			}
-			catch(ClassNotFoundException e)
+			catch(final ClassNotFoundException e)
 			{
 				e.printStackTrace();
 				continue;
@@ -71,7 +71,7 @@ public class ServerListener extends Thread
 				new Thread(){
 					@Override public void run()
 					{
-						Event e = (Event)o;
+						final Event e = (Event)o;
 						e.invoke(player.getPlayStateListener(), data.getListListener(), data.getSettingListener());
 					}
 				}.start();

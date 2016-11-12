@@ -83,7 +83,7 @@ public class Track implements Serializable, Comparable<Track>
 	 * 
 	 * @param track Zu kopierender Track.
 	 */
-	public Track(Track track)
+	public Track(final Track track)
 	{
 		if(track != null)
 		{

@@ -1,19 +1,19 @@
 package gui;
 
-import lists.TrackListModel;
 import gui.TrackListAppearance.EntryState;
 import gui.TrackListAppearance.Part;
 import gui.TrackListAppearance.TrackState;
 import gui.dnd.ListDropMode;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import lists.TrackListModel;
 
 public class PDJListTabs extends JTabbedPane
 {
 	private static final long serialVersionUID = -854445021765643771L;
 	private final TrackListAppearance appearance;
 	
-	public PDJListTabs(TrackListAppearance appearance)
+	public PDJListTabs(final TrackListAppearance appearance)
 	{
 		this.appearance = appearance;
 		setForeground(appearance.getColor(TrackState.Normal, EntryState.Normal, Part.Foreground));

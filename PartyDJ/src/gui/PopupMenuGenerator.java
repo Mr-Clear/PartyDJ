@@ -7,9 +7,6 @@ import common.Sort;
 import common.SortMode;
 import common.Track;
 import data.SortOrder;
-import lists.EditableListModel;
-import lists.ListException;
-import lists.data.DbMasterListModel;
 import gui.dnd.DragDropHandler;
 import gui.dnd.TrackSelection;
 import gui.settings.tools.RemoveMP3s;
@@ -30,6 +27,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileFilter;
+import lists.EditableListModel;
+import lists.ListException;
+import lists.data.DbMasterListModel;
 
 //TODO Mehrfachauswahl
 
@@ -142,7 +142,7 @@ public final class PopupMenuGenerator
 		{
 			final JMenu sortMenu = new JMenu("Sortieren");
 			
-			for(SortOrder sortOrder : new SortOrder[]{SortOrder.NAME, SortOrder.PATH, SortOrder.SIZE, SortOrder.DURATION, SortOrder.PROBLEM, SortOrder.NONE})
+			for(final SortOrder sortOrder : new SortOrder[]{SortOrder.NAME, SortOrder.PATH, SortOrder.SIZE, SortOrder.DURATION, SortOrder.PROBLEM, SortOrder.NONE})
 			{
 				newItem = new JCheckBoxMenuItem(sortOrder.toString());
 				newItem.setActionCommand("sortMasterList" + Integer.toString(sortOrder.toArrayIndex()));
@@ -263,7 +263,7 @@ class ListMenuItemListener implements ActionListener
 				else if("sortListShuffle".equals(command))
 					Sort.shuffle(list);
 			}
-			catch(ListException e1)
+			catch(final ListException e1)
 			{
 				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e1, "Fehler bei Zugriff auf Datenbank.");
 			}
@@ -277,7 +277,7 @@ class ListMenuItemListener implements ActionListener
 			{
 				Controller.getInstance().getListProvider().getMasterList().setSortOrder(sortOrder);
 			}
-			catch(ListException e1)
+			catch(final ListException e1)
 			{
 				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e1, "Sortieren fehlgeschlagen");
 			}

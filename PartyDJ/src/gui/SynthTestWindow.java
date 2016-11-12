@@ -35,7 +35,7 @@ public class SynthTestWindow extends javax.swing.JFrame
 		{
 			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		}
-		catch(Exception e)
+		catch(final Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -79,14 +79,14 @@ public class SynthTestWindow extends javax.swing.JFrame
 	 * 
 	 * @param args Keine
 	 */
-	public static void main(String[] args)
+	public static void main(final String[] args)
 	{
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				SynthTestWindow inst = new SynthTestWindow();
+				final SynthTestWindow inst = new SynthTestWindow();
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
 			}
@@ -103,7 +103,7 @@ public class SynthTestWindow extends javax.swing.JFrame
 	private void initGUI()
 	{
 		{
-			GridBagLayout thisLayout = new GridBagLayout();
+			final GridBagLayout thisLayout = new GridBagLayout();
 			thisLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.1, 0.0};
 			thisLayout.rowHeights = new int[]{6, 67, 18, 10, 241, 11, 241, 6};
 			thisLayout.columnWeights = new double[]{0.0, 0.1, 0.0, 0.0, 0.0, 0.1, 0.0, 0.1, 0.1, 0.0};
@@ -114,7 +114,7 @@ public class SynthTestWindow extends javax.swing.JFrame
 			this.setFocusableWindowState(false);
 			{
 				buttonPanel = new JPanel();
-				BoxLayout buttonPanelLayout = new BoxLayout(buttonPanel, javax.swing.BoxLayout.Y_AXIS);
+				final BoxLayout buttonPanelLayout = new BoxLayout(buttonPanel, javax.swing.BoxLayout.Y_AXIS);
 				buttonPanel.setLayout(buttonPanelLayout);
 				{
 					btnRow1 = new JPanel();
@@ -177,7 +177,7 @@ public class SynthTestWindow extends javax.swing.JFrame
 			}
 			{
 				trackPanel = new JPanel();
-				GroupLayout trackPanelLayout = new GroupLayout(trackPanel);
+				final GroupLayout trackPanelLayout = new GroupLayout(trackPanel);
 				trackPanel.setLayout(trackPanelLayout);
 				trackPanel.setPreferredSize(new java.awt.Dimension(0, 0));
 				{
@@ -221,7 +221,7 @@ public class SynthTestWindow extends javax.swing.JFrame
 			}
 			{
 				controlPanel = new JPanel();
-				BoxLayout controlPanelLayout = new BoxLayout(controlPanel, javax.swing.BoxLayout.X_AXIS);
+				final BoxLayout controlPanelLayout = new BoxLayout(controlPanel, javax.swing.BoxLayout.X_AXIS);
 				controlPanel.setLayout(controlPanelLayout);
 				getContentPane().add(controlPanel, new GridBagConstraints(1, 1, 8, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 				{
@@ -236,7 +236,7 @@ public class SynthTestWindow extends javax.swing.JFrame
 			}
 			{
 				listPanel1 = new JPanel();
-				GroupLayout listPanel1Layout = new GroupLayout(listPanel1);
+				final GroupLayout listPanel1Layout = new GroupLayout(listPanel1);
 				listPanel1.setLayout(listPanel1Layout);
 				getContentPane().add(listPanel1, new GridBagConstraints(1, 4, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 				{
@@ -247,7 +247,7 @@ public class SynthTestWindow extends javax.swing.JFrame
 			}
 			{
 				listPanel2 = new JPanel();
-				GroupLayout listPanel2Layout = new GroupLayout(listPanel2);
+				final GroupLayout listPanel2Layout = new GroupLayout(listPanel2);
 				listPanel2.setLayout(listPanel2Layout);
 				getContentPane().add(listPanel2, new GridBagConstraints(7, 4, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 				{
@@ -258,7 +258,7 @@ public class SynthTestWindow extends javax.swing.JFrame
 			}
 			{
 				listPanel3 = new JPanel();
-				GroupLayout listPanel3Layout = new GroupLayout(listPanel3);
+				final GroupLayout listPanel3Layout = new GroupLayout(listPanel3);
 				listPanel3.setLayout(listPanel3Layout);
 				getContentPane().add(listPanel3, new GridBagConstraints(1, 6, 5, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 				{
@@ -269,7 +269,7 @@ public class SynthTestWindow extends javax.swing.JFrame
 			}
 			{
 				listPanel4 = new JPanel();
-				GroupLayout listPanel4Layout = new GroupLayout(listPanel4);
+				final GroupLayout listPanel4Layout = new GroupLayout(listPanel4);
 				listPanel4.setLayout(listPanel4Layout);
 				getContentPane().add(listPanel4, new GridBagConstraints(7, 6, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 				{

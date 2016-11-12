@@ -115,7 +115,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	}
 
 	@Override
-	public boolean checkPlayable(Track track)
+	public boolean checkPlayable(final Track track)
 	{
 		
 		try(FileInputStream fis = new FileInputStream(new File(track.getPath())))
@@ -331,7 +331,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 				{
 					listener.volumeChanged(this.volume);
 				}
-				catch (Exception e)
+				catch (final Exception e)
 				{
 					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + playStateListener);
 				}
@@ -436,7 +436,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 					{
 						listener.playStateChanged(status);
 					}
-					catch (Exception e)
+					catch (final Exception e)
 					{
 						controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + playStateListener);
 					}
@@ -487,7 +487,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 					{
 						listener.currentTrackChanged(oldTrack, currentTrack, reason);
 					}
-					catch (Exception e)
+					catch (final Exception e)
 					{
 						controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + playStateListener);
 					}

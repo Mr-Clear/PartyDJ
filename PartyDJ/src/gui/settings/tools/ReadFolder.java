@@ -2,14 +2,14 @@ package gui.settings.tools;
 
 import basics.Controller;
 import common.Track;
-import lists.EditableListModel;
-import lists.ListException;
 import gui.StatusDialog;
 import gui.StatusDialog.StatusSupportedFunction;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import javax.swing.JOptionPane;
+import lists.EditableListModel;
+import lists.ListException;
 
 /**
  * Durchsucht einen Ordner nach MP3-Dateien und fügt sie in die Hauptliste ein.
@@ -54,7 +54,7 @@ public class ReadFolder implements StatusSupportedFunction
 			if(listModel != null)
 				listModel.add(null, true);
 		}
-		catch(ListException e)
+		catch(final ListException e)
 		{
 			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Tracks eingefügt, aber update der Listen fehlgeschlagen.");
 		}
