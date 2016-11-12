@@ -84,7 +84,7 @@ public class BasicListModel implements TrackListModel, PlayStateListener
 						}
 						catch (Exception e)
 						{
-							controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+							controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + dataListener);
 						}
 					}
 				}

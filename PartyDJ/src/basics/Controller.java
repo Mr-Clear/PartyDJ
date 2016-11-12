@@ -7,7 +7,7 @@ import data.IData;
 
 import lists.EditableListModel;
 import lists.data.ListProvider;
-
+import gui.ErrorLogWindow;
 import gui.settings.SettingNode;
 
 import players.IPlayer;
@@ -76,6 +76,9 @@ public abstract class Controller
 	/** Executor service für das gesamte Programm. */
 	protected final Executor executor = Executors.newCachedThreadPool();
 	
+	/** Fenster zum Anzeigen von Fehlern. */
+	protected final ErrorLogWindow errorLogWindow = new ErrorLogWindow(this);
+
 	/**
 	 * @param args Befehlszeilenargumente.
 	 */
@@ -405,6 +408,10 @@ public abstract class Controller
 		final int minimumPrintStackTrace = REGULAR_ERROR;
 		final int minimumShowMessage = NORMAL_ERROR;
 		final int minimumShowException = IMPORTANT_ERROR;
+		
+		errorLogWindow.addError(new LoggedError(priority, sender, exception, message));
+		if(priority >= minimumShowMessage)
+			errorLogWindow.setVisible(true);
 
 		final java.text.SimpleDateFormat dateFormater = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -552,6 +559,12 @@ public abstract class Controller
 	{
 		logError(priority, null, exception, null);
 	}
+	
+	/** Öffnet das Fenster zum Anzeigen von Fehlern. */
+	public void showErrorWindow()
+	{
+		errorLogWindow.setVisible(true);
+	}
 
 	/** Beendet den PartyDJ komplett. */
 	public void closePartyDJ()
@@ -570,7 +583,7 @@ public abstract class Controller
 			}
 			catch (Exception e)
 			{
-				logError(Controller.UNIMPORTANT_ERROR, this, e, "Fehler in Plugin");
+				logError(Controller.UNIMPORTANT_ERROR, this, e, "Fehler bei Schließen von Tray Icon");
 			}
 		}
 
@@ -584,7 +597,7 @@ public abstract class Controller
 				}
 				catch (Exception e)
 				{
-					logError(Controller.UNIMPORTANT_ERROR, listener, e, "Fehler in Plugin");
+					logError(Controller.UNIMPORTANT_ERROR, listener, e, "Fehler bei Schließen von Plugin: " + closeListener);
 				}
 			}
 		}

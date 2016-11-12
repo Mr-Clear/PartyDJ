@@ -333,7 +333,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 				}
 				catch (Exception e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + playStateListener);
 				}
 			}
 		}
@@ -438,7 +438,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 					}
 					catch (Exception e)
 					{
-						controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+						controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + playStateListener);
 					}
 				}
 			}
@@ -489,7 +489,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 					}
 					catch (Exception e)
 					{
-						controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+						controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + playStateListener);
 					}
 				}
 			}

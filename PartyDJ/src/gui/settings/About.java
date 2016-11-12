@@ -1,13 +1,10 @@
 package gui.settings;
 
 import basics.Controller;
-
 import data.SettingException;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;

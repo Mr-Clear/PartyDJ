@@ -1376,5 +1376,35 @@ public class DerbyDB implements IData, CloseListener
     public String getDbPath()
     {
         return dbPath;
+	}
+
+	/**
+	 * Repariert Fehler in den Listen, wenn Lücken in der Reihenfolge auftreten.
+	 * @throws SQLException
+	 */
+	public void fixDb() throws SQLException
+	{
+		synchronized (conn)
+		{
+			try (ResultSet rsList = queryRS("SELECT INDEX FROM LISTS ORDER BY INDEX"))
+			{
+				while (rsList.next())
+				{
+					final int list = rsList.getInt(1);
+					int position = 0;
+					try (ResultSet rsTrack = queryRS("SELECT POSITION FROM LISTS_CONTENT WHERE LIST = ? ORDER BY POSITION", list))
+					{
+						while (rsTrack.next())
+						{
+							final int oldPos = rsTrack.getInt(1);
+							if (position != oldPos)
+								executeUpdate("UPDATE LISTS_CONTENT SET POSITION = ? WHERE LIST = ? AND POSITION = ?", position, list, oldPos);
+							position++;
+						}
+					}
+					conn.commit();
+				}
+			}
+		}
     }
 }
