@@ -33,8 +33,8 @@ public class TrackList extends Message
 	}
 
 	@Override
-	public Child getType()
+	public MessageType getType()
 	{
-		return Message.Child.TrackList;
+		return Message.MessageType.TrackList;
 	}
 }

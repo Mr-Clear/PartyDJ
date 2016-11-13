@@ -51,7 +51,7 @@ public class DbMasterListModel extends BasicListModel
         synchronized(list)
         {
             final int oldSize = list.size();
-            list = new ArrayList<Track>(Controller.getInstance().getData().readList(null, null, sortOrder));
+            list = new ArrayList<>(Controller.getInstance().getData().readList(null, null, sortOrder));
             data.writeSetting("MasterListSortOrder", Integer.toString(sortOrder.toArrayIndex()));
 
             for(final ListDataListener listener : dataListener)

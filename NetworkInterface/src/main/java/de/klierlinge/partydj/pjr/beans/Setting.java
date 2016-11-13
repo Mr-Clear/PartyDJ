@@ -19,8 +19,8 @@ public class Setting extends Message
     }
 
     @Override
-    public Child getType()
+    public MessageType getType()
     {
-        return Child.Setting;
+        return MessageType.Setting;
     }
 }

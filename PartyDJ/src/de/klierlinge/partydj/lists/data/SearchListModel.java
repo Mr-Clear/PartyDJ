@@ -104,7 +104,7 @@ public class SearchListModel extends BasicListModel
 		{
 			if(actualSearchString == null || actualSearchString.length() > 0)
 			{
-				list = new ArrayList<Track>(Controller.getInstance().getData().readList(actualDbList, actualSearchString, actualSortOrder));
+				list = new ArrayList<>(Controller.getInstance().getData().readList(actualDbList, actualSearchString, actualSortOrder));
 				listSize = list.size();
 				if(listSize > maxSize)
 					maxSize = list.size();

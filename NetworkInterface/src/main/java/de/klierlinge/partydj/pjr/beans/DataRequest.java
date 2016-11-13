@@ -4,8 +4,8 @@ package de.klierlinge.partydj.pjr.beans;
 public class DataRequest extends Message
 {
     @Override
-    public Child getType()
+    public MessageType getType()
     {
-        return Child.DataRequest;
+        return MessageType.DataRequest;
     }
 }

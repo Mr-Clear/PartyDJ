@@ -8,7 +8,16 @@ public class Track extends Message
     public final long size;
     public final boolean problem;
     
-    public Track(String name, String info, double duration, long size, boolean problem)
+    public Track()
+	{
+		this.name = "";
+		this.info = "";
+		this.duration = 0;
+		this.size = 0;
+		this.problem = true;
+	}
+
+	public Track(String name, String info, double duration, long size, boolean problem)
 	{
 		this.name = name;
 		this.info = info;
@@ -18,8 +27,8 @@ public class Track extends Message
 	}
     
 	@Override
-    public Child getType()
+    public MessageType getType()
     {
-        return Child.Track;
+        return MessageType.Track;
     }
 }

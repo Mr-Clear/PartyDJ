@@ -11,18 +11,18 @@ public abstract class Message
 	 * @return Typ der Nachricht.
 	 */
 	@JSON
-	public abstract Child getType();
+	public abstract MessageType getType();
 	
 	/** Konfiguriert Felxjson, um mit der Typhirachie zurecht zu kommen. 
 	 * @param deserializer Zu konfigurierender JSONDeserializer.*/
 	public static void configureDeserializer(final JSONDeserializer<Message> deserializer)
 	{
 		final TypeLocator<String> typeLocator = new TypeLocator<>("type");
-		for(final Child child : Child.values())
+		for(final MessageType child : MessageType.values())
 		{
 			try
 			{
-			    final Class<? extends Message> c = Child.childToClass(child);
+			    final Class<? extends Message> c = MessageType.childToClass(child);
 				typeLocator.add((c.newInstance()).getType().toString(), c);
 			}
 			catch(InstantiationException | IllegalAccessException e)
@@ -34,7 +34,7 @@ public abstract class Message
 		deserializer.use(".", typeLocator);
 	}
 	
-	public static enum Child
+	public static enum MessageType
 	{
 	    TrackList,
 	    PdjCommand,
@@ -45,7 +45,7 @@ public abstract class Message
 	    Track,
 	    ;
 	    
-	    static Class<? extends Message> childToClass(final Child child)
+	    static Class<? extends Message> childToClass(final MessageType child)
 	    {
 	        switch(child)
 	        {

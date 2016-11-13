@@ -19,6 +19,7 @@ import de.klierlinge.partydj.pjr.JsonDecoder;
 import de.klierlinge.partydj.pjr.JsonEncoder;
 import de.klierlinge.partydj.pjr.beans.InitialData;
 import de.klierlinge.partydj.pjr.beans.Message;
+import de.klierlinge.partydj.pjr.beans.PdjCommand;
 import de.klierlinge.partydj.pjr.beans.Setting;
 import de.klierlinge.partydj.pjr.beans.Track;
 
@@ -61,6 +62,24 @@ public class ServerHandler implements InputHandler, SettingListener
             sendData();
             break;
         case PdjCommand:
+        	switch(((PdjCommand)message).commmand)
+        	{
+        	case Play:
+        		Controller.getInstance().getPlayer().play();
+        		break;
+        	case Stop:
+        		Controller.getInstance().getPlayer().stop();
+        		break;
+        	case Pause:
+        		Controller.getInstance().getPlayer().pause();
+        		break;
+        	case Next:
+        		Controller.getInstance().getPlayer().playNext();
+        		break;
+        	case Previous:
+        		Controller.getInstance().getPlayer().playPrevious();
+        		break;
+        	}
             break;
         case Setting:
             break;

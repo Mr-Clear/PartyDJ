@@ -44,9 +44,9 @@ public class InitialData extends Message
     }
 
     @Override
-    public Child getType()
+    public MessageType getType()
     {
-        return Child.InitialData;
+        return MessageType.InitialData;
     }
 
 }
