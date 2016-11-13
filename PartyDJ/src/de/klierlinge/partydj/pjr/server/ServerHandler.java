@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track.Problem;
 import de.klierlinge.partydj.data.IData;
@@ -18,6 +20,7 @@ import de.klierlinge.partydj.pjr.InputHandler;
 import de.klierlinge.partydj.pjr.JsonDecoder;
 import de.klierlinge.partydj.pjr.JsonEncoder;
 import de.klierlinge.partydj.pjr.beans.InitialData;
+import de.klierlinge.partydj.pjr.beans.LiveData;
 import de.klierlinge.partydj.pjr.beans.Message;
 import de.klierlinge.partydj.pjr.beans.PdjCommand;
 import de.klierlinge.partydj.pjr.beans.Setting;
@@ -29,19 +32,39 @@ public class ServerHandler implements InputHandler, SettingListener
 	private final Socket socket;
 	private final JsonDecoder jsonDecoder;
 	private final JsonEncoder jsonEncoder;
-
+	private final Timer liveDataTimer = new Timer(true);
+	final Controller controller;
+	
 	public ServerHandler(final Server server, final Socket socket) throws IOException
 	{
+		controller = Controller.getInstance();
 		this.server = server;
 		this.socket = socket;
 
 		server.addServerHandler(this);
 		jsonEncoder = new JsonEncoder(socket.getOutputStream());
 		jsonDecoder = new JsonDecoder(socket.getInputStream(), this);
+		liveDataTimer.schedule(new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					jsonEncoder.write(new LiveData(makeTrak(controller.getPlayer().getCurrentTrack()), controller.getPlayer().getPlayState(), controller.getPlayer().getPosition()));
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}, 0, 1000);
 	}
 
 	public void stop()
 	{
+		liveDataTimer.cancel();
 		jsonDecoder.stop();
 		try
 		{
@@ -65,19 +88,19 @@ public class ServerHandler implements InputHandler, SettingListener
         	switch(((PdjCommand)message).commmand)
         	{
         	case Play:
-        		Controller.getInstance().getPlayer().play();
+        		controller.getPlayer().play();
         		break;
         	case Stop:
-        		Controller.getInstance().getPlayer().stop();
+        		controller.getPlayer().stop();
         		break;
         	case Pause:
-        		Controller.getInstance().getPlayer().pause();
+        		controller.getPlayer().pause();
         		break;
         	case Next:
-        		Controller.getInstance().getPlayer().playNext();
+        		controller.getPlayer().playNext();
         		break;
         	case Previous:
-        		Controller.getInstance().getPlayer().playPrevious();
+        		controller.getPlayer().playPrevious();
         		break;
         	}
             break;
@@ -88,13 +111,16 @@ public class ServerHandler implements InputHandler, SettingListener
         case TrackList:
             break;
         case InitialData:
+		case LiveData:
             /* Only for client. */
-            Controller.getInstance().logError(Controller.INERESTING_INFO, this, null, "Should not be received by Server: " + message);
+			controller.logError(Controller.INERESTING_INFO, this, null, "Should not be received by Server: " + message);
             break;
         case Track:
             /* No stand alone. */
-            Controller.getInstance().logError(Controller.INERESTING_INFO, this, null, "Should not be received by client: " + message);
+        	controller.logError(Controller.INERESTING_INFO, this, null, "Should not be received by client: " + message);
             break;
+		default:
+			break;
 		}
 	}
 
@@ -121,27 +147,27 @@ public class ServerHandler implements InputHandler, SettingListener
         }
         catch(final IOException e)
         {
-            Controller.getInstance().logError(Controller.NORMAL_ERROR, e);
+        	controller.logError(Controller.NORMAL_ERROR, e);
         }
     }
     
     void sendData()
     {
-        Controller.getInstance().getExecutor().execute(new Runnable()
+    	controller.getExecutor().execute(new Runnable()
         {
             @Override
             public void run()
             {
                 try
                 {
-                    final IData data = Controller.getInstance().getData();
-                    final ListProvider listProvider = Controller.getInstance().getListProvider();
+                    final IData data = controller.getData();
+                    final ListProvider listProvider = controller.getListProvider();
                     final Map<String, String> settings = data.readAllSettings();
     
                     final List<de.klierlinge.partydj.common.Track> allTracks = listProvider.getMasterList().getValues();
                     final List<Track> tracks = new ArrayList<>(allTracks.size());
                     for(final de.klierlinge.partydj.common.Track track : allTracks)
-                        tracks.add(new Track(track.getName(), track.getInfo(), track.getDuration(), track.getSize(), track.getProblem() != Problem.NONE));
+                        tracks.add(makeTrak(track));
                     
                     final Map<String, List<Integer>> lists = new HashMap<>();
                     final List<String> listList = data.getLists();
@@ -165,13 +191,18 @@ public class ServerHandler implements InputHandler, SettingListener
                 }
                 catch(final ListException e)
                 {
-                    Controller.getInstance().logError(Controller.NORMAL_ERROR, ServerHandler.this, e);
+                	controller.logError(Controller.NORMAL_ERROR, ServerHandler.this, e);
                 }
                 catch(final IOException e)
                 {
-                    Controller.getInstance().logError(Controller.NORMAL_ERROR, e);
+                	controller.logError(Controller.NORMAL_ERROR, e);
                 }
             }
         });
+    }
+    
+    private static Track makeTrak(de.klierlinge.partydj.common.Track track)
+    {
+    	return new Track(track.getName(), track.getInfo(), track.getDuration(), track.getSize(), track.getProblem() != Problem.NONE);
     }
 }

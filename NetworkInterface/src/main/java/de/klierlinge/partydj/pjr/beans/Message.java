@@ -42,7 +42,8 @@ public abstract class Message
 	    DataRequest,
 	    Setting,
 	    InitialData,
-	    Track,
+		Track,
+		LiveData,
 	    ;
 	    
 	    static Class<? extends Message> childToClass(final MessageType child)
@@ -63,6 +64,8 @@ public abstract class Message
                 return InitialData.class;
             case Track:
                 return Track.class;
+            case LiveData:
+                return LiveData.class;
 	        }
 	        throw new RuntimeException("Unknown message type.");
 	    }

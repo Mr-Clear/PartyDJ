@@ -10,8 +10,8 @@ public class Track extends Message
     
     public Track()
 	{
-		this.name = "";
-		this.info = "";
+		this.name = null;
+		this.info = null;
 		this.duration = 0;
 		this.size = 0;
 		this.problem = true;

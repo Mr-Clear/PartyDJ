@@ -1,5 +1,6 @@
 package de.klierlinge.partydj.client;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.io.IOException;
 import javax.swing.GroupLayout;
@@ -7,10 +8,12 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import de.klierlinge.partydj.pjr.beans.DataRequest;
-import de.klierlinge.partydj.pjr.beans.InitialData;
+import de.klierlinge.partydj.pjr.beans.LiveData;
 import de.klierlinge.partydj.pjr.beans.Message;
 import de.klierlinge.partydj.pjr.beans.PdjCommand;
 import de.klierlinge.partydj.pjr.beans.PdjCommand.Command;
@@ -22,6 +25,10 @@ public class App implements Client
 	private JFrame frame;
 	private JLabel lblTitle;
 	ClientConnection connection;
+	private JLabel lblElapsed;
+	private JProgressBar progressBar;
+	private JLabel lblRemaining;
+	private JLabel lblDuration;
 
 	/**
 	 * Launch the application.
@@ -64,7 +71,7 @@ public class App implements Client
 	private void initialize()
 	{
 		frame = new JFrame("Party DJ Remote");
-		frame.setBounds(100, 100, 629, 510);
+		frame.setBounds(100, 100, 629, 153);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		lblTitle = new JLabel("Title");
@@ -120,9 +127,57 @@ public class App implements Client
 				e.printStackTrace();
 			}
 		});
+		
+		progressBar = new JProgressBar();
+		
+		JPanel panelTimes = new JPanel();
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addContainerGap().addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addComponent(lblTitle).addGroup(groupLayout.createSequentialGroup().addComponent(btnBack).addPreferredGap(ComponentPlacement.RELATED).addComponent(btnStop).addPreferredGap(ComponentPlacement.RELATED).addComponent(btnPlay).addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNext))).addContainerGap(333, Short.MAX_VALUE)));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addContainerGap().addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnBack).addComponent(btnStop).addComponent(btnPlay).addComponent(btnNext)).addPreferredGap(ComponentPlacement.RELATED).addComponent(lblTitle).addContainerGap(418, Short.MAX_VALUE)));
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(panelTimes, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
+						.addComponent(lblTitle, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+							.addComponent(btnBack)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnStop)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnPlay)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnNext))
+						.addComponent(progressBar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE))
+					.addContainerGap())
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnBack)
+						.addComponent(btnStop)
+						.addComponent(btnPlay)
+						.addComponent(btnNext))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblTitle)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panelTimes, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(392, Short.MAX_VALUE))
+		);
+		panelTimes.setLayout(new BorderLayout(0, 0));
+		
+		lblElapsed = new JLabel("0:00");
+		panelTimes.add(lblElapsed, BorderLayout.WEST);
+		
+		lblRemaining = new JLabel("0:00");
+		panelTimes.add(lblRemaining, BorderLayout.EAST);
+		
+		lblDuration = new JLabel("0:00");
+		lblDuration.setHorizontalAlignment(SwingConstants.CENTER);
+		panelTimes.add(lblDuration, BorderLayout.CENTER);
 		frame.getContentPane().setLayout(groupLayout);
 	}
 
@@ -131,8 +186,16 @@ public class App implements Client
 	{
 		switch (message.getType())
 		{
-		case InitialData:
-			System.out.println(((InitialData)message).getTracks().size());
+		case LiveData:
+			final LiveData data = (LiveData)message;
+			SwingUtilities.invokeLater(() -> {
+				lblTitle.setText(data.track.name);
+				progressBar.setMaximum((int)(data.track.duration * 100));
+				progressBar.setValue((int)(data.position * 100));
+				lblElapsed.setText(Double.toString(data.position));
+				lblRemaining.setText(Double.toString(data.track.duration - data.position));
+				lblDuration.setText(Double.toString(data.track.duration));
+			});
 			break;
 		default:
 			System.out.println("Unhandled message: " + message);
@@ -143,15 +206,15 @@ public class App implements Client
 	public void connectionOpened()
 	{
 		SwingUtilities.invokeLater(() -> lblTitle.setText("Connection open..."));
-		try
-		{
-			connection.send(new DataRequest());
-		}
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try
+//		{
+//			connection.send(new DataRequest());
+//		}
+//		catch (IOException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
