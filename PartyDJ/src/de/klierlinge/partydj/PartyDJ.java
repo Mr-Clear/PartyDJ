@@ -16,22 +16,15 @@ public class PartyDJ
 	 */
 	public static void main(final String[] args)
 	{
-		if(args.length > 0 && args[0].equalsIgnoreCase("network"))
+		try
 		{
-			new de.klierlinge.partydj.network.remote.LightNetworkRemote(args);
+			new de.klierlinge.partydj.basics.PartyDJ(args);
 		}
-		else
+		catch (final Exception e)
 		{
-			try
-			{
-				new de.klierlinge.partydj.basics.PartyDJ(args);
-			}
-			catch (final Exception e)
-			{
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des PartyDJ-Controllers:\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
-				Controller.getInstance().closePartyDJ();
-			}
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Fehler beim Erstellen des PartyDJ-Controllers:\n" + e.getMessage(), "PartyDJ", JOptionPane.ERROR_MESSAGE);
+			Controller.getInstance().closePartyDJ();
 		}
 	}
 }

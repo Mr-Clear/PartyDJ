@@ -4,15 +4,19 @@
     <!--ANT 1.7 is required                                        -->
     <!--define folder properties-->
     <property name="dir.buildfile" value="."/>
-    <property name="dir.workspace" value="C:/eclipse 4.5 Mars workspace"/>
+    <property name="dir.workspace" value="C:/Users/Eraser/eclipse/java-neon-workspace"/>
     <property name="dir.jarfile" value="C:/Git/PartyDJ/export"/>
     <target name="create_run_jar">
         <jar destfile="${dir.jarfile}/PartyDJ.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="PartyDJ"/>
+                <attribute name="Main-Class" value="de.klierlinge.partydj.PartyDJ"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="${dir.buildfile}/target/classes"/>
+            <fileset dir="C:/Git/PartyDJ/Annotations/target/classes"/>
+            <fileset dir="C:/Git/PartyDJ/NetworkInterface/target/classes"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Users/Eraser/.m2/repository/net/sf/flexjson/flexjson/3.2/flexjson-3.2.jar"/>
+            <fileset dir="C:/Git/PartyDJ/Utils/target/classes"/>
             <zipfileset excludes="META-INF/*.SF" src="C:/Users/Eraser/.m2/repository/com/melloware/jintellitype/1.3.9/jintellitype-1.3.9.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="C:/Users/Eraser/.m2/repository/javazoom/jlayer/1.0.1/jlayer-1.0.1.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="C:/Users/Eraser/.m2/repository/org/jaudiotagger/2.0.3/jaudiotagger-2.0.3.jar"/>
