@@ -112,7 +112,7 @@ public class TrackRenderer extends DefaultListCellRenderer
 			
 			titel.setText(track.toString());
 			if(track.getDuration() >= 0)
-				duration.setText(de.klierlinge.partydj.common.Functions.formatTime(track.getDuration()));
+				duration.setText(klierlinge.utils.Functions.formatTime(track.getDuration()));
 
 			final TrackListAppearance appearance = list.getAppearance();
 			if(appearance != null)

@@ -135,7 +135,7 @@ public class EditTrackWindow extends JDialog
 		add(lblDuration, c);
 		
 		txtDuration = new JTextField(track.getName());
-		txtDuration.setText(de.klierlinge.partydj.common.Functions.formatTime(track.getDuration()));
+		txtDuration.setText(klierlinge.utils.Functions.formatTime(track.getDuration()));
 		txtDuration.setEditable(false);
 		txtDuration.setBorder(null);
 		c = new GridBagConstraints();
@@ -172,7 +172,7 @@ public class EditTrackWindow extends JDialog
 					cmbProblem.setSelectedIndex(Problem.problemToArrayIndex(e.getProblem()));
 					duration = 0;
 				}
-				txtDuration.setText(de.klierlinge.partydj.common.Functions.formatTime(duration));
+				txtDuration.setText(klierlinge.utils.Functions.formatTime(duration));
 			}
 		});
 		
@@ -186,7 +186,7 @@ public class EditTrackWindow extends JDialog
 		add(lblSize, c);
 		
 		txtSize = new JTextField(track.getName());
-		txtSize.setText(de.klierlinge.partydj.common.Functions.formatSize(track.getSize(), 4, true));
+		txtSize.setText(klierlinge.utils.Functions.formatSize(track.getSize(), 4, true));
 		txtSize.setEditable(false);
 		txtSize.setBorder(null);
 		c = new GridBagConstraints();
@@ -220,7 +220,7 @@ public class EditTrackWindow extends JDialog
 					size = 0;
 					cmbProblem.setSelectedIndex(Problem.problemToArrayIndex(Problem.FILE_NOT_FOUND));
 				}
-				txtSize.setText(de.klierlinge.partydj.common.Functions.formatSize(size, 4, true));
+				txtSize.setText(klierlinge.utils.Functions.formatSize(size, 4, true));
 			}
 		});
 		

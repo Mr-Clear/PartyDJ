@@ -19,6 +19,7 @@ import de.klierlinge.partydj.pjr.beans.PdjCommand;
 import de.klierlinge.partydj.pjr.beans.PdjCommand.Command;
 import de.klierlinge.partydj.pjr.client.Client;
 import de.klierlinge.partydj.pjr.client.ClientConnection;
+import klierlinge.utils.Functions;
 
 public class App implements Client
 {
@@ -29,6 +30,10 @@ public class App implements Client
 	private JProgressBar progressBar;
 	private JLabel lblRemaining;
 	private JLabel lblDuration;
+	private JButton btnStop;
+	private JButton btnPlay;
+	private JButton btnBack;
+	private JButton btnNext;
 
 	/**
 	 * Launch the application.
@@ -76,7 +81,7 @@ public class App implements Client
 
 		lblTitle = new JLabel("Title");
 
-		JButton btnBack = new JButton("Back");
+		btnBack = new JButton("Back");
 		btnBack.addActionListener((a) -> {
 			try
 			{
@@ -89,7 +94,7 @@ public class App implements Client
 			}
 		});
 
-		JButton btnStop = new JButton("Stop");
+		btnStop = new JButton("Stop");
 		btnStop.addActionListener((a) -> {
 			try
 			{
@@ -102,7 +107,7 @@ public class App implements Client
 			}
 		});
 
-		JButton btnPlay = new JButton("Play");
+		btnPlay = new JButton("Play");
 		btnPlay.addActionListener((a) -> {
 			try
 			{
@@ -115,7 +120,7 @@ public class App implements Client
 			}
 		});
 
-		JButton btnNext = new JButton("Next");
+		btnNext = new JButton("Next");
 		btnNext.addActionListener((a) -> {
 			try
 			{
@@ -127,54 +132,21 @@ public class App implements Client
 				e.printStackTrace();
 			}
 		});
-		
+
 		progressBar = new JProgressBar();
-		
+
 		JPanel panelTimes = new JPanel();
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panelTimes, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
-						.addComponent(lblTitle, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-							.addComponent(btnBack)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnStop)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnPlay)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnNext))
-						.addComponent(progressBar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE))
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnBack)
-						.addComponent(btnStop)
-						.addComponent(btnPlay)
-						.addComponent(btnNext))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblTitle)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panelTimes, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(392, Short.MAX_VALUE))
-		);
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup().addContainerGap().addGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addComponent(panelTimes, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE).addComponent(lblTitle, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE).addGroup(Alignment.LEADING, groupLayout.createSequentialGroup().addComponent(btnBack).addPreferredGap(ComponentPlacement.RELATED).addComponent(btnStop).addPreferredGap(ComponentPlacement.RELATED).addComponent(btnPlay).addPreferredGap(ComponentPlacement.RELATED).addComponent(btnNext)).addComponent(progressBar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)).addContainerGap()));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout.createSequentialGroup().addContainerGap().addGroup(groupLayout.createParallelGroup(Alignment.BASELINE).addComponent(btnBack).addComponent(btnStop).addComponent(btnPlay).addComponent(btnNext)).addPreferredGap(ComponentPlacement.RELATED).addComponent(lblTitle).addPreferredGap(ComponentPlacement.RELATED).addComponent(progressBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addPreferredGap(ComponentPlacement.RELATED).addComponent(panelTimes, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE).addContainerGap(392, Short.MAX_VALUE)));
 		panelTimes.setLayout(new BorderLayout(0, 0));
-		
+
 		lblElapsed = new JLabel("0:00");
 		panelTimes.add(lblElapsed, BorderLayout.WEST);
-		
+
 		lblRemaining = new JLabel("0:00");
 		panelTimes.add(lblRemaining, BorderLayout.EAST);
-		
+
 		lblDuration = new JLabel("0:00");
 		lblDuration.setHorizontalAlignment(SwingConstants.CENTER);
 		panelTimes.add(lblDuration, BorderLayout.CENTER);
@@ -192,9 +164,11 @@ public class App implements Client
 				lblTitle.setText(data.track.name);
 				progressBar.setMaximum((int)(data.track.duration * 100));
 				progressBar.setValue((int)(data.position * 100));
-				lblElapsed.setText(Double.toString(data.position));
-				lblRemaining.setText(Double.toString(data.track.duration - data.position));
-				lblDuration.setText(Double.toString(data.track.duration));
+				lblElapsed.setText(Functions.formatTime(data.position));
+				lblRemaining.setText(Functions.formatTime(data.track.duration - data.position));
+				lblDuration.setText(Functions.formatTime(data.track.duration));
+				btnStop.setEnabled(data.playing);
+				btnPlay.setEnabled(!data.playing);
 			});
 			break;
 		default:
@@ -205,21 +179,31 @@ public class App implements Client
 	@Override
 	public void connectionOpened()
 	{
-		SwingUtilities.invokeLater(() -> lblTitle.setText("Connection open..."));
-//		try
-//		{
-//			connection.send(new DataRequest());
-//		}
-//		catch (IOException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		SwingUtilities.invokeLater(() -> {
+			lblTitle.setText("Connection open...");
+			btnBack.setEnabled(true);
+			btnNext.setEnabled(true);
+		});
+		//		try
+		//		{
+		//			connection.send(new DataRequest());
+		//		}
+		//		catch (IOException e)
+		//		{
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 	}
 
 	@Override
 	public void connectionClosed(boolean externalReason)
 	{
-		SwingUtilities.invokeLater(() -> lblTitle.setText("Connection closed"));
+		SwingUtilities.invokeLater(() -> {
+			lblTitle.setText("Connection closed");
+			btnBack.setEnabled(false);
+			btnStop.setEnabled(false);
+			btnPlay.setEnabled(false);
+			btnNext.setEnabled(false);
+		});
 	}
 }

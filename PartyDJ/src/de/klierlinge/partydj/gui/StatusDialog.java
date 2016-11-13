@@ -77,8 +77,8 @@ public final class StatusDialog extends javax.swing.JDialog implements UncaughtE
 					final long remainingTime = elapsedTime * (statusBar.getMaximum() - statusBar.getValue()) / statusBar.getValue();
 					final Calendar cal = Calendar.getInstance();
 					cal.add(Calendar.SECOND, (int)remainingTime);
-					time.setText("Vergangen: " + de.klierlinge.partydj.common.Functions.formatTime(elapsedTime) 
-						+ "   Verbleibend: " + de.klierlinge.partydj.common.Functions.formatTime(remainingTime)
+					time.setText("Vergangen: " + klierlinge.utils.Functions.formatTime(elapsedTime) 
+						+ "   Verbleibend: " + klierlinge.utils.Functions.formatTime(remainingTime)
 						+ "   Fertig: " + String.format("%tT%n", cal));
 							//" Fertig: " + common.Functions.formatTime((System.currentTimeMillis() / 1000 + remainingTime) % 86400));
 				}
@@ -219,7 +219,7 @@ public final class StatusDialog extends javax.swing.JDialog implements UncaughtE
 	public void stopTimer()
 	{
 		showTimeTimer.stop();
-		time.setText("Vergangen: " + de.klierlinge.partydj.common.Functions.formatTime(elapsedTime));
+		time.setText("Vergangen: " + klierlinge.utils.Functions.formatTime(elapsedTime));
 	}
 	
 	class StatusThread extends Thread

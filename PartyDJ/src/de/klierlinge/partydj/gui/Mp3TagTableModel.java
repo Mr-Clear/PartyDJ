@@ -20,8 +20,8 @@ import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.id3.ID3v1Tag;
 import de.klierlinge.partydj.basics.Controller;
-import de.klierlinge.partydj.common.Functions;
 import de.klierlinge.partydj.common.Track;
+import klierlinge.utils.Functions;
 
 public class Mp3TagTableModel extends AbstractTableModel
 {

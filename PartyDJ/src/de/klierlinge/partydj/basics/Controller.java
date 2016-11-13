@@ -17,7 +17,6 @@ import java.util.concurrent.Executors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import de.klierlinge.partydj.common.Functions;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
 import de.klierlinge.partydj.gui.ErrorLogWindow;
@@ -25,6 +24,7 @@ import de.klierlinge.partydj.gui.settings.SettingNode;
 import de.klierlinge.partydj.lists.EditableListModel;
 import de.klierlinge.partydj.lists.data.ListProvider;
 import de.klierlinge.partydj.players.IPlayer;
+import klierlinge.utils.Functions;
 
 /**
  * Bietet Zugriff auf alle anderen wichtigen Elemente des PartyDJ.

@@ -3,7 +3,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import de.klierlinge.partydj.common.Functions;
 import de.klierlinge.partydj.data.IData;
 import de.klierlinge.partydj.data.OpenDbException;
 import de.klierlinge.partydj.data.SettingException;
@@ -17,6 +16,7 @@ import de.klierlinge.partydj.network.remote.RemoteServer;
 import de.klierlinge.partydj.pjr.server.Server;
 import de.klierlinge.partydj.players.IPlayer;
 import de.klierlinge.partydj.players.PlayerException;
+import klierlinge.utils.Functions;
 
 /**
  * Hauptklasse vom PartyDJ.

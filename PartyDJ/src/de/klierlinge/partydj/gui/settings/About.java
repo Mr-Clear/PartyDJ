@@ -63,7 +63,7 @@ public class About extends JPanel
 		catch (final SettingException e) { /* ignore */ }
 
 		box.add(Box.createVerticalStrut(8));
-		addText("Speicherpfad: " + de.klierlinge.partydj.common.Functions.getFolder(), box);
+		addText("Speicherpfad: " + klierlinge.utils.Functions.getFolder(), box);
 		addText("Datenbank: " + controller.getData().getDbPath(), box);
 
 		add(box);

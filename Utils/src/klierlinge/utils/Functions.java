@@ -1,4 +1,4 @@
-package de.klierlinge.partydj.common;
+package klierlinge.utils;
 
 import de.klierlinge.annotations.NonNullByDefault;
 

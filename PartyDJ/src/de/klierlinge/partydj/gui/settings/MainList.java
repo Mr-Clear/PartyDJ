@@ -90,7 +90,7 @@ public class MainList extends JPanel
 				final JFileChooser chooser = new JFileChooser("Datei wählen");
 				chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 		        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", de.klierlinge.partydj.common.Functions.getFolder())));
+				chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", klierlinge.utils.Functions.getFolder())));
 		        				        
 		        if(chooser.showOpenDialog(null) == JFileChooser.CANCEL_OPTION)
 		        	return;
@@ -314,7 +314,7 @@ public class MainList extends JPanel
 	
 			//---- completeDuration ----
 			mainPlayTime = playTime(mlm);
-			completeDuration.setText("Gesamtspieldauer: " + de.klierlinge.partydj.common.Functions.formatTime(mainPlayTime));
+			completeDuration.setText("Gesamtspieldauer: " + klierlinge.utils.Functions.formatTime(mainPlayTime));
 			add(completeDuration, cc.xywh(7, 15, 3, 1));
 	
 			//---- songsSelected ----
@@ -323,7 +323,7 @@ public class MainList extends JPanel
 	
 			//---- playDuration ----
 			selectedPlayTime = playTime(list.getSelectedValuesList());
-			playDuration.setText("Spieldauer: " + de.klierlinge.partydj.common.Functions.formatTime(selectedPlayTime));
+			playDuration.setText("Spieldauer: " + klierlinge.utils.Functions.formatTime(selectedPlayTime));
 			add(playDuration, cc.xywh(15, 15, 3, 1));
 	
 			//---- songsWithProblems ----
@@ -412,7 +412,7 @@ public class MainList extends JPanel
 		{
 			if(e.getValueIsAdjusting())
 				return;
-			playDuration.setText("Spieldauer: " + de.klierlinge.partydj.common.Functions.formatTime(playTime(list.getSelectedValuesList())));
+			playDuration.setText("Spieldauer: " + klierlinge.utils.Functions.formatTime(playTime(list.getSelectedValuesList())));
 			songsSelected.setText("        " + list.getSelectedIndices().length + " Lieder ausgew\u00e4hlt");
 		}
 
@@ -420,7 +420,7 @@ public class MainList extends JPanel
 		public void trackAdded(final DbTrack track, final boolean eventsFollowing)
 		{
 			mainPlayTime += track.getDuration();
-			completeDuration.setText("Gesamtspieldauer: " + de.klierlinge.partydj.common.Functions.formatTime(mainPlayTime));
+			completeDuration.setText("Gesamtspieldauer: " + klierlinge.utils.Functions.formatTime(mainPlayTime));
 			repaint(eventsFollowing);
 		}
 
@@ -429,7 +429,7 @@ public class MainList extends JPanel
 		{
 			mainPlayTime -= oldTrack.getDuration();
 			mainPlayTime += newTrack.getDuration();
-			completeDuration.setText("Gesamtspieldauer: " + de.klierlinge.partydj.common.Functions.formatTime(mainPlayTime));
+			completeDuration.setText("Gesamtspieldauer: " + klierlinge.utils.Functions.formatTime(mainPlayTime));
 			repaint(eventsFollowing);
 		}
 
@@ -437,7 +437,7 @@ public class MainList extends JPanel
 		public void trackDeleted(final DbTrack track, final boolean eventsFollowing)
 		{
 			mainPlayTime -= track.getDuration();
-			completeDuration.setText("Gesamtspieldauer: " + de.klierlinge.partydj.common.Functions.formatTime(mainPlayTime));
+			completeDuration.setText("Gesamtspieldauer: " + klierlinge.utils.Functions.formatTime(mainPlayTime));
 			repaint(eventsFollowing);
 		}
 	}

@@ -218,7 +218,7 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 					lblTrack.setText(currentTrack.getName());
 					setTitle(currentTrack.getName());
 					progressBar.setMaximum((int)(currentTrack.getDuration() * 100));
-					lblTimeTotal.setText(de.klierlinge.partydj.common.Functions.formatTime(currentTrack.getDuration()));
+					lblTimeTotal.setText(klierlinge.utils.Functions.formatTime(currentTrack.getDuration()));
 				}
 			};
 			if(SwingUtilities.isEventDispatchThread())
@@ -258,10 +258,10 @@ public class CompactWindow extends javax.swing.JFrame implements PlayStateListen
 		final double position = player.getPosition();
 		progressBar.setValue((int)(position * 100));
 
-		lblTimeLeft.setText(de.klierlinge.partydj.common.Functions.formatTime(position));
+		lblTimeLeft.setText(klierlinge.utils.Functions.formatTime(position));
 		
 		if(currentTrack != null)
-			lblTimeRemaining.setText("-" + de.klierlinge.partydj.common.Functions.formatTime(currentTrack.getDuration() - position));
+			lblTimeRemaining.setText("-" + klierlinge.utils.Functions.formatTime(currentTrack.getDuration() - position));
 	}
 	
 	/**
