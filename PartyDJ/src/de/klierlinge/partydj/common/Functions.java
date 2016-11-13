@@ -1,6 +1,6 @@
 package de.klierlinge.partydj.common;
 
-import de.klierlinge.partydj.common.annotation.NonNullByDefault;
+import de.klierlinge.annotations.NonNullByDefault;
 
 @NonNullByDefault
 

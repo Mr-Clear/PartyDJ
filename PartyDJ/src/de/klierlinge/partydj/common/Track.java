@@ -2,8 +2,9 @@ package de.klierlinge.partydj.common;
 
 import java.io.File;
 import java.io.Serializable;
+
+import de.klierlinge.annotations.NonNull;
 import de.klierlinge.partydj.basics.Controller;
-import de.klierlinge.partydj.common.annotation.NonNull;
 import de.klierlinge.partydj.players.PlayerException;
 
 /**
