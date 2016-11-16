@@ -2,3 +2,4 @@
 /target/
 /derby.log
 /jar-in-jar-loader.zip
+/.classpath
