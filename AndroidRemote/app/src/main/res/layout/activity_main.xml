@@ -7,15 +7,43 @@
     android:layout_height="match_parent"
     tools:context="de.klierlinge.partydjremote.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-    <fragment
-        android:name="de.klierlinge.partydjremote.FragmentControls"
-        android:id="@+id/controls"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout="@layout/fragment_controls" />
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp">
+        <Button
+            android:text="@string/play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/play"/>
+
+        <Button
+            android:text="@string/pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pause" />
+
+        <Button
+            android:text="@string/backward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/previous" />
+
+        <Button
+            android:text="@string/forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/next" />
+    </LinearLayout>
+
+    <de.klierlinge.partydjremote.TrackProgressView
+        android:id="@+id/track_progress_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        />
 
 </LinearLayout>

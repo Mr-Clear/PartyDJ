@@ -25,6 +25,7 @@ import de.klierlinge.partydj.pjr.beans.Message;
 import de.klierlinge.partydj.pjr.beans.PdjCommand;
 import de.klierlinge.partydj.pjr.beans.Setting;
 import de.klierlinge.partydj.pjr.beans.Track;
+import de.klierlinge.partydj.players.IPlayer;
 
 public class ServerHandler implements InputHandler, SettingListener
 {
@@ -55,8 +56,7 @@ public class ServerHandler implements InputHandler, SettingListener
 				}
 				catch (IOException e)
 				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					controller.logError(Controller.NORMAL_ERROR, this, e);
 				}
 			}
 		}, 0, 1000);
@@ -85,23 +85,42 @@ public class ServerHandler implements InputHandler, SettingListener
             sendData();
             break;
         case PdjCommand:
+    		IPlayer p = controller.getPlayer();
         	switch(((PdjCommand)message).commmand)
         	{
         	case Play:
-        		controller.getPlayer().play();
+        		p.play();
         		break;
         	case Stop:
-        		controller.getPlayer().stop();
+        		p.stop();
         		break;
         	case Pause:
-        		controller.getPlayer().pause();
+        		p.pause();
         		break;
         	case Next:
-        		controller.getPlayer().playNext();
+        		p.playNext();
         		break;
         	case Previous:
-        		controller.getPlayer().playPrevious();
+        		p.playPrevious();
         		break;
+			case FadeIn:
+				p.fadeIn();
+				break;
+			case FadeInOut:
+				p.fadeInOut();
+				break;
+			case FadeOut:
+				p.fadeOut();
+				break;
+			case PlayPause:
+				p.playPause();
+				break;
+			case Start:
+				p.start();
+				break;
+			default:
+				controller.logError(Controller.NORMAL_ERROR, this, null, "Unknown command: " + ((PdjCommand)message).commmand);
+				break;
         	}
             break;
         case Setting:

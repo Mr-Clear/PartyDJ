@@ -37,6 +37,25 @@ public class PdjCommand extends Message
 	
 	public enum Command
 	{
-		Play, Pause, Stop, Next, Previous
+		/** Spielt das aktuelle Lied von Anfang an.*/
+		Start,
+		/** Stopt den Player und spult zum Anfang des Liedes.*/
+		Stop,
+		/** Startet den player an der aktuellen Position.*/
+		Play,
+		/** Spielt den nächsten Track.*/
+		Next,
+		/** Spielt den vorherigen Track.*/
+		Previous,
+		/** Stopt den Player.*/
+		Pause,
+		/** Führt je nach Zustand Stop() oder Play() aus.*/
+		PlayPause,
+		/** Blendet an der aktuellen Position langsam ein.*/
+		FadeIn,
+		/** Blendet an der aktuellen Position langsam aus.*/
+		FadeOut,
+		/** Führt je nach Zustand FadeIn() oder FadeOut() aus.*/
+		FadeInOut
 	}
 }
