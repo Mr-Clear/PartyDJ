@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements Client {
     private ClientConnection connection;
     private Handler mainHandler;
     private TrackProgressView trackProgress;
+    private TextView trackName;
 
     public MainActivity()
     {
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements Client {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         trackProgress = (TrackProgressView) findViewById(R.id.track_progress_view);
+        trackName = (TextView) findViewById(R.id.track_name);
 
         mainHandler = new Handler(getMainLooper());
         connection.connect(getString(R.string.default_host));
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements Client {
                 mainHandler.post(() -> {
                     trackProgress.setDuration(data.track.duration);
                     trackProgress.setPosition(data.position);
+                    trackName.setText(data.track.name);
                 });
                 break;
             default:

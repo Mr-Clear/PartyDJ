@@ -43,6 +43,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile(group: 'klierlinge', name: 'partydj-networkinterface', version: '3.2-SNAPSHOT')
+    compile(group: 'klierlinge', name: 'utils', version: '1.0-SNAPSHOT')
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:support-v4:25.1.0'
     testCompile 'junit:junit:4.12'

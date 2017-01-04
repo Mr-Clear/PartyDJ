@@ -46,4 +46,10 @@
         android:layout_marginRight="8dp"
         />
 
+    <TextView
+        android:text="No track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/track_name" />
+
 </LinearLayout>

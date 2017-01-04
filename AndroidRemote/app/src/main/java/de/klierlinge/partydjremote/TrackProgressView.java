@@ -7,6 +7,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import klierlinge.utils.Functions;
+
 public class TrackProgressView extends RelativeLayout {
     private double duration;
     private double position;
@@ -56,8 +58,8 @@ public class TrackProgressView extends RelativeLayout {
     public void setDuration(double duration) {
         this.duration = duration;
         progressBar.setMax((int) duration);
-        timeTotal.setText(String.valueOf(duration));
-        timeRemaining.setText(String.valueOf(duration - position));
+        timeTotal.setText(Functions.formatTime(duration));
+        timeRemaining.setText("-" + Functions.formatTime(duration - position));
     }
 
     @SuppressWarnings("unused")
@@ -68,7 +70,7 @@ public class TrackProgressView extends RelativeLayout {
     public void setPosition(double position) {
         this.position = position;
         progressBar.setProgress((int) position);
-        timeLeft.setText(String.valueOf(position));
-        timeRemaining.setText(String.valueOf(duration - position));
+        timeLeft.setText(Functions.formatTime(position));
+        timeRemaining.setText("-" + Functions.formatTime(duration - position));
     }
 }
