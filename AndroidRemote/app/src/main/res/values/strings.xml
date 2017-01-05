@@ -8,4 +8,7 @@
     <string name="pause">Pause</string>
     <string name="backward">Backward</string>
     <string name="forward">Forward</string>
+    <string name="settings">Settings</string>
+    <string name="nas_sleep">Send NAS to sleep</string>
+    <string name="nas_wake">Wake up NAS</string>
 </resources>

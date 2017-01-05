@@ -1,5 +1,6 @@
 package de.klierlinge.partydjremote;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -36,7 +37,7 @@ public class TrackProgressView extends RelativeLayout {
     }
 
     private void initializeViews(Context context) {
-        LayoutInflater inflater = (LayoutInflater) context
+        final LayoutInflater inflater = (LayoutInflater) context
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.track_progress_view, this);
     }
@@ -55,11 +56,12 @@ public class TrackProgressView extends RelativeLayout {
         return duration;
     }
 
+    @SuppressLint("SetTextI18n")
     public void setDuration(double duration) {
         this.duration = duration;
         progressBar.setMax((int) duration);
         timeTotal.setText(Functions.formatTime(duration));
-        timeRemaining.setText("-" + Functions.formatTime(duration - position));
+        timeRemaining.setText('-' + Functions.formatTime(duration - position));
     }
 
     @SuppressWarnings("unused")
@@ -67,10 +69,11 @@ public class TrackProgressView extends RelativeLayout {
         return position;
     }
 
+    @SuppressLint("SetTextI18n")
     public void setPosition(double position) {
         this.position = position;
         progressBar.setProgress((int) position);
         timeLeft.setText(Functions.formatTime(position));
-        timeRemaining.setText("-" + Functions.formatTime(duration - position));
+        timeRemaining.setText('-' + Functions.formatTime(duration - position));
     }
 }

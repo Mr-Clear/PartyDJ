@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,13 +17,14 @@ import java.io.IOException;
 import de.klierlinge.partydj.pjr.beans.LiveData;
 import de.klierlinge.partydj.pjr.beans.Message;
 import de.klierlinge.partydj.pjr.beans.PdjCommand;
+import de.klierlinge.partydj.pjr.beans.PdjCommand.Command;
 import de.klierlinge.partydj.pjr.client.Client;
 import de.klierlinge.partydj.pjr.client.ClientConnection;
 
 public class MainActivity extends AppCompatActivity implements Client {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getName();
 
-    private ClientConnection connection;
+    private final ClientConnection connection;
     private Handler mainHandler;
     private TrackProgressView trackProgress;
     private TextView trackName;
@@ -39,10 +43,13 @@ public class MainActivity extends AppCompatActivity implements Client {
 
         mainHandler = new Handler(getMainLooper());
         connection.connect(getString(R.string.default_host));
-        createButtonListener(R.id.play, PdjCommand.Command.Play);
-        createButtonListener(R.id.pause, PdjCommand.Command.Pause);
-        createButtonListener(R.id.previous, PdjCommand.Command.Previous);
-        createButtonListener(R.id.next, PdjCommand.Command.Next);
+
+
+
+        createButtonListener(R.id.play, Command.Play);
+        createButtonListener(R.id.pause, Command.Pause);
+        createButtonListener(R.id.previous, Command.Previous);
+        createButtonListener(R.id.next, Command.Next);
     }
 
     @Override
@@ -65,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements Client {
                 break;
             default:
                 Log.w(TAG, "Unhandled message: " + message);
+                break;
         }
     }
 
@@ -74,22 +82,47 @@ public class MainActivity extends AppCompatActivity implements Client {
     }
 
     @Override
-    public void connectionClosed(boolean b) {
+    public void connectionClosed(boolean externalReason) {
         Log.i(TAG, "Connection closed");
     }
 
-    private void createButtonListener(int id, final PdjCommand.Command command)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        final MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.settings:
+                break;
+            case R.id.wake_up:
+                    // TODO: Make parameters configurable.
+                    WakeOnLan.WakeUp("192.168.5.113", "24:5E:BE:05:3F:5A", () -> {
+                        Log.i(TAG, "Magic packet sent.");
+                        // TODO: Notify user.
+                    }, (e) -> {
+                        Log.e(TAG, "Magic packet not send.", e);
+                        // TODO: Notify user.
+                    });
+                break;
+            default:
+                Log.e(TAG, "Unknown menu button pressed: " + item);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void createButtonListener(int id, final Command command)
     {
         findViewById(id).setOnClickListener(v -> {
-            if(connection != null) {
-                try {
-                    connection.send(new PdjCommand(command));
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to send " + command + " command.", e);
-                }
-            }
-            else {
-                Log.e(TAG, command + " pressed while no connection.");
+            try {
+                connection.send(new PdjCommand(command));
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to send " + command + " command.", e);
             }
         });
     }
