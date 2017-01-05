@@ -56,6 +56,8 @@ public class PdjCommand extends Message
 		/** Blendet an der aktuellen Position langsam aus.*/
 		FadeOut,
 		/** Führt je nach Zustand FadeIn() oder FadeOut() aus.*/
-		FadeInOut
+		FadeInOut,
+		/** Sends NAS to sleep. */
+		Sleep
 	}
 }

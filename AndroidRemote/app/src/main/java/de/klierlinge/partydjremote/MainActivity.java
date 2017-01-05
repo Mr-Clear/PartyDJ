@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity implements Client {
         mainHandler = new Handler(getMainLooper());
         connection.connect(getString(R.string.default_host));
 
-
-
         createButtonListener(R.id.play, Command.Play);
         createButtonListener(R.id.pause, Command.Pause);
         createButtonListener(R.id.previous, Command.Previous);
@@ -100,20 +98,33 @@ public class MainActivity extends AppCompatActivity implements Client {
             case R.id.settings:
                 break;
             case R.id.wake_up:
-                    // TODO: Make parameters configurable.
-                    WakeOnLan.WakeUp("192.168.5.113", "24:5E:BE:05:3F:5A", () -> {
-                        Log.i(TAG, "Magic packet sent.");
-                        // TODO: Notify user.
-                    }, (e) -> {
-                        Log.e(TAG, "Magic packet not send.", e);
-                        // TODO: Notify user.
-                    });
+                // TODO: Make parameters configurable.
+                WakeOnLan.WakeUp("192.168.5.113", "24:5E:BE:05:3F:5A", () -> {
+                    Log.i(TAG, "Magic packet sent.");
+                    // TODO: Notify user.
+                }, (e) -> {
+                    Log.e(TAG, "Magic packet not send.", e);
+                    // TODO: Notify user.
+                });
+                break;
+            case R.id.sleep:
+                Log.i(TAG, "Sending sleep command...");
+                send(new PdjCommand(Command.Sleep));
                 break;
             default:
                 Log.e(TAG, "Unknown menu button pressed: " + item);
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void send(Message message)
+    {
+        try {
+            connection.send(message);
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to send message: " + message, e);
+        }
     }
 
     private void createButtonListener(int id, final Command command)

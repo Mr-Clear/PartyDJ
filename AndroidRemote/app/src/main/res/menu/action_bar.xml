@@ -5,6 +5,5 @@
     <item android:id="@+id/wake_up"
         android:title="@string/nas_wake" />
     <item android:id="@+id/sleep"
-        android:title="@string/nas_sleep"
-        android:enabled="false" />
+        android:title="@string/nas_sleep" />
 </menu>

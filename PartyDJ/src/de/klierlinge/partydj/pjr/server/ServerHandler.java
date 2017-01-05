@@ -26,6 +26,7 @@ import de.klierlinge.partydj.pjr.beans.PdjCommand;
 import de.klierlinge.partydj.pjr.beans.Setting;
 import de.klierlinge.partydj.pjr.beans.Track;
 import de.klierlinge.partydj.players.IPlayer;
+import de.klierlinge.partydj.system.LinuxSleep;
 
 public class ServerHandler implements InputHandler, SettingListener
 {
@@ -117,6 +118,16 @@ public class ServerHandler implements InputHandler, SettingListener
 				break;
 			case Start:
 				p.start();
+				break;
+			case Sleep:
+				try
+				{
+					LinuxSleep.sleep();
+				}
+				catch (IOException | InterruptedException e)
+				{
+					controller.logError(Controller.NORMAL_ERROR, e);
+				}
 				break;
 			default:
 				controller.logError(Controller.NORMAL_ERROR, this, null, "Unknown command: " + ((PdjCommand)message).commmand);
