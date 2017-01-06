@@ -14,8 +14,16 @@ public class LoggedError
 	public LoggedError(final int priority, final Object sender, final Throwable exception, final String message)
 	{
 		this.priority = priority;
-		this.sender = sender.toString();
-		this.senderType = sender.getClass().getName();
+		if (sender != null)
+		{
+			this.sender = sender.toString();
+			this.senderType = sender.getClass().getName();
+		}
+		else
+		{
+			this.sender = "null";
+			this.senderType = "null";
+		}
 		this.exception = exception;
 		this.message = message;
 		this.timestamp = new Date();

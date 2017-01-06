@@ -126,7 +126,7 @@ public class ServerHandler implements InputHandler, SettingListener
 				}
 				catch (IOException | InterruptedException e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, e);
+					controller.logError(Controller.NORMAL_ERROR, this, e, "Sleep failed.");
 				}
 				break;
 			default:
