@@ -561,6 +561,7 @@ public abstract class Controller
 	
 	public void fatalExit()
 	{
+		log.error("Fatal exit");
 		JOptionPane.showMessageDialog(null, "PartyDJ wird jetzt beendet.\nEinstellungen werden nicht gespeichert.", "Schwerwiegender PartyDJ Fehler", JOptionPane.ERROR_MESSAGE);
 		Runtime.getRuntime().removeShutdownHook(closeListenThread); /* CloseListener werden nicht informiert. */
 		System.exit(1);
@@ -607,6 +608,7 @@ public abstract class Controller
 				}
 			}
 		}
+		log.info("End");
 		System.exit(0);
 	}
 
