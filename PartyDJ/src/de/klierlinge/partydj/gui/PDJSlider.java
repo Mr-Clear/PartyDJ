@@ -274,16 +274,16 @@ public class PDJSlider extends JPanel
 	{
 		this.duration = duration;
 		slider.setMaximum(duration);
-		middle.setText(klierlinge.utils.Functions.formatTime(duration));
-		end.setText("-" + klierlinge.utils.Functions.formatTime(duration - position));		
+		middle.setText(de.klierlinge.utils.Functions.formatTime(duration));
+		end.setText("-" + de.klierlinge.utils.Functions.formatTime(duration - position));		
 	}
 	
 	public void setPosition(final double position)
 	{
 		this.position = position;
 		slider.setValue(position);
-		start.setText(klierlinge.utils.Functions.formatTime(position));
-		end.setText("-" + klierlinge.utils.Functions.formatTime(duration - position));
+		start.setText(de.klierlinge.utils.Functions.formatTime(position));
+		end.setText("-" + de.klierlinge.utils.Functions.formatTime(duration - position));
 	}
 	
 	/**Der eigendliche Fortschrittsbalken

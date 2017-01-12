@@ -26,7 +26,7 @@ import de.klierlinge.partydj.gui.settings.SettingNode;
 import de.klierlinge.partydj.lists.EditableListModel;
 import de.klierlinge.partydj.lists.data.ListProvider;
 import de.klierlinge.partydj.players.IPlayer;
-import klierlinge.utils.Functions;
+import de.klierlinge.utils.Functions;
 
 /**
  * Bietet Zugriff auf alle anderen wichtigen Elemente des PartyDJ.

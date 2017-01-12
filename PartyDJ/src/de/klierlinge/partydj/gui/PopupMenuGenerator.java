@@ -239,7 +239,7 @@ class ListMenuItemListener implements ActionListener
 			final JFileChooser fileChooser = new JFileChooser("Datei öffnen:");
 			fileChooser.setDialogType(JFileChooser.OPEN_DIALOG); 
 			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			fileChooser.setCurrentDirectory(new File(de.klierlinge.partydj.basics.Controller.getInstance().getData().readSetting("PlayListDirectory", klierlinge.utils.Functions.getFolder())));
+			fileChooser.setCurrentDirectory(new File(de.klierlinge.partydj.basics.Controller.getInstance().getData().readSetting("PlayListDirectory", de.klierlinge.utils.Functions.getFolder())));
 			
 			final int result = fileChooser.showOpenDialog(null);
 	        if (result == JFileChooser.CANCEL_OPTION)
@@ -334,7 +334,7 @@ class ListMenuItemListener implements ActionListener
 				defaultFormatFilter = formatFilter;
 		}
 		
-		chooser.setCurrentDirectory(new File(Controller.getInstance().getData().readSetting("SavePlaylistDefaultDir", klierlinge.utils.Functions.getFolder())));
+		chooser.setCurrentDirectory(new File(Controller.getInstance().getData().readSetting("SavePlaylistDefaultDir", de.klierlinge.utils.Functions.getFolder())));
 		chooser.setFileFilter(defaultFormatFilter);		
 		
 		final int rVal = chooser.showSaveDialog(null);
@@ -377,7 +377,7 @@ class FileMenuListener implements MenuListener
 		if(menu.getSubElements()[0].getSubElements().length > 1)	//Dateien nur einmal einlesen 
 			return;
 		
-		final String path = de.klierlinge.partydj.basics.Controller.getInstance().getData().readSetting("PlayListDirectory", klierlinge.utils.Functions.getFolder());
+		final String path = de.klierlinge.partydj.basics.Controller.getInstance().getData().readSetting("PlayListDirectory", de.klierlinge.utils.Functions.getFolder());
 		final File folder = new File(path);
 		
 		if(!folder.isDirectory())

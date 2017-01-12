@@ -19,7 +19,7 @@ import de.klierlinge.partydj.pjr.beans.PdjCommand;
 import de.klierlinge.partydj.pjr.beans.PdjCommand.Command;
 import de.klierlinge.partydj.pjr.client.Client;
 import de.klierlinge.partydj.pjr.client.ClientConnection;
-import klierlinge.utils.Functions;
+import de.klierlinge.utils.Functions;
 
 public class App implements Client
 {

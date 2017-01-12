@@ -81,7 +81,7 @@ public class SetupWindow extends javax.swing.JFrame
 					final JFileChooser chooser = new JFileChooser("Datei wählen");
 					chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 			        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-					chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", klierlinge.utils.Functions.getFolder())));
+					chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", de.klierlinge.utils.Functions.getFolder())));
 			        				        
 			        if(chooser.showOpenDialog(null) == JFileChooser.CANCEL_OPTION)
 			        	return;
@@ -153,7 +153,7 @@ public class SetupWindow extends javax.swing.JFrame
 							return null;
 						}
 					});
-					chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", klierlinge.utils.Functions.getFolder())));
+					chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", de.klierlinge.utils.Functions.getFolder())));
 			        				        
 			        if(chooser.showOpenDialog(null) == JFileChooser.CANCEL_OPTION)
 			        	return;

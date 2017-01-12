@@ -250,7 +250,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 						final JFileChooser chooser = new JFileChooser("Datei wählen");
 						chooser.setDialogType(JFileChooser.OPEN_DIALOG);
 				        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-						chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", klierlinge.utils.Functions.getFolder())));
+						chooser.setCurrentDirectory(new File(data.readSetting("FileDirectory", de.klierlinge.utils.Functions.getFolder())));
 				        				        
 				        if(chooser.showOpenDialog(null) == JFileChooser.CANCEL_OPTION)
 				        	return;
@@ -437,7 +437,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 			final String[] titles = new String[]{"Hauptliste", "Angezeiget Liste", "Gewählte Tracks"};
 			for(int i = 0; i < 3; i++)
 			{
-				sb.append(titles[i] + ": " + count[i] + ", " + klierlinge.utils.Functions.formatTime(duration[i]) + ", " + klierlinge.utils.Functions.formatSize(size[i]));
+				sb.append(titles[i] + ": " + count[i] + ", " + de.klierlinge.utils.Functions.formatTime(duration[i]) + ", " + de.klierlinge.utils.Functions.formatSize(size[i]));
 				if(i < 2)
 					sb.append("    ");
 			}

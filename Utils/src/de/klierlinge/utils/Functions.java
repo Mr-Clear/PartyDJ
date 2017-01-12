@@ -1,4 +1,4 @@
-package klierlinge.utils;
+package de.klierlinge.utils;
 
 import de.klierlinge.annotations.NonNullByDefault;
 

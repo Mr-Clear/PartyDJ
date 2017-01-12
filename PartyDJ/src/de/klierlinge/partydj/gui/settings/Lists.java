@@ -1,6 +1,6 @@
 package de.klierlinge.partydj.gui.settings;
 
-import static klierlinge.utils.Functions.formatTime;
+import static de.klierlinge.utils.Functions.formatTime;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.AbstractListModel;

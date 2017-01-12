@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
-import klierlinge.utils.Functions;
+import de.klierlinge.utils.Functions;
 
 public class Mp3TagTableModel extends AbstractTableModel
 {

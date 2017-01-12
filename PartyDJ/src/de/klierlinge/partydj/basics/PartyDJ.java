@@ -17,7 +17,7 @@ import de.klierlinge.partydj.lists.data.ListProvider;
 import de.klierlinge.partydj.pjr.server.Server;
 import de.klierlinge.partydj.players.IPlayer;
 import de.klierlinge.partydj.players.PlayerException;
-import klierlinge.utils.Functions;
+import de.klierlinge.utils.Functions;
 
 /**
  * Hauptklasse vom PartyDJ.
