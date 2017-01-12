@@ -1,7 +1,6 @@
 package de.klierlinge.partydj.common;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,7 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import de.klierlinge.partydj.basics.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.lists.TrackListModel;
 
 /**Bietet Funktionen zum Schreiben von Playlists an.
@@ -19,7 +19,8 @@ import de.klierlinge.partydj.lists.TrackListModel;
  * @author Eraser
  */
 public final class PlaylistWriter
-{	
+{
+	private final static Logger log = LoggerFactory.getLogger(PlaylistWriter.class);
 	private PlaylistWriter(){}
 	
 	/**Schreibt eine Playlist in eine Datei.
@@ -146,13 +147,10 @@ public final class PlaylistWriter
 				write(tracks, fos, new File(fileName).getParentFile(), format);
 			}
 		}
-		catch (final FileNotFoundException e)
-		{
-			Controller.getInstance().logError(Controller.NORMAL_ERROR, null, e, "Kann Playlist-Datei nicht erstellen.");
-		}
 		catch (final IOException e)
 		{
-			Controller.getInstance().logError(Controller.NORMAL_ERROR, null, e, "Fehler bei schreiben in Playlist-Datei.");
+			log.error("Fehler bei schreiben in Playlist-Datei.", e);
+			// TODO: Notify user.
 		}		
 	}
 	

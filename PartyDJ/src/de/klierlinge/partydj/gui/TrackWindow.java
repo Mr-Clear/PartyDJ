@@ -10,12 +10,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 
 public class TrackWindow extends JFrame
 {
 	private static final long serialVersionUID = 5955216047024593003L;
+	private static final Logger log = LoggerFactory.getLogger(TrackWindow.class);
+			
 	protected final static Controller controller = Controller.getInstance();
 
 	protected Mp3TagTableModel tableModel;
@@ -51,19 +55,14 @@ public class TrackWindow extends JFrame
 							initGUI();}
 							catch (final Exception e)
 							{
-								e.printStackTrace();
-								controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Laden des Fensters.");
+								log.error("Fehler bei Laden des Fensters.", e);
 							}
 					}
 				});
 			}
-			catch (final InterruptedException e)
+			catch (final InterruptedException | InvocationTargetException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Laden des Fensters.");
-			}
-			catch (final InvocationTargetException e)
-			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Laden des Fensters.");
+				log.error("Fehler bei Laden des Fensters.", e);
 			}
 		}
 	}

@@ -1,9 +1,12 @@
 package de.klierlinge.partydj.basics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.players.IPlayer;
 
 public class Scripter
 {
+	private static final Logger log = LoggerFactory.getLogger(Scripter.class);
 	protected final Controller controller = Controller.getInstance();
 	
 	public Scripter()
@@ -15,7 +18,7 @@ public class Scripter
 		final IPlayer player = controller.getPlayer();
 		if(player == null)
 		{
-			controller.logError(Controller.NORMAL_ERROR, this, null, "Player noch nicht geladen.");
+			log.error("Player noch nicht geladen.");
 			return;
 		}
 			
@@ -34,7 +37,7 @@ public class Scripter
 		else if(command.equalsIgnoreCase("PlayPrevious"))
 			player.playPrevious();
 		else
-			controller.logError(Controller.UNIMPORTANT_ERROR, this, null, "Unbekannter Befehl: " + command);
+			log.error("Unbekannter Befehl: " + command);
 	}
 	
 	public static String[] getAvailableCommands()

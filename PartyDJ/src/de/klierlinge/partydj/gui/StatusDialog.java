@@ -20,7 +20,8 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import de.klierlinge.partydj.basics.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Führt eine Aufgabe vom Typ StatusSupportedFunction aus,
@@ -33,6 +34,7 @@ import de.klierlinge.partydj.basics.Controller;
 public final class StatusDialog extends javax.swing.JDialog implements UncaughtExceptionHandler
 {
 	private static final long serialVersionUID = -7585629827078152783L;
+	private static final Logger log = LoggerFactory.getLogger(StatusDialog.class);
 	private JLabel icon;
 	private JLabel progress;
 	private JButton cancelButton;
@@ -304,7 +306,7 @@ public final class StatusDialog extends javax.swing.JDialog implements UncaughtE
 	@Override
 	public void uncaughtException(final Thread t, final Throwable e)
 	{
-		Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, null);
+		log.error("Uncaught exception.", e);
 		dispose();
 	}
 }

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import javax.swing.Timer;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
@@ -24,6 +26,7 @@ import de.klierlinge.partydj.lists.ListException;
  */
 public class DbMasterListModel extends BasicListModel
 {
+	private static final Logger log = LoggerFactory.getLogger(DbMasterListModel.class);
     protected SortOrder sortOrder = SortOrder.NAME;
     protected final IData data = Controller.getInstance().getData();
 
@@ -62,7 +65,7 @@ public class DbMasterListModel extends BasicListModel
                 }
                 catch(final Exception e)
                 {
-                    controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                	log.error("Failed to notify ListDataListener: " + listener, e);
                 }
             }
         }
@@ -185,7 +188,7 @@ public class DbMasterListModel extends BasicListModel
                     }
                     catch(final Exception e)
                     {
-                        controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                    	log.error("Failed to notify ListDataListener: " + listener, e);
                     }
                 }
             }
@@ -209,7 +212,7 @@ public class DbMasterListModel extends BasicListModel
                     }
                     catch(final Exception e)
                     {
-                        controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                    	log.error("Failed to notify ListDataListener: " + listener, e);
                     }
                 }
             }
@@ -232,7 +235,7 @@ public class DbMasterListModel extends BasicListModel
                     }
                     catch(final Exception e)
                     {
-                        controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                    	log.error("Failed to notify ListDataListener: " + listener, e);
                     }
                 }
             }

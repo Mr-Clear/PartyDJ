@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.CloseListener;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.basics.PlayerContact;
@@ -32,6 +34,7 @@ import javazoom.jl.decoder.JavaLayerException;
 
 public class JLPlayer implements IPlayer, PlaybackListener
 {
+	private static final Logger log = LoggerFactory.getLogger(JLPlayer.class);
 	private int volume;
 
 	PlayerContact contact;
@@ -43,8 +46,6 @@ public class JLPlayer implements IPlayer, PlaybackListener
 	private double tempPosition;
 
 	AdvancedPlayer p;
-
-	final private Controller controller = Controller.getInstance();
 
 	public JLPlayer(final PlayerContact playerContact)
 	{
@@ -333,7 +334,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 				}
 				catch (final Exception e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + playStateListener);
+					log.error("Failed to notify PlayStateListener: " + listener, e);
 				}
 			}
 		}
@@ -438,7 +439,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 					}
 					catch (final Exception e)
 					{
-						controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + playStateListener);
+						log.error("Failed to notify PlayStateListener: " + listener, e);
 					}
 				}
 			}
@@ -489,7 +490,7 @@ public class JLPlayer implements IPlayer, PlaybackListener
 					}
 					catch (final Exception e)
 					{
-						controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + playStateListener);
+						log.error("Failed to notify PlayStateListener: " + listener, e);
 					}
 				}
 			}

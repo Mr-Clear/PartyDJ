@@ -17,6 +17,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.PlaylistWriter;
 import de.klierlinge.partydj.common.Sort;
@@ -178,6 +180,7 @@ public final class PopupMenuGenerator
 
 class ListMenuItemListener implements ActionListener
 {
+	private static final Logger log = LoggerFactory.getLogger(ListMenuItemListener.class);
 	private final PDJList list;
 	private final Track track;
 	
@@ -224,7 +227,7 @@ class ListMenuItemListener implements ActionListener
 		}
 		
 		else if("Paste".equals(command))
-			new DragDropHandler().importData(list, Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null));
+			DragDropHandler.importData(list, Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null));
 		
 			
 			
@@ -265,7 +268,7 @@ class ListMenuItemListener implements ActionListener
 			}
 			catch(final ListException e1)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e1, "Fehler bei Zugriff auf Datenbank.");
+				log.error("Fehler bei Zugriff auf Datenbank.", e1);
 			}
 		}
 		
@@ -279,7 +282,7 @@ class ListMenuItemListener implements ActionListener
 			}
 			catch(final ListException e1)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e1, "Sortieren fehlgeschlagen");
+				log.error("Sortieren fehlgeschlagen.", e1);
 			}
 		}
 		

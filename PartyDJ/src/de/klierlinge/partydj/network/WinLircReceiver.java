@@ -3,10 +3,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.basics.Plugin;
 import de.klierlinge.partydj.data.IData;
@@ -20,6 +21,7 @@ import de.klierlinge.partydj.gui.settings.SettingNode;
  */
 public class WinLircReceiver implements Plugin
 {
+	private static final Logger log = LoggerFactory.getLogger(WinLircListener.class);
 	protected static WinLircReceiver instance;
 	protected WinLircReceiverThread thread;
 	protected BufferedReader reader;
@@ -39,7 +41,7 @@ public class WinLircReceiver implements Plugin
 		if(instance == null)
 			instance = this;
 		else
-			CONTROLLER.logError(Controller.NORMAL_ERROR, this, null, "Es wurde eine weitere Instanz von WinLircReceiver erstellt.");
+			log.error("Es wurde eine weitere Instanz von WinLircReceiver erstellt.");
 	}
 	
 	@Override
@@ -95,7 +97,7 @@ public class WinLircReceiver implements Plugin
 						}
 						catch (final IOException e)
 						{
-							CONTROLLER.logError(Controller.REGULAR_ERROR, this, e, "Socket.getInputStream() konnte nicht geschlossen werden.");
+							log.error("Socket.getInputStream() konnte nicht geschlossen werden.", e);
 						}
 					}
 				}.start();
@@ -202,13 +204,9 @@ public class WinLircReceiver implements Plugin
 					r = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					reader = r;
 				}
-				catch (final UnknownHostException e)
-				{
-					CONTROLLER.logError(Controller.REGULAR_ERROR, this, e, "Kann nicht zu WinLIRC verbinden.");
-				}
 				catch (final IOException e)
 				{
-					CONTROLLER.logError(Controller.REGULAR_ERROR, this, e, "Kann nicht zu WinLIRC verbinden.");
+					log.error("Kann nicht zu WinLIRC verbinden.", e);
 				}
 				
 				if(r != null)
@@ -246,7 +244,7 @@ public class WinLircReceiver implements Plugin
 				catch (final IOException e)
 				{
 					if(isRunning())
-						CONTROLLER.logError(Controller.REGULAR_ERROR, this, e, "Fehler in Verbindung zu WinLIRC.");
+						log.error("Fehler in Verbindung zu WinLIRC.", e);
 					break;
 				}
 				if(in == null)

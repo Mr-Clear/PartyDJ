@@ -7,6 +7,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.ListAdapter;
@@ -24,6 +26,7 @@ import de.klierlinge.partydj.lists.ListException;
  */
 public class SearchListModel extends BasicListModel
 {
+	private static final Logger log = LoggerFactory.getLogger(SearchListModel.class);
 	private String actualSearchString = "";
 	private SortOrder actualSortOrder;
 	private String actualDbList;
@@ -38,7 +41,7 @@ public class SearchListModel extends BasicListModel
 			}
 			catch(final ListException e1)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, SearchListModel.this, e1, "Update der Suchliste fehlgeschlagen.");
+				log.error("Update der Suchliste fehlgeschlagen.", e1);
 			}
 		}
 	});
@@ -167,7 +170,7 @@ public class SearchListModel extends BasicListModel
     		}
     		catch (final ListException e)
     		{
-    			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Suchen fehlgeschlagen.");
+    			log.error("Suchen fehlgeschlagen.", e);
     		}
     	}
     	@Override

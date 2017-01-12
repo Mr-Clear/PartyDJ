@@ -17,6 +17,8 @@ import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
@@ -34,6 +36,8 @@ import de.klierlinge.partydj.lists.ListException;
 public class SetupWindow extends javax.swing.JFrame
 {
 	private static final long serialVersionUID = 8084307658077082675L;
+	private static final Logger log = LoggerFactory.getLogger(SetupWindow.class);
+			
 	private JLabel jLabel1;
 	private JToggleButton addFile;
 	private JToggleButton addFolder;
@@ -101,7 +105,7 @@ public class SetupWindow extends javax.swing.JFrame
 						}
 						catch(final ListException e1)
 						{
-							controller.logError(Controller.NORMAL_ERROR, this, e1, "Track konnte nicht eingefügt werden.");
+							log.error("Track konnte nicht eingefügt werden.", e1);
 						}
 				    }
 				}
@@ -247,7 +251,7 @@ public class SetupWindow extends javax.swing.JFrame
 							}
 							catch(final ListException e1)
 							{
-								controller.logError(Controller.NORMAL_ERROR, this, e1, "Track konnte nicht eingefügt werden.");
+								log.error("Track konnte nicht eingefügt werden.", e1);
 							}
 					    }
 					}
@@ -272,7 +276,7 @@ public class SetupWindow extends javax.swing.JFrame
 			}
 			catch(final ListException e1)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e1, "Tracks eingefügt, aber Update der Hauptliste fehlgeschlagen.");
+				log.error("Tracks eingefügt, aber Update der Hauptliste fehlgeschlagen.", e1);
 			}
 		}
 		catch (final IOException e)
@@ -360,7 +364,7 @@ public class SetupWindow extends javax.swing.JFrame
 				}
 				catch(final ListException e)
 				{
-					controller.logError(Controller.UNIMPORTANT_ERROR, this, e, "Update der Darstellung nach Hinzufügen von Tracks fehlgeschlagen.");
+					log.warn("Update der Darstellung nach Hinzufügen von Tracks fehlgeschlagen.", e);
 				}
 			}
 			catch (final ListException e)

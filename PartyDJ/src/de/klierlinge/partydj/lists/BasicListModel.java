@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.players.PlayStateListener;
@@ -21,6 +23,7 @@ import de.klierlinge.partydj.players.PlayStateListener;
  */
 public class BasicListModel implements TrackListModel, PlayStateListener
 {
+	private static final Logger log = LoggerFactory.getLogger(BasicListModel.class);
 	protected Controller controller;
 	protected final Set<ListDataListener> dataListener = new HashSet<>();
 	protected List<Track> list;
@@ -84,7 +87,7 @@ public class BasicListModel implements TrackListModel, PlayStateListener
 						}
 						catch (final Exception e)
 						{
-							controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin: " + dataListener);
+							log.error("Failed to notify ListDataListener: " + dataListener, e);
 						}
 					}
 				}

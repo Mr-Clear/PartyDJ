@@ -4,6 +4,8 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.util.List;
 import javax.swing.JOptionPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
@@ -21,6 +23,7 @@ import de.klierlinge.partydj.lists.data.DbMasterListModel;
  */
 public class AddMP3s implements StatusSupportedFunction
 {
+	private static final Logger log = LoggerFactory.getLogger(AddMP3s.class);
 	protected final DropTargetDropEvent  dtde;
 	protected int j;
 	protected List<?> mp3s;
@@ -103,7 +106,7 @@ public class AddMP3s implements StatusSupportedFunction
 		}
 		catch(final ListException e)
 		{
-			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e, "Track konnte nicht eingefügt werden.");
+			log.error("Track konnte nicht eingefügt werden.", e);
 		}
 		if(sd != null && mp3s.get(0) instanceof File)
 			JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
@@ -25,6 +27,7 @@ import de.klierlinge.partydj.lists.ListException;
  */
 public class LightClientListModel extends BasicListModel implements EditableListModel
 {
+	private static final Logger log = LoggerFactory.getLogger(LightClientListModel.class);
     protected static final IData data = Controller.getInstance().getData();
     protected String name;
 
@@ -121,7 +124,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
             }
             catch(final Exception e)
             {
-                controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+            	log.error("Failed to notify ListDataListener: " + listener, e);
             }
         }
     }
@@ -145,7 +148,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
             }
             catch(final Exception e)
             {
-                controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+            	log.error("Failed to notify ListDataListener: " + listener, e);
             }
         }
     }
@@ -198,7 +201,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
             }
             catch(final Exception e)
             {
-                controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+            	log.error("Failed to notify ListDataListener: " + listener, e);
             }
         }
 
@@ -230,7 +233,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
                                 }
                                 catch(final Exception e)
                                 {
-                                    controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                                	log.error("Failed to notify ListDataListener: " + listener, e);
                                 }
                             }
                         }
@@ -269,7 +272,7 @@ public class LightClientListModel extends BasicListModel implements EditableList
                                             }
                                             catch(final Exception e)
                                             {
-                                                controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                                            	log.error("Failed to notify ListDataListener: " + listener, e);
                                             }
                                         }
                                     }

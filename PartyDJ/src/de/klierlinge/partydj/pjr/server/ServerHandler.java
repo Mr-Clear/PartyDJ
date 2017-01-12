@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track.Problem;
 import de.klierlinge.partydj.data.IData;
@@ -30,6 +32,7 @@ import de.klierlinge.partydj.system.LinuxSleep;
 
 public class ServerHandler implements InputHandler, SettingListener
 {
+	private static final Logger log = LoggerFactory.getLogger(ServerHandler.class);
 	private final Server server;
 	private final Socket socket;
 	private final JsonDecoder jsonDecoder;
@@ -57,7 +60,7 @@ public class ServerHandler implements InputHandler, SettingListener
 				}
 				catch (IOException e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, this, e);
+					log.error("Failed to send live data.", e);
 				}
 			}
 		}, 0, 1000);
@@ -126,11 +129,11 @@ public class ServerHandler implements InputHandler, SettingListener
 				}
 				catch (IOException | InterruptedException e)
 				{
-					controller.logError(Controller.NORMAL_ERROR, this, e, "Sleep failed.");
+					log.error("Send computer so S3 sleep failed.", e);
 				}
 				break;
 			default:
-				controller.logError(Controller.NORMAL_ERROR, this, null, "Unknown command: " + ((PdjCommand)message).commmand);
+				log.error("Unknown command: " + ((PdjCommand)message).commmand);
 				break;
         	}
             break;
@@ -142,12 +145,8 @@ public class ServerHandler implements InputHandler, SettingListener
             break;
         case InitialData:
 		case LiveData:
-            /* Only for client. */
-			controller.logError(Controller.INERESTING_INFO, this, null, "Should not be received by Server: " + message);
-            break;
         case Track:
-            /* No stand alone. */
-        	controller.logError(Controller.INERESTING_INFO, this, null, "Should not be received by client: " + message);
+        	log.warn("Message should not be received by client: " + message);
             break;
 		default:
 			break;
@@ -177,7 +176,7 @@ public class ServerHandler implements InputHandler, SettingListener
         }
         catch(final IOException e)
         {
-        	controller.logError(Controller.NORMAL_ERROR, e);
+        	log.error("Failed to send changed setting.", e);
         }
     }
     
@@ -219,13 +218,9 @@ public class ServerHandler implements InputHandler, SettingListener
                     final InitialData initialData = new InitialData(settings, tracks, lists);
                     jsonEncoder.write(initialData);
                 }
-                catch(final ListException e)
+                catch(final ListException | IOException e)
                 {
-                	controller.logError(Controller.NORMAL_ERROR, ServerHandler.this, e);
-                }
-                catch(final IOException e)
-                {
-                	controller.logError(Controller.NORMAL_ERROR, e);
+                	log.error("Failed to establish connection.", e);
                 }
             }
         });

@@ -4,7 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.sound.sampled.FloatControl;
-import de.klierlinge.partydj.basics.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.common.Track.Problem;
 import de.klierlinge.partydj.players.PlayStateAdapter;
 import de.klierlinge.partydj.players.PlayStateListener;
@@ -25,6 +26,8 @@ import javazoom.jl.decoder.SampleBuffer;
  */
 public class AdvancedPlayer
 {
+	private static final Logger log = LoggerFactory.getLogger(AdvancedPlayer.class);
+	
 	private FileInputStream fis;
 	private final Bitstream bitStream;
 	private final Decoder decoder;
@@ -338,7 +341,7 @@ public class AdvancedPlayer
 				}
 				catch (final JavaLayerException e)
 				{
-					Controller.getInstance().logError(Controller.REGULAR_ERROR, AdvancedPlayer.this, e, "Fehler bei 'ftd = decodeFrame();'");
+					log.error("Fehler bei 'ftd = decodeFrame();'", e);
 				}
 
 				position += FRAME_DURATION;

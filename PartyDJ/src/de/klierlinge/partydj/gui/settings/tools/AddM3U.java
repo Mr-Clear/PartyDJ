@@ -1,6 +1,8 @@
 package de.klierlinge.partydj.gui.settings.tools;
 
 import javax.swing.JOptionPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Reporter;
 import de.klierlinge.partydj.common.Track;
@@ -22,6 +24,7 @@ import de.klierlinge.partydj.lists.ListException;
  */
 public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 {
+	private static final Logger log = LoggerFactory.getLogger(AddM3U.class);
 	private final String filePath;
 	private boolean stopped = false;
 	protected EditableListModel listModel;
@@ -51,7 +54,7 @@ public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 		}
 		catch(final ListException e)
 		{
-			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Datei eingelesen aber Update der Hauptliste fehlgeschlagen.");
+			log.error("Datei eingelesen aber Update der Hauptliste fehlgeschlagen.", e);
 		}
 		JOptionPane.showMessageDialog(sd, count + " Tracks eingefügt.", "Datei einfügen", JOptionPane.INFORMATION_MESSAGE);
 	}
@@ -72,7 +75,7 @@ public class AddM3U implements StatusSupportedFunction, Reporter<Track>
 		catch(final ListException e)
 		{
 			stopTask();
-			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Track einfügen fehlgeschlagen.");
+			log.error("Track einfügen fehlgeschlagen.", e);
 		}
 
 		return (count);

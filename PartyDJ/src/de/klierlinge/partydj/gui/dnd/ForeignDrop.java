@@ -14,6 +14,8 @@ import java.util.List;
 import javax.swing.DropMode;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.gui.PDJList;
@@ -33,6 +35,7 @@ import de.klierlinge.partydj.lists.data.DbMasterListModel;
  */
 public class ForeignDrop extends DropTargetAdapter
 {
+	private static final Logger log = LoggerFactory.getLogger(ForeignDrop.class);
 	@Override
 	public synchronized void drop(final DropTargetDropEvent e) 
 	{
@@ -101,11 +104,11 @@ public class ForeignDrop extends DropTargetAdapter
 				} 
 				catch (final UnsupportedFlavorException e1)
 				{
-					Controller.getInstance().logError(Controller.REGULAR_ERROR, this, e1, "Unbekannter Datentyp per DnD eingefügt.");
+					log.warn("Unbekannter Datentyp per DnD eingefügt.", e1);
 				}
 				catch (final IOException e1)
 				{
-					Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e1, "Datenzugriff bei DnD fehlgeschlagen.");
+					log.warn("Datenzugriff bei DnD fehlgeschlagen.", e);
 				}
 		    }
 	    	else if(flav.equals(new DataFlavor(Track.class, "Track flavor")))
@@ -122,11 +125,11 @@ public class ForeignDrop extends DropTargetAdapter
 				}
 				catch (final UnsupportedFlavorException e1)
 				{
-					Controller.getInstance().logError(Controller.REGULAR_ERROR, this, e1, "Unbekannter Datentyp per DnD eingefügt.");
+					log.warn("Unbekannter Datentyp per DnD eingefügt.", e1);
 				}
 				catch (final IOException e1)
 				{
-					Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e1, "Datenzugriff bei DnD fehlgeschlagen.");
+					log.warn("Datenzugriff bei DnD fehlgeschlagen.", e);
 				}
 
 				if(tracks == null)
@@ -151,7 +154,7 @@ public class ForeignDrop extends DropTargetAdapter
 						e.dropComplete(false);
 						break;
 					case MOVE:
-						Controller.getInstance().logError(Controller.UNIMPORTANT_ERROR, this, null, "MOVE not supported.");
+						log.warn("ListDropMode.MOVE not supported.");
 						e.dropComplete(false);
 						break;
 					case DELETE:

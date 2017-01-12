@@ -24,6 +24,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import de.klierlinge.partydj.basics.Controller;
@@ -48,6 +50,7 @@ import de.klierlinge.partydj.lists.data.SearchListModel;
 public class MainList extends JPanel 
 {
 	private static final long serialVersionUID = 6101715371957303072L;
+	private static final Logger log = LoggerFactory.getLogger(MainList.class);
 	private PDJList list;
 	private final transient Controller controller = Controller.getInstance();
 	private final IData data = controller.getData();
@@ -113,7 +116,7 @@ public class MainList extends JPanel
 					}
 					catch(final ListException e)
 					{
-						controller.logError(Controller.NORMAL_ERROR, this, e, "Track einfügen fehlgeschlagen.");
+						log.error("Track einfügen fehlgeschlagen.", e);
 					}
 			    }
 			}
@@ -177,7 +180,7 @@ public class MainList extends JPanel
 		}
 		catch (final ListException e1)
 		{
-			controller.logError(Controller.IMPORTANT_ERROR, this, e1, "Fehler bei Zugriff auf Datenbank.");
+			log.error("Fehler bei Zugriff auf Datenbank.", e1);
 		}
 		
 		searchText.addActionListener(listener);
@@ -332,7 +335,7 @@ public class MainList extends JPanel
 		}
 		catch (final ListException e1)
 		{
-			controller.logError(Controller.IMPORTANT_ERROR, this, e1, "Fehler bei Zugriff auf Datenbank.");
+			log.error("Fehler bei Zugriff auf Datenbank.", e1);
 		}
 	}
 	
@@ -394,13 +397,9 @@ public class MainList extends JPanel
 						}
 					});
 				}
-				catch(final InterruptedException e)
+				catch(final InterruptedException | InvocationTargetException e)
 				{
-					controller.logError(Controller.UNIMPORTANT_ERROR, this, e, "Update der Gesamt-Dauer fehlgeschlagen.");
-				}
-				catch(final InvocationTargetException e)
-				{
-					controller.logError(Controller.UNIMPORTANT_ERROR, this, e, "Update der Gesamt-Dauer fehlgeschlagen.");
+					log.error("Update der Gesamt-Dauer fehlgeschlagen.", e);
 				}
 			}
 			else

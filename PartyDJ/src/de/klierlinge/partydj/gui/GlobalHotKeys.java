@@ -1,6 +1,8 @@
 package de.klierlinge.partydj.gui;
 
 import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.melloware.jintellitype.HotkeyListener;
 import com.melloware.jintellitype.IntellitypeListener;
 import com.melloware.jintellitype.JIntellitypeConstants;
@@ -11,6 +13,8 @@ import de.klierlinge.partydj.players.IPlayer;
 
 public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 {
+	private static final Logger log = LoggerFactory.getLogger(GlobalHotKeys.class);
+	
 	private static final GlobalHotKeys INSTANCE = new GlobalHotKeys();
 	private static HashMap<Integer, String> actionKeys = new HashMap<>();
 	private boolean stopped;
@@ -91,7 +95,7 @@ public class GlobalHotKeys implements IntellitypeListener, HotkeyListener
 				}
 				catch (final ListException e)
 				{
-					Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei kopieren des Tracks in die Playlist.");
+					log.error("Fehler bei kopieren des Tracks in die Playlist.", e);
 				}
 			}
 		}

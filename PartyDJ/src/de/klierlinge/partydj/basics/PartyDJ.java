@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.data.IData;
 import de.klierlinge.partydj.data.OpenDbException;
 import de.klierlinge.partydj.data.SettingException;
@@ -25,6 +27,7 @@ import klierlinge.utils.Functions;
  */
 public class PartyDJ extends Controller
 {
+	private static Logger log = LoggerFactory.getLogger(PartyDJ.class);
 	/** Verbindung zur Datenbank. */
 	protected IData data;
 	/** Verwendeter Player. */
@@ -109,7 +112,7 @@ public class PartyDJ extends Controller
 			}
 			catch(final Throwable t)
 			{
-				logError(IMPORTANT_ERROR, this, t, "Plugin laden fehlgeschlagen.");
+				log.error("Plugin laden fehlgeschlagen.", t);
 			}
 		}
 		
@@ -121,7 +124,7 @@ public class PartyDJ extends Controller
 		}
 		catch(final Throwable t)
 		{
-			logError(REGULAR_ERROR, this, t, "Fehler beim Laden von Intellitype!");
+			log.error("Fehler beim Laden von Intellitype!", t);
 		}
 		
 		getData().writeSetting("LastLoadTime", Long.toString(splash.getElapsedTime()));
@@ -161,7 +164,7 @@ public class PartyDJ extends Controller
 	}
 
 	/** Lädt SystemLookAndFeel. */
-	private void loadLookAndFeel(final SplashWindow splash)
+	private static void loadLookAndFeel(final SplashWindow splash)
 	{
 		splash.setInfo("Lade Look And Feel");
 		
@@ -170,21 +173,9 @@ public class PartyDJ extends Controller
 		{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
-		catch (final ClassNotFoundException e)
+		catch (final ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e)
 		{
-			logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
-		}
-		catch (final InstantiationException e)
-		{
-			logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
-		}
-		catch (final IllegalAccessException e)
-		{
-			logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
-		}
-		catch (final UnsupportedLookAndFeelException e)
-		{
-			logError(UNIMPORTANT_ERROR, this, e, "Fehler bei Laden von Look And Feel");
+			log.error("Fehler bei Laden von Look And Feel.", e);
 		}
 	}
 	
@@ -200,7 +191,8 @@ public class PartyDJ extends Controller
 		}
 		catch (final OpenDbException e)
 		{
-			logError(FATAL_ERROR, this, e, "Keine Verbindung zur Datenbank möglich");
+			log.error("Keine Verbindung zur Datenbank möglich!", e);
+			Controller.getInstance().fatalExit();
 		}
 	}
 	
@@ -245,7 +237,8 @@ public class PartyDJ extends Controller
 		}
 		catch (final ListException e)
 		{
-			logError(FATAL_ERROR, this, e, "Listen konnten nicht geladen werden!");
+			log.error("Listen konnten nicht geladen werden!", e);
+			Controller.getInstance().fatalExit();
 		}
 	}
 	
@@ -264,7 +257,10 @@ public class PartyDJ extends Controller
 					loaded++;
 			
 			if(loaded == 0)
-				logError(FATAL_ERROR, this, null, "Konnte kein Fenster laden. PartyDJ wird beendet.");
+			{
+				log.error("Konnte kein Fenster laden.");
+				Controller.getInstance().fatalExit();
+			}
 		}
 	}
 	
@@ -276,7 +272,10 @@ public class PartyDJ extends Controller
 		{
 			firstTrackPath = data.readSetting("Playing");
 		}
-		catch (final SettingException e){logError(UNIMPORTANT_ERROR, this, e, "data.readSetting(\"Playing\")");}
+		catch (final SettingException e)
+		{
+			log.warn("data.readSetting(\"Playing\")", e);
+		}
 		if(firstTrackPath != null)
 		{
 			DbTrack firstTrack = null;
@@ -286,7 +285,7 @@ public class PartyDJ extends Controller
 			}
 			catch(final ListException e1)
 			{
-				logError(NORMAL_ERROR, this, e1, "Erster Track konnte nicht ermittelt werden.");
+				log.error("Erster Track konnte nicht gefunden werden.", e1);
 			}
 			if(firstTrack != null)
 			{
@@ -311,7 +310,10 @@ public class PartyDJ extends Controller
 					if(autoPlay)
 						player.fadeIn();
 				}
-				catch (final PlayerException e){logError(UNIMPORTANT_ERROR, this, e, "player.load(firstTrack);");}
+				catch (final PlayerException e)
+				{
+					log.error("Failed to start track.", e);
+				}
 			}
 		}
 	}

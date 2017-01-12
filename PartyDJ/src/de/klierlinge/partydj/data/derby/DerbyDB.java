@@ -15,8 +15,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.CloseListener;
-import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
 import de.klierlinge.partydj.data.ListListener;
@@ -35,6 +36,8 @@ import de.klierlinge.partydj.lists.data.DbTrack;
  */
 public class DerbyDB implements IData, CloseListener
 {
+	private final static Logger log = LoggerFactory.getLogger(DerbyDB.class);
+	
     Connection conn = null;
     /** Index eines Tracks -> Track. */
     final Map<Integer, DbTrack> tracksByIndex = new TreeMap<>();
@@ -47,7 +50,6 @@ public class DerbyDB implements IData, CloseListener
     final Set<SettingListener> settingListener = new HashSet<>();
     final Set<ListListener> listListener = new HashSet<>();
     final String dbPath;
-    final private Controller controller = Controller.getInstance();
 
     protected final String version = "0.4";
 
@@ -572,9 +574,9 @@ public class DerbyDB implements IData, CloseListener
                         {
                             ps.close();
                         }
-                        catch(final SQLException e1)
+                        catch(final SQLException e)
                         {
-                            Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e1, "Konnte SQL-Statement nicht schließen.");
+                        	log.warn("Konnte SQL-Statement nicht schließen.", e);
                         }
                 }
             }
@@ -735,7 +737,7 @@ public class DerbyDB implements IData, CloseListener
                 }
                 catch(final Exception e)
                 {
-                    controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                	log.error("Failed to notify ListListener.", e);
                 }
             }
         }
@@ -801,7 +803,7 @@ public class DerbyDB implements IData, CloseListener
                 }
                 catch(final Exception e)
                 {
-                    controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                	log.error("Failed to notify ListListener.", e);
                 }
             }
         }
@@ -851,7 +853,7 @@ public class DerbyDB implements IData, CloseListener
                 }
                 catch(final Exception e)
                 {
-                    controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                	log.error("Failed to notify ListListener.", e);
                 }
             }
         }
@@ -894,7 +896,7 @@ public class DerbyDB implements IData, CloseListener
                 }
                 catch(final Exception e)
                 {
-                    controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                	log.error("Failed to notify ListListener.", e);
                 }
             }
         }
@@ -915,7 +917,7 @@ public class DerbyDB implements IData, CloseListener
                 }
                 catch(final Exception e)
                 {
-                    controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                	log.error("Failed to notify ListListener.", e);
                 }
             }
         }
@@ -933,7 +935,7 @@ public class DerbyDB implements IData, CloseListener
                 }
                 catch(final Exception e)
                 {
-                    controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                	log.error("Failed to notify ListListener.", e);
                 }
             }
         }
@@ -990,7 +992,7 @@ public class DerbyDB implements IData, CloseListener
                         }
                         catch(final Exception e)
                         {
-                            controller.logError(Controller.NORMAL_ERROR, listener, e, "Fehler in Plugin");
+                        	log.error("Failed to notify ListListener.", e);
                         }
                     }
                 }

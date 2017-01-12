@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import de.klierlinge.partydj.basics.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.data.SettingException;
 
 /**
@@ -16,6 +17,7 @@ import de.klierlinge.partydj.data.SettingException;
  */
 public final class UpdateDB
 {
+	private final static Logger log = LoggerFactory.getLogger(UpdateDB.class);
 	private UpdateDB(){}
 	
 	private static String version;
@@ -40,7 +42,7 @@ public final class UpdateDB
 		}
 		catch (final Exception e)
 		{
-			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, null, e, "Fehler bei Update von Version " + oldVersion + " auf Version " + newVersion);
+			log.error("Fehler bei Update von Version " + oldVersion + " auf Version " + newVersion, e);
 			return false;
 		}
 	}

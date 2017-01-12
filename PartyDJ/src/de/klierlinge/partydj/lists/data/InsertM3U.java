@@ -1,5 +1,7 @@
 package de.klierlinge.partydj.lists.data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Reporter;
 import de.klierlinge.partydj.common.Track;
@@ -20,6 +22,7 @@ import de.klierlinge.partydj.lists.ListException;
  */
 public class InsertM3U implements StatusSupportedFunction, Reporter<Track>
 {
+	private static final Logger log = LoggerFactory.getLogger(InsertM3U.class);
 	private final String path;
 	private final EditableListModel list;
 	private boolean stopped = false;
@@ -42,7 +45,7 @@ public class InsertM3U implements StatusSupportedFunction, Reporter<Track>
 		}
 		catch(final ListException e)
 		{
-			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Datei eingelesen, aber Update der Liste fehlgeschlagen.");
+			log.error("Datei eingelesen, aber Update der Liste fehlgeschlagen.", e);
 		}
 	}
 	

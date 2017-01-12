@@ -3,6 +3,8 @@ package de.klierlinge.partydj.basics;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.common.Track.Problem;
 import de.klierlinge.partydj.data.IData;
@@ -16,7 +18,8 @@ import de.klierlinge.partydj.players.PlayerException;
 
 public class PlayerListener implements PlayerContact, PlayStateListener
 {
-	Controller controller = Controller.getInstance();
+	private static final Logger log = LoggerFactory.getLogger(PlayerListener.class);
+	private final Controller controller = Controller.getInstance();
 	private final IData data = controller.getData();
 	
 	@Override
@@ -61,7 +64,7 @@ public class PlayerListener implements PlayerContact, PlayStateListener
 		}
 		catch (final ListException e)
 		{
-			controller.logError(Controller.NORMAL_ERROR, this, e, "predictNextTrack fehlgeschlagen");
+			log.error("predictNextTrack fehlgeschlagen", e);
 		}
 		return predictedTrack;
 	}
@@ -115,7 +118,7 @@ public class PlayerListener implements PlayerContact, PlayStateListener
 					}
 					catch (final ListException e)
 					{
-						controller.logError(Controller.NORMAL_ERROR, this, e, "requestNextTrack fehlgeschlagen");
+						log.error("requestNextTrack fehlgeschlagen", e);
 					}
 				}
 			}
@@ -164,7 +167,7 @@ public class PlayerListener implements PlayerContact, PlayStateListener
 	public void reportProblem(final PlayerException e, final Track track)
 	{
 		track.setProblem(e.getProblem());
-		controller.logError(Controller.REGULAR_ERROR, this, e, "Fehler beim Abspielen von " + track.toString());
+		log.error("Fehler beim Abspielen von " + track.toString(), e);
 		controller.getPlayer().playNext();
 	}
 

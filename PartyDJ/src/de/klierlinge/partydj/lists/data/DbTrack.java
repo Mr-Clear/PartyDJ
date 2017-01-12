@@ -1,7 +1,8 @@
 package de.klierlinge.partydj.lists.data;
 
 import java.io.File;
-import de.klierlinge.partydj.basics.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
 import de.klierlinge.partydj.lists.ListException;
@@ -15,6 +16,7 @@ import de.klierlinge.partydj.lists.ListException;
 public abstract class DbTrack extends Track
 {
 	private static final long serialVersionUID = -4142764593365608567L;
+	private static final Logger log = LoggerFactory.getLogger(DbTrack.class);
 	protected final transient IData data;
 	
 	/** Index in der Hauptliste */
@@ -62,7 +64,7 @@ public abstract class DbTrack extends Track
 			}
 			catch (final ListException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				log.error("Änderung von Daten in der Datenbank fehlgeschlagen.", e);
 				this.duration = d;
 			}
 		}
@@ -82,7 +84,7 @@ public abstract class DbTrack extends Track
 			}
 			catch (final ListException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				log.error("Änderung von Daten in der Datenbank fehlgeschlagen.", e);
 				this.name = d;
 			}
 		}
@@ -103,7 +105,7 @@ public abstract class DbTrack extends Track
 			}
 			catch (final ListException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				log.error("Änderung von Daten in der Datenbank fehlgeschlagen.", e);
 				this.file = d;
 			}
 		}
@@ -123,7 +125,7 @@ public abstract class DbTrack extends Track
 			}
 			catch (final ListException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				log.error("Änderung von Daten in der Datenbank fehlgeschlagen.", e);
 				this.size = d;
 			}
 		}
@@ -143,7 +145,7 @@ public abstract class DbTrack extends Track
 			}
 			catch (final ListException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				log.error("Änderung von Daten in der Datenbank fehlgeschlagen.", e);
 				this.problem = d;
 			}
 		}
@@ -163,7 +165,7 @@ public abstract class DbTrack extends Track
 			}
 			catch (final ListException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Änderung von Daten in der Datenbank fehlgeschlagen.");
+				log.error("Änderung von Daten in der Datenbank fehlgeschlagen.", e);
 				this.info = d;
 			}
 		}

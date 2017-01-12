@@ -43,6 +43,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
@@ -68,6 +70,7 @@ import de.klierlinge.partydj.players.PlayStateListener;
 
 public class ClassicWindow extends JFrame
 {	
+	private final static Logger log = LoggerFactory.getLogger(ClassicWindow.class);
 	protected static final long serialVersionUID = 5672123337960808686L;
 	protected final transient Controller controller = Controller.getInstance();
 	protected final IPlayer player = controller.getPlayer();
@@ -98,13 +101,9 @@ public class ClassicWindow extends JFrame
 					}
 				});
 			}
-			catch (final InterruptedException e)
+			catch (final InterruptedException | InvocationTargetException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Laden von ClassicWindow.");
-			}
-			catch (final InvocationTargetException e)
-			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Laden von ClassicWindow.");
+				log.error("Fehler bei Laden von ClassicWindow.", e);
 			}
 	}
 
@@ -222,23 +221,10 @@ public class ClassicWindow extends JFrame
 		{
 			mainPart.add(list("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
 		}
-		catch (final ListException e1)
+		catch (final ListException e)
 		{
-			controller.logError(Controller.NORMAL_ERROR, this, e1, "Fehler bei Zeichnen von ClassicWindow.");
+			log.error("Fehler bei Zeichnen von ClassicWindow.", e);
 		}
-		
-//		PDJListTabs listTabs = new PDJListTabs(TrackListAppearance.getGreenAppearance(22));
-//		try
-//		{
-//			listTabs.newTab("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE);
-//			listTabs.newTab("Zeug", listProvider.getDbList("Zeug"), ListDropMode.COPY_OR_MOVE);
-//		}
-//		catch (ListException e1)
-//		{
-//			JOptionPane.showMessageDialog(this, "Konnte Liste nicht erstellen!", "PartyDJ", JOptionPane.ERROR_MESSAGE);
-//			e1.printStackTrace();
-//		}
-//		mainPart.add(listTabs, c);
 		
 		c.gridx = 1;
 		c.gridy = 0;
@@ -655,9 +641,9 @@ public class ClassicWindow extends JFrame
 			{
 				main.add(list("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
 			}
-			catch (final ListException e1)
+			catch (final ListException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e1, "Fehler beim Entfernen einer Liste vom ClassicWindow.");
+				log.error("Fehler beim Entfernen einer Liste vom ClassicWindow.", e);
 			}
 		}
 		
@@ -703,9 +689,9 @@ public class ClassicWindow extends JFrame
 		{
 			main.add(list("Playlist", listProvider.getDbList("Playlist"), ListDropMode.COPY_OR_MOVE), c);
 		}
-		catch (final ListException e1)
+		catch (final ListException e)
 		{
-			controller.logError(Controller.NORMAL_ERROR, this, e1, "Fehler bei Zeichnen von ClassicWindow.");
+			log.error("Fehler bei Zeichnen von ClassicWindow.", e);
 		}
 		
 		c.gridx = 1;
@@ -871,32 +857,32 @@ public class ClassicWindow extends JFrame
 					});
 		            popup.add(wish);
 	            }
-		            
-	            final MenuItem playPause = new MenuItem();
-	            if(player.getPlayState())
-	            	playPause.setLabel("Pause");
-	            else
-	            	playPause.setLabel("Play");
-	            
-	            playPause.addActionListener(new ActionListener()
-	            {
-					@Override public void actionPerformed(final ActionEvent e)
-					{
-						if(player.getPlayState())
-							player.pause();
-						else if(player.getCurrentTrack() != null)
-							player.play();
-						else
-							player.playNext();
-					}
-				});
-	            popup.add(playPause);
-	            popup.addSeparator();
 	        }
 	        catch(final ListException e)
 	        {
-	        	controller.logError(Controller.NORMAL_ERROR, this, e, null);
+	        	log.error("Failed to add determine if current track is in playlist.", e);
 	        }
+		            
+            final MenuItem playPause = new MenuItem();
+            if(player.getPlayState())
+            	playPause.setLabel("Pause");
+            else
+            	playPause.setLabel("Play");
+            
+            playPause.addActionListener(new ActionListener()
+            {
+				@Override public void actionPerformed(final ActionEvent e)
+				{
+					if(player.getPlayState())
+						player.pause();
+					else if(player.getCurrentTrack() != null)
+						player.play();
+					else
+						player.playNext();
+				}
+			});
+            popup.add(playPause);
+            popup.addSeparator();
 	        
 	        final MenuItem maximize = new MenuItem("PartyDJ maximieren");
 	        maximize.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
@@ -939,7 +925,7 @@ public class ClassicWindow extends JFrame
 			}
 			catch (final AWTException e1)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e1, "Erstellen con Tray-Icon fehlgeschlagen.");
+				log.error("Erstellen con Tray-Icon fehlgeschlagen.", e1);
 			}
 		}
 		@Override

@@ -20,6 +20,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
@@ -32,6 +34,7 @@ import de.klierlinge.partydj.lists.data.DbTrack;
 
 public class Lists extends JSplitPane implements Closeable
 {
+	private static final Logger log = LoggerFactory.getLogger(Lists.class);
 	private static final long serialVersionUID = 1L;
 	private static final Controller controller = Controller.getInstance();
 	private static final IData data = controller.getData();
@@ -149,7 +152,7 @@ public class Lists extends JSplitPane implements Closeable
 					}
 					catch (final ListException ex)
 					{
-						controller.logError(Controller.UNIMPORTANT_ERROR, Lists.this, ex);
+						log.warn("Find list failed: " + listLists.getSelectedValue(), ex);
 						newList = null;
 					}
 				
@@ -182,7 +185,7 @@ public class Lists extends JSplitPane implements Closeable
 					}
 					catch (final ListException ex)
 					{
-						controller.logError(Controller.NORMAL_ERROR, Lists.this, ex, "Liste einfügen fehlgeschlagen.");
+						log.error("Liste einfügen fehlgeschlagen.", ex);
 						return;
 					}
 					
@@ -193,7 +196,7 @@ public class Lists extends JSplitPane implements Closeable
 					}
 					catch (final ListException ex)
 					{
-						controller.logError(Controller.NORMAL_ERROR, Lists.this, ex, "Liste einfügen fehlgeschlagen.");
+						log.error("Liste einfügen fehlgeschlagen.", ex);
 					}
 				}
 			}
@@ -212,7 +215,7 @@ public class Lists extends JSplitPane implements Closeable
 					}
 					catch (final ListException ex)
 					{
-						controller.logError(Controller.NORMAL_ERROR, Lists.this, ex, "Liste löschen fehlgeschlagen.");
+						log.error("Liste löschen fehlgeschlagen.", ex);
 					}
 			}
 		});
@@ -236,7 +239,7 @@ public class Lists extends JSplitPane implements Closeable
 					}
 					catch (final ListException ex)
 					{
-						controller.logError(Controller.NORMAL_ERROR, Lists.this, ex, "Liste umbenennen fehlgeschlagen.");
+						log.error("Liste umbenennen fehlgeschlagen.", ex);
 						return;
 					}
 
@@ -247,7 +250,7 @@ public class Lists extends JSplitPane implements Closeable
 					}
 					catch (final ListException ex)
 					{
-						controller.logError(Controller.NORMAL_ERROR, Lists.this, ex, "Liste umbenennen fehlgeschlagen.");
+						log.error("Liste umbenennen fehlgeschlagen.", ex);
 					}
 				}
 			}
@@ -267,7 +270,7 @@ public class Lists extends JSplitPane implements Closeable
 					}
 					catch (final ListException ex)
 					{
-						controller.logError(Controller.UNIMPORTANT_ERROR, Lists.this, ex);
+						log.warn("setListPriority fehlgeschlagen.", ex);
 					}
 			}
 		});
@@ -331,7 +334,7 @@ public class Lists extends JSplitPane implements Closeable
 		}
 		catch (final ListException e)
 		{
-			controller.logError(Controller.UNIMPORTANT_ERROR, Lists.this, e);
+			log.warn("getListPriority fehlgeschlagen.", e);
 		}
 	}
 
@@ -355,7 +358,7 @@ public class Lists extends JSplitPane implements Closeable
 			}
 			catch (final ListException e)
 			{
-				controller.logError(Controller.UNIMPORTANT_ERROR, Lists.this, e);
+				log.warn("getLists fehlgeschlagen.", e);
 				return 1;
 			}
 		}
@@ -372,7 +375,7 @@ public class Lists extends JSplitPane implements Closeable
 			}
 			catch (final ListException e)
 			{
-				controller.logError(Controller.UNIMPORTANT_ERROR, Lists.this, e);
+				log.warn("getLists fehlgeschlagen.", e);
 				return null;
 			}
 		}

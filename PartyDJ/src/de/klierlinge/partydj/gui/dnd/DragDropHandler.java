@@ -9,6 +9,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.ListModel;
 import javax.swing.TransferHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.gui.PDJList;
@@ -22,7 +24,8 @@ import de.klierlinge.partydj.lists.ListException;
 public class DragDropHandler extends TransferHandler
 {
 	private static final long serialVersionUID = 6601023550058648978L;
-	
+	private static final Logger log = LoggerFactory.getLogger(DragDropHandler.class);
+
 	@Override
 	public boolean canImport(final TransferHandler.TransferSupport info)
 	{
@@ -32,11 +35,11 @@ public class DragDropHandler extends TransferHandler
         return true;
 	}
 	
-	public synchronized boolean importData(final PDJList list, final Transferable transferable)
+	public synchronized static boolean importData(final PDJList list, final Transferable transferable)
 	{
 		if (!transferable.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 		{
-			Controller.getInstance().logError(Controller.INERESTING_INFO, this, null, "Drop mit unsupported flavor.");
+			log.warn("Drop mit unsupported flavor.");
 			return false;
 		}
 		
@@ -48,14 +51,9 @@ public class DragDropHandler extends TransferHandler
 		{
 			data = (Object[])transferable.getTransferData(new DataFlavor(Track.class, "Track flavor"));
 		}
-		catch (final UnsupportedFlavorException e)
+		catch (final UnsupportedFlavorException | IOException e)
 		{
-			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e, "Drop mit unsupported flavor.");
-			return false;
-		}
-		catch (final IOException e)
-		{
-			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Drop.");
+			log.warn("Drop mit unsupported flavor.", e);
 			return false;
 		}
 		
@@ -73,7 +71,7 @@ public class DragDropHandler extends TransferHandler
 			}
 			catch (final ListException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Zugriff auf Liste bei DnD fehlgeschlagen.");
+				log.error("Zugriff auf Liste bei DnD fehlgeschlagen.", e);
 			}
 			break;
 		case MOVE:
@@ -91,7 +89,7 @@ public class DragDropHandler extends TransferHandler
 			}
 			catch (final ListException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Zugriff auf Liste bei DnD fehlgeschlagen.");
+				log.error("Zugriff auf Liste bei DnD fehlgeschlagen.", e);
 			}
 			break;
 		}
@@ -105,7 +103,7 @@ public class DragDropHandler extends TransferHandler
 		
 		if (!info.isDataFlavorSupported(new DataFlavor(Track.class, "Track flavor")))
 		{
-			Controller.getInstance().logError(Controller.INERESTING_INFO, this, null, "Drop mit unsupported flavor.");
+			log.warn("Drop mit unsupported flavor.");
 			return false;
 		}
 	
@@ -120,12 +118,12 @@ public class DragDropHandler extends TransferHandler
 			}
 			catch (final UnsupportedFlavorException e)
 			{
-				Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e, "Drop mit unsupported flavor.");
+				log.warn("Drop mit unsupported flavor.", e);
 				return false;
 			}
 			catch (final IOException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Drop.");
+				log.warn("Fehler bei Drop.", e);
 				return false;
 			}
 			
@@ -166,17 +164,17 @@ public class DragDropHandler extends TransferHandler
 						}
 						catch (final ListException e1)
 						{
-							Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e1, "Zugriff auf Liste bei DnD fehlgeschlagen.");
+							log.error("Zugriff auf Liste bei DnD fehlgeschlagen.", e1);
 						}
 				}
 			}
 			catch (final UnsupportedFlavorException e)
 			{
-				Controller.getInstance().logError(Controller.REGULAR_ERROR, this, e, "Unbekannter Datentyp per DnD eingefügt.");
+				log.error("Unbekannter Datentyp per DnD eingefügt.", e);
 			}
 			catch (final IOException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Datenzugriff bei DnD fehlgeschlagen.");
+				log.error("Datenzugriff bei DnD fehlgeschlagen.", e);
 			}
 		}
 		return true;

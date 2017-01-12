@@ -17,6 +17,8 @@ import java.util.concurrent.Executors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
 import de.klierlinge.partydj.gui.ErrorLogWindow;
@@ -34,6 +36,8 @@ import klierlinge.utils.Functions;
  */
 public abstract class Controller
 {
+	private static final Logger log = LoggerFactory.getLogger(Controller.class);
+	
 	/** Version des PartyDJ */
 	private final static String version = "3.0";
 
@@ -84,7 +88,7 @@ public abstract class Controller
 			instance = this;
 		else
 		{
-			logError(IMPORTANT_ERROR, this, null, "Es darf nur ein Controller erstellt werden!");
+			log.error("Es darf nur ein Controller erstellt werden!");
 			throw new RuntimeException("Es darf nur ein Controller erstellt werden!");
 		}
 
@@ -204,7 +208,7 @@ public abstract class Controller
 				}
 				catch (final Exception e)
 				{
-					logError(IMPORTANT_ERROR, this, e, "Fenster kann nicht geladen werden: " + className);
+					log.error("Fenster kann nicht geladen werden: " + className, e);
 					result = false;
 				}
 			}
@@ -226,7 +230,7 @@ public abstract class Controller
 			}
 			catch (final Exception e)
 			{
-				logError(IMPORTANT_ERROR, this, e, "Fenster kann nicht geladen werden: " + windowClassName);
+				log.error("Fenster kann nicht geladen werden: " + windowClassName, e);
 				return false;
 			}
 
@@ -391,7 +395,7 @@ public abstract class Controller
 	 * @param exception Wenn vorhanden, eine Exception die mit der Meldung verbunden ist.
 	 * @param message Zusätzliche Nachricht zur Meldung.
 	 */
-	public void logError(final int priority, final Object sender, final Throwable exception, final String message)
+	public void $logError(final int priority, final Object sender, final Throwable exception, final String message)
 	{
 		final int minimumLogMessage = UNIMPORTANT_INFO;
 		final int minimumLogSender = INERESTING_INFO;
@@ -540,9 +544,9 @@ public abstract class Controller
 	 * @param sender Objekt das die Meldung schickt. Üblicherweise this.
 	 * @param exception Wenn vorhanden, eine Exception die mit der Meldung verbunden ist.
 	 */
-	public void logError(final int priority, final Object sender, final Throwable exception)
+	public void $logError(final int priority, final Object sender, final Throwable exception)
 	{
-		logError(priority, sender, exception, null);
+		$logError(priority, sender, exception, null);
 	}
 	/**Verarbeitet eine Fehlermeldung.
 	 * <p>Abhängig von der Priorität werden unterschiedliche Aktionen ausgeführt.
@@ -550,9 +554,16 @@ public abstract class Controller
 	 * @param priority Priorität der Meldung.
 	 * @param exception Wenn vorhanden, eine Exception die mit der Meldung verbunden ist.
 	 */
-	public void logError(final int priority, final Throwable exception)
+	public void $logError(final int priority, final Throwable exception)
 	{
-		logError(priority, null, exception, null);
+		$logError(priority, null, exception, null);
+	}
+	
+	public void fatalExit()
+	{
+		JOptionPane.showMessageDialog(null, "PartyDJ wird jetzt beendet.\nEinstellungen werden nicht gespeichert.", "Schwerwiegender PartyDJ Fehler", JOptionPane.ERROR_MESSAGE);
+		Runtime.getRuntime().removeShutdownHook(closeListenThread); /* CloseListener werden nicht informiert. */
+		System.exit(1);
 	}
 	
 	/** Öffnet das Fenster zum Anzeigen von Fehlern. */
@@ -578,7 +589,7 @@ public abstract class Controller
 			}
 			catch (final Exception e)
 			{
-				logError(Controller.UNIMPORTANT_ERROR, this, e, "Fehler bei Schließen von Tray Icon");
+				log.warn("Fehler bei Schließen von Tray Icon", e);
 			}
 		}
 
@@ -592,7 +603,7 @@ public abstract class Controller
 				}
 				catch (final Exception e)
 				{
-					logError(Controller.UNIMPORTANT_ERROR, listener, e, "Fehler bei Schließen von Plugin: " + closeListener);
+					log.warn("Fehler bei Schließen von Plugin: " + closeListener, e);
 				}
 			}
 		}

@@ -15,6 +15,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.TreePath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 
 /**
@@ -34,6 +36,8 @@ import de.klierlinge.partydj.basics.Controller;
 public class SettingWindow extends JFrame
 {
 	private static final long serialVersionUID = -6606890610202063266L;
+	private static final Logger log = LoggerFactory.getLogger(SettingWindow.class);
+	
 	private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 	private final JTree tree = new JTree(Controller.getInstance().getSetingTree());
 	private final SettingContainer panel = new SettingContainer();
@@ -133,20 +137,16 @@ public class SettingWindow extends JFrame
 									}
 									catch (final Exception e2)
 									{
-										Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e1, "Kann Einstellung nicht öffnen.");
+										log.error("Kann Einstellung nicht öffnen.", e);
 									}
 								}				
 							}
 						}
 					});
 				}
-				catch (final InterruptedException e1)
+				catch (final InterruptedException | InvocationTargetException e1)
 				{
-					Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e1, "Kann Einstellung nicht öffnen.");
-				}
-				catch (final InvocationTargetException e1)
-				{
-					Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e1, "Kann Einstellung nicht öffnen.");
+					log.error("Kann Einstellung nicht öffnen.", e);
 				}
 		}		
 	}

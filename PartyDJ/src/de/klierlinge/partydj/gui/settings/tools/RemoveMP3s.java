@@ -2,6 +2,8 @@ package de.klierlinge.partydj.gui.settings.tools;
 
 import java.util.List;
 import javax.swing.JOptionPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
@@ -15,6 +17,7 @@ import de.klierlinge.partydj.lists.data.DbTrack;
 
 public class RemoveMP3s implements StatusSupportedFunction
 {
+	private static final Logger log = LoggerFactory.getLogger(RemoveMP3s.class);
 	protected final PDJList list;
 	protected int count;
 	protected volatile boolean goOn = true;
@@ -51,7 +54,7 @@ public class RemoveMP3s implements StatusSupportedFunction
 			}
 			catch (final ListException e)
 			{
-				Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, null);
+				log.error("Remove MP3 failed.", e);
 			}
 		}
 		else if(list.getListModel() instanceof DbMasterListModel)
@@ -76,7 +79,7 @@ public class RemoveMP3s implements StatusSupportedFunction
 				}
 				catch (final ListException e)
 				{
-					Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, null);
+					log.error("Delete MP3 failed.", e);
 				}
 			}
 			

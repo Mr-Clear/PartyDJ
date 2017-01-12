@@ -3,7 +3,8 @@ package de.klierlinge.partydj.pjr.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import de.klierlinge.partydj.basics.Controller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.pjr.client.ClientConnection;
 
 /**
@@ -11,6 +12,7 @@ import de.klierlinge.partydj.pjr.client.ClientConnection;
  */
 public class Listener extends Thread
 {
+	private static final Logger log = LoggerFactory.getLogger(Listener.class);
 	private volatile boolean running = true;
 	private final Server server;
 
@@ -47,7 +49,7 @@ public class Listener extends Thread
 				}
 				catch (final IOException e)
 				{
-					Controller.getInstance().logError(Controller.INERESTING_INFO, e);
+					log.warn("Failed to accept connection.", e);
 				}
 			}
 			synchronized (serverSocketMonitor)
@@ -57,7 +59,7 @@ public class Listener extends Thread
 		}
 		catch (final IOException e)
 		{
-			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, e);
+			log.error("Failed to listen for incomming connections.", e);
 		}
 	}
 

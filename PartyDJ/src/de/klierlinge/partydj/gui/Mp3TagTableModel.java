@@ -19,12 +19,15 @@ import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.TagField;
 import org.jaudiotagger.tag.id3.AbstractID3v2Tag;
 import org.jaudiotagger.tag.id3.ID3v1Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import klierlinge.utils.Functions;
 
 public class Mp3TagTableModel extends AbstractTableModel
 {
+	private static final Logger log = LoggerFactory.getLogger(Mp3TagTableModel.class);
 	private static final long serialVersionUID = -4327249399249652427L;
 
 	protected final static Controller controller = Controller.getInstance();
@@ -147,25 +150,25 @@ public class Mp3TagTableModel extends AbstractTableModel
 		catch(final IOException e)
 		{
 			addData("Kann Datei nicht öffnen.", null);
-			controller.logError(Controller.NORMAL_ERROR, this, e, "Kann Datei nicht öffnen.");
+			log.error("Kann Datei nicht öffnen.", e);
 			return;
 		}
 		catch(final TagException e)
 		{
 			addData("Kein Tag gefunden.", null);
-			controller.logError(Controller.NORMAL_ERROR, this, e, "Kein Tag gefunden.");
+			log.error("Kein Tag gefunden.", e);
 			return;
 		}
 		catch(final ReadOnlyFileException e)
 		{
-			addData("Unerwarteter Fehler.", null);
-			controller.logError(Controller.NORMAL_ERROR, this, e, "Datei kann nicht zum Schreiben geöffnet werden.");
+			addData("Datei kann nicht zum Schreiben geöffnet werden.", null);
+			log.error("Datei kann nicht zum Schreiben geöffnet werden.", e);
 			return;
 		}
 		catch(final InvalidAudioFrameException e)
 		{
 			addData("Ungültiger Frame in Datei.", null);
-			controller.logError(Controller.NORMAL_ERROR, this, e, "Ungültiger Frame in Datei.");
+			log.error("Ungültiger Frame in Datei.", e);
 			return;
 		}
 

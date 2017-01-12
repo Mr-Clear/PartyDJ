@@ -25,6 +25,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
@@ -44,6 +46,8 @@ import de.klierlinge.partydj.lists.data.SearchListModel;
 public class TrackManager extends javax.swing.JPanel implements Closeable
 {
 	private static final long serialVersionUID = 5801679410698498741L;
+	private static final Logger log = LoggerFactory.getLogger(TrackManager.class);
+	
 	private PDJScrollList scrollList;
 	private JButton btnImportFile;
 	private JPanel jPanel1;
@@ -93,7 +97,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 			}
 			catch (final ListException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Konnte keine Suchliste erstellen.");
+				log.error("Konnte keine Suchliste erstellen.", e);
 			}
 			scrollList = new PDJScrollList(lm);
 		}
@@ -125,7 +129,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 			catch (final ListException e)
 			{
 				listBoxContent = new ArrayList<>();
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Suchen der Listen fehlgeschlagen.");
+				log.error("Suchen der Listen fehlgeschlagen.", e);
 			}
 			listBoxContent.add(0, "Hauptliste");
 			final String[] listBoxArray = new String[listBoxContent.size()];
@@ -270,7 +274,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 							}
 							catch(final ListException e)
 							{
-								controller.logError(Controller.NORMAL_ERROR, this, e, "Track einfügen fehlgeschlagen.");
+								log.error("Track einfügen fehlgeschlagen.", e);
 							}
 					    }
 					}
@@ -368,7 +372,7 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 			}
 			catch (final ListException e1)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e1, "Fehler beim durchsuchen.");
+				log.error("Fehler beim durchsuchen.", e1);
 			}
 			statusListener.refresh(false);
 		}
@@ -414,13 +418,9 @@ public class TrackManager extends javax.swing.JPanel implements Closeable
 							}
 						});
 					}
-					catch(final InterruptedException e)
+					catch(final InterruptedException | InvocationTargetException e)
 					{
-						controller.logError(Controller.UNIMPORTANT_ERROR, this, e, "GUI-Update fehlgeschlagen.");
-					}
-					catch(final InvocationTargetException e)
-					{
-						controller.logError(Controller.UNIMPORTANT_ERROR, this, e, "GUI-Update fehlgeschlagen.");
+						log.warn("GUI-Update fehlgeschlagen.", e);
 					}
 				}
 			}

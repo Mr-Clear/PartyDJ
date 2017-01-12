@@ -22,6 +22,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import de.klierlinge.partydj.basics.Controller;
@@ -32,6 +34,7 @@ import de.klierlinge.partydj.lists.ListException;
 
 public class Shuffle extends JPanel implements Closeable
 {
+	private static final Logger log = LoggerFactory.getLogger(Shuffle.class);
 	private static final long serialVersionUID = 2304624209647591659L;
 	final static IData data = Controller.getInstance().getData();
 	PriorityListener prListener;
@@ -105,7 +108,7 @@ public class Shuffle extends JPanel implements Closeable
 		}
 		catch (final ListException e)
 		{
-			Controller.getInstance().logError(Controller.IMPORTANT_ERROR, this, e, "Fehler bei Zugriff auf Datenbank.");
+			log.error("Fehler bei Zugriff auf Datenbank.", e);
 		}
 		
 		return new JScrollPane();
@@ -134,7 +137,7 @@ public class Shuffle extends JPanel implements Closeable
 				}
 				catch (final ListException e)
 				{
-					Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Zugriff auf Datenbank.");
+					log.error("Fehler bei Zugriff auf Datenbank.", e);
 				}
 			}
 		}
@@ -254,7 +257,7 @@ public class Shuffle extends JPanel implements Closeable
 					}
 					catch (final ListException e)
 					{
-						Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Zugriff auf Datenbank.");
+						log.error("Fehler bei Zugriff auf Datenbank.", e);
 					}
 				}
 			});

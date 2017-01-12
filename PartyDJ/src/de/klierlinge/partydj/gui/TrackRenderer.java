@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.gui.TrackListAppearance.EntryState;
@@ -27,6 +29,7 @@ import de.klierlinge.partydj.lists.data.DbTrack;
 public class TrackRenderer extends DefaultListCellRenderer 
 {
 	private static final long serialVersionUID = 1791058448796268655L;
+	private static final Logger log = LoggerFactory.getLogger(TrackRenderer.class);
 
 	@Override
 	public Component getListCellRendererComponent(final JList<?> list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus)
@@ -74,13 +77,9 @@ public class TrackRenderer extends DefaultListCellRenderer
 						}
 					});
 				}
-				catch (final InterruptedException e)
+				catch (final InterruptedException | InvocationTargetException e)
 				{
-					Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Update einer Liste.");
-				}
-				catch (final InvocationTargetException e)
-				{
-					Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Update einer Liste.");
+					log.warn("Fehler bei Update einer Liste.", e);
 				}
 			}
 		}

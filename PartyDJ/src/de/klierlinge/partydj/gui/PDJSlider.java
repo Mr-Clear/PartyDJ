@@ -21,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.basics.ErrorListener;
 import de.klierlinge.partydj.common.Track;
@@ -41,6 +43,7 @@ import de.klierlinge.partydj.players.PlayStateAdapter;
 public class PDJSlider extends JPanel
 {
 	private static final long serialVersionUID = -4711501280677705114L;
+	private static final Logger log = LoggerFactory.getLogger(PDJSlider.class);
 	
 	protected JLabel titel = new JLabel("Titel");
 	protected JLabel start = new JLabel(" ");
@@ -86,13 +89,9 @@ public class PDJSlider extends JPanel
 					}
 				});
 			}
-			catch (final InterruptedException e)
+			catch (final InterruptedException | InvocationTargetException e)
 			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Erstellen vom Slider.");
-			}
-			catch (final InvocationTargetException e)
-			{
-				controller.logError(Controller.NORMAL_ERROR, this, e, "Fehler bei Erstellen vom Slider.");
+				log.error("Fehler bei Erstellen vom Slider.", e);
 			}
 		}
 		

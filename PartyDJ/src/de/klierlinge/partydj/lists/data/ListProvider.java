@@ -3,6 +3,8 @@ package de.klierlinge.partydj.lists.data;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.data.IData;
@@ -18,6 +20,7 @@ import de.klierlinge.partydj.lists.ListException;
  */
 public class ListProvider
 {
+	private static final Logger log = LoggerFactory.getLogger(ListProvider.class);
 	protected static final Controller controller = Controller.getInstance();
 	protected static final IData data = controller.getData();
 	
@@ -71,7 +74,7 @@ public class ListProvider
 	 * @param list  Liste von der die Spielwahrscheinlichkeit berechnet werden soll.
 	 * @return		Spielwahrscheinlichkeit in Prozent
 	 */
-	public double listPlayPossibility(final String list)
+	public static double listPlayPossibility(final String list)
 	{
 		try
 		{
@@ -89,7 +92,7 @@ public class ListProvider
 		}
 		catch(final ListException e)
 		{
-			controller.logError(Controller.IMPORTANT_ERROR, this, e, "Fehler bei Zugriff auf Datenbank.");
+			log.error("Fehler bei Zugriff auf Datenbank.", e);
 			return 0;
 		}
 	}

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import javax.swing.JOptionPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.common.Track;
 import de.klierlinge.partydj.gui.StatusDialog;
@@ -21,6 +23,7 @@ import de.klierlinge.partydj.lists.ListException;
  */
 public class ReadFolder implements StatusSupportedFunction
 {
+	private static final Logger log = LoggerFactory.getLogger(ReadFolder.class);
 	private final String folderPath;
 	private int count = 0;
 	private boolean goOn = true;
@@ -56,7 +59,7 @@ public class ReadFolder implements StatusSupportedFunction
 		}
 		catch(final ListException e)
 		{
-			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Tracks eingefügt, aber update der Listen fehlgeschlagen.");
+			log.error("Tracks eingefügt, aber update der Listen fehlgeschlagen.", e);
 		}
 		
 		sd.setLabel("Fertig.");
@@ -84,7 +87,7 @@ public class ReadFolder implements StatusSupportedFunction
 
 		if(files == null)
 		{
-			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, null, "Kann angegebenen Pfad nicht öffnen.");
+			log.error("Kann angegebenen Pfad nicht öffnen.");
 			return;
 		}
 		
@@ -139,7 +142,7 @@ public class ReadFolder implements StatusSupportedFunction
 		}
 		catch (final ListException e)
 		{
-			Controller.getInstance().logError(Controller.NORMAL_ERROR, this, e, "Neuer Track konnte nicht in Liste eingefügt werden.");
+			log.error("Neuer Track konnte nicht in Liste eingefügt werden.", e);
 		}
 	}
 	

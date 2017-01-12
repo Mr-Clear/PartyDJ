@@ -2,7 +2,8 @@ package de.klierlinge.partydj.common;
 
 import java.io.File;
 import java.io.Serializable;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.klierlinge.annotations.NonNull;
 import de.klierlinge.partydj.basics.Controller;
 import de.klierlinge.partydj.players.PlayerException;
@@ -16,6 +17,7 @@ import de.klierlinge.partydj.players.PlayerException;
  */
 public class Track implements Serializable, Comparable<Track>
 {
+	private final static Logger log = LoggerFactory.getLogger(Track.class);
 	private static final long serialVersionUID = -7621302519719815302L;
 	
 	protected String name;
@@ -183,7 +185,7 @@ public class Track implements Serializable, Comparable<Track>
 		catch (final Throwable e)
 		{
 			e.printStackTrace();
-			Controller.getInstance().logError(Controller.REGULAR_ERROR, this, e, "Track konnte nicht abgespielt werden.");
+			log.error("Track konnte nicht abgespielt werden.", e);
 		}
 	}
 	

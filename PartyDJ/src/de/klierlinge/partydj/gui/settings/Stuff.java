@@ -12,6 +12,8 @@ import de.klierlinge.partydj.gui.ClassicWindow;
 import de.klierlinge.partydj.gui.ListWindow;
 import de.klierlinge.partydj.lists.ListException;
 import javax.swing.SwingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Debug Hilfe. Bietet Platz für verschiedene Einstellungen.
@@ -23,6 +25,7 @@ import javax.swing.SwingUtilities;
 public class Stuff extends javax.swing.JPanel
 {
 	private static final long serialVersionUID = 5155888057108134828L;
+	private static final Logger log = LoggerFactory.getLogger(Stuff.class);
 	private JButton btnDerbyDebug;
 	private JButton btnWacken;
 	private JButton btnClassicWindow;
@@ -96,7 +99,7 @@ public class Stuff extends javax.swing.JPanel
 						}
 						catch (final ListException e)
 						{
-							controller.logError(Controller.NORMAL_ERROR, this, e, "Liste konnte nicht erstellt werden.");
+							log.error("Liste konnte nicht erstellt werden.", e);
 						}
 					}
 				});
