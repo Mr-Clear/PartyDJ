@@ -5,8 +5,6 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +15,7 @@ import java.util.concurrent.Executors;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.apache.logging.log4j.core.LogEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.common.Track;
@@ -25,8 +24,8 @@ import de.klierlinge.partydj.gui.ErrorLogWindow;
 import de.klierlinge.partydj.gui.settings.SettingNode;
 import de.klierlinge.partydj.lists.EditableListModel;
 import de.klierlinge.partydj.lists.data.ListProvider;
+import de.klierlinge.partydj.logging.LoggedMessage;
 import de.klierlinge.partydj.players.IPlayer;
-import de.klierlinge.utils.Functions;
 
 /**
  * Bietet Zugriff auf alle anderen wichtigen Elemente des PartyDJ.
@@ -84,14 +83,13 @@ public abstract class Controller
 	protected Controller(final String[] args)
 	{
 		/* Prüfen ob bereits eine Instanz läuft. */
-		if(instance == null)
-			instance = this;
-		else
+		if(instance != null)
 		{
 			log.error("Es darf nur ein Controller erstellt werden!");
 			throw new RuntimeException("Es darf nur ein Controller erstellt werden!");
 		}
 
+        instance = this;
 		scripter = new Scripter();
 		loadSettings();
 	}
@@ -107,6 +105,11 @@ public abstract class Controller
 		addSettingNode(new SettingNode("Zeug", de.klierlinge.partydj.gui.settings.Stuff.class), settingTree);
 	}
 
+	public static boolean isLoaded()
+    {
+        return instance != null;
+    }
+	
 	/**
 	 * @return Die Instanz des Controllers.
 	 */
@@ -313,14 +316,16 @@ public abstract class Controller
 	}
 
 	@Deprecated
-	public static void addSettingNode(@SuppressWarnings("unused") final SettingNode node, @SuppressWarnings("unused") final String path)
+	@SuppressWarnings("unused")
+	public static void addSettingNode(final SettingNode node, final String path)
 	{
 		//TODO SettingNodes komfortabler machen.
 		throw new UnsupportedOperationException();
 	}
 
 	@Deprecated
-	public static void removeSettingNode(@SuppressWarnings("unused") final SettingNode node)
+	@SuppressWarnings("unused")
+	public static void removeSettingNode(final SettingNode node)
 	{
 		//TODO SettingNodes komfortabler machen.
 		throw new UnsupportedOperationException();
@@ -341,227 +346,27 @@ public abstract class Controller
 	    return executor;
 	}
 
-	/**Information, die normalerweise nicht beachtet wird.
-	 * <p><code>message</code> wird in die Log-Datei geschrieben.
-	 * <p><b>Used By:</b><ul>
-	 * <li><code>Controller.reportError</code></li> */
-	public static final int UNIMPORTANT_INFO = 1;
-	/**Information, die interessant für Debugging o.ä. sein könnte.
-	 * <p><code>message</code> und <code>sender</code> werden in Log-Datei und <code>System.err</code> geschrieben.
-	 * <p><b>Used By:</b><ul>
-	 * <li><code>Controller.reportError</code></li> */
-	public static final int INERESTING_INFO = 2;
-	/**Fehler, ohne weitere Bedeutung.
-	 * <p><code>message</code>, <code>sender</code> und <code>exception</code>
-	 * werden in Log-Datei und <code>System.err</code> geschrieben.
-	 * <p><b>Used By:</b><ul>
-	 * <li><code>Controller.reportError</code></li> */
-	public static final int UNIMPORTANT_ERROR = 3;
-	/**Fehler, der gelegendlich auftreten darf.
-	 * <p><code>message</code>, <code>sender</code> und <code>exception</code> mit Stack-Trace
-	 * werden in Log-Datei und <code>System.err</code> geschrieben.
-	 * <p><b>Used By:</b><ul>
-	 * <li><code>Controller.reportError</code></li> */
-	public static final int REGULAR_ERROR = 4;
-	/**Fehler, der nicht auftreten sollte, aber den Programmablauf nicht stört.
-	 * <p><code>message</code>, <code>sender</code> und <code>exception</code> mit Stack-Trace
-	 * werden in Log-Datei und <code>System.err</code> geschrieben.
-	 * <br>Fehlermeldung mit <code>message</code> und <code>exception</code> wird ausgegeben.
-	 * <p><b>Used By:</b><ul>
-	 * <li><code>Controller.reportError</code></li> */
-	public static final int NORMAL_ERROR = 5;
-	/**Schwerwiegender Fehler, der den Programmablauf beeinträchtigt.
-	 * <p><code>message</code>, <code>sender</code> und <code>exception</code> mit Stack-Trace
-	 * werden in Log-Datei und <code>System.err</code> geschrieben.
-	 * <br>Fehlermeldung mit <code>message</code> und <code>exception</code> incl. Stack-Trace wird ausgegeben.
-	 * <p><b>Used By:</b><ul>
-	 * <li><code>Controller.reportError</code></li> */
-	public static final int IMPORTANT_ERROR = 6;
-	/**Schwerwiegender Fehler, die Stabilität der Daten gefährden kann.
-	 * <p><code>message</code>, <code>sender</code> und <code>exception</code> mit Stack-Trace
-	 * werden in Log-Datei und <code>System.err</code> geschrieben.
-	 * <br>Fehlermeldung mit <code>message</code> und <code>exception</code> incl. Stack-Trace wird ausgegeben.
-	 * <p>PartyDJ wird getötet.
-	 * <br>Nicht gespeicherte Einsellungen gehen verloren!
-	 * <p><b>Used By:</b><ul>
-	 * <li><code>Controller.reportError</code></li> */
-	public static final int FATAL_ERROR = 7;
-
-	/**Verarbeitet eine Fehlermeldung.
-	 * <p>Abhängig von der Priorität werden unterschiedliche Aktionen ausgeführt.
-	 *
-	 * @param priority Priorität der Meldung.
-	 * @param sender Objekt das die Meldung schickt. Üblicherweise this.
-	 * @param exception Wenn vorhanden, eine Exception die mit der Meldung verbunden ist.
-	 * @param message Zusätzliche Nachricht zur Meldung.
-	 */
-	public void $logError(final int priority, final Object sender, final Throwable exception, final String message)
+	public void logEvent(final LogEvent event)
 	{
-		final int minimumLogMessage = UNIMPORTANT_INFO;
-		final int minimumLogSender = INERESTING_INFO;
-		final int minimumLogException = UNIMPORTANT_ERROR;
-		final int minimumLogStackTrace = REGULAR_ERROR;
-		final int minimumPrintMessage = INERESTING_INFO;
-		final int minimumPrintSender = INERESTING_INFO;
-		final int minimumPrintException = UNIMPORTANT_ERROR;
-		final int minimumPrintStackTrace = REGULAR_ERROR;
-		final int minimumShowMessage = NORMAL_ERROR;
-		final int minimumShowException = IMPORTANT_ERROR;
-		
-		errorLogWindow.addError(new LoggedError(priority, sender, exception, message));
-		if(priority >= minimumShowMessage)
-			errorLogWindow.setVisible(true);
-
-		final java.text.SimpleDateFormat dateFormater = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-		synchronized(errorListener)
+	    synchronized(errorListener)
 		{
 			for(final ErrorListener listener : errorListener)
 			{
 				try
 				{
-					listener.errorOccurred(priority, sender, exception, message, new java.util.Date());
+					listener.errorOccurred(event);
 				}
 				catch (final Exception e)
 				{
-					// Kein Fehler beim melden eines Fehlers melden.
+				    log.warn("Failed to notify error listener.", e);
 				}
 			}
 		}
-
-		if(logStream == null)
-		{
-			try
-			{
-				final String logFileName = Functions.getFolder("log.txt");
-				logStream = new java.io.PrintWriter(new FileWriter(logFileName, true), true);
-				logStream.println("--------------");
-				logStream.println("New Session...");
-				System.out.println("Fehler werden gespeichert in " + logFileName + ".");
-			}
-			catch (final IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		final StringBuilder senderClassStringBuilder = new StringBuilder();
-		if(sender != null)
-		{
-			Class<?> c = sender.getClass();
-			while(c != null)
-			{
-				senderClassStringBuilder.append(c.getCanonicalName());
-				c = c.getSuperclass();
-				if(c == Object.class)
-					break;
-				senderClassStringBuilder.append(" <- ");
-			}
-		}
-
-		final String senderClassString = senderClassStringBuilder.toString();
-
-		if(logStream != null)
-		{
-			if(priority >= minimumLogMessage)
-			{
-				logStream.println();
-				logStream.println(dateFormater.format(new java.util.Date()));
-				if(!loadFinished)
-					logStream.println("PartyDJ noch nicht vollständig geladen.");
-				if(message != null)
-					logStream.println(message);
-			}
-			if(priority >= minimumLogSender && sender != null)
-			{
-				logStream.println(senderClassString);
-				logStream.println(sender);
-			}
-			if(priority >= minimumLogException && exception != null)
-				logStream.println(exception);
-			if(priority >= minimumLogStackTrace && exception != null)
-				exception.printStackTrace(logStream);
-			logStream.flush();
-		}
-
-		{
-			if(priority >= minimumPrintMessage)
-			{
-				System.err.println();
-				System.err.println(dateFormater.format(new java.util.Date()));
-				if(!loadFinished)
-					System.err.println("PartyDJ noch nicht vollständig geladen.");
-				if(message != null)
-					System.err.println(message);
-			}
-			if(priority >= minimumPrintSender && sender != null)
-			{
-				System.err.println(senderClassString);
-				System.err.println(sender);
-			}
-			if(priority >= minimumPrintException && exception != null)
-				System.err.println(exception);
-			if(priority >= minimumPrintStackTrace && exception != null)
-				exception.printStackTrace();
-			System.err.flush();
-		}
-
-		if(priority >= minimumShowMessage && priority < minimumShowException)
-		{
-			String toShow = "";
-			if(message != null)
-				toShow += message + "\n";
-			if(exception != null)
-				toShow += exception;
-			JOptionPane.showMessageDialog(null, toShow, "PartyDJ Fehler", JOptionPane.ERROR_MESSAGE);
-		}
-		else if(priority >= minimumShowException)
-		{
-			String toShow = "";
-			if(message != null)
-				toShow += message + "\n";
-			if(!loadFinished)
-				toShow += "PartyDJ noch nicht vollständig geladen.\n";
-			if(sender != null)
-				toShow += senderClassString + "\n" + sender + "\n";
-			if(exception != null)
-				toShow += exception;
-			JOptionPane.showMessageDialog(null, toShow, "PartyDJ Fehler", JOptionPane.ERROR_MESSAGE);
-		}
-
-		if(priority >= FATAL_ERROR)
-		{
-			JOptionPane.showMessageDialog(null, "PartyDJ wird jetzt beendet.\nEinstellungen werden nicht gespeichert.", "Schwerwiegender PartyDJ Fehler", JOptionPane.ERROR_MESSAGE);
-			// CloseListener werden nicht informiert.
-			Runtime.getRuntime().removeShutdownHook(closeListenThread);
-			System.exit(FATAL_ERROR);
-		}
-	}
-	/**Verarbeitet eine Fehlermeldung.
-	 * <p>Abhängig von der Priorität werden unterschiedliche Aktionen ausgeführt.
-	 *
-	 * @param priority Priorität der Meldung.
-	 * @param sender Objekt das die Meldung schickt. Üblicherweise this.
-	 * @param exception Wenn vorhanden, eine Exception die mit der Meldung verbunden ist.
-	 */
-	public void $logError(final int priority, final Object sender, final Throwable exception)
-	{
-		$logError(priority, sender, exception, null);
-	}
-	/**Verarbeitet eine Fehlermeldung.
-	 * <p>Abhängig von der Priorität werden unterschiedliche Aktionen ausgeführt.
-	 *
-	 * @param priority Priorität der Meldung.
-	 * @param exception Wenn vorhanden, eine Exception die mit der Meldung verbunden ist.
-	 */
-	public void $logError(final int priority, final Throwable exception)
-	{
-		$logError(priority, null, exception, null);
 	}
 	
 	public void fatalExit()
 	{
-		log.error("Fatal exit");
+		log.error("Fatal exit!");
 		JOptionPane.showMessageDialog(null, "PartyDJ wird jetzt beendet.\nEinstellungen werden nicht gespeichert.", "Schwerwiegender PartyDJ Fehler", JOptionPane.ERROR_MESSAGE);
 		Runtime.getRuntime().removeShutdownHook(closeListenThread); /* CloseListener werden nicht informiert. */
 		System.exit(1);
@@ -580,7 +385,10 @@ public abstract class Controller
 		{
 			Runtime.getRuntime().removeShutdownHook(closeListenThread);
 		}
-		catch(final java.lang.IllegalStateException e) { /* ignore */ }
+		catch(final java.lang.IllegalStateException e)
+		{
+		    log.warn("Failed to remove shutdown hook", e);
+		}
 
 		for(final TrayIcon icon : SystemTray.getSystemTray().getTrayIcons())
 		{

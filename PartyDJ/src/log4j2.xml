@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="WARN" packages="de.klierlinge.partydj.logging">
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout pattern="%d{HH:mm:ss,SSS} [%t] %-5level %logger - %msg%n%throwable" />
@@ -11,12 +11,15 @@
 				<OnStartupTriggeringPolicy />
 			</Policies>
 		</RollingFile>
+        <ParyDjLogAppender name="PartyDj">
+        </ParyDjLogAppender>
 	</Appenders>
 
 	<Loggers>
 		<Root level="ERROR">
 			<AppenderRef ref="Console" />
-			<AppenderRef ref="File" />
+            <AppenderRef ref="File" />
+            <AppenderRef ref="PartyDj" />
 		</Root>
 
 		<Logger name="de.klierlinge" level="INFO">

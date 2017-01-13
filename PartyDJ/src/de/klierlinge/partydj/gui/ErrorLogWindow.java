@@ -2,12 +2,9 @@ package de.klierlinge.partydj.gui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javax.swing.DefaultListModel;
@@ -27,21 +24,24 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
 import de.klierlinge.partydj.basics.Controller;
-import de.klierlinge.partydj.basics.LoggedError;
+import de.klierlinge.partydj.basics.ErrorListener;
+import de.klierlinge.partydj.logging.LoggedMessage;
 
-public class ErrorLogWindow extends JFrame
+public class ErrorLogWindow extends JFrame implements ErrorListener
 {
 	private static final long serialVersionUID = 1L;
 
 	private final JPanel contentPane;
-	private final JTextField txtSenderType;
+	private final JTextField txtThread;
 	private final JTextField txtException;
 	private final JTextField txtSender;
 	private final JTextField txtPriority;
 	private final JTextField txtTimestamp;
-	private final JList<LoggedError> lstErrors;
-	private final DefaultListModel<LoggedError> lstErrorsListModel;
+	private final JList<LoggedMessage> lstErrors;
+	private final DefaultListModel<LoggedMessage> lstErrorsListModel;
 	private final JTextArea txtStackTrace;
 	private final JTextField txtMessage;
 	
@@ -50,30 +50,6 @@ public class ErrorLogWindow extends JFrame
 	private final DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	private final DateFormat localeDateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM);
 	private JScrollPane scrollPaneStackTrace;
-
-	/**
-	 * Launch the application.
-	 * @param args Ignored
-	 */
-	public static void main(final String[] args)
-	{
-		EventQueue.invokeLater(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				try
-				{
-					final ErrorLogWindow frame = new ErrorLogWindow(null);
-					frame.setVisible(true);
-				}
-				catch (final Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
@@ -112,17 +88,17 @@ public class ErrorLogWindow extends JFrame
 
 		final JLabel lblMessage = new JLabel("Message:");
 
-		final JLabel lblPriority = new JLabel("Priority:");
+		final JLabel lblPriority = new JLabel("Level:");
 
 		final JLabel lblSender = new JLabel("Sender:");
 
-		final JLabel lblSenderType = new JLabel("Sender type:");
+		final JLabel lblThread = new JLabel("Thread:");
 
 		final JLabel lblException = new JLabel("Exception:");
 
-		txtSenderType = new JTextField();
-		txtSenderType.setEditable(false);
-		txtSenderType.setColumns(10);
+		txtThread = new JTextField();
+		txtThread.setEditable(false);
+		txtThread.setColumns(10);
 
 		txtException = new JTextField();
 		txtException.setEditable(false);
@@ -146,8 +122,66 @@ public class ErrorLogWindow extends JFrame
 
 		scrollPaneStackTrace = new JScrollPane();
 		final GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane.createSequentialGroup().addContainerGap().addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addComponent(scrollPaneErrors, GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE).addGroup(gl_contentPane.createSequentialGroup().addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addComponent(lblSenderType).addComponent(lblException).addComponent(lblSender).addComponent(lblPriority).addComponent(lblMessage).addComponent(lblTimestamp)).addPreferredGap(ComponentPlacement.UNRELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false).addComponent(txtMessage, Alignment.LEADING).addComponent(txtTimestamp, Alignment.LEADING).addComponent(txtException, Alignment.LEADING).addComponent(txtSender, Alignment.LEADING).addComponent(txtPriority, Alignment.LEADING).addComponent(txtSenderType, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addComponent(scrollPaneStackTrace, GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE))).addContainerGap()));
-		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING).addGroup(gl_contentPane.createSequentialGroup().addContainerGap().addComponent(scrollPaneErrors, GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane.createSequentialGroup().addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblMessage).addComponent(txtMessage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblTimestamp).addComponent(txtTimestamp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblPriority).addComponent(txtPriority, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblSender).addComponent(txtSender, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblSenderType).addComponent(txtSenderType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)).addPreferredGap(ComponentPlacement.RELATED).addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblException).addComponent(txtException, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))).addComponent(scrollPaneStackTrace, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)).addContainerGap()));
+		gl_contentPane.setHorizontalGroup(
+		    gl_contentPane.createParallelGroup(Alignment.LEADING)
+		        .addGroup(gl_contentPane.createSequentialGroup()
+		            .addContainerGap()
+		            .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+		                .addComponent(scrollPaneErrors, GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
+		                .addGroup(gl_contentPane.createSequentialGroup()
+		                    .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
+		                        .addComponent(lblThread)
+		                        .addComponent(lblSender)
+		                        .addComponent(lblPriority)
+		                        .addComponent(lblMessage)
+		                        .addComponent(lblTimestamp, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+		                        .addComponent(lblException, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		                    .addPreferredGap(ComponentPlacement.UNRELATED)
+		                    .addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
+		                        .addComponent(txtMessage, Alignment.LEADING)
+		                        .addComponent(txtTimestamp, Alignment.LEADING)
+		                        .addComponent(txtException, Alignment.LEADING)
+		                        .addComponent(txtSender, Alignment.LEADING)
+		                        .addComponent(txtPriority, Alignment.LEADING)
+		                        .addComponent(txtThread, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE))
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addComponent(scrollPaneStackTrace, GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)))
+		            .addContainerGap())
+		);
+		gl_contentPane.setVerticalGroup(
+		    gl_contentPane.createParallelGroup(Alignment.TRAILING)
+		        .addGroup(gl_contentPane.createSequentialGroup()
+		            .addContainerGap()
+		            .addComponent(scrollPaneErrors, GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
+		            .addPreferredGap(ComponentPlacement.RELATED)
+		            .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+		                .addGroup(gl_contentPane.createSequentialGroup()
+		                    .addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+		                        .addComponent(lblMessage)
+		                        .addComponent(txtMessage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+		                        .addComponent(lblTimestamp)
+		                        .addComponent(txtTimestamp, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+		                        .addComponent(lblPriority)
+		                        .addComponent(txtPriority, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+		                        .addComponent(lblSender)
+		                        .addComponent(txtSender, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+		                        .addComponent(lblThread)
+		                        .addComponent(txtThread, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+		                    .addPreferredGap(ComponentPlacement.RELATED)
+		                    .addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+		                        .addComponent(lblException)
+		                        .addComponent(txtException, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+		                .addComponent(scrollPaneStackTrace, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
+		            .addContainerGap())
+		);
 
 		txtStackTrace = new JTextArea();
 		scrollPaneStackTrace.setViewportView(txtStackTrace);
@@ -161,19 +195,16 @@ public class ErrorLogWindow extends JFrame
 			@Override
 			public void valueChanged(final ListSelectionEvent e)
 			{
-				final LoggedError error = lstErrors.getSelectedValue();
-				txtMessage.setText(error.getMessage());
-				txtSender.setText(error.getSender());
-				txtSenderType.setText(error.getSenderType());
-				txtPriority.setText(Integer.toString(error.getPriority()));
+				final LoggedMessage error = lstErrors.getSelectedValue();
+				txtMessage.setText(error.getLogMessage());
+				txtSender.setText(error.getLogger());
+				txtThread.setText(error.getThread());
+				txtPriority.setText(error.getLevel().name());
 				txtTimestamp.setText(localeDateFormat.format(error.getTimestamp()));
-				if (error.getException() != null)
+				if (error.getExceptionMessage() != null)
 				{
-					txtException.setText(error.getException().toString());
-					final StringWriter sw = new StringWriter();
-					final PrintWriter pw = new PrintWriter(sw);
-					error.getException().printStackTrace(pw);
-					txtStackTrace.setText(sw.toString());
+					txtException.setText(error.getExceptionMessage());
+					txtStackTrace.setText(error.getStackTrace());
 					txtStackTrace.setCaretPosition(0);
 				}
 				else
@@ -185,50 +216,61 @@ public class ErrorLogWindow extends JFrame
 		});
 		lstErrorsListModel = new DefaultListModel<>();
 		lstErrors.setModel(lstErrorsListModel);
-		lstErrors.setCellRenderer(new ListCellRenderer<LoggedError>()
+		lstErrors.setCellRenderer(new ListCellRenderer<LoggedMessage>()
 		{
 			@Override
-			public Component getListCellRendererComponent(final JList<? extends LoggedError> list, final LoggedError value, final int index, final boolean isSelected, final boolean cellHasFocus)
+			public Component getListCellRendererComponent(final JList<? extends LoggedMessage> list, final LoggedMessage value, final int index, final boolean isSelected, final boolean cellHasFocus)
 			{
-				final JLabel lbl = new JLabel(isoDateFormat.format(value.getTimestamp()) + " [" + value.getPriority() + "] " + value.getMessage());
+                final Level level = value.getLevel();
+				final JLabel lbl = new JLabel(isoDateFormat.format(value.getTimestamp()) + " [" + level + "] " + value.getLogMessage());
 				lbl.setOpaque(true);
-				switch(value.getPriority())
+				if(level.isMoreSpecificThan(Level.FATAL))
 				{
-				case 1:
-				case 2:
-					break;
-				case 3:
-				case 4:
-					lbl.setBackground(Color.yellow);
-					break;
-				case 5:
-					lbl.setBackground(Color.orange);
-					break;
-				case 6:
-					lbl.setBackground(Color.red);
-					lbl.setForeground(Color.white);
-					break;
-				case 7:
-					lbl.setBackground(Color.black);
-					lbl.setForeground(Color.white);
-					break;
-				default:
-					lbl.setBackground(Color.magenta);
-					lbl.setForeground(Color.white);
-					break;
+                    lbl.setBackground(Color.black);
+                    lbl.setForeground(Color.red);
+				}
+                else if(level.isMoreSpecificThan(Level.ERROR))
+                {
+                    lbl.setBackground(Color.red);
+                    lbl.setForeground(Color.black);
+                }
+				else if(level.isMoreSpecificThan(Level.WARN))
+                {
+                    lbl.setBackground(Color.orange);
+                    lbl.setForeground(Color.black);
+                }
+                else if(level.isMoreSpecificThan(Level.INFO))
+                {
+                    lbl.setBackground(Color.white);
+                    lbl.setForeground(Color.black);
+                }
+                else if(level.isMoreSpecificThan(Level.DEBUG))
+                {
+                    lbl.setBackground(Color.gray);
+                    lbl.setForeground(Color.black);
+                }
+				else
+				{
+                    lbl.setBackground(Color.lightGray);
+                    lbl.setForeground(Color.black);
 				}
 				return lbl;
 			}
 		});
 		scrollPaneErrors.setViewportView(lstErrors);
 		contentPane.setLayout(gl_contentPane);
+		
+		controller.addErrorListener(this);
 	}
 
-	public void addError(final LoggedError error)
-	{
-		lstErrorsListModel.addElement(error);
-		lstErrors.ensureIndexIsVisible(lstErrorsListModel.size() - 1);
+    @Override
+    public void errorOccurred(LogEvent event)
+    {
+        lstErrorsListModel.addElement(new LoggedMessage(event));
+        lstErrors.ensureIndexIsVisible(lstErrorsListModel.size() - 1);
 
-		setTitle(lstErrorsListModel.size() + " Fehler");
-	}
+        setTitle(lstErrorsListModel.size() + " Fehler");
+        if(event.getLevel().isMoreSpecificThan(Level.ERROR))
+            setVisible(true);
+    }
 }

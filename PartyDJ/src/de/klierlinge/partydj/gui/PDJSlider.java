@@ -11,7 +11,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -21,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
+import org.apache.logging.log4j.core.LogEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import de.klierlinge.partydj.basics.Controller;
@@ -62,8 +62,6 @@ public class PDJSlider extends JPanel
 	protected Timer refreshTimer;
 	
 	protected boolean errorShown;
-	protected int errorPriority;
-	protected String errorMessage;
 	
 	protected Thread errorShowThread;
 	
@@ -97,28 +95,25 @@ public class PDJSlider extends JPanel
 		
 		controller.addErrorListener(new ErrorListener()
 		{
-			@Override public void errorOccurred(final int priority, final Object sender, final Throwable exception, final String message, final Date date)
+			@Override public void errorOccurred(LogEvent event)
 			{
 				SwingUtilities.invokeLater(new Runnable()
 				{
 					@Override public void run()
 					{
-						errorPriority = priority;
-						errorMessage = message;
-						
 						if(errorShowThread != null)
 							errorShowThread.interrupt();
 						
 						errorShown = true;
 						titel.setForeground(Color.red);
-						titel.setText(message);
+						titel.setText(event.getMessage().getFormattedMessage());
 						
 						errorShowThread = new Thread(){
 							@Override public void run()
 							{
 								try
 								{
-									Thread.sleep(priority * 1000);
+									Thread.sleep(event.getLevel().intLevel() * 10);
 								}
 								catch (final InterruptedException ignored)
 								{

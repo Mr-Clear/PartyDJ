@@ -48,6 +48,7 @@ public class PartyDJ extends Controller
 				closePartyDJ();
 			}
 		};
+		closeListenThread.setName("Close Listener");
 		Runtime.getRuntime().addShutdownHook(closeListenThread);
 		
 		loadLookAndFeel(splash);
