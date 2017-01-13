@@ -24,7 +24,6 @@ import de.klierlinge.partydj.gui.ErrorLogWindow;
 import de.klierlinge.partydj.gui.settings.SettingNode;
 import de.klierlinge.partydj.lists.EditableListModel;
 import de.klierlinge.partydj.lists.data.ListProvider;
-import de.klierlinge.partydj.logging.LoggedMessage;
 import de.klierlinge.partydj.players.IPlayer;
 
 /**
