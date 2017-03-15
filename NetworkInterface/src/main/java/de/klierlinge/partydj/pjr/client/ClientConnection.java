@@ -19,6 +19,7 @@ public class ClientConnection implements InputHandler
 	private String host;
 	private final Client client;
 	private JsonEncoder encoder;
+	private JsonDecoder decoder;
 	
 	public ClientConnection(final Client client)
     {
@@ -42,6 +43,7 @@ public class ClientConnection implements InputHandler
 		this.host = connectHost;
 		this.port = connectPort;
 
+		running = true;
 		Executors.newSingleThreadExecutor().execute(new Runnable() // TODO: Use common pool.
         {
             @Override
@@ -58,7 +60,7 @@ public class ClientConnection implements InputHandler
 						encoder = new JsonEncoder(socket.getOutputStream());
 						connectionOpened();
 						
-						new JsonDecoder(socket.getInputStream(), ClientConnection.this);
+						decoder = new JsonDecoder(socket.getInputStream(), ClientConnection.this);
 						retry = false;
 					}
 					catch(final IOException e)
@@ -89,6 +91,11 @@ public class ClientConnection implements InputHandler
 	public void stop()
 	{
 		running = false;
+		if (decoder != null)
+		{
+			decoder.stop();
+			decoder = null;
+		}
 	}
 
 	@Override

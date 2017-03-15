@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="@string/PrefPdjHostKey"
+        android:title="@string/PrefPdjHosTitle"
+        android:summary="@string/PrefPdjHosDesc"
+        android:defaultValue="@string/PrefPdjHosDefault" />
+    <EditTextPreference
+        android:key="@string/PrefWolIpKey"
+        android:title="@string/PrefWolIpTitle"
+        android:summary="@string/PrefWolIpDesc"
+        android:defaultValue="@string/PrefWolIpDefault" />
+    <EditTextPreference
+        android:key="@string/PrefWolMacKey"
+        android:title="@string/PrefWolMacTitle"
+        android:summary="@string/PrefWolMacDesc"
+        android:defaultValue="@string/PrefWolMacDefault" />
+</PreferenceScreen>

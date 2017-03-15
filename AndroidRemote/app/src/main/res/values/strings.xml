@@ -3,7 +3,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="default_host">nasubuntu</string>
     <string name="play">Play</string>
     <string name="pause">Pause</string>
     <string name="backward">Backward</string>
@@ -11,4 +10,16 @@
     <string name="settings">Settings</string>
     <string name="nas_sleep">Send NAS to sleep</string>
     <string name="nas_wake">Wake up NAS</string>
+    <string name="PrefPdjHostKey">PartyDjHost</string>
+    <string name="PrefPdjHosTitle">PartyDJ Host</string>
+    <string name="PrefPdjHosDesc">Host name or IP address of the PartyDJ computer</string>
+    <string name="PrefPdjHosDefault">192.168.5.125</string>
+    <string name="PrefWolIpKey">WolIp</string>
+    <string name="PrefWolIpTitle">Ip for Wake On Lan</string>
+    <string name="PrefWolIpDesc">IP address for the Wake On Lan Magic Packet</string>
+    <string name="PrefWolIpDefault">192.168.15.255</string>
+    <string name="PrefWolMacTitle">Mac for Wake On Lan</string>
+    <string name="PrefWolMacDesc">MAC Address for Wake On Lan</string>
+    <string name="PrefWolMacDefault">24:5E:BE:05:3F:5A</string>
+    <string name="PrefWolMacKey">WolMac</string>
 </resources>

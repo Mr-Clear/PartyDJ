@@ -1,15 +1,15 @@
 package de.klierlinge.partydjremote;
 
-import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -29,8 +29,7 @@ public class MainActivity extends AppCompatActivity implements Client {
     private TrackProgressView trackProgress;
     private TextView trackName;
 
-    public MainActivity()
-    {
+    public MainActivity() {
         connection = new ClientConnection(this);
     }
 
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements Client {
         trackName = (TextView) findViewById(R.id.track_name);
 
         mainHandler = new Handler(getMainLooper());
-        connection.connect(getString(R.string.default_host));
 
         createButtonListener(R.id.play, Command.Play);
         createButtonListener(R.id.pause, Command.Pause);
@@ -51,17 +49,26 @@ public class MainActivity extends AppCompatActivity implements Client {
     }
 
     @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        return super.onCreateView(name, context, attrs);
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "Pause");
+        connection.stop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "Resume");
+        final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+        connection.connect(p.getString(getString(R.string.PrefPdjHostKey), getString(R.string.PrefPdjHosDefault)));
     }
 
     @Override
     public void messageReceived(Message message) {
         Log.v(TAG, "Message received: " + message);
-        switch (message.getType())
-        {
+        switch (message.getType()) {
             case LiveData:
-                final LiveData data = (LiveData)message;
+                final LiveData data = (LiveData) message;
                 mainHandler.post(() -> {
                     trackProgress.setDuration(data.track.duration);
                     trackProgress.setPosition(data.position);
@@ -93,19 +100,23 @@ public class MainActivity extends AppCompatActivity implements Client {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.settings:
+                final Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.wake_up:
                 // TODO: Make parameters configurable.
-                WakeOnLan.WakeUp("192.168.5.113", "24:5E:BE:05:3F:5A", () -> {
-                    Log.i(TAG, "Magic packet sent.");
-                    // TODO: Notify user.
-                }, (e) -> {
-                    Log.e(TAG, "Magic packet not send.", e);
-                    // TODO: Notify user.
-                });
+                final SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+                WakeOnLan.WakeUp(p.getString(getString(R.string.PrefWolIpKey), getString(R.string.PrefWolIpDefault)),
+                        p.getString(getString(R.string.PrefWolMacKey), getString(R.string.PrefWolMacDefault)),
+                        () -> {
+                            Log.i(TAG, "Magic packet sent.");
+                            // TODO: Notify user.
+                        }, (e) -> {
+                            Log.e(TAG, "Magic packet not send.", e);
+                            // TODO: Notify user.
+                        });
                 break;
             case R.id.sleep:
                 Log.i(TAG, "Sending sleep command...");
@@ -118,8 +129,7 @@ public class MainActivity extends AppCompatActivity implements Client {
         return super.onOptionsItemSelected(item);
     }
 
-    private void send(Message message)
-    {
+    private void send(Message message) {
         try {
             connection.send(message);
         } catch (IOException e) {
@@ -127,8 +137,7 @@ public class MainActivity extends AppCompatActivity implements Client {
         }
     }
 
-    private void createButtonListener(int id, final Command command)
-    {
+    private void createButtonListener(int id, final Command command) {
         findViewById(id).setOnClickListener(v -> {
             try {
                 connection.send(new PdjCommand(command));
